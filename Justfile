@@ -30,11 +30,15 @@ smoke: build
     {{ps}} smoke
 
 # Run the migrated scheduler SAT tests against Z3 with Rust.
-# The Rust harness reports a clear error if `pixi run build` has not run yet.
+# The Rust harness reports a clear error if `pixi run just build` has not run yet.
 test-z3:
     {{ps}} test-z3
 
-# Run all Rust contract tests.
+# Run the dynamically migrated upstream tests.
+test-upstream:
+    {{ps}} test-upstream
+
+# Run Rust harness tests and all migrated contract tests.
 test-rust:
     {{ps}} test-rust
 

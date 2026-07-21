@@ -1,11 +1,14 @@
 use std::env;
-use std::ffi::OsStr;
+use std::ffi::{OsStr, OsString};
 use std::fs::{self, File, OpenOptions};
 use std::io::{self, Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, ExitStatus, Stdio};
+use std::sync::OnceLock;
 use std::thread;
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+
+pub mod upstream;
 
 pub const BSC_TIMEOUT: Duration = Duration::from_secs(300);
 
@@ -41,7 +44,7 @@ impl Toolchain {
                 .find(|candidate| candidate.is_file())
                 .ok_or_else(|| {
                     format!(
-                        "BSC is not built under {}; run `pixi run build` first",
+                        "BSC is not built under {}; run `pixi run just build` first",
                         core_dir.display()
                     )
                 })?,
@@ -49,7 +52,7 @@ impl Toolchain {
         let bluespecdir = project_root.join("inst").join("lib");
         if !bluespecdir.is_dir() {
             return Err(format!(
-                "BSC library directory is missing at {}; run `pixi run build` first",
+                "BSC library directory is missing at {}; run `pixi run just build` first",
                 bluespecdir.display()
             ));
         }
@@ -68,6 +71,17 @@ pub struct CommandResult {
     pub exit_code: Option<i32>,
     pub output: String,
     pub duration: Duration,
+}
+
+pub fn current_run_id() -> &'static str {
+    static RUN_ID: OnceLock<String> = OnceLock::new();
+    RUN_ID.get_or_init(|| {
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_nanos();
+        format!("{}-{timestamp}", std::process::id())
+    })
 }
 
 pub fn locate_project_root() -> Result<PathBuf, String> {
@@ -97,9 +111,20 @@ pub fn run_bsc(
     log_path: &Path,
     timeout: Duration,
 ) -> Result<CommandResult, String> {
+    run_command(toolchain, &toolchain.bsc, arguments, cwd, log_path, timeout)
+}
+
+pub fn run_command(
+    toolchain: &Toolchain,
+    program: &Path,
+    arguments: &[&str],
+    cwd: &Path,
+    log_path: &Path,
+    timeout: Duration,
+) -> Result<CommandResult, String> {
     if let Some(parent) = log_path.parent() {
         fs::create_dir_all(parent)
-            .map_err(|error| io_error("create BSC log directory", parent, error))?;
+            .map_err(|error| io_error("create command log directory", parent, error))?;
     }
 
     let mut log = OpenOptions::new()
@@ -108,37 +133,44 @@ pub fn run_bsc(
         .read(true)
         .write(true)
         .open(log_path)
-        .map_err(|error| io_error("create BSC log", log_path, error))?;
-    writeln!(
-        log,
-        "$ {}",
-        format_command(toolchain.bsc.as_os_str(), arguments)
-    )
-    .and_then(|_| writeln!(log, "cwd: {}\n", cwd.display()))
-    .map_err(|error| io_error("write BSC log header", log_path, error))?;
+        .map_err(|error| io_error("create command log", log_path, error))?;
+    writeln!(log, "$ {}", format_command(program.as_os_str(), arguments))
+        .and_then(|_| writeln!(log, "cwd: {}\n", cwd.display()))
+        .map_err(|error| io_error("write command log header", log_path, error))?;
     log.flush()
-        .map_err(|error| io_error("flush BSC log header", log_path, error))?;
+        .map_err(|error| io_error("flush command log header", log_path, error))?;
     let output_start = log
         .stream_position()
-        .map_err(|error| io_error("seek BSC log", log_path, error))?;
+        .map_err(|error| io_error("seek command log", log_path, error))?;
 
     let stdout_log = log
         .try_clone()
-        .map_err(|error| io_error("clone BSC stdout log", log_path, error))?;
+        .map_err(|error| io_error("clone command stdout log", log_path, error))?;
     let stderr_log = log
         .try_clone()
-        .map_err(|error| io_error("clone BSC stderr log", log_path, error))?;
+        .map_err(|error| io_error("clone command stderr log", log_path, error))?;
 
+    let inherited_path = env::var_os("PATH").unwrap_or_default();
+    let mut command_paths = Vec::new();
+    if let Some(bsc_dir) = toolchain.bsc.parent() {
+        command_paths.push(bsc_dir.to_path_buf());
+    }
+    command_paths.extend(env::split_paths(&inherited_path));
+    let command_path = env::join_paths(command_paths)
+        .map_err(|error| format!("construct command PATH: {error}"))?;
+
+    let command_bluespecdir = bluespecdir_for_program(program, &toolchain.bluespecdir);
     let started = Instant::now();
-    let mut child = Command::new(&toolchain.bsc)
+    let mut child = Command::new(program)
         .args(arguments)
         .current_dir(cwd)
-        .env("BLUESPECDIR", &toolchain.bluespecdir)
+        .env("PATH", command_path)
+        .env("BLUESPECDIR", command_bluespecdir)
         .env("BSCTEST", "1")
         .stdout(Stdio::from(stdout_log))
         .stderr(Stdio::from(stderr_log))
         .spawn()
-        .map_err(|error| io_error("start BSC", &toolchain.bsc, error))?;
+        .map_err(|error| io_error("start command", program, error))?;
 
     let (status, timed_out) = wait_with_timeout(&mut child, timeout)?;
     let duration = started.elapsed();
@@ -155,11 +187,11 @@ pub fn run_bsc(
             }
             log.flush()
         })
-        .map_err(|error| io_error("write BSC log footer", log_path, error))?;
+        .map_err(|error| io_error("write command log footer", log_path, error))?;
 
     if timed_out {
         return Err(format!(
-            "BSC timed out after {}s; see {}",
+            "command timed out after {}s; see {}",
             timeout.as_secs(),
             log_path.display()
         ));
@@ -171,6 +203,21 @@ pub fn run_bsc(
         output,
         duration,
     })
+}
+
+fn bluespecdir_for_program(program: &Path, bluespecdir: &Path) -> OsString {
+    if !cfg!(windows) || program.file_name() != Some(OsStr::new("sh")) {
+        return bluespecdir.as_os_str().to_owned();
+    }
+
+    let path = bluespecdir.to_string_lossy().replace('\\', "/");
+    let bytes = path.as_bytes();
+    if bytes.len() >= 2 && bytes[0].is_ascii_alphabetic() && bytes[1] == b':' {
+        let drive = (bytes[0] as char).to_ascii_lowercase();
+        OsString::from(format!("/{drive}{}", &path[2..]))
+    } else {
+        OsString::from(path)
+    }
 }
 
 pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
@@ -194,6 +241,7 @@ pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
         .join("tmp")
         .join("rust-test-work")
         .join("scheduler-sat")
+        .join(current_run_id())
         .join(case);
     let artifact_dir = toolchain
         .project_root
@@ -201,6 +249,7 @@ pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
         .join("tmp")
         .join("rust-test-artifacts")
         .join("scheduler-sat")
+        .join(current_run_id())
         .join(case);
     reset_directory(&work_dir)?;
     reset_directory(&artifact_dir)?;
@@ -473,7 +522,12 @@ enum DiffOp<'a> {
     Add(&'a str),
 }
 
-fn readable_diff(expected: &str, actual: &str, expected_label: &str, actual_label: &str) -> String {
+pub fn readable_diff(
+    expected: &str,
+    actual: &str,
+    expected_label: &str,
+    actual_label: &str,
+) -> String {
     let expected_lines: Vec<&str> = expected.split_inclusive('\n').collect();
     let actual_lines: Vec<&str> = actual.split_inclusive('\n').collect();
     let column_count = actual_lines.len() + 1;
@@ -593,7 +647,11 @@ fn push_diff_line(diff: &mut String, prefix: char, line: &str) {
 
 #[cfg(test)]
 mod tests {
-    use super::{normalize_diff_b_text, normalize_generated_ids, normalize_sat_solver_names};
+    use super::{
+        bluespecdir_for_program, current_run_id, normalize_diff_b_text, normalize_generated_ids,
+        normalize_sat_solver_names,
+    };
+    use std::path::Path;
 
     #[test]
     fn normalization_generated_ids() {
@@ -617,5 +675,27 @@ mod tests {
             normalize_diff_b_text("alpha  \t beta \r\ntrail\t \rsolo\tvalue\r"),
             "alpha beta\ntrail\nsolo value\n"
         );
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn msys_shell_receives_a_posix_bluespecdir() {
+        assert_eq!(
+            bluespecdir_for_program(Path::new("sh"), Path::new(r"D:\projects\bsc\inst\lib")),
+            "/d/projects/bsc/inst/lib"
+        );
+        assert_eq!(
+            bluespecdir_for_program(Path::new("bsc.exe"), Path::new(r"D:\projects\bsc\inst\lib")),
+            r"D:\projects\bsc\inst\lib"
+        );
+    }
+
+    #[test]
+    fn run_id_contains_pid_and_timestamp() {
+        let run_id = current_run_id();
+        let (pid, timestamp) = run_id.split_once('-').expect("run id separator");
+        assert_eq!(pid, std::process::id().to_string());
+        assert!(timestamp.parse::<u128>().is_ok());
+        assert_eq!(run_id, current_run_id());
     }
 }

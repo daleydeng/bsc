@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("toolchain", "haskell-deps", "doctor", "build", "smoke", "test-z3", "test-rust", "test", "clean", "shell")]
+    [ValidateSet("toolchain", "haskell-deps", "doctor", "build", "smoke", "test-z3", "test-upstream", "test-rust", "test", "clean", "shell")]
     [string] $Action
 )
 
@@ -283,6 +283,7 @@ function Invoke-CargoTest {
     $env:CARGO_TARGET_DIR = Join-Path $Root ".pixi\tmp\cargo-target"
     $Arguments = @(
         "test",
+        "--locked",
         "--manifest-path", "rust-tests/Cargo.toml",
         "--jobs", [string] $Jobs
     ) + $AdditionalArguments + @(
@@ -292,6 +293,25 @@ function Invoke-CargoTest {
     Invoke-Native $Cargo $Arguments
 }
 
+function Invoke-UpstreamTests {
+    $Cargo = (Get-Command "cargo.exe" -ErrorAction Stop).Source
+    $env:CARGO_TARGET_DIR = Join-Path $Root ".pixi\tmp\cargo-target"
+    $Arguments = @(
+        "run",
+        "--locked",
+        "--manifest-path", "rust-tests/Cargo.toml",
+        "--bin", "upstream",
+        "--jobs", [string] $Jobs,
+        "--",
+        "--test-threads", [string] $Jobs
+    )
+    Invoke-Native $Cargo $Arguments
+}
+
+function Invoke-AllRustTests {
+    Invoke-CargoTest
+    Invoke-UpstreamTests
+}
 
 switch ($Action) {
     "toolchain" {
@@ -306,7 +326,7 @@ switch ($Action) {
         Invoke-Msys2 @'
 set -u
 failed=0
-for tool in bash make git diff gcc g++ perl pkg-config tclsh iverilog ghc ghc-pkg cabal rustc cargo z3; do
+for tool in bash make git diff gcc g++ pkg-config tclsh iverilog ghc ghc-pkg cabal rustc cargo z3; do
     if command -v "$tool" >/dev/null 2>&1; then
         printf '%-12s %s\n' "$tool" "$(command -v "$tool")"
     else
@@ -339,11 +359,14 @@ exit "$failed"
     "test-z3" {
         Invoke-CargoTest @("--test", "scheduler_sat")
     }
+    "test-upstream" {
+        Invoke-UpstreamTests
+    }
     "test-rust" {
-        Invoke-CargoTest
+        Invoke-AllRustTests
     }
     "test" {
-        Invoke-CargoTest
+        Invoke-AllRustTests
     }
     "clean" {
         Invoke-Msys2 "make full_clean"
