@@ -32,6 +32,12 @@ OSTYPE=$(echo ${OSTYPE} | grep -Eo "^[A-Za-z]+")
 ## Account for lowercase values like "linux" when we want "Linux"
 OSTYPE=$(echo ${OSTYPE} | cut -c1 | tr a-z A-Z)$(echo $OSTYPE | cut -c2- | tr A-Z a-z)
 
+# Normalize native Windows POSIX shells to one platform name.  The generated
+# binaries remain Windows PE/COFF binaries; this is not pretending to be Linux.
+case "${OSTYPE}" in
+    Msys|Mingw) OSTYPE=Windows ;;
+esac
+
 if [ "$1" = "ostype" ] ; then
     echo ${OSTYPE}
     exit 0
@@ -105,6 +111,15 @@ TCL_SUFFIX=${TCL_VERSION}
 TCL_ALT_SUFFIX=$(echo ${TCL_SUFFIX} | sed 's/\.//')
 
 if [ "$1" = "tclinc" ] ; then
+    # Pixi/conda installs the MinGW headers below Library/mingw-w64.
+    if [ "${OSTYPE}" = "Windows" ] && [ -n "${CONDA_PREFIX}" ] ; then
+        CONDA_PREFIX_UNIX=$(cygpath -u "${CONDA_PREFIX}")
+        if [ -f "${CONDA_PREFIX_UNIX}/Library/mingw-w64/include/tcl.h" ] ; then
+            echo -I${CONDA_PREFIX_UNIX}/Library/mingw-w64/include
+            exit 0
+        fi
+    fi
+
     # Avoid Homebrew's install of Tcl on Mac
     if [ ${OSTYPE} = "Darwin" ] ; then
 	# no flags needed
@@ -145,6 +160,16 @@ else
 fi
 
 if [ "$1" = "tcllibs" ] ; then
+    # Pixi's MinGW Tcl package provides GNU import libraries in this directory.
+    if [ "${OSTYPE}" = "Windows" ] && [ -n "${CONDA_PREFIX}" ] ; then
+        CONDA_PREFIX_UNIX=$(cygpath -u "${CONDA_PREFIX}")
+        TCL_MINGW_LIB="${CONDA_PREFIX_UNIX}/Library/mingw-w64/lib"
+        if [ -f "${TCL_MINGW_LIB}/libtcl${TCL_ALT_SUFFIX}.dll.a" ] ; then
+            echo -L${TCL_MINGW_LIB} -ltcl${TCL_ALT_SUFFIX}
+            exit 0
+        fi
+    fi
+
     # Avoid Homebrew's install of Tcl on Mac
     if [ ${OSTYPE} = "Darwin" ] ; then
 	echo -ltcl${TCL_SUFFIX}

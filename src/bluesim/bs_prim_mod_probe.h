@@ -1,6 +1,8 @@
 #ifndef __BS_PRIM_MOD_PROBE_H__
 #define __BS_PRIM_MOD_PROBE_H__
 
+#include <string>
+
 #include "bluesim_kernel_api.h"
 #include "bluesim_probes.h"
 #include "bs_module.h"
@@ -41,14 +43,10 @@ class MOD_Probe : public Module
   }
   unsigned int dump_VCD_defs(unsigned int /* num */)
   {
-    char* buf = NULL;
-    int sz = asprintf(&buf, "%s$PROBE", inst_name);
-    if (sz < 0)
-      perror("dump_VCD_defs: asprintf");
+    const std::string probe_name = std::string(inst_name) + "$PROBE";
     vcd_num = vcd_reserve_ids(sim_hdl, 1);
     vcd_set_clock(sim_hdl, vcd_num, __clk_handle_0);
-    vcd_write_def(sim_hdl, vcd_num, buf, bits);
-    free(buf);
+    vcd_write_def(sim_hdl, vcd_num, probe_name.c_str(), bits);
     return (vcd_num + 1);
   }
   void dump_VCD(tVCDDumpType dt, MOD_Probe<T>& backing)

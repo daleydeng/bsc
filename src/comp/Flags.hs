@@ -301,6 +301,7 @@ data ResourceFlag
 data SATFlag
        = SAT_Yices
        | SAT_STP
+       | SAT_Z3
        deriving (Eq, Show)
 
 data MsgListFlag = AllMsgs | SomeMsgs [String]

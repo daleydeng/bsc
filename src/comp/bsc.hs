@@ -6,8 +6,11 @@ import Prelude
 import System.Environment(getArgs, getProgName)
 import System.Process(runInteractiveProcess, waitForProcess)
 import System.Process(system)
+#ifdef mingw32_HOST_OS
+import System.Process(rawSystem)
+#endif
 import System.Exit(ExitCode(ExitFailure, ExitSuccess))
-import System.FilePath(takeDirectory)
+import System.FilePath(takeDirectory, isPathSeparator)
 import System.IO(hFlush, stdout, hPutStr, stderr, hGetContents, hClose, hSetBuffering, BufferMode(LineBuffering))
 import System.IO(hSetEncoding, utf8)
 import System.Posix.Files(fileMode,  unionFileModes, ownerExecuteMode, groupExecuteMode, setFileMode, getFileStatus, fileAccess)
@@ -1994,13 +1997,22 @@ vSimLink ::  ErrorHandle -> Flags ->
 vSimLink errh flags toplevel prefix vfiles ofiles = do
     build_script <- getVerilogSim errh flags
     let bsdir = bluespecDir flags
+#ifdef mingw32_HOST_OS
+        libdirflags = concatMap (\path -> ["-L", path]) (cLibPath flags)
+        userlibs = concatMap (\lib -> ["-l", lib]) (cLibs flags)
+        macrodefs = concatMap (\def -> ["-D", def]) (defines flags)
+        pathlibs = concatMap (\path -> ["-y", path]) (vPath flags)
+        veriflags = concatMap (\flag -> ["-Xv", flag]) (vFlags flags)
+        linkerflags = concatMap (\flag -> ["-Xl", flag]) (linkFlags flags)
+#else
         libdirflags = map ("-L "++) (cLibPath flags)
         userlibs = map ("-l "++) (cLibs flags)
         macrodefs = map ("-D " ++) (defines flags)
         pathlibs = map ("-y "++) (vPath flags)
-        outFile = oFile flags
         veriflags = map ("-Xv "++) (vFlags flags)
         linkerflags = map ("-Xl "++) (linkFlags flags)
+#endif
+        outFile = oFile flags
         verboseflag = if (verbose flags) then ["-verbose"] else []
         dpiflag = if (useDPI flags) then ["-dpi"] else []
         args = (["link"
@@ -2019,7 +2031,13 @@ vSimLink errh flags toplevel prefix vfiles ofiles = do
                 ofiles)
         cmd = unwords (build_script : args)
     when (verbose flags) $ putStrLnF ("exec: " ++ cmd)
+#ifdef mingw32_HOST_OS
+    -- Native Windows cannot execute the extensionless POSIX simulator scripts
+    -- directly.  Avoid cmd.exe and preserve argument boundaries explicitly.
+    rc <- rawSystem "bash" (build_script : args)
+#else
     rc <- system cmd
+#endif
     case rc of
         ExitSuccess -> unless (quiet flags) $ putStrLnF ("Verilog binary file created: " ++ outFile)
         ExitFailure n -> exitFailWith errh n
@@ -2040,7 +2058,7 @@ getVerilogSim errh flags = do
                           else return $ head avail_vsims
                  else return vsim_name_flags_or_env
     when (vsim_name == "") $ give_error flags vsim_name
-    let vsim_path | any (== '/') vsim_name = vsim_name
+    let vsim_path | any isPathSeparator vsim_name = vsim_name
                   | otherwise = (bluespecDir flags ++ "/exec/bsc_build_vsim_" ++
                                  vsim_name)
     valid_path <- doesFileExist vsim_path
@@ -2071,7 +2089,11 @@ findAllAvailableSims flags =
 -- XXX: once everyone is using GHC >= 6.10.
 checkSimScript :: String -> String -> IO (Bool,String)
 checkSimScript dir script =
+#ifdef mingw32_HOST_OS
+    do (hin, hout, _, pid) <- runInteractiveProcess "bash" [dir ++ "/" ++ script, "detect"] Nothing Nothing
+#else
     do (hin, hout, _, pid) <- runInteractiveProcess (dir ++ "/" ++ script) ["detect"] Nothing Nothing
+#endif
        outMVar <- newEmptyMVar
        out <- hGetContents hout
        _ <- forkIO $ CE.evaluate (length out) >> putMVar outMVar ()

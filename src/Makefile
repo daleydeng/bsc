@@ -8,17 +8,20 @@ PREFIX?=$(TOP)/inst
 ifndef NO_DEPS_CHECKS
 CC_TOOLS=$(CC) $(CXX) $(LD)
 BSC_TOOLS=ghc ghc-pkg
-YICES_TOOLS=gperf autoconf
-STP_TOOLS=flex bison
+ifeq ($(OSTYPE), Windows)
+SOLVER_TOOLS=z3
+SUBMODS=
+else
+SOLVER_TOOLS=gperf autoconf flex bison
+SUBMODS=vendor/yices/v2.6/yices2
+endif
 
 TOOLS=$(CC_TOOLS) \
       $(BSC_TOOLS) \
-      $(YICES_TOOLS) \
-      $(STP_TOOLS) \
+      $(SOLVER_TOOLS)
+
 
 GHC_PKGS=regex-compat syb old-time split strict-concurrency
-
-SUBMODS=vendor/yices/v2.6/yices2
 
 # Check all the necessary build tools are present
 pathsearch=$(firstword $(wildcard $(addsuffix /$(1),$(subst :, ,$(PATH)))))
@@ -55,8 +58,10 @@ all: install
 
 .PHONY: install clean full_clean
 install clean full_clean:
+ifneq ($(OSTYPE), Windows)
 	$(MAKE)  -C vendor/stp   PREFIX=$(PREFIX)  $@
 	$(MAKE)  -C vendor/yices PREFIX=$(PREFIX)  $@
+endif
 	$(MAKE)  -C vendor/htcl  PREFIX=$(PREFIX)  $@
 	# we need to build targets from here sequentially, as they operate in the same workspace
 	$(MAKE)  -C comp -j1   PREFIX=$(PREFIX)  $@

@@ -66,7 +66,7 @@ release: install-src install-doc install-release
 # in $PATH. it's not enough to just set bsc...
 .PHONY: check-smoke
 check-smoke:
-	@(export PATH=$(PREFIX)/bin:$(PATH); $(MAKE) -C examples/smoke_test smoke_test)
+	@(export PATH="$(PREFIX)/bin:$(PATH)"; $(MAKE) -C examples/smoke_test smoke_test)
 
 .PHONY: check-suite
 check-suite:

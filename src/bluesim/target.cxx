@@ -7,7 +7,11 @@
 FileTarget::FileTarget(FILE* file_ptr)
   : out(file_ptr)
 {
+#ifdef _WIN32
+  setvbuf(file_ptr, NULL, _IOLBF, BUFSIZ);
+#else
   setlinebuf(file_ptr);
+#endif
 }
 
 FileTarget::~FileTarget()

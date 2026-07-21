@@ -24,7 +24,7 @@ import qualified Control.Exception as CE
 import System.IO.Error(ioeGetErrorString)
 import System.IO.Unsafe(unsafePerformIO)
 import System.IO(hPutStr, hPutStrLn, stderr, stdout)
-import System.FilePath(normalise, dropTrailingPathSeparator)
+import System.FilePath(normalise, dropTrailingPathSeparator, searchPathSeparator)
 import System.Directory(getDirectoryContents, canonicalizePath)
 import Control.Monad(when)
 import Data.Char(isAlpha, isDigit, toUpper)
@@ -611,7 +611,11 @@ defaultFlags bluespecdir = Flags {
         resource = RFoff,
         rstGate = False,
         ruleNameCheck = True,
+#ifdef BSC_Z3_ONLY
+        satBackend = SAT_Z3,
+#else
         satBackend = SAT_Yices,
+#endif
         schedConds = True,
         schedDOT = False,
         schedQueries = [],
@@ -1339,7 +1343,7 @@ externalFlags = [
 
         ("p",
          (Arg "path" (\f s -> Left (f {ifcPathRaw = splitPath' f s ifcPathRaw})) (showPath ifcPathRaw),
-          "directory path (`:' sep.) for source and intermediate files", Visible)),
+          "directory path (platform path separator) for source and intermediate files", Visible)),
 
         ("parallel-sim-link",
          (Arg "jobs"
@@ -1547,6 +1551,11 @@ externalFlags = [
                 (showIfEq satBackend SAT_Yices),
           "use Yices SMT for disjoint testing and SAT", Visible)),
 
+        ("sat-z3",
+         (NoArg (\f -> Left $ f { satBackend = SAT_Z3 })
+                (showIfEq satBackend SAT_Z3),
+          "use Z3 SMT for disjoint testing and SAT", Visible)),
+
         ("steps",
          (Arg "n"
              (\f s -> case (mread s) of
@@ -1689,7 +1698,7 @@ externalFlags = [
 
         ("vsearch",
          (Arg "path" (\f s -> Left (f {vPathRaw = splitPath' f s vPathRaw})) (showPath vPathRaw),
-          "search path (`:' sep.) for Verilog files", Visible)),
+          "search path (platform path separator) for Verilog files", Visible)),
 
         ("vsim",
          let setFn f s = case setBackend f Verilog of
@@ -1979,15 +1988,15 @@ flagTypeToString flags key ft = showFlag False flags (key,ft)
 
 -- -------------------------
 -- Path Utilities
--- (colon-separated list with special symbols % and +)
+-- (platform-separated list with special symbols % and +)
 
 makePath :: String -> [String]
-makePath = splitWhen (==':')
+makePath = splitWhen (== searchPathSeparator)
 
 unPath :: [String] -> String
 unPath path =
     let convToken s = if (s == defaultPathToken) then "+" else s
-    in intercalate ":" (map convToken path)
+    in intercalate [searchPathSeparator] (map convToken path)
 
 splitPath :: String -> [String] -> String -> [String]
 splitPath bspecdir old_path s =

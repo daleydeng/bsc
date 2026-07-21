@@ -114,6 +114,10 @@ static void* sim_thread(void* ptr)
     return NULL;
 
   /* install signal handlers to shut down simulation */
+#ifdef _WIN32
+  /* Windows has SIGINT but no POSIX sigaction or SIGPIPE. */
+  signal(SIGINT, abort_handler);
+#else
   struct sigaction sa;
   sa.sa_flags = 0;
   sa.sa_handler = abort_handler;
@@ -122,6 +126,7 @@ static void* sim_thread(void* ptr)
   sigaction(SIGINT, &sa, NULL);
   /* SIGPIPE (usually stdout piped to a program that exits, eg /usr/bin/head) */
   sigaction(SIGPIPE, &sa, NULL);
+#endif
 
   /* add this sim to the signal watch list */
   add_abort_watcher(simHdl);
@@ -144,6 +149,9 @@ static void* sim_thread(void* ptr)
   remove_abort_watcher(simHdl);
 
   pthread_exit(NULL);
+#ifdef _WIN32
+  return NULL;
+#endif
 }
 
 /*

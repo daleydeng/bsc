@@ -51,8 +51,7 @@ CFLAGS += -Wall -Wextra -Werror \
 	-Wno-unused-parameter \
 	-g \
 	-std=c99 \
-        -D_FILE_OFFSET_BITS=64 \
-	-fPIC
+        -D_FILE_OFFSET_BITS=64
 CXXFLAGS += -Wall -Wextra -Werror \
 	-Wpointer-arith \
 	-Wshadow \
@@ -62,8 +61,11 @@ CXXFLAGS += -Wall -Wextra -Werror \
 	-D_ISOC99_SOURCE \
 	-std=c++11 \
         -D_FILE_OFFSET_BITS=64 \
-        -fno-rtti \
-	-fPIC
+        -fno-rtti
+ifneq ($(OSTYPE), Windows)
+CFLAGS += -fPIC
+CXXFLAGS += -fPIC
+endif
 
 CLANG_MAJVER=$(shell echo | $(CXX) -dM -E - | grep __clang_major__ | awk '{print $$3}')
 ifneq ($(CLANG_MAJVER),)
@@ -77,6 +79,7 @@ define version_ge
 $(findstring TRUE,$(shell bash -c 'sort -cu -t. -k1,1nr -k2,2nr -k3,3nr -k4,4nr <(echo -e "$2\n$1") 2>&1 || echo TRUE'))
 endef
 
+ifneq ($(OSTYPE), Windows)
 glibcversion := $(shell ldd --version | head -1 | awk '{print $$NF}')
 ifeq ($(call version_ge,$(glibcversion),2.20),TRUE)
 CFLAGS += -D_DEFAULT_SOURCE
@@ -84,6 +87,7 @@ CXXFLAGS += -D_DEFAULT_SOURCE
 else
 CFLAGS += -D_SVID_SOURCE
 CXXFLAGS += -D_SVID_SOURCE
+endif
 endif
 
 COPT ?= -O3

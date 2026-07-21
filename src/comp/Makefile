@@ -58,6 +58,24 @@ YICES_HS = ../vendor/yices/include_hs
 YICES_INC_FLAGS = -I../vendor/yices/include
 YICES_LIB_FLAGS = -L../vendor/yices/lib -lyices
 
+# Native Windows uses the Z3 executable backend exclusively,
+# avoiding C FFI and DLL ABI dependencies.
+ifeq ($(OSTYPE), Windows)
+SOLVER_CPP_FLAGS = -DBSC_Z3_ONLY
+SOLVER_HS =
+SOLVER_INC_FLAGS =
+SOLVER_LIB_FLAGS =
+SOLVER_SOURCES =
+SOLVER_TAG_DIRS =
+else
+SOLVER_CPP_FLAGS =
+SOLVER_HS = -i$(STP_HS) -i$(YICES_HS)
+SOLVER_INC_FLAGS = $(STP_INC_FLAGS) $(YICES_INC_FLAGS)
+SOLVER_LIB_FLAGS = $(STP_LIB_FLAGS) $(YICES_LIB_FLAGS)
+SOLVER_SOURCES = $(STP_HS)/*.hs $(YICES_HS)/*.hs
+SOLVER_TAG_DIRS = $(STP_HS) $(YICES_HS)
+endif
+
 # HTCL
 HTCL_HS = ../vendor/htcl
 HTCL_INC_FLAGS = -L$(HTCL_HS)
@@ -127,12 +145,22 @@ endif
 
 GHCPROFAUTO = -fprof-auto
 
+ifeq ($(OSTYPE), Windows)
+PLATFORM_PACKAGE = Win32
+PLATFORM_GHC_DIR = GHC/windows
+PLATFORM_GHC_SOURCES = GHC/windows/*.hs GHC/windows/System/*.hs GHC/windows/System/Posix/*.hs
+else
+PLATFORM_PACKAGE = unix
+PLATFORM_GHC_DIR = GHC/posix
+PLATFORM_GHC_SOURCES = GHC/posix/*.hs
+endif
+
 PACKAGES = \
 	base \
 	containers \
 	array \
 	mtl \
-	unix \
+	$(PLATFORM_PACKAGE) \
 	regex-compat \
 	bytestring \
 	directory \
@@ -178,12 +206,15 @@ GHCRTSFLAGS ?= +RTS -M$(GHCMAXHEAP) -A128m -RTS
 
 # flags for the haskell compile
 GHCINCLUDES =  \
-	-iGHC/posix -iLibs \
+	-i$(PLATFORM_GHC_DIR) -iLibs \
 	-i$(PARSEC_HS) \
-	-i$(STP_HS) \
-	-i$(YICES_HS) \
+	$(SOLVER_HS) \
 	-i$(HTCL_HS)
+ifeq ($(OSTYPE), Windows)
+GHCTMP =
+else
 GHCTMP = '-tmpdir $(TMPDIR)'
+endif
 # Default RTS flags for programs built with a Haskell main:
 # 256MB heap, 1 second interval between heap profiles, and a -K
 # stack cap.  The profiling build uses a much larger -K because
@@ -212,8 +243,8 @@ GHCFLAGS = \
 # To avoid recompiling the shared modules each time we compile a tool,
 # we provide the -I flags for all tools in every use of GHC.
 GHCFLAGS += \
-	$(STP_INC_FLAGS) \
-	$(YICES_INC_FLAGS) \
+	$(SOLVER_CPP_FLAGS) \
+	$(SOLVER_INC_FLAGS) \
 	$(HTCL_INC_FLAGS) \
 	$(TCL_INC_FLAGS) \
 
@@ -248,10 +279,9 @@ SOURCES_WO_EXTRA_BUILDVERSION = \
 	*.hs *.lhs \
 	Parser/*.hs Parser/BSV/*.lhs Parser/Classic/*.hs \
 	Libs/*.hs \
-	GHC/posix/*.hs \
+	$(PLATFORM_GHC_SOURCES) \
 	$(PARSEC_HS)/*.hs \
-	$(STP_HS)/*.hs \
-	$(YICES_HS)/*.hs \
+	$(SOLVER_SOURCES) \
 	$(HTCL_HS)/*.hs
 
 SOURCES = BuildVersion.hs BuildSystem.hs $(SOURCES_WO_EXTRA_BUILDVERSION)
@@ -286,8 +316,7 @@ POSTBUILDCOMMAND = $(BUILDDONE)
 # (to avoid creating binaries with unnecessary library requirements)
 #
 BSC_BUILDLIBS = \
-	$(STP_LIB_FLAGS) \
-	$(YICES_LIB_FLAGS) \
+	$(SOLVER_LIB_FLAGS) \
 
 BLUETCL_BUILDLIBS = \
 	$(BSC_BUILDLIBS) \
@@ -433,7 +462,7 @@ install-showrules: $(PKGINFO)
 # Other targets
 
 tags:   *hs */*hs bluewish.hs
-	$(FIND) . $(PARSEC_HS) $(STP_HS) $(YICES_HS) $(HTCL_HS) \
+	$(FIND) . $(PARSEC_HS) $(SOLVER_TAG_DIRS) $(HTCL_HS) \
 		-type f -name \*hs | xargs hasktags
 	mv tags tags.tmpfile
 	sort tags.tmpfile > tags

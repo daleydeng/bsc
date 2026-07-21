@@ -29,15 +29,27 @@
 
 BSC_COMMAND=$1           # "detect" or "link"
 
+IVERILOG=iverilog
+if ! command -v "$IVERILOG" >/dev/null 2>&1 && [ -n "${CONDA_PREFIX:-}" ]; then
+  if command -v cygpath >/dev/null 2>&1; then
+    CONDA_PREFIX_POSIX=$(cygpath -u "$CONDA_PREFIX")
+  else
+    CONDA_PREFIX_POSIX=$CONDA_PREFIX
+  fi
+  CONDA_IVERILOG="$CONDA_PREFIX_POSIX/Library/bin/iverilog.exe"
+  if [ -f "$CONDA_IVERILOG" ]; then
+    IVERILOG=$CONDA_IVERILOG
+  fi
+fi
+
 if [ "$BSC_COMMAND" = "detect" ]; then
 # detect whether the command "iverilog" is in the path
   SIM_NAME=iverilog
-  hash $SIM_NAME 2> /dev/null
-  if [ "$?" != "0" ]; then
+  if ! command -v "$IVERILOG" >/dev/null 2>&1; then
       echo "$SIM_NAME was not found"
       exit 1
   else
-      FOUND_CMD=`which $SIM_NAME`
+      FOUND_CMD=`command -v "$IVERILOG"`
       echo "$SIM_NAME was found at $FOUND_CMD"
       exit 0
   fi
@@ -129,7 +141,7 @@ fi
 
 # create SFT for iverilog older than v11 (only v10 supported)
 # v11 and later use the vpi files directly
-if echo "$(iverilog -V 2>/dev/null | head -n 1)" | grep -q "Icarus Verilog version 10."; then
+if echo "$("$IVERILOG" -V 2>/dev/null | head -n 1)" | grep -q "Icarus Verilog version 10."; then
     CREATESFT="yes"
 else
     CREATESFT="no"
@@ -201,7 +213,7 @@ if [ "$VERBOSE" = "yes" ]; then
 else
   IV_VERBOSE=""
 fi
-iverilog $IV_VERBOSE -o $BSC_SIM_EXECUTABLE -Wall $VSIM_PATH_FLAGS $BSC_VSIM_FLAGS -DTOP=$BSC_TOPLEVEL_MODULE $VPI_LIBPATH $BSC_VERILOG_DEFS $BSC_VERILOG_OPTS $VPI_LINK $BSC_VERILOG_FILES
+"$IVERILOG" $IV_VERBOSE -o $BSC_SIM_EXECUTABLE -Wall $VSIM_PATH_FLAGS $BSC_VSIM_FLAGS -DTOP=$BSC_TOPLEVEL_MODULE $VPI_LIBPATH $BSC_VERILOG_DEFS $BSC_VERILOG_OPTS $VPI_LINK $BSC_VERILOG_FILES
 status=$?
 if [ "$status" != "0" ]; then
   echo "ERROR: cannot compile Verilog files" >&2

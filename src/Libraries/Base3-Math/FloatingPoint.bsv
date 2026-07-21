@@ -2577,7 +2577,8 @@ module mkFloatingPointSquareRooter#(Server#(UInt#(TMul#(2,nsfd)),Tuple2#(UInt#(T
 	 let zeros = countZerosMSB(sfd);
 	 sfd = sfd << (zeros - 1);
 
-	 exp = exp - zeroExtend(unpack(pack(zeros)));
+	 Bit#(l__) padding = 0;
+	 exp = exp - unpack({padding, pack(zeros)});
 
 	 out.exp = truncate(pack(exp >> 1) + fromInteger(bias(out)) + 1);
 

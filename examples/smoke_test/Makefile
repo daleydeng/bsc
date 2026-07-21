@@ -83,7 +83,7 @@ smoke_test_verilog: clean
 	@echo ""
 	@echo "Comparing result of Bluespec Simulation" 
 	@echo "Some simulator specific difference expected"	
-	-diff mk$(SMOKENAME).out.expected smoke_test_verilog.out
+	-tr -d '\r' < smoke_test_verilog.out | diff mk$(SMOKENAME).out.expected -
 	@echo ""
 	@echo "Bluespec installation looks OK"
 
@@ -98,6 +98,6 @@ smoke_test_bluesim: clean
 	./mk$(SMOKENAME).bexe > smoke_test_bluesim.out
 	@echo ""
 	@echo "Comparing result of Bluespec Simulation" 
-	diff mk$(SMOKENAME).out.expected smoke_test_bluesim.out
+	tr -d '\r' < smoke_test_bluesim.out | diff mk$(SMOKENAME).out.expected -
 	@echo ""
 	@echo "Bluespec's Bluesim looks OK"

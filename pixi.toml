@@ -1,0 +1,40 @@
+[workspace]
+name = "bsc-windows-build"
+version = "0.1.0"
+description = "Reproducible native Windows build environment for BSC"
+channels = [
+  "https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge",
+  "https://repo.anaconda.com/pkgs/msys2",
+]
+platforms = ["win-64"]
+
+[dependencies]
+ghcup = "0.1.18.*"
+iverilog = "11.*"
+just = ">=1.40,<2"
+python = ">=3.12,<3.15"
+z3prover = ">=4.13,<5"
+m2-base = "1.*"
+m2-diffutils = "3.*"
+m2-git = "2.8.*"
+m2-make = "4.*"
+m2-m4 = "1.*"
+m2-perl = "5.*"
+m2-pkg-config = "0.29.*"
+m2w64-gmp = "6.*"
+m2w64-tcl = "8.6.*"
+m2w64-toolchain = "5.3.*"
+
+[target.win-64.activation]
+scripts = ["util/windows/activate.bat"]
+
+[tasks]
+default = "just"
+toolchain = "just toolchain"
+haskell-deps = "just haskell-deps"
+bootstrap = "just bootstrap"
+doctor = "just doctor"
+build = "just build"
+smoke = "just smoke"
+clean = "just clean"
+msys2-shell = "just msys2-shell"

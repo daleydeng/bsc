@@ -4398,10 +4398,13 @@ getErrorText (WSuppressedWarnings count) =
 getErrorText (WSATNotAvailable flagstr libname m_dflt_sat) =
   (System 81, empty,
    s2par ("The flag " ++ quote flagstr ++
-          " was used, but a proper shared object file was not found. " ++
-          "Please specify a different SAT solver or check that the " ++
-          "LD_LIBRARY_PATH or BLUESPEC_LD_LIBRARY_PATH includes a valid " ++
-          quote libname ++ " file." ++
+          (if flagstr == "-sat-z3"
+           then " was used, but the Z3 executable was not found on PATH. " ++
+                "Please install Z3 or specify a different SAT solver."
+           else " was used, but a proper shared object file was not found. " ++
+                "Please specify a different SAT solver or check that the " ++
+                "LD_LIBRARY_PATH or BLUESPEC_LD_LIBRARY_PATH includes a valid " ++
+                quote libname ++ " file.") ++
           (case (m_dflt_sat) of
              Nothing -> ""
              Just dflt_sat ->

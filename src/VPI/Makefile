@@ -26,8 +26,10 @@ CFLAGS += -Wall \
 	-Werror \
 	-Wno-shadow \
 	-g \
-	-std=c99 \
-	-fPIC \
+	-std=c99
+ifneq ($(OSTYPE), Windows)
+CFLAGS += -fPIC
+endif
 # vpi_user.h fails this check
 #	-Wstrict-prototypes
 
@@ -35,6 +37,14 @@ COPT ?= -O3
 CDEBUG ?=
 CFLAGS += $(PROF) $(COPT) $(CDEBUG)
 
+ifeq ($(OSTYPE), Windows)
+# PE/COFF does not allow unresolved VPI symbols in a DLL.  Use Icarus's
+# import libraries and produce an import library for generated VPI modules.
+LIBBDPI=libbdpi.dll
+LIBBDPI_IMPLIB=libbdpi.dll.a
+LDFLAGS = $(shell iverilog-vpi --ldflags) -Wl,--out-implib,$(LIBBDPI_IMPLIB)
+LDLIBS = $(shell iverilog-vpi --ldlibs)
+else
 ifeq ($(OSTYPE), Darwin)
 # for Mac OS X, declare that the binary is dynamic and undefined references
 # will be looked up later when the library is linked
@@ -43,6 +53,7 @@ LDFLAGS = -dynamiclib -Wl,-install_name,@rpath/$(LIBBDPI),-undefined,dynamic_loo
 else
 LIBBDPI=libbdpi.so
 LDFLAGS = -shared -Wl,-soname,$(LIBBDPI)
+endif
 endif
 
 vpath %.c ../
@@ -58,7 +69,7 @@ vpath %.c ../
 # -------------------------
 
 $(LIBBDPI): libbdpi.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $< $(LDLIBS)
 
 # Static check of the header files before releasing them.
 .PHONY: test-headers
@@ -73,12 +84,12 @@ test-headers:
 install: $(HEADERS) $(LIBBDPI) test-headers
 	$(INSTALL) -m 755 -d $(INSTALLDIR)
 	$(INSTALL) -m 644 $(HEADERS) $(INSTALLDIR)
-	$(INSTALL) -m 644 $(LIBBDPI) $(INSTALLDIR)
+	$(INSTALL) -m 644 $(LIBBDPI) $(LIBBDPI_IMPLIB) $(INSTALLDIR)
 
 .PHONY: clean
 clean:
 	$(RM) test_hdr.c
-	$(RM) *.o *.d $(LIBBDPI)
+	$(RM) *.o *.d $(LIBBDPI) $(LIBBDPI_IMPLIB)
 
 .PHONY: full_clean
 full_clean: clean
