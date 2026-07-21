@@ -28,7 +28,9 @@ pixi run just test-upstream   # 对齐检查后运行动态迁移的 upstream ca
 
 165 个 compile contract 和 24 个 scheduler contract 使用统一的 BSC result cache，目录为 `.pixi/cache/rust-tests/bsc-results/v1`。key 除 toolchain、fixture、argv 和环境外还包含实际 `z3.exe` 的内容指纹；只有已经通过对应诊断、产物和 golden 检查的原始 BSC 结果才会发布。命中后仍重新执行 Rust 侧的 exit status、diagnostic、产物、normalization 和 golden 检查，不缓存最终 pass/fail。
 
-Bluesim link 中的生成 C++ 编译默认通过 Pixi 管理的 `ccache` 执行，缓存位于 `.pixi/cache/ccache`；最终链接、simulation 和 golden compare 仍会真实执行。`pixi run just ccache-stats` 可查看统计，`pixi run just ccache-clear` 可清空该层缓存。显式设置 `CXX` 时任务会尊重调用者配置；`test-cold` 会同时禁用 generation cache 和 `ccache`，保留完整无缓存验证入口。
+Bluesim link 中的生成 C++ 编译默认通过 Pixi 管理的 `ccache` 执行，缓存位于 `.pixi/cache/ccache`；最终链接、simulation 和 golden compare 仍会真实执行。`pixi run just ccache-stats` 可查看统计，`pixi run just ccache-clear` 可清空该层缓存。显式设置 `CXX` 时任务会尊重调用者配置；`test-cold` 会同时禁用 generation cache、BSC result cache 和 `ccache`，保留完整无缓存验证入口。
+
+GitHub Actions 的原生 Windows job 会分别持久化 `.pixi/cache/rust-tests` 和 `.pixi/cache/ccache`。每个 commit 使用独立的不可变 cache key，并从相同 `pixi.lock` 的最近快照恢复；恢复后的 Rust entry 仍必须通过内部 BSC、`inst/lib`、fixture、argv、环境和 Z3 内容指纹校验，因此 CI cache 只减少重复计算，不放宽 contract。
 
 默认测试 `inst/bin/core/bsc.exe`。未来验证另一份实现时可以覆盖被测程序：
 

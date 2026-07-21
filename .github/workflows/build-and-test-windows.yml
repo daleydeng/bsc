@@ -1,0 +1,87 @@
+name: Build and Test Windows
+
+# Native Windows build and migrated Rust contract tests.
+# Pixi owns the base toolchain; OSS CAD Suite supplies Icarus and vvp.
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    name: "Build: windows-2025 native"
+    runs-on: windows-2025
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Install Pixi environment
+        uses: prefix-dev/setup-pixi@v0.10.0
+        with:
+          pixi-version: v0.66.0
+          locked: true
+          cache: true
+
+      - name: Restore GHCup and Cabal state
+        uses: actions/cache@v5
+        with:
+          path: |
+            .pixi/ghcup
+            .pixi/cabal
+          key: native-windows-haskell-v1-ghc-9.6.7-${{ hashFiles('util/windows/pixi.ps1') }}
+          restore-keys: |
+            native-windows-haskell-v1-ghc-9.6.7-
+
+      - name: Install OSS CAD Suite
+        uses: YosysHQ/setup-oss-cad-suite@v4
+        with:
+          github-token: ${{ github.token }}
+          version: "2026-07-16"
+
+      # Every commit gets an immutable cache snapshot. A new commit restores
+      # the newest compatible snapshot; the Rust cache validates BSC, inst/lib,
+      # fixtures, argv, environment and Z3 contents before accepting a hit.
+      - name: Restore Rust contract-test cache
+        uses: actions/cache@v5
+        with:
+          path: .pixi/cache/rust-tests
+          key: native-windows-rust-tests-v2-${{ hashFiles('pixi.lock') }}-${{ github.sha }}
+          restore-keys: |
+            native-windows-rust-tests-v2-${{ hashFiles('pixi.lock') }}-
+            native-windows-rust-tests-v2-
+
+      - name: Restore C++ compiler cache
+        uses: actions/cache@v5
+        with:
+          path: .pixi/cache/ccache
+          key: native-windows-ccache-v1-${{ hashFiles('pixi.lock') }}-${{ github.sha }}
+          restore-keys: |
+            native-windows-ccache-v1-${{ hashFiles('pixi.lock') }}-
+            native-windows-ccache-v1-
+
+      - name: Build and smoke test
+        run: pixi run just smoke
+
+      - name: Run migrated Rust contract tests
+        run: pixi run just test
+
+      - name: CCache statistics
+        if: always()
+        env:
+          CCACHE_DIR: ${{ github.workspace }}\.pixi\cache\ccache
+        run: pixi run ccache --show-stats
+
+      - name: Upload test diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: native-windows-test-diagnostics
+          path: |
+            .pixi/tmp/rust-test-artifacts
+            .pixi/tmp/*.log
+          if-no-files-found: ignore
+          retention-days: 7
