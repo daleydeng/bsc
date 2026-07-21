@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.mcd/Gearbox/Gearbox.exp`.
+
 use super::SimulationCase;
 
 const FIXTURE_DIR: &str = "testsuite/bsc.mcd/Gearbox";

@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.interra/messages/ENotField/ENotField.exp`.
+
 use super::CompileCase;
 
 pub(super) const ENOT_FIELD_1: CompileCase = compile_fail_golden_case!(

@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.misc/attrErrors/attrErrors.exp`.
+
 use super::CompileCase;
 
 pub(super) const T1: CompileCase = compile_fail_error_case!(

@@ -1,3 +1,4 @@
+use crate::cache::{BscResultCache, ResultCacheLookup};
 use std::env;
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File, OpenOptions};
@@ -8,6 +9,8 @@ use std::sync::OnceLock;
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+pub mod alignment;
+pub(crate) mod cache;
 pub mod upstream;
 
 pub const BSC_TIMEOUT: Duration = Duration::from_secs(300);
@@ -255,7 +258,8 @@ pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
     reset_directory(&artifact_dir)?;
 
     let renamed_stem = format!("{case}_sat-z3");
-    let source = source_dir.join(format!("{case}.bsv"));
+    let source_file_name = format!("{case}.bsv");
+    let source = source_dir.join(&source_file_name);
     let staged_file_name = format!("{renamed_stem}.bsv");
     let staged_source = work_dir.join(&staged_file_name);
     fs::copy(&source, &staged_source).map_err(|error| {
@@ -280,7 +284,31 @@ pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
         "-verilog",
         staged_file_name.as_str(),
     ];
-    let result = run_bsc(&toolchain, &arguments, &work_dir, &compile_log, BSC_TIMEOUT)?;
+    let result_cache = scheduler_result_cache(&toolchain);
+    let (result, cache_key) = match result_cache.lookup(
+        &source_dir,
+        &[source_file_name.as_str()],
+        &arguments,
+        &work_dir,
+        &compile_log,
+    ) {
+        Ok(ResultCacheLookup::Hit(result)) => (result, None),
+        Ok(ResultCacheLookup::Miss(key)) => (
+            run_bsc(&toolchain, &arguments, &work_dir, &compile_log, BSC_TIMEOUT)?,
+            Some(key),
+        ),
+        Ok(ResultCacheLookup::Disabled) => (
+            run_bsc(&toolchain, &arguments, &work_dir, &compile_log, BSC_TIMEOUT)?,
+            None,
+        ),
+        Err(error) => {
+            eprintln!("warning: BSC result cache lookup failed for scheduler case {case}: {error}");
+            (
+                run_bsc(&toolchain, &arguments, &work_dir, &compile_log, BSC_TIMEOUT)?,
+                None,
+            )
+        }
+    };
     if !result.success {
         let exit = result.exit_code.map_or_else(
             || "terminated by signal".to_owned(),
@@ -306,7 +334,28 @@ pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
         &result.output,
         &expected_path,
         &artifact_dir.join("schedule.diff"),
-    )
+    )?;
+
+    if let Some(key) = cache_key {
+        if let Err(error) = result_cache.store(&key, &work_dir, &result) {
+            eprintln!("warning: BSC result cache store failed for scheduler case {case}: {error}");
+        }
+    }
+
+    Ok(())
+}
+
+fn scheduler_result_cache(toolchain: &Toolchain) -> &'static BscResultCache {
+    static CACHE: OnceLock<BscResultCache> = OnceLock::new();
+    CACHE.get_or_init(|| match BscResultCache::new(toolchain) {
+        Ok(cache) => cache,
+        Err(error) => {
+            eprintln!(
+                "warning: scheduler BSC result cache initialization failed; continuing uncached: {error}"
+            );
+            BscResultCache::disabled(toolchain)
+        }
+    })
 }
 
 pub fn normalize_generated_ids(text: &str) -> String {

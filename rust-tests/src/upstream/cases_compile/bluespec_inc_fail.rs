@@ -1,3 +1,6 @@
+//! Origins: `testsuite/bsc.bugs/bluespec_inc/<bug>/<bug>.exp` for each case's
+//! fixture directory.
+
 use super::CompileCase;
 
 pub(super) const B1040: CompileCase = compile_fail_error_case!(

@@ -1,3 +1,7 @@
+//! Origins:
+//! - `testsuite/bsc.evaluator/dynamic/dynamic.exp`
+//! - `testsuite/bsc.evaluator/dynamic/errors/dynamic_errors.exp`
+
 use super::CompileCase;
 
 const DYNAMIC_DIR: &str = "testsuite/bsc.evaluator/dynamic";

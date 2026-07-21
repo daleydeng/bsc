@@ -1,6 +1,6 @@
 use bsc_rust_tests::upstream::{
-    all_cases, parse_cli, run_cases, select_cases, summarize_outcomes, CaseResult, RunPaths,
-    RunnerPolicy, UpstreamCase,
+    all_cases, parse_cli, probe_iverilog_major, run_cases, select_cases, summarize_outcomes,
+    CaseResult, RunPaths, RunnerPolicy, UpstreamCase,
 };
 use bsc_rust_tests::{current_run_id, Toolchain};
 use std::env;
@@ -23,7 +23,8 @@ fn run() -> Result<bool, String> {
     let policy = RunnerPolicy::from_environment(
         env::var_os("CTEST").as_deref(),
         env::var_os("VTEST").as_deref(),
-    );
+    )
+    .with_iverilog_major(probe_iverilog_major());
     let available = all_cases();
     let selected = select_cases(&available, &options);
     if options.list {

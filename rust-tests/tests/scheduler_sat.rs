@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.scheduler/sat/sat.exp`.
+
 use bsc_rust_tests::run_scheduler_sat_case;
 
 macro_rules! scheduler_sat_cases {

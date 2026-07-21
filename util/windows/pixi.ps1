@@ -1,8 +1,11 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("toolchain", "haskell-deps", "doctor", "build", "smoke", "test-z3", "test-upstream", "test-rust", "test", "clean", "shell")]
-    [string] $Action
+    [ValidateSet("configure-oss-cad-suite", "toolchain", "haskell-deps", "doctor", "build", "smoke", "test-z3", "test-alignment", "test-upstream", "test-rust", "test", "test-cold", "ccache-stats", "ccache-clear", "clean", "shell")]
+    [string] $Action,
+
+    [Parameter(Position = 1)]
+    [string] $OssCadSuitePath
 )
 
 Set-StrictMode -Version Latest
@@ -29,6 +32,89 @@ if (-not $env:PIXI_PROJECT_ROOT -or -not $env:CONDA_PREFIX) {
 }
 
 $Root = $env:PIXI_PROJECT_ROOT
+$OssCadSuiteConfig = Join-Path $Root ".pixi\oss-cad-suite-root.txt"
+
+function Get-ValidOssCadSuiteRoot {
+    param(
+        [Parameter(Mandatory = $true)] [string] $Candidate
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Candidate)) {
+        return $null
+    }
+    $Resolved = [IO.Path]::GetFullPath($Candidate.Trim().Trim('"'))
+    if ((Test-Path (Join-Path $Resolved "environment.ps1")) -and
+        (Test-Path (Join-Path $Resolved "bin\iverilog.exe")) -and
+        (Test-Path (Join-Path $Resolved "bin\vvp.exe")) -and
+        (Test-Path (Join-Path $Resolved "lib\ivl"))) {
+        return $Resolved.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar)
+    }
+    return $null
+}
+
+function Resolve-OssCadSuiteRoot {
+    param(
+        [Parameter()] [switch] $Required
+    )
+
+    $Candidates = @()
+    if ($env:OSS_CAD_SUITE_ROOT) {
+        $Candidates += $env:OSS_CAD_SUITE_ROOT
+    }
+    if ($env:YOSYSHQ_ROOT) {
+        $Candidates += $env:YOSYSHQ_ROOT
+    }
+    if (Test-Path $OssCadSuiteConfig) {
+        $Candidates += (Get-Content -Raw $OssCadSuiteConfig).Trim()
+    }
+    $Command = Get-Command "iverilog.exe" -ErrorAction SilentlyContinue
+    if ($Command) {
+        $Candidates += (Split-Path -Parent (Split-Path -Parent $Command.Source))
+    }
+
+    foreach ($Candidate in $Candidates) {
+        $Resolved = Get-ValidOssCadSuiteRoot $Candidate
+        if ($Resolved) {
+            return $Resolved
+        }
+    }
+
+    if ($Required) {
+        throw "OSS CAD Suite with iverilog/vvp was not configured. Run 'pixi run just configure-oss-cad-suite <path>' or set OSS_CAD_SUITE_ROOT."
+    }
+    return $null
+}
+
+function Save-OssCadSuiteRoot {
+    param(
+        [Parameter(Mandatory = $true)] [string] $Candidate
+    )
+
+    $Resolved = Get-ValidOssCadSuiteRoot $Candidate
+    if (-not $Resolved) {
+        throw "Not a valid OSS CAD Suite root: $Candidate"
+    }
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OssCadSuiteConfig) | Out-Null
+    $Utf8NoBom = New-Object Text.UTF8Encoding($false)
+    [IO.File]::WriteAllText($OssCadSuiteConfig, $Resolved + "`n", $Utf8NoBom)
+    Write-Host "Configured OSS CAD Suite: $Resolved" -ForegroundColor Green
+}
+
+if ($Action -eq "configure-oss-cad-suite") {
+    if ([string]::IsNullOrWhiteSpace($OssCadSuitePath)) {
+        throw "Usage: pixi run just configure-oss-cad-suite <path>"
+    }
+    Save-OssCadSuiteRoot $OssCadSuitePath
+    exit 0
+}
+
+$RequiresIcarus = @("doctor", "smoke", "test-upstream", "test-rust", "test", "test-cold") -contains $Action
+$OssCadSuiteRoot = Resolve-OssCadSuiteRoot -Required:$RequiresIcarus
+if ($OssCadSuiteRoot) {
+    $env:OSS_CAD_SUITE_ROOT = $OssCadSuiteRoot
+    $env:BSC_OSS_CAD_SUITE_ROOT = $OssCadSuiteRoot
+    $env:YOSYSHQ_ROOT = $OssCadSuiteRoot + [IO.Path]::DirectorySeparatorChar
+}
 
 $env:GHCUP_INSTALL_BASE_PREFIX = Join-Path $Root ".pixi"
 $env:CABAL_DIR = Join-Path $Root ".pixi\cabal"
@@ -48,7 +134,49 @@ $env:BSC_GHCUP_BIN = $GhcupBin
 $MingwBin = Join-Path $env:CONDA_PREFIX "Library\mingw-w64\bin"
 $MsysBin = Join-Path $env:CONDA_PREFIX "Library\usr\bin"
 $CondaLibraryBin = Join-Path $env:CONDA_PREFIX "Library\bin"
-$env:Path = (@($GhcupBin, $MingwBin, $MsysBin, $CondaLibraryBin, $env:Path) -join [IO.Path]::PathSeparator)
+$ToolPaths = @()
+if ($OssCadSuiteRoot) {
+    # OSS CAD Suite's ivl/vvp binaries must see their own MinGW DLLs before
+    # Pixi's older MinGW DLLs. Keep Pixi's Z3 authoritative with a tiny shim
+    # directory placed before OSS CAD Suite.
+    $PreferredToolBin = Join-Path $Root ".pixi\tools\pixi-preferred-bin"
+    New-Item -ItemType Directory -Force -Path $PreferredToolBin | Out-Null
+    foreach ($FileName in @("z3.exe", "MSVCP140.dll", "VCRUNTIME140.dll", "VCRUNTIME140_1.dll")) {
+        $Source = Join-Path $CondaLibraryBin $FileName
+        if (-not (Test-Path $Source)) {
+            throw "Pixi-managed Z3 runtime file was not found: $Source"
+        }
+        $Destination = Join-Path $PreferredToolBin $FileName
+        Remove-Item -Force -ErrorAction SilentlyContinue $Destination
+        try {
+            New-Item -ItemType HardLink -Path $Destination -Target $Source -ErrorAction Stop | Out-Null
+        } catch {
+            Copy-Item -Force $Source $Destination
+        }
+    }
+    $env:BSC_PIXI_PREFERRED_BIN = $PreferredToolBin
+    $ToolPaths += $PreferredToolBin
+    $ToolPaths += (Join-Path $OssCadSuiteRoot "bin")
+    $ToolPaths += (Join-Path $OssCadSuiteRoot "lib")
+}
+$ToolPaths += @($GhcupBin, $MingwBin, $MsysBin, $CondaLibraryBin, $env:Path)
+$env:Path = ($ToolPaths -join [IO.Path]::PathSeparator)
+
+$Ccache = (Get-Command "ccache.exe" -ErrorAction Stop).Source
+if (-not $env:CCACHE_DIR) {
+    $env:CCACHE_DIR = Join-Path $Root ".pixi\cache\ccache"
+}
+if (-not $env:CCACHE_BASEDIR) {
+    $env:CCACHE_BASEDIR = $Root
+}
+if (-not $env:CCACHE_MAXSIZE) {
+    $env:CCACHE_MAXSIZE = "10G"
+}
+$CcacheManagedCxx = -not [bool] $env:CXX
+if ($CcacheManagedCxx) {
+    $env:CXX = "ccache c++"
+}
+
 $env:PKG_CONFIG_PATH = (@(
     (Join-Path $env:CONDA_PREFIX "Library\mingw-w64\lib\pkgconfig"),
     (Join-Path $env:CONDA_PREFIX "Library\mingw-w64\share\pkgconfig")
@@ -253,6 +381,11 @@ function Invoke-Msys2 {
             $Utf8NoBom = New-Object Text.UTF8Encoding($false)
             $MsysPreamble = @'
 export PATH="$(cygpath -u "$CONDA_PREFIX")/Library/bin:$PATH"
+if [ -n "${BSC_OSS_CAD_SUITE_ROOT:-}" ]; then
+    preferred_bin="$(cygpath -u "$BSC_PIXI_PREFERRED_BIN")"
+    oss_cad_root="$(cygpath -u "$BSC_OSS_CAD_SUITE_ROOT")"
+    export PATH="$preferred_bin:$oss_cad_root/bin:$oss_cad_root/lib:$PATH"
+fi
 export SSL_CERT_FILE="$(cygpath -u "$CONDA_PREFIX")/Library/ssl/cacert.pem"
 export GIT_SSL_CAINFO="$SSL_CERT_FILE"
 export CURL_CA_BUNDLE="$SSL_CERT_FILE"
@@ -293,7 +426,21 @@ function Invoke-CargoTest {
     Invoke-Native $Cargo $Arguments
 }
 
+function Invoke-AlignmentCheck {
+    $Cargo = (Get-Command "cargo.exe" -ErrorAction Stop).Source
+    $env:CARGO_TARGET_DIR = Join-Path $Root ".pixi\tmp\cargo-target"
+    $Arguments = @(
+        "run",
+        "--locked",
+        "--manifest-path", "rust-tests/Cargo.toml",
+        "--bin", "alignment",
+        "--jobs", [string] $Jobs
+    )
+    Invoke-Native $Cargo $Arguments
+}
+
 function Invoke-UpstreamTests {
+    Invoke-AlignmentCheck
     $Cargo = (Get-Command "cargo.exe" -ErrorAction Stop).Source
     $env:CARGO_TARGET_DIR = Join-Path $Root ".pixi\tmp\cargo-target"
     $Arguments = @(
@@ -309,7 +456,7 @@ function Invoke-UpstreamTests {
 }
 
 function Invoke-AllRustTests {
-    Invoke-CargoTest
+    Invoke-CargoTest @("--lib", "--test", "scheduler_sat")
     Invoke-UpstreamTests
 }
 
@@ -326,7 +473,7 @@ switch ($Action) {
         Invoke-Msys2 @'
 set -u
 failed=0
-for tool in bash make git diff gcc g++ pkg-config tclsh iverilog ghc ghc-pkg cabal rustc cargo z3; do
+for tool in bash make git diff gcc g++ ccache pkg-config tclsh iverilog vvp ghc ghc-pkg cabal rustc cargo z3; do
     if command -v "$tool" >/dev/null 2>&1; then
         printf '%-12s %s\n' "$tool" "$(command -v "$tool")"
     else
@@ -337,6 +484,8 @@ done
 printf '%-12s %s\n' OSTYPE "$(./platform.sh ostype)"
 printf '%-12s %s\n' MACHTYPE "$(./platform.sh machtype)"
 printf '%-12s %s\n' BUILD_JOBS "$BSC_BUILD_JOBS"
+printf '%-12s %s\n' OSS_CAD "$BSC_OSS_CAD_SUITE_ROOT"
+iverilog -V 2>&1 | sed -n '1p' || true
 ghc --version 2>/dev/null || true
 cabal --numeric-version 2>/dev/null || true
 rustc --version 2>/dev/null || true
@@ -359,6 +508,9 @@ exit "$failed"
     "test-z3" {
         Invoke-CargoTest @("--test", "scheduler_sat")
     }
+    "test-alignment" {
+        Invoke-AlignmentCheck
+    }
     "test-upstream" {
         Invoke-UpstreamTests
     }
@@ -367,6 +519,20 @@ exit "$failed"
     }
     "test" {
         Invoke-AllRustTests
+    }
+    "test-cold" {
+        $env:BSC_TEST_CACHE = "0"
+        $env:CCACHE_DISABLE = "1"
+        if ($CcacheManagedCxx) {
+            $env:CXX = "c++"
+        }
+        Invoke-AllRustTests
+    }
+    "ccache-stats" {
+        Invoke-Native $Ccache @("--show-stats")
+    }
+    "ccache-clear" {
+        Invoke-Native $Ccache @("--clear")
     }
     "clean" {
         Invoke-Msys2 "make full_clean"

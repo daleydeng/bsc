@@ -219,3 +219,17 @@ if [ "$status" != "0" ]; then
   echo "ERROR: cannot compile Verilog files" >&2
   exit $status
 fi
+
+# Native Windows builds of Icarus can emit an empty shebang ("#!"), which
+# makes the vvp bytecode non-executable from MSYS2.  Complete only that
+# malformed shebang; normal Unix output is left unchanged.
+if [ "$(sed -n '1{s/[[:space:]]*$//;p;}' "$BSC_SIM_EXECUTABLE")" = "#!" ]; then
+  BSC_SIM_EXECUTABLE_TMP="${BSC_SIM_EXECUTABLE}.tmp.$$"
+  if ! { printf '%s\n' '#!/usr/bin/env vvp'; sed '1d' "$BSC_SIM_EXECUTABLE"; } > "$BSC_SIM_EXECUTABLE_TMP" ||
+     ! chmod +x "$BSC_SIM_EXECUTABLE_TMP" ||
+     ! mv "$BSC_SIM_EXECUTABLE_TMP" "$BSC_SIM_EXECUTABLE"; then
+    rm -f "$BSC_SIM_EXECUTABLE_TMP"
+    echo "ERROR: cannot make IVerilog output executable" >&2
+    exit 1
+  fi
+fi

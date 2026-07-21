@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.syntax/bsv05/underscore/underscore.exp`.
+
 use super::CompileCase;
 
 pub(super) const TOP_DEF_VAR_TYPE: CompileCase = compile_pass_case!(

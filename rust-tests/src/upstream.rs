@@ -1,8 +1,10 @@
+use crate::cache::{BscResultCache, CacheLookup, GenerationCache, ResultCacheLookup};
 use crate::{normalize_diff_b_text, readable_diff, run_bsc, run_command, Toolchain, BSC_TIMEOUT};
 use std::collections::VecDeque;
 use std::ffi::OsString;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
+use std::process::Command;
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
 
@@ -24,6 +26,11 @@ impl DiagnosticKind {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CompileExpectation {
     Pass,
+    PassWithDiagnostic {
+        kind: DiagnosticKind,
+        tag: &'static str,
+        count: usize,
+    },
     Fail,
     FailWithDiagnostic {
         kind: DiagnosticKind,
@@ -48,12 +55,14 @@ pub enum Requirement {
     Always,
     BluesimEnabled,
     VerilogEnabled,
+    IcarusAtLeast(u32),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct RunnerPolicy {
     pub bluesim_enabled: bool,
     pub verilog_enabled: bool,
+    pub iverilog_major: Option<u32>,
 }
 
 impl RunnerPolicy {
@@ -64,6 +73,7 @@ impl RunnerPolicy {
         Self {
             bluesim_enabled: ctest != Some(std::ffi::OsStr::new("0")),
             verilog_enabled: vtest != Some(std::ffi::OsStr::new("0")),
+            iverilog_major: None,
         }
     }
 
@@ -71,13 +81,30 @@ impl RunnerPolicy {
         Self::from_environment(None, value)
     }
 
-    fn skip_reason(self, requirement: Requirement) -> Option<&'static str> {
+    pub fn with_iverilog_major(mut self, major: Option<u32>) -> Self {
+        self.iverilog_major = major;
+        self
+    }
+
+    fn skip_reason(self, requirement: Requirement) -> Option<String> {
         match requirement {
             Requirement::Always => None,
             Requirement::BluesimEnabled if self.bluesim_enabled => None,
-            Requirement::BluesimEnabled => Some("Bluesim backend disabled by CTEST=0"),
+            Requirement::BluesimEnabled => Some("Bluesim backend disabled by CTEST=0".to_owned()),
             Requirement::VerilogEnabled if self.verilog_enabled => None,
-            Requirement::VerilogEnabled => Some("Verilog backend disabled by VTEST=0"),
+            Requirement::VerilogEnabled => Some("Verilog backend disabled by VTEST=0".to_owned()),
+            Requirement::IcarusAtLeast(_) if !self.verilog_enabled => {
+                Some("Verilog backend disabled by VTEST=0".to_owned())
+            }
+            Requirement::IcarusAtLeast(required) => match self.iverilog_major {
+                Some(actual) if actual >= required => None,
+                Some(actual) => Some(format!(
+                    "Icarus Verilog {actual} is older than required version {required}"
+                )),
+                None => Some(format!(
+                    "Icarus Verilog version could not be determined (requires >= {required})"
+                )),
+            },
         }
     }
 }
@@ -86,6 +113,19 @@ impl Default for RunnerPolicy {
     fn default() -> Self {
         Self::from_vtest(None)
     }
+}
+
+pub fn probe_iverilog_major() -> Option<u32> {
+    let output = Command::new("iverilog").arg("-V").output().ok()?;
+    parse_iverilog_major(&String::from_utf8_lossy(&output.stdout))
+        .or_else(|| parse_iverilog_major(&String::from_utf8_lossy(&output.stderr)))
+}
+
+fn parse_iverilog_major(output: &str) -> Option<u32> {
+    output.lines().find_map(|line| {
+        let version = line.trim().strip_prefix("Icarus Verilog version ")?;
+        version.split('.').next()?.parse().ok()
+    })
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -122,6 +162,8 @@ pub struct SimulationCase {
     pub sort_output: bool,
     pub backend: SimulationBackend,
     pub requirement: Requirement,
+    pub timeout: std::time::Duration,
+    pub heavy: bool,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -142,6 +184,13 @@ impl UpstreamCase {
         match self {
             Self::Compile(case) => case.requirement,
             Self::Simulation(case) => case.requirement,
+        }
+    }
+
+    fn heavy(self) -> bool {
+        match self {
+            Self::Compile(_) => false,
+            Self::Simulation(case) => case.heavy,
         }
     }
 }
@@ -196,9 +245,10 @@ impl RunPaths {
     }
 }
 
-pub fn run_compile_case(
+fn run_compile_case(
     toolchain: &Toolchain,
     run_paths: &RunPaths,
+    result_cache: &BscResultCache,
     case: &CompileCase,
 ) -> Result<(), String> {
     validate_case(case)?;
@@ -210,7 +260,34 @@ pub fn run_compile_case(
     let arguments = compile_arguments(case);
 
     let log_path = artifact_dir.join("bsc.log");
-    let result = run_bsc(toolchain, &arguments, &work_dir, &log_path, BSC_TIMEOUT)?;
+    let fixture_root = toolchain.project_root.join(case.fixture_dir);
+    let (result, cache_key) = match result_cache.lookup(
+        &fixture_root,
+        case.fixtures,
+        &arguments,
+        &work_dir,
+        &log_path,
+    ) {
+        Ok(ResultCacheLookup::Hit(result)) => (result, None),
+        Ok(ResultCacheLookup::Miss(key)) => (
+            run_bsc(toolchain, &arguments, &work_dir, &log_path, BSC_TIMEOUT)?,
+            Some(key),
+        ),
+        Ok(ResultCacheLookup::Disabled) => (
+            run_bsc(toolchain, &arguments, &work_dir, &log_path, BSC_TIMEOUT)?,
+            None,
+        ),
+        Err(error) => {
+            eprintln!(
+                "warning: BSC result cache lookup failed for {}: {error}",
+                case.name
+            );
+            (
+                run_bsc(toolchain, &arguments, &work_dir, &log_path, BSC_TIMEOUT)?,
+                None,
+            )
+        }
+    };
     let output_path = work_dir.join(format!("{}.bsc-out", case.source));
     if let Some(parent) = output_path.parent() {
         fs::create_dir_all(parent)
@@ -238,12 +315,22 @@ pub fn run_compile_case(
         )?;
     }
 
+    if let Some(key) = cache_key {
+        if let Err(error) = result_cache.store(&key, &work_dir, &result) {
+            eprintln!(
+                "warning: BSC result cache store failed for {}: {error}",
+                case.name
+            );
+        }
+    }
+
     Ok(())
 }
 
-pub fn run_simulation_case(
+fn run_simulation_case(
     toolchain: &Toolchain,
     run_paths: &RunPaths,
+    generation_cache: &GenerationCache,
     case: &SimulationCase,
 ) -> Result<(), String> {
     validate_simulation_case(case)?;
@@ -260,13 +347,36 @@ pub fn run_simulation_case(
         SimulationBackend::Icarus => compile_arguments.push("-verilog"),
     }
     compile_arguments.extend_from_slice(&["-g", case.top, case.source]);
-    run_required_bsc_step(
-        toolchain,
+    let compile_log = artifact_dir.join("compile.log");
+    let fixture_root = toolchain.project_root.join(case.fixture_dir);
+    let (generation_needed, cache_key) = match generation_cache.lookup(
+        &fixture_root,
+        case.fixtures,
         &compile_arguments,
         &work_dir,
-        &artifact_dir.join("compile.log"),
-        "generate simulation model",
-    )?;
+        &compile_log,
+    ) {
+        Ok(CacheLookup::Hit) => (false, None),
+        Ok(CacheLookup::Miss(key)) => (true, Some(key)),
+        Ok(CacheLookup::Disabled) => (true, None),
+        Err(error) => {
+            eprintln!(
+                "warning: generation cache lookup failed for {}: {error}",
+                case.name
+            );
+            (true, None)
+        }
+    };
+    if generation_needed {
+        run_required_bsc_step(
+            toolchain,
+            &compile_arguments,
+            &work_dir,
+            &compile_log,
+            "generate simulation model",
+            case.timeout,
+        )?;
+    }
 
     let generated = match case.backend {
         SimulationBackend::Bluesim => format!("{}.ba", case.top),
@@ -277,8 +387,16 @@ pub fn run_simulation_case(
             "BSC did not generate {} for {}; see {}",
             generated,
             case.name,
-            artifact_dir.join("compile.log").display()
+            compile_log.display()
         ));
+    }
+    if let Some(key) = cache_key {
+        if let Err(error) = generation_cache.store(&key, &work_dir) {
+            eprintln!(
+                "warning: generation cache store failed for {}: {error}",
+                case.name
+            );
+        }
     }
 
     let mut link_arguments = Vec::with_capacity(case.link_options.len() + 10);
@@ -298,6 +416,7 @@ pub fn run_simulation_case(
         &work_dir,
         &artifact_dir.join("link.log"),
         "link simulation executable",
+        case.timeout,
     )?;
 
     let mut executable = work_dir.join(case.top);
@@ -340,7 +459,7 @@ pub fn run_simulation_case(
         &simulation_arguments,
         &work_dir,
         &simulation_log,
-        BSC_TIMEOUT,
+        case.timeout,
     )?;
     if !result.success {
         return Err(format!(
@@ -380,8 +499,9 @@ fn run_required_bsc_step(
     work_dir: &Path,
     log_path: &Path,
     action: &str,
+    timeout: std::time::Duration,
 ) -> Result<(), String> {
-    let result = run_bsc(toolchain, arguments, work_dir, log_path, BSC_TIMEOUT)?;
+    let result = run_bsc(toolchain, arguments, work_dir, log_path, timeout)?;
     if result.success {
         Ok(())
     } else {
@@ -440,22 +560,16 @@ fn check_expectation(
 ) -> Result<(), String> {
     match case.expectation {
         CompileExpectation::Pass => {
-            if !success {
+            check_compile_success(case, success, exit_code, work_dir, log_path)?;
+        }
+        CompileExpectation::PassWithDiagnostic { kind, tag, count } => {
+            check_compile_success(case, success, exit_code, work_dir, log_path)?;
+            let actual = count_diagnostics(output, kind, tag);
+            if actual != count {
                 return Err(format!(
-                    "BSC should compile {} but exited {}; see {}",
+                    "expected {count} copies of {} {tag} for {}, found {actual}; see {}",
+                    kind.as_str(),
                     case.source,
-                    describe_exit(exit_code),
-                    log_path.display()
-                ));
-            }
-            let stem = Path::new(case.source)
-                .file_stem()
-                .ok_or_else(|| format!("source has no file stem: {}", case.source))?;
-            let object_path = work_dir.join(stem).with_extension("bo");
-            if !object_path.is_file() {
-                return Err(format!(
-                    "BSC succeeded but did not create {}; see {}",
-                    object_path.display(),
                     log_path.display()
                 ));
             }
@@ -488,6 +602,35 @@ fn check_expectation(
                 ));
             }
         }
+    }
+    Ok(())
+}
+
+fn check_compile_success(
+    case: &CompileCase,
+    success: bool,
+    exit_code: Option<i32>,
+    work_dir: &Path,
+    log_path: &Path,
+) -> Result<(), String> {
+    if !success {
+        return Err(format!(
+            "BSC should compile {} but exited {}; see {}",
+            case.source,
+            describe_exit(exit_code),
+            log_path.display()
+        ));
+    }
+    let stem = Path::new(case.source)
+        .file_stem()
+        .ok_or_else(|| format!("source has no file stem: {}", case.source))?;
+    let object_path = work_dir.join(stem).with_extension("bo");
+    if !object_path.is_file() {
+        return Err(format!(
+            "BSC succeeded but did not create {}; see {}",
+            object_path.display(),
+            log_path.display()
+        ));
     }
     Ok(())
 }
@@ -655,6 +798,9 @@ fn validate_simulation_case(case: &SimulationCase) -> Result<(), String> {
             case.name
         ));
     }
+    if case.timeout.is_zero() {
+        return Err(format!("simulation case {} has a zero timeout", case.name));
+    }
     if !case.fixtures.contains(&case.source) || !case.fixtures.contains(&case.expected) {
         return Err(format!(
             "simulation case {} must declare source and expected output as fixtures",
@@ -671,11 +817,14 @@ fn validate_simulation_case(case: &SimulationCase) -> Result<(), String> {
             case.name
         ));
     }
-    let expected_requirement = match case.backend {
-        SimulationBackend::Bluesim => Requirement::BluesimEnabled,
-        SimulationBackend::Icarus => Requirement::VerilogEnabled,
+    let requirement_matches_backend = match case.backend {
+        SimulationBackend::Bluesim => case.requirement == Requirement::BluesimEnabled,
+        SimulationBackend::Icarus => matches!(
+            case.requirement,
+            Requirement::VerilogEnabled | Requirement::IcarusAtLeast(_)
+        ),
     };
-    if case.requirement != expected_requirement {
+    if !requirement_matches_backend {
         return Err(format!(
             "simulation case {} has a backend/requirement mismatch",
             case.name
@@ -827,7 +976,7 @@ pub fn select_cases<'a>(cases: &'a [UpstreamCase], options: &CliOptions) -> Vec<
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CaseResult {
     Passed,
-    Skipped(&'static str),
+    Skipped(String),
     Failed(String),
 }
 
@@ -863,30 +1012,103 @@ pub fn run_cases(
     policy: RunnerPolicy,
     test_threads: usize,
 ) -> Vec<CaseOutcome> {
+    let generation_cache = Arc::new(match GenerationCache::new(&toolchain) {
+        Ok(cache) => cache,
+        Err(error) => {
+            eprintln!(
+                "warning: generation cache initialization failed; continuing uncached: {error}"
+            );
+            GenerationCache::disabled(&toolchain)
+        }
+    });
+    let result_cache = Arc::new(match BscResultCache::new(&toolchain) {
+        Ok(cache) => cache,
+        Err(error) => {
+            eprintln!(
+                "warning: BSC result cache initialization failed; continuing uncached: {error}"
+            );
+            BscResultCache::disabled(&toolchain)
+        }
+    });
     let toolchain = Arc::new(toolchain);
     let run_paths = Arc::new(run_paths);
-    run_fixed_queue(cases, test_threads, move |case| {
-        let result = if let Some(reason) = policy.skip_reason(case.requirement()) {
-            CaseResult::Skipped(reason)
-        } else {
-            match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| match case {
-                UpstreamCase::Compile(case) => run_compile_case(&toolchain, &run_paths, &case),
-                UpstreamCase::Simulation(case) => {
-                    run_simulation_case(&toolchain, &run_paths, &case)
-                }
-            })) {
-                Ok(Ok(())) => CaseResult::Passed,
-                Ok(Err(error)) => CaseResult::Failed(error),
-                Err(panic) => {
-                    CaseResult::Failed(format!("runner panicked: {}", panic_message(panic)))
-                }
+    let (heavy, parallel): (Vec<_>, Vec<_>) = cases.into_iter().partition(|case| case.heavy());
+    let worker_toolchain = Arc::clone(&toolchain);
+    let worker_run_paths = Arc::clone(&run_paths);
+    let worker_generation_cache = Arc::clone(&generation_cache);
+    let worker_result_cache = Arc::clone(&result_cache);
+    let mut outcomes = run_fixed_queue(parallel, test_threads, move |case| {
+        run_one_case(
+            &worker_toolchain,
+            &worker_run_paths,
+            &worker_generation_cache,
+            &worker_result_cache,
+            case,
+            policy,
+        )
+    });
+    let heavy_threads = test_threads.min(2);
+    let heavy_generation_cache = Arc::clone(&generation_cache);
+    let heavy_result_cache = Arc::clone(&result_cache);
+    outcomes.extend(run_fixed_queue(heavy, heavy_threads, move |case| {
+        run_one_case(
+            &toolchain,
+            &run_paths,
+            &heavy_generation_cache,
+            &heavy_result_cache,
+            case,
+            policy,
+        )
+    }));
+    let cache = generation_cache.summary();
+    if cache.enabled {
+        println!(
+            "generation cache: {} hits, {} misses, {} stores",
+            cache.hits, cache.misses, cache.stores
+        );
+    } else {
+        println!("generation cache: disabled");
+    }
+    let cache = result_cache.summary();
+    if cache.enabled {
+        println!(
+            "BSC result cache: {} hits, {} misses, {} stores",
+            cache.hits, cache.misses, cache.stores
+        );
+    } else {
+        println!("BSC result cache: disabled");
+    }
+    outcomes
+}
+
+fn run_one_case(
+    toolchain: &Toolchain,
+    run_paths: &RunPaths,
+    generation_cache: &GenerationCache,
+    result_cache: &BscResultCache,
+    case: UpstreamCase,
+    policy: RunnerPolicy,
+) -> CaseOutcome {
+    let result = if let Some(reason) = policy.skip_reason(case.requirement()) {
+        CaseResult::Skipped(reason)
+    } else {
+        match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| match case {
+            UpstreamCase::Compile(case) => {
+                run_compile_case(toolchain, run_paths, result_cache, &case)
             }
-        };
-        CaseOutcome {
-            name: case.name(),
-            result,
+            UpstreamCase::Simulation(case) => {
+                run_simulation_case(toolchain, run_paths, generation_cache, &case)
+            }
+        })) {
+            Ok(Ok(())) => CaseResult::Passed,
+            Ok(Err(error)) => CaseResult::Failed(error),
+            Err(panic) => CaseResult::Failed(format!("runner panicked: {}", panic_message(panic))),
         }
-    })
+    };
+    CaseOutcome {
+        name: case.name(),
+        result,
+    }
 }
 
 fn run_fixed_queue<T, R, F>(items: Vec<T>, thread_count: usize, worker: F) -> Vec<R>
@@ -945,15 +1167,15 @@ mod tests {
     use std::collections::BTreeSet;
 
     #[test]
-    fn data_model_has_126_valid_cases_from_48_scripts() {
-        assert_eq!(CASES.len(), 126);
+    fn data_model_has_165_valid_cases_from_64_scripts() {
+        assert_eq!(CASES.len(), 165);
 
         let names: BTreeSet<_> = CASES.iter().map(|case| case.name).collect();
         let scripts: BTreeSet<_> = CASES.iter().map(|case| case.fixture_dir).collect();
-        assert_eq!(names.len(), 126, "case names must be unique");
-        assert_eq!(scripts.len(), 48);
+        assert_eq!(names.len(), 165, "case names must be unique");
+        assert_eq!(scripts.len(), 64);
 
-        let mut category_counts = [0; 3];
+        let mut category_counts = [0; 4];
         let mut mode_counts = [0; 2];
         for case in CASES {
             validate_case(case).unwrap();
@@ -961,10 +1183,14 @@ mod tests {
             assert!(!case.nodeps);
             match case.expectation {
                 CompileExpectation::Pass => category_counts[0] += 1,
-                CompileExpectation::Fail => category_counts[1] += 1,
+                CompileExpectation::PassWithDiagnostic { count, .. } => {
+                    assert_eq!(count, 1);
+                    category_counts[1] += 1;
+                }
+                CompileExpectation::Fail => category_counts[2] += 1,
                 CompileExpectation::FailWithDiagnostic { count, .. } => {
                     assert_eq!(count, 1);
-                    category_counts[2] += 1;
+                    category_counts[3] += 1;
                 }
             }
             match case.mode {
@@ -979,11 +1205,11 @@ mod tests {
                 }
             }
         }
-        assert_eq!(category_counts, [36, 32, 58]);
-        assert_eq!(mode_counts, [81, 45]);
+        assert_eq!(category_counts, [50, 1, 38, 76]);
+        assert_eq!(mode_counts, [115, 50]);
         assert_eq!(
             CASES.iter().filter(|case| case.golden.is_some()).count(),
-            34
+            39
         );
 
         let phase_one_names = [
@@ -1071,7 +1297,7 @@ mod tests {
             .filter(|case| disabled.skip_reason(case.requirement).is_some())
             .map(|case| case.name)
             .collect();
-        assert_eq!(skipped.len(), 45);
+        assert_eq!(skipped.len(), 50);
         assert!(skipped.iter().any(|name| name.contains("dynamic/errors")));
         assert!(skipped.iter().any(|name| name.contains("bounds/select")));
 
@@ -1079,26 +1305,41 @@ mod tests {
     }
 
     #[test]
-    fn simulation_data_model_has_62_valid_backend_cases() {
-        assert_eq!(SIMULATION_CASES.len(), 62);
+    fn simulation_data_model_has_128_valid_backend_cases() {
+        assert_eq!(SIMULATION_CASES.len(), 128);
         let mut backend_counts = [0; 2];
+        let mut heavy_count = 0;
         for case in SIMULATION_CASES {
             validate_simulation_case(case).unwrap();
-            assert!(case.compile_options.is_empty());
             assert!(case.link_options.is_empty());
             assert!(case.simulation_options.is_empty());
             assert!(!case.sort_output);
+            if case.heavy {
+                heavy_count += 1;
+                assert_eq!(case.backend, SimulationBackend::Icarus);
+                assert_eq!(case.timeout, std::time::Duration::from_secs(600));
+            } else {
+                assert_eq!(case.timeout, crate::BSC_TIMEOUT);
+            }
             match case.backend {
                 SimulationBackend::Bluesim => backend_counts[0] += 1,
                 SimulationBackend::Icarus => backend_counts[1] += 1,
             }
         }
-        assert_eq!(backend_counts, [31, 31]);
+        assert_eq!(backend_counts, [64, 64]);
+        assert_eq!(heavy_count, 2);
+        assert_eq!(
+            SIMULATION_CASES
+                .iter()
+                .filter(|case| case.compile_options == ["-aggressive-conditions"])
+                .count(),
+            2
+        );
 
         let all = all_cases();
-        assert_eq!(all.len(), 188);
+        assert_eq!(all.len(), 293);
         let names: BTreeSet<_> = all.iter().map(|case| case.name()).collect();
-        assert_eq!(names.len(), 188, "all upstream case names must be unique");
+        assert_eq!(names.len(), 293, "all upstream case names must be unique");
     }
 
     #[test]
@@ -1107,13 +1348,14 @@ mod tests {
         let no_bluesim = RunnerPolicy::from_environment(
             Some(std::ffi::OsStr::new("0")),
             Some(std::ffi::OsStr::new("1")),
-        );
+        )
+        .with_iverilog_major(Some(13));
         assert_eq!(
             cases
                 .iter()
                 .filter(|case| no_bluesim.skip_reason(case.requirement()).is_some())
                 .count(),
-            31
+            64
         );
 
         let no_verilog = RunnerPolicy::from_environment(
@@ -1125,8 +1367,37 @@ mod tests {
                 .iter()
                 .filter(|case| no_verilog.skip_reason(case.requirement()).is_some())
                 .count(),
-            76
+            114
         );
+    }
+
+    #[test]
+    fn iverilog_version_requirements_match_upstream_exclusions() {
+        assert_eq!(
+            parse_iverilog_major("Icarus Verilog version 11.0 (stable) ()\n"),
+            Some(11)
+        );
+
+        let version_11 = RunnerPolicy::default().with_iverilog_major(Some(11));
+        assert!(version_11
+            .skip_reason(Requirement::IcarusAtLeast(12))
+            .is_some());
+        assert!(version_11
+            .skip_reason(Requirement::IcarusAtLeast(13))
+            .is_some());
+
+        let version_12 = RunnerPolicy::default().with_iverilog_major(Some(12));
+        assert!(version_12
+            .skip_reason(Requirement::IcarusAtLeast(12))
+            .is_none());
+        assert!(version_12
+            .skip_reason(Requirement::IcarusAtLeast(13))
+            .is_some());
+
+        let version_13 = RunnerPolicy::default().with_iverilog_major(Some(13));
+        assert!(version_13
+            .skip_reason(Requirement::IcarusAtLeast(13))
+            .is_none());
     }
 
     #[test]
@@ -1150,7 +1421,7 @@ mod tests {
             },
             CaseOutcome {
                 name: "skip",
-                result: CaseResult::Skipped("capability disabled"),
+                result: CaseResult::Skipped("capability disabled".to_owned()),
             },
             CaseOutcome {
                 name: "fail",

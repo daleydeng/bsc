@@ -1,10 +1,14 @@
-# BSC native Windows build recipes. Pixi supplies `just` and all other tools.
+# BSC native Windows build recipes. Pixi supplies the base toolchain; OSS CAD Suite supplies Icarus.
 
 ps := "powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File util/windows/pixi.ps1"
 
 # List available recipes.
 default:
     @just --list --unsorted
+
+# Configure an existing OSS CAD Suite installation for Icarus simulation.
+configure-oss-cad-suite root:
+    {{ps}} configure-oss-cad-suite "{{root}}"
 
 # Install and select the project-local GHC and Cabal toolchain.
 toolchain:
@@ -34,7 +38,11 @@ smoke: build
 test-z3:
     {{ps}} test-z3
 
-# Run the dynamically migrated upstream tests.
+# Check that Rust case declarations still match their upstream .exp origins.
+test-alignment:
+    {{ps}} test-alignment
+
+# Run the dynamically migrated upstream tests after checking alignment.
 test-upstream:
     {{ps}} test-upstream
 
@@ -42,9 +50,21 @@ test-upstream:
 test-rust:
     {{ps}} test-rust
 
-# Default test entry point; currently equivalent to test-rust.
+# Default test entry point with content-addressed BSC caches and ccache.
 test:
     {{ps}} test
+
+# Run the complete suite without generation or compiler cache reads/writes.
+test-cold:
+    {{ps}} test-cold
+
+# Show Bluesim C++ compiler-cache statistics.
+ccache-stats:
+    {{ps}} ccache-stats
+
+# Remove all cached Bluesim C++ compilation results.
+ccache-clear:
+    {{ps}} ccache-clear
 
 # Remove the upstream build and installation directories.
 clean:

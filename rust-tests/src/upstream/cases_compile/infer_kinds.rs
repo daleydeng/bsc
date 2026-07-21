@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.typechecker/kind/inferkinds/inferkinds.exp`.
+
 use super::CompileCase;
 
 pub(super) const INTERFACE_GROUNDED_INCORRECTLY: CompileCase = compile_fail_error_case!(

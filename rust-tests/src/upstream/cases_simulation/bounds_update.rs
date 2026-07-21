@@ -1,3 +1,5 @@
+//! Origin: `testsuite/bsc.arrays/bounds/update/update.exp`.
+
 use super::SimulationCase;
 
 const FIXTURE_DIR: &str = "testsuite/bsc.arrays/bounds/update";

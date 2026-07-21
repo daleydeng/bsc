@@ -1,3 +1,7 @@
+//! Origins are the sole `.exp` scripts in the fixture directories declared by
+//! each case (`gh309`, `gh435`, three `bugID*`, three message directories, and
+//! `bsc.syntax/bsv05/moduletype`).
+
 use super::CompileCase;
 
 pub(super) const GH435: CompileCase = compile_pass_case!(

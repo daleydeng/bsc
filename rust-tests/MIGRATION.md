@@ -8,6 +8,8 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 
 只读取 `testsuite/` 中的 fixture 和 golden。每个 case 将声明的文件复制到独立 workspace 后运行，不在原 testsuite 目录中生成或修改文件。
 
+每个 case 模块必须用 `//! Origin:` 注释标出原始 `.exp`。`pixi run just test-alignment` 会把来源脚本中的受支持 Tcl API 调用展开为 compile/Bluesim/Icarus contract multiset，并与 Rust 注册表、golden 声明和 scheduler case 列表逐项比较；默认 `test` 和 `test-upstream` 均将此检查作为前置守门。
+
 ## 静态盘点
 
 当前对 release testsuite 的静态盘点基线为 **867 个脚本**：
@@ -25,7 +27,7 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 
 ### Phase 1：compile pipeline 与动态 harness（已完成）
 
-- 建立零第三方依赖的 upstream 动态 runner。
+- 建立 upstream 动态 runner；唯一直接第三方依赖为 `sha2`，仅用于 generation cache 的稳定内容寻址。
 - 建立可扩展的 `CompileCase`、`CompileExpectation`、diagnostic 和可选 golden 模型。
 - 对齐 `testsuite/config/unix.exp` 的通用 compile 行为：独立 cwd、fixture staging、BSC 参数、`.bo`、非零退出、诊断计数及 legacy golden diff。
 - 支持 `--list`、substring filter、`--exact`、`--test-threads N` 和固定 worker queue。
@@ -33,7 +35,7 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 
 ### Phase 2：机械型 compile 批量迁移（第四批已完成）
 
-- 已逐份核对并迁移 48 个包含 compile contract 的 `.exp` 脚本，按每次公共 compile API 调用展开为 126 个动态 case。
+- 已逐份核对并迁移 49 个包含 compile contract 的 `.exp` 脚本，按每次公共 compile API 调用展开为 128 个动态 case。
 - 覆盖 frontend/Verilog compile mode、compile pass/fail、diagnostic kind/tag/count 与默认 golden；当前 case 全部使用空 options 和 `nodeps=0`。
 - Case 数据从公共 runner 中迁出，按 `bluespec_inc` pass、diagnostic fail、golden/mixed 和其他 testsuite 目录拆分。
 - 后续机械批次继续启用模型中预留的 `options` 和 `nodeps`，并增加多 fixture、include 路径、额外预期产物等小型通用 contract。
@@ -53,7 +55,7 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 ### Phase 5：全量切换与守护
 
 - 对迁移前后结果做批量双跑，核对 pass/fail、诊断数量、golden 和生成物。
-- 建立覆盖清单和 CI 分片，区分快速 compile、scheduler、backend、simulation 与专用测试。
+- 持续扩展 alignment parser 和来源元数据，建立覆盖清单与 CI 分片，区分快速 compile、scheduler、backend、simulation 与专用测试。
 - 只有在对应 contract 已迁移并双跑稳定后，才考虑从 release 流程移除原 Tcl case。
 
 ## Phase 1 已迁移清单
@@ -119,7 +121,53 @@ Phase 2 前三批累计迁移 **44 个 `.exp` 脚本、84 个动态 compile case
 
 Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，Icarus 产物是 `vvp` 字节码而不是 Win32 `.exe`；runner 按 backend 选择启动器，将 `inst/bin/core` 前置到 `PATH`，并为 MSYS `sh` 转换 `BLUESPECDIR`。Icarus 输出按 legacy 规则过滤 `$readmem`、`$finish` 和 `VCD info` 噪声。`CTEST=0` 与 `VTEST=0` 分别显式跳过 Bluesim 和 Verilog/Icarus case。
 
-截至本批，Rust 测试层完整覆盖 **49 个 `.exp` 脚本、212 个独立 contract case**：188 个 upstream 动态 case（126 compile + 62 simulation），加上 24 个 Z3 scheduler case。
+截至第一批，Rust 测试层完整覆盖 **49 个 `.exp` 脚本、212 个独立 contract case**：188 个 upstream 动态 case（126 compile + 62 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第二批：scheduler conflict-free
+
+完整迁移 `bsc.scheduler/conflict_free/conflict_free.exp`，新增 20 个独立 contract：18 个 simulation case（9 Bluesim + 9 Icarus）、1 个 Verilog `G0002` diagnostic fail 和 1 个 Verilog `G0010` warning pass。Simulation 覆盖 backend-specific expected，并验证 `ConflictFreeOK3` 的 `-aggressive-conditions` generate option。
+
+本批增加 `PassWithDiagnostic`，在编译成功和 `.bo` 产物检查基础上精确统计指定 warning；simulation 声明也开始支持非空 compile options。当前累计完整覆盖 **50 个 `.exp` 脚本、232 个独立 contract case**：208 个 upstream 动态 case（128 compile + 80 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第三批：dynamic strings
+
+完整迁移 `bsc.evaluator/dynamic/strings/dynamic_strings.exp`，新增 14 个 simulation contract（7 Bluesim + 7 Icarus）。按原 Tcl exclusion 建模 Icarus 版本能力：`StringInteger` 要求 Icarus >= 12，`StringIntegerWithNull` 要求 Icarus >= 13；runner 从 `iverilog -V` 探测主版本，低版本 case 保持注册并显式 Skipped。
+
+当前累计完整覆盖 **51 个 `.exp` 脚本、246 个独立 contract case**：222 个 upstream 动态 case（128 compile + 94 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第四批：bound type variables 与 bug 810
+
+完整迁移 `bsc.typechecker/kind/bound-vars/bound-vars.exp` 的 8 个 frontend compile contract（2 pass + 6 tagged fail），以及 `bsc.bugs/bluespec_inc/b810/b810.exp` 的 1 个 tagged compile fail 和 6 个 simulation contract（3 Bluesim + 3 Icarus）。两组均无额外 options、exclusions 或 compile golden。
+
+当前累计完整覆盖 **53 个 `.exp` 脚本、261 个独立 contract case**：237 个 upstream 动态 case（137 compile + 100 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第五批：read desugaring、case syntax 与 bug 235
+
+完整迁移 `bsc.typechecker/read_desugaring/read_desugaring.exp`、`bsc.syntax/bsv05/case/case.exp` 和 `bsc.bugs/bluespec_inc/b235/b235.exp`，新增 16 个 frontend compile contract 与 12 个 simulation contract。该批覆盖普通 fail、tagged fail、pass、双 backend simulation，以及 3 个 frontend `.bsc-out.expected` golden。
+
+当前累计完整覆盖 **56 个 `.exp` 脚本、289 个独立 contract case**：265 个 upstream 动态 case（153 compile + 112 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第六批：小型 regression scripts
+
+完整迁移 8 个单调用或低风险脚本：`b1048`、`b1163`、`b1198`、`b1229`、`b1318`、`b1037`、`b1045` 和 `gh894`。新增 6 个 compile contract 与 4 个 simulation contract；`gh894` 保持 upstream 的普通 frontend fail + golden 语义，不因输出中恰好包含诊断 tag 而收紧 contract。
+
+当前累计完整覆盖 **64 个 `.exp` 脚本、299 个独立 contract case**：275 个 upstream 动态 case（159 compile + 116 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第七批：直接 compile/simulation 脚本
+
+完整迁移 6 个无需扩展 runner 的脚本：`b120`、`EAmbOper`、`properties`、`FIRFilter`、`Hamming` 和 `BRAMTest`。新增 6 个 compile contract 与 12 个 simulation contract；FIR 显式 stage 其本地 package source，BRAM 显式 stage 运行时初始化文件 `bram2.txt`。
+
+当前累计完整覆盖 **70 个普通 `.exp` 脚本、317 个独立 contract case**：293 个 upstream 动态 case（165 compile + 128 simulation），加上 24 个 Z3 scheduler case。计入 `sat.exp` 后，迁移覆盖为 testsuite 的 **71/860 个测试来源脚本**，剩余 789 个；`alignment` 会持续报告该全仓库覆盖率。
+
+### Generation cache 与性能基线
+
+默认 `test` 对成功的 simulation generation workspace 使用 SHA-256 内容寻址缓存；cache hit 仍重新执行 link、simulation 与 golden compare。完整 cache-fill 冷运行的 upstream artifact wall time 为 **435.5 秒**，128 个 simulation generation 全部 miss 并写入；随后完整热运行 128/128 hit，artifact wall time 为 **17.4 秒**，293 个 upstream case 均通过。
+
+Bluesim link 的生成 C++ 编译进一步使用 Pixi 管理的 `ccache`。在相同 128/128 generation hit 条件下，A/B 实测 `ccache 4.13.6` 和 `sccache 0.16.0` 的 cacheable warm hit 均为 128/128；`ccache` 的完整 upstream wall time 为 **15.35 秒**、Bluesim link 累计 **44.8 秒**，优于 `sccache` 的 **17.69 秒**和 **67.0 秒**，因此 Windows 默认选用 `ccache`。
+
+165 个 compile contract 与 24 个 scheduler contract 使用统一 BSC result cache。缓存 key 包含 toolchain、fixture、argv、关键环境及一次性计算的 Z3 内容指纹；只有已通过对应 Rust contract 和 golden 的原始 BSC workspace、输出和 exit status 才会原子发布，cache hit 后仍重新执行全部 Rust 检查。最终 warm 全量 `pixi run just test` 实测 **13.59 秒**：24/24 scheduler result hit、165/165 compile result hit、128/128 generation hit，27 个 helper、24 个 scheduler 和 293 个 upstream case 全部通过。
+
+`pixi run just test-cold` 会同时禁用 generation cache、BSC result cache 和 compiler cache，保留完整无缓存验证入口。
 
 ## Compile contract 细节
 
@@ -128,9 +176,10 @@ Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，
 - cwd：当前 case 的唯一 workspace。
 - 输出：workspace 中的 `<source>.bsc-out`；完整命令、stdout/stderr、退出状态和耗时另写 artifact `bsc.log`。
 - Pass：退出成功且 workspace 中存在 `<stem>.bo`；当前 Verilog Pass 也按 upstream `check_intermediate_files` 检查该 `.bo`。
+- PassWithDiagnostic：在 Pass 基础上，精确统计指定 kind/tag/count，用于 `compile_verilog_pass_warning` 等 contract。
 - Fail：退出非零。
 - FailWithDiagnostic：在 Fail 基础上，等价统计 Tcl `regexp -all -line {Error:.+\(TAG\)$}` 的行尾 tag；真实 BSC 输出形如 `Error: "file", line ..., column ...: (TAG)`。
 - Golden：双方先忽略包含 `SystemC` 或 `dumpfile parameter` 的整行，再按 `diff -b` 语义归一水平空白；不一致时写 `golden.diff`。
-- Capability policy：启动时读取 `CTEST`/`VTEST`，默认启用；`CTEST=0` 跳过 `BluesimEnabled`，`VTEST=0` 跳过 `VerilogEnabled`，其他 requirement 仍执行。
+- Capability policy：启动时读取 `CTEST`/`VTEST`，默认启用；`CTEST=0` 跳过 `BluesimEnabled`，`VTEST=0` 跳过所有 Verilog/Icarus requirement；`IcarusAtLeast(N)` 通过 `iverilog -V` 探测主版本，版本不足或无法确定时显式跳过。
 - 结果：每个 case 为 Passed、Skipped(reason) 或 Failed(error)，汇总分别计数，只有 failed 影响退出码。
 - 隔离：每次 runner 使用 `<pid>-<时间戳>` run-id，每个 case 只清理自己的 workspace/artifact 子目录。
