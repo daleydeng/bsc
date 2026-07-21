@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("toolchain", "haskell-deps", "doctor", "build", "smoke", "clean", "shell")]
+    [ValidateSet("toolchain", "haskell-deps", "doctor", "build", "smoke", "test-z3", "test-rust", "test", "clean", "shell")]
     [string] $Action
 )
 
@@ -274,6 +274,25 @@ export CURL_CA_BUNDLE="$SSL_CERT_FILE"
     }
 }
 
+function Invoke-CargoTest {
+    param(
+        [Parameter()] [string[]] $AdditionalArguments = @()
+    )
+
+    $Cargo = (Get-Command "cargo.exe" -ErrorAction Stop).Source
+    $env:CARGO_TARGET_DIR = Join-Path $Root ".pixi\tmp\cargo-target"
+    $Arguments = @(
+        "test",
+        "--manifest-path", "rust-tests/Cargo.toml",
+        "--jobs", [string] $Jobs
+    ) + $AdditionalArguments + @(
+        "--",
+        "--test-threads", [string] $Jobs
+    )
+    Invoke-Native $Cargo $Arguments
+}
+
+
 switch ($Action) {
     "toolchain" {
         Initialize-Toolchain
@@ -281,11 +300,13 @@ switch ($Action) {
     "haskell-deps" {
         Install-HaskellDependencies
     }
+
+
     "doctor" {
         Invoke-Msys2 @'
 set -u
 failed=0
-for tool in bash make git diff gcc g++ perl pkg-config tclsh iverilog ghc ghc-pkg cabal z3; do
+for tool in bash make git diff gcc g++ perl pkg-config tclsh iverilog ghc ghc-pkg cabal rustc cargo z3; do
     if command -v "$tool" >/dev/null 2>&1; then
         printf '%-12s %s\n' "$tool" "$(command -v "$tool")"
     else
@@ -298,6 +319,8 @@ printf '%-12s %s\n' MACHTYPE "$(./platform.sh machtype)"
 printf '%-12s %s\n' BUILD_JOBS "$BSC_BUILD_JOBS"
 ghc --version 2>/dev/null || true
 cabal --numeric-version 2>/dev/null || true
+rustc --version 2>/dev/null || true
+cargo --version 2>/dev/null || true
 z3 -version 2>/dev/null || true
 exit "$failed"
 '@
@@ -312,6 +335,15 @@ exit "$failed"
     }
     "smoke" {
         Invoke-Msys2 "make check-smoke"
+    }
+    "test-z3" {
+        Invoke-CargoTest @("--test", "scheduler_sat")
+    }
+    "test-rust" {
+        Invoke-CargoTest
+    }
+    "test" {
+        Invoke-CargoTest
     }
     "clean" {
         Invoke-Msys2 "make full_clean"

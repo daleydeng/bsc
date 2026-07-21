@@ -29,6 +29,19 @@ build: haskell-deps
 smoke: build
     {{ps}} smoke
 
+# Run the migrated scheduler SAT tests against Z3 with Rust.
+# The Rust harness reports a clear error if `pixi run build` has not run yet.
+test-z3:
+    {{ps}} test-z3
+
+# Run all Rust contract tests.
+test-rust:
+    {{ps}} test-rust
+
+# Default test entry point; currently equivalent to test-rust.
+test:
+    {{ps}} test
+
 # Remove the upstream build and installation directories.
 clean:
     {{ps}} clean
