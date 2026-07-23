@@ -9,9 +9,15 @@
 - 已迁移静态 contract：1637/4672
 - 尚未迁移静态 contract：3035
 - 完全需要动态或自定义 Tcl 分析的脚本：221
-- 最近稳定提交：`d8c281c8 Expand Rust tests and replace Windows runner`
+- 最近稳定提交：`c2c70645 Clean successful Rust test artifacts`
 
 候选进入本文件的硬条件：必须完整迁移一整份 `.exp` 的全部活动 contract 和 assertion；不得只摘取 compile/simulation 调用；不得忽略 XFAIL、bug gate、generated artifact、手工 link/sim 或额外输出比较。
+
+## 自动候选队列
+
+[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 testsuite、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前自动识别出 **33 个 lexical candidate、121 个静态 contract**；候选按 contract 数量降序列在其 `Ranked lexical candidates` 章节，不在本文件重复维护易过期的手写清单。
+
+`candidate` 表示该 `.exp` 的活动 Tcl command vocabulary 已被现有 Rust contract/assertion 模型覆盖，且不在已知 blocker registry 中；它仍不是自动批准。批量迁移时必须逐份完整 review fixture、options、golden、条件分支、bug gate 与运行结果。`inventory-check` 会守护生成文档、candidate 分类以及 blocker registry 是否与当前未迁移集合一致。
 
 ## 已完成：纯静态 compile 第一批
 

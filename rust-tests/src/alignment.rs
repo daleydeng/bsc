@@ -10,6 +10,93 @@ use std::path::{Path, PathBuf};
 
 const SCHEDULER_ORIGINS: &[&str] = &["testsuite/bsc.scheduler/sat/sat.exp"];
 
+const KNOWN_MIGRATION_BLOCKERS: &[(&str, &str)] = &[
+    (
+        "testsuite/bsc.evaluator/performance/performance.exp",
+        "native Windows code generation exceeds 300 seconds",
+    ),
+    (
+        "testsuite/bsc.lib/FloatingPoint/FloatTest.exp",
+        "shared native Windows elaboration exceeds 600 seconds",
+    ),
+    (
+        "testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp",
+        "shared native Windows elaboration exceeds 300 seconds",
+    ),
+    (
+        "testsuite/bsc.bugs/bluespec_inc/b925/b925.exp",
+        "backend-specific XFAIL and bug gate are not modeled",
+    ),
+    (
+        "testsuite/bsc.bluesim/operators/operators.exp",
+        "Bluesim and Verilog bug gates are not modeled",
+    ),
+    (
+        "testsuite/bsc.if/split-execution/2x2-switch-split/switch.exp",
+        "manual interactive Bluesim and cycle assertions",
+    ),
+    (
+        "testsuite/bsc.if/split-execution/2x2-switch/switch.exp",
+        "manual interactive Bluesim and cycle assertions",
+    ),
+    (
+        "testsuite/bsc.lib/DefaultValue/DefaultValue.exp",
+        "compile_pass_warning is not modeled",
+    ),
+    (
+        "testsuite/bsc.lib/FShow/FShow.exp",
+        "compile_pass_warning is not modeled",
+    ),
+    (
+        "testsuite/bsc.lib/oint/oint.exp",
+        "compile_verilog_pass_no_warning_bug is not modeled",
+    ),
+    (
+        "testsuite/bsc.bugs/bluespec_inc/b1666/b1666.exp",
+        "expected Verilog link failure is not modeled",
+    ),
+    (
+        "testsuite/bsc.lib/getput/getput.exp",
+        "dynamic Icarus probing and additional assertions",
+    ),
+    (
+        "testsuite/bsc.bsv_examples/bsvfifo/bsvfifo.exp",
+        "manual copy, erase, link, and simulation flow",
+    ),
+    (
+        "testsuite/bsc.bugs/bluespec_inc/b535/b535.exp",
+        "manual copy, erase, link, and simulation flow",
+    ),
+    (
+        "testsuite/bsc.arrays/arrays.exp",
+        "conditional branches and compile_verilog_fail_bug",
+    ),
+    (
+        "testsuite/bsc.mcd/ModArgs/ModArgs.exp",
+        "no-warning and no-internal-error contracts are not modeled",
+    ),
+    (
+        "testsuite/bsc.driver/gensign/gensign.exp",
+        "dumpbi/dumpbo and string-count workflow",
+    ),
+    (
+        "testsuite/bsc.mcd/Reset/Reset.exp",
+        "dynamic branches, regular expressions, and simulation flow",
+    ),
+    (
+        "testsuite/bsc.names/portRenaming/enableTests/enableTests.exp",
+        "no-main link contract is not modeled",
+    ),
+    (
+        "testsuite/bsc.compile/compile.exp",
+        "dynamic fixture replacement and delayed workflow",
+    ),
+    (
+        "testsuite/bsc.verilog/foreign_module/foreign_module.exp",
+        "active failure source is missing",
+    ),
+];
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct AlignmentSummary {
     pub scripts: usize,
@@ -66,10 +153,62 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
     })
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum MigrationReadiness {
+    Candidate,
+    Review,
+    Blocked,
+    Dynamic,
+}
+
+impl MigrationReadiness {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Candidate => "candidate",
+            Self::Review => "review",
+            Self::Blocked => "blocked",
+            Self::Dynamic => "dynamic/custom",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum TclCommandCategory {
+    ControlState,
+    FileSystem,
+    ManualToolchain,
+    UnsupportedContract,
+    UnsupportedAssertion,
+    Custom,
+}
+
+impl TclCommandCategory {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::ControlState => "control/state",
+            Self::FileSystem => "filesystem",
+            Self::ManualToolchain => "manual toolchain",
+            Self::UnsupportedContract => "unsupported contract",
+            Self::UnsupportedAssertion => "unsupported assertion",
+            Self::Custom => "custom helper",
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct UnsupportedTclCommand {
+    pub name: String,
+    pub count: usize,
+    pub category: TclCommandCategory,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RemainingTestScript {
     pub origin: String,
     pub statically_declared_contracts: usize,
+    pub readiness: MigrationReadiness,
+    pub unsupported_commands: Vec<UnsupportedTclCommand>,
+    pub known_blocker: Option<String>,
 }
 
 pub fn remaining_inventory() -> Result<Vec<RemainingTestScript>, String> {
@@ -79,11 +218,34 @@ pub fn remaining_inventory() -> Result<Vec<RemainingTestScript>, String> {
     let remaining = collect_testsuite_scripts(&project_root, summary.scheduler_cases)?
         .into_iter()
         .filter(|script| !migrated.contains(&script.origin))
-        .map(|script| RemainingTestScript {
-            origin: script.origin,
-            statically_declared_contracts: script.statically_declared_contracts,
+        .map(|script| {
+            let known_blocker = known_migration_blocker(&script.origin).map(str::to_owned);
+            let readiness = migration_readiness(
+                &script.origin,
+                script.statically_declared_contracts,
+                &script.unsupported_commands,
+            );
+            RemainingTestScript {
+                origin: script.origin,
+                statically_declared_contracts: script.statically_declared_contracts,
+                readiness,
+                unsupported_commands: script.unsupported_commands,
+                known_blocker,
+            }
         })
         .collect::<Vec<_>>();
+
+    let remaining_origins = remaining
+        .iter()
+        .map(|script| script.origin.as_str())
+        .collect::<BTreeSet<_>>();
+    for (origin, _) in KNOWN_MIGRATION_BLOCKERS {
+        if !remaining_origins.contains(origin) {
+            return Err(format!(
+                "known migration blocker is no longer in the remaining inventory; remove or update it: {origin}"
+            ));
+        }
+    }
 
     let remaining_contracts = remaining
         .iter()
@@ -113,6 +275,7 @@ struct TestsuiteInventory {
 struct TestsuiteScript {
     origin: String,
     statically_declared_contracts: usize,
+    unsupported_commands: Vec<UnsupportedTclCommand>,
 }
 
 fn inventory_testsuite(
@@ -163,16 +326,18 @@ fn collect_testsuite_scripts(
                 && path.extension().is_some_and(|extension| extension == "exp")
                 && !infrastructure.contains(&path)
             {
+                let source = fs::read(&path)
+                    .map_err(|error| format!("read test script {}: {error}", path.display()))?;
+                let source = String::from_utf8_lossy(&source);
                 let statically_declared_contracts = if path == scheduler_origin {
                     scheduler_cases
                 } else {
-                    let source = fs::read(&path)
-                        .map_err(|error| format!("read test script {}: {error}", path.display()))?;
-                    count_statically_declared_contracts(&String::from_utf8_lossy(&source))
+                    count_statically_declared_contracts(&source)
                 };
                 scripts.push(TestsuiteScript {
                     origin: project_relative_unix_path(project_root, &path)?,
                     statically_declared_contracts,
+                    unsupported_commands: unsupported_tcl_commands(&source),
                 });
             }
         }
@@ -200,39 +365,166 @@ fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, Str
 fn count_statically_declared_contracts(source: &str) -> usize {
     source
         .lines()
-        .filter_map(|raw_line| {
-            let line = raw_line.trim();
-            if line.is_empty() || line.starts_with('#') {
-                return None;
-            }
-            line.split_whitespace().next()
-        })
-        .map(|command| match command {
-            "compile_pass"
-            | "compile_fail"
-            | "compile_fail_error"
-            | "compile_verilog_pass"
-            | "compile_verilog_fail"
-            | "compile_verilog_fail_error"
-            | "compile_verilog_pass_warning"
-            | "compile_verilog_schedule_pass"
-            | "test_c_only_bsv"
-            | "test_c_only_bsv_modules"
-            | "test_c_only_bsv_modules_options"
-            | "test_veri_only_bsv"
-            | "test_veri_only_bsv_modules"
-            | "test_veri_only_bsv_modules_options" => 1,
-            "test_c_veri"
-            | "test_c_veri_bs_modules"
-            | "test_c_veri_bs_modules_options"
-            | "test_c_veri_bsv"
-            | "test_c_veri_bsv_modules"
-            | "test_c_veri_bsv_modules_options"
-            | "test_c_veri_bsv_separately"
-            | "test_c_veri_bsv_modules_options_separately" => 2,
-            _ => 0,
-        })
+        .filter_map(|line| tcl_command_name(line).and_then(statically_declared_contract_weight))
         .sum()
+}
+
+fn statically_declared_contract_weight(command: &str) -> Option<usize> {
+    match command {
+        "compile_pass"
+        | "compile_fail"
+        | "compile_fail_error"
+        | "compile_verilog_pass"
+        | "compile_verilog_fail"
+        | "compile_verilog_fail_error"
+        | "compile_verilog_pass_warning"
+        | "compile_verilog_schedule_pass"
+        | "test_c_only_bsv"
+        | "test_c_only_bsv_modules"
+        | "test_c_only_bsv_modules_options"
+        | "test_veri_only_bsv"
+        | "test_veri_only_bsv_modules"
+        | "test_veri_only_bsv_modules_options" => Some(1),
+        "test_c_veri"
+        | "test_c_veri_bs_modules"
+        | "test_c_veri_bs_modules_options"
+        | "test_c_veri_bsv"
+        | "test_c_veri_bsv_modules"
+        | "test_c_veri_bsv_modules_options"
+        | "test_c_veri_bsv_separately"
+        | "test_c_veri_bsv_modules_options_separately" => Some(2),
+        _ => None,
+    }
+}
+
+fn unsupported_tcl_commands(source: &str) -> Vec<UnsupportedTclCommand> {
+    let mut counts = BTreeMap::<String, usize>::new();
+    for command in logical_tcl_commands(source) {
+        let Some(name) = tcl_command_name(&command) else {
+            continue;
+        };
+        if !is_supported_inventory_command(name) {
+            *counts.entry(name.to_owned()).or_default() += 1;
+        }
+    }
+    counts
+        .into_iter()
+        .map(|(name, count)| UnsupportedTclCommand {
+            category: unsupported_tcl_command_category(&name),
+            name,
+            count,
+        })
+        .collect()
+}
+
+fn tcl_command_name(command: &str) -> Option<&str> {
+    let mut command = command.trim();
+    if command.is_empty() || command.starts_with('#') {
+        return None;
+    }
+    while let Some(rest) = command.strip_prefix('}') {
+        command = rest.trim_start();
+    }
+    let name = command.split_whitespace().next()?;
+    if matches!(name, "" | "{" | "}" | "else" | "elseif") || name.starts_with('#') {
+        None
+    } else {
+        Some(name.trim_end_matches(';'))
+    }
+}
+
+fn is_supported_inventory_command(command: &str) -> bool {
+    statically_declared_contract_weight(command).is_some()
+        || is_supported_tcl_assertion(command)
+        || matches!(command, "compare_file" | "compare_verilog")
+}
+
+fn unsupported_tcl_command_category(command: &str) -> TclCommandCategory {
+    if matches!(
+        command,
+        "if" | "foreach"
+            | "for"
+            | "while"
+            | "switch"
+            | "proc"
+            | "return"
+            | "break"
+            | "continue"
+            | "catch"
+            | "try"
+            | "throw"
+            | "error"
+            | "eval"
+            | "expr"
+            | "incr"
+            | "set"
+            | "unset"
+            | "append"
+            | "lappend"
+            | "global"
+            | "variable"
+            | "namespace"
+            | "upvar"
+            | "uplevel"
+    ) {
+        TclCommandCategory::ControlState
+    } else if matches!(
+        command,
+        "copy"
+            | "erase"
+            | "move"
+            | "mkdir"
+            | "touch"
+            | "file"
+            | "glob"
+            | "open"
+            | "close"
+            | "read"
+            | "gets"
+            | "puts"
+            | "cd"
+            | "pwd"
+    ) {
+        TclCommandCategory::FileSystem
+    } else if command.starts_with("link_")
+        || command.starts_with("sim_")
+        || command.starts_with("run_")
+        || command.contains("worker")
+        || matches!(command, "bluetcl" | "exec" | "source" | "test_ovl")
+    {
+        TclCommandCategory::ManualToolchain
+    } else if command.starts_with("compile_") || command.starts_with("test_") {
+        TclCommandCategory::UnsupportedContract
+    } else if command.starts_with("find_")
+        || command.starts_with("string_")
+        || command.starts_with("compare_")
+    {
+        TclCommandCategory::UnsupportedAssertion
+    } else {
+        TclCommandCategory::Custom
+    }
+}
+
+fn known_migration_blocker(origin: &str) -> Option<&'static str> {
+    KNOWN_MIGRATION_BLOCKERS
+        .iter()
+        .find_map(|(blocked_origin, reason)| (*blocked_origin == origin).then_some(*reason))
+}
+
+fn migration_readiness(
+    origin: &str,
+    statically_declared_contracts: usize,
+    unsupported_commands: &[UnsupportedTclCommand],
+) -> MigrationReadiness {
+    if known_migration_blocker(origin).is_some() {
+        MigrationReadiness::Blocked
+    } else if statically_declared_contracts == 0 {
+        MigrationReadiness::Dynamic
+    } else if unsupported_commands.is_empty() {
+        MigrationReadiness::Candidate
+    } else {
+        MigrationReadiness::Review
+    }
 }
 
 fn check_case_modules<C: 'static>(
@@ -1444,6 +1736,81 @@ mod tests {
             "foreach item $items {\n",
         );
         assert_eq!(count_statically_declared_contracts(source), 10);
+    }
+
+    #[test]
+    fn treats_supported_inventory_vocabulary_as_migration_ready() {
+        let source = concat!(
+            "compile_pass Good.bsv\n",
+            "test_c_veri_bsv Both\n",
+            "find_n_strings Both.bsc-out {success} 1\n",
+            "compare_file Both.out\n",
+            "compare_verilog Both.v\n",
+        );
+        assert!(unsupported_tcl_commands(source).is_empty());
+    }
+
+    #[test]
+    fn classifies_unsupported_inventory_commands() {
+        let source = concat!(
+            "compile_pass Good.bsv\n",
+            "if {$vtest} {\n",
+            "copy A B\n",
+            "link_verilog_no_main_pass Top\n",
+            "find_n_error out 1\n",
+            "}\n",
+        );
+        assert_eq!(
+            unsupported_tcl_commands(source),
+            vec![
+                UnsupportedTclCommand {
+                    name: "copy".to_owned(),
+                    count: 1,
+                    category: TclCommandCategory::FileSystem,
+                },
+                UnsupportedTclCommand {
+                    name: "find_n_error".to_owned(),
+                    count: 1,
+                    category: TclCommandCategory::UnsupportedAssertion,
+                },
+                UnsupportedTclCommand {
+                    name: "if".to_owned(),
+                    count: 1,
+                    category: TclCommandCategory::ControlState,
+                },
+                UnsupportedTclCommand {
+                    name: "link_verilog_no_main_pass".to_owned(),
+                    count: 1,
+                    category: TclCommandCategory::ManualToolchain,
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn known_blocker_overrides_lexical_candidate_status() {
+        assert_eq!(
+            migration_readiness(
+                "testsuite/bsc.evaluator/performance/performance.exp",
+                1,
+                &[],
+            ),
+            MigrationReadiness::Blocked
+        );
+        assert_eq!(
+            migration_readiness("testsuite/example/example.exp", 1, &[]),
+            MigrationReadiness::Candidate
+        );
+    }
+
+    #[test]
+    fn preserves_upstream_static_contract_denominator() {
+        assert_eq!(
+            check_alignment()
+                .expect("alignment should remain valid")
+                .total_statically_declared_contracts,
+            4_672
+        );
     }
 
     #[test]

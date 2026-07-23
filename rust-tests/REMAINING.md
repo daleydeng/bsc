@@ -7,584 +7,671 @@
 
 - Remaining test scripts: **538**
 - Remaining statically declared contracts: **3035**
-- Scripts with one or more statically recognized contracts: **317**
-- Scripts requiring fully dynamic or custom Tcl analysis: **221**
+- Lexically clean migration candidates: **33 scripts / 121 contracts**
+- Static scripts requiring Tcl review or new helpers: **263 scripts / 2651 contracts**
+- Curated known blockers: **21 scripts / 263 contracts**
+- Fully dynamic/custom scripts: **221 scripts / 0 currently recognized contracts**
 
-A nonzero static count is an inventory fact, not an automatic migration approval. Scripts may still contain additional assertions, dynamic Tcl, custom helpers, generated artifacts, XFAIL rules, or unsupported link/simulation flows. Curated safe candidates and blockers are tracked in [`NEXT.md`](NEXT.md).
+`candidate` means that the active command vocabulary is already modeled and the script is not in the curated blocker registry. It is a high-confidence review queue, not permission to skip fixture, option, golden, bug-gate, or runtime validation. `review` rows list the exact unsupported Tcl vocabulary; `blocked` reasons are maintained alongside the migration plan and checked against this inventory.
+
+## Ranked lexical candidates
+
+| Origin | Static contracts |
+| --- | ---: |
+| `testsuite/bsc.lib/vector/libvector.exp` | 24 |
+| `testsuite/bsc.syntax/bh/bh_pragmas/bh_pragmas.exp` | 15 |
+| `testsuite/bsc.typechecker/string/string.exp` | 14 |
+| `testsuite/bsc.typechecker/generics/generics.exp` | 7 |
+| `testsuite/bsc.bugs/bluespec_inc/b621/b621.exp` | 4 |
+| `testsuite/bsc.bugs/bluespec_inc/b898/b898.exp` | 4 |
+| `testsuite/bsc.bugs/github/gh836/gh836.exp` | 4 |
+| `testsuite/bsc.lib/Foldable/Foldable.exp` | 4 |
+| `testsuite/bsc.mcd/DisabledClocks/disabled_clocks.exp` | 4 |
+| `testsuite/bsc.bsv_examples/vending/vending.exp` | 3 |
+| `testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp` | 2 |
+| `testsuite/bsc.bsv_examples/Life/example_life.exp` | 2 |
+| `testsuite/bsc.bsv_examples/memq/priq.exp` | 2 |
+| `testsuite/bsc.bugs/bluespec_inc/b378/b378.exp` | 2 |
+| `testsuite/bsc.bugs/bluespec_inc/b402/b402.exp` | 2 |
+| `testsuite/bsc.doc/doc.exp` | 2 |
+| `testsuite/bsc.interra/StmtFSM/CycleTest/cycletest.exp` | 2 |
+| `testsuite/bsc.interra/StmtFSM/ServerInServer/serverinserver.exp` | 2 |
+| `testsuite/bsc.lib/CShow/CShow.exp` | 2 |
+| `testsuite/bsc.lib/PrintType/PrintType.exp` | 2 |
+| `testsuite/bsc.lib/Traversable/Traversable.exp` | 2 |
+| `testsuite/bsc.lib/listn/liblistn.exp` | 2 |
+| `testsuite/bsc.names/portRenaming/vectorTests/vectorTests.exp` | 2 |
+| `testsuite/bsc.scheduler/rulesort/rulesort.exp` | 2 |
+| `testsuite/bsc.verilog/noinline/divbug/noinline_divbug.exp` | 2 |
+| `testsuite/bsc.bugs/bluespec_inc/b1354/b1354.exp` | 1 |
+| `testsuite/bsc.bugs/bluespec_inc/b1540/b1540.exp` | 1 |
+| `testsuite/bsc.bugs/bluespec_inc/b293/b293.exp` | 1 |
+| `testsuite/bsc.bugs/bluespec_inc/b302/b302.exp` | 1 |
+| `testsuite/bsc.bugs/bluespec_inc/b569/b569.exp` | 1 |
+| `testsuite/bsc.lib/PAClib/qsort/bsv/paclib_qsort.exp` | 1 |
+| `testsuite/bsc.verilog/dollar/renaming/rename.exp` | 1 |
+| `testsuite/bsc.verilog/dollar/renaming2/rename.exp` | 1 |
+
+## Highest-leverage unsupported Tcl commands
+
+The table is sorted by affected scripts, then affected static contracts. Contract totals overlap when one script uses multiple commands.
+
+| Command | Category | Calls | Scripts | Static contracts in affected scripts |
+| --- | --- | ---: | ---: | ---: |
+| `if` | control/state | 602 | 244 | 2207 |
+| `set` | control/state | 224 | 129 | 728 |
+| `compile_object_pass` | unsupported contract | 229 | 91 | 698 |
+| `source` | manual toolchain | 75 | 75 | 0 |
+| `test_ovl` | manual toolchain | 75 | 75 | 0 |
+| `link_objects_pass` | manual toolchain | 145 | 62 | 602 |
+| `copy` | filesystem | 218 | 40 | 308 |
+| `sim_output` | manual toolchain | 102 | 38 | 424 |
+| `test_c_veri_bsv_multi` | unsupported contract | 231 | 35 | 111 |
+| `link_verilog_pass` | manual toolchain | 64 | 31 | 202 |
+| `erase` | filesystem | 104 | 30 | 318 |
+| `test_c_veri_worker` | manual toolchain | 89 | 29 | 1 |
+| `proc` | control/state | 38 | 27 | 323 |
+| `sim_verilog` | manual toolchain | 43 | 23 | 148 |
+| `compile_object_fail_error` | unsupported contract | 51 | 22 | 331 |
+| `move` | filesystem | 64 | 21 | 216 |
+| `global` | control/state | 26 | 17 | 159 |
+| `compare_file_filter_ids` | unsupported assertion | 109 | 15 | 235 |
+| `test_veri_only_bsv_multi` | unsupported contract | 28 | 15 | 5 |
+| `compile_pass_warning` | unsupported contract | 36 | 13 | 301 |
+| `find_n_error` | unsupported assertion | 25 | 13 | 111 |
+| `test_c_only_bsv_multi` | unsupported contract | 24 | 13 | 4 |
+| `test_c_veri_bsv_multi_options` | unsupported contract | 28 | 12 | 20 |
+| `mkdir` | filesystem | 31 | 11 | 64 |
+| `test_c_veri_bsv_multi_options_separately` | unsupported contract | 14 | 11 | 20 |
+| `compile_object_fail` | unsupported contract | 17 | 10 | 58 |
+| `compile_verilog_pass_no_warning` | unsupported contract | 22 | 9 | 168 |
+| `find_n_warning` | unsupported assertion | 27 | 9 | 140 |
+| `link_verilog_no_main_pass` | manual toolchain | 59 | 9 | 81 |
+| `no_warnings` | custom helper | 44 | 8 | 132 |
+| `create_systemc_objects_pass` | custom helper | 9 | 8 | 0 |
+| `bluetcl_run_compare_pass` | custom helper | 25 | 7 | 1 |
+| `build_systemc_executable_pass` | custom helper | 7 | 7 | 0 |
+| `run_systemc_executable` | manual toolchain | 7 | 7 | 0 |
+| `compile_fail_bug` | unsupported contract | 22 | 6 | 336 |
+| `compile_pass_no_warning` | unsupported contract | 39 | 6 | 128 |
+| `touch` | filesystem | 13 | 6 | 94 |
+| `foreach` | control/state | 8 | 6 | 60 |
+| `make_pass` | custom helper | 6 | 6 | 28 |
+| `bsc_compile` | custom helper | 13 | 6 | 1 |
 
 ## By testsuite area
 
-| Area | Remaining scripts | Static contracts | Dynamic/custom-only scripts |
-| --- | ---: | ---: | ---: |
-| `bsc.arrays` | 3 | 106 | 0 |
-| `bsc.assertions` | 1 | 0 | 1 |
-| `bsc.binary` | 1 | 1 | 0 |
-| `bsc.bluesim` | 15 | 33 | 12 |
-| `bsc.bluetcl` | 9 | 1 | 8 |
-| `bsc.bsc_examples` | 1 | 27 | 0 |
-| `bsc.bsv_examples` | 33 | 84 | 11 |
-| `bsc.bugs` | 74 | 136 | 15 |
-| `bsc.codegen` | 10 | 113 | 0 |
-| `bsc.compile` | 2 | 31 | 0 |
-| `bsc.doc` | 1 | 2 | 0 |
-| `bsc.driver` | 8 | 74 | 1 |
-| `bsc.evaluator` | 20 | 241 | 1 |
-| `bsc.if` | 4 | 51 | 0 |
-| `bsc.interra` | 206 | 81 | 164 |
-| `bsc.lib` | 31 | 249 | 3 |
-| `bsc.mcd` | 14 | 262 | 0 |
-| `bsc.misc` | 7 | 68 | 0 |
-| `bsc.names` | 16 | 110 | 0 |
-| `bsc.options` | 3 | 29 | 0 |
-| `bsc.preprocessor` | 2 | 27 | 0 |
-| `bsc.real` | 3 | 33 | 0 |
-| `bsc.scheduler` | 14 | 181 | 0 |
-| `bsc.showrules` | 1 | 6 | 0 |
-| `bsc.syntax` | 8 | 329 | 2 |
-| `bsc.synthesize` | 1 | 0 | 1 |
-| `bsc.typechecker` | 18 | 352 | 1 |
-| `bsc.vcdcheck` | 1 | 0 | 1 |
-| `bsc.verilog` | 31 | 408 | 0 |
+| Area | Remaining scripts | Static contracts | Candidates | Candidate contracts | Dynamic/custom | Known blockers |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `bsc.arrays` | 3 | 106 | 0 | 0 | 0 | 1 |
+| `bsc.assertions` | 1 | 0 | 0 | 0 | 1 | 0 |
+| `bsc.binary` | 1 | 1 | 0 | 0 | 0 | 0 |
+| `bsc.bluesim` | 15 | 33 | 0 | 0 | 12 | 1 |
+| `bsc.bluetcl` | 9 | 1 | 0 | 0 | 8 | 0 |
+| `bsc.bsc_examples` | 1 | 27 | 0 | 0 | 0 | 0 |
+| `bsc.bsv_examples` | 33 | 84 | 4 | 9 | 11 | 1 |
+| `bsc.bugs` | 74 | 136 | 10 | 21 | 15 | 3 |
+| `bsc.codegen` | 10 | 113 | 0 | 0 | 0 | 0 |
+| `bsc.compile` | 2 | 31 | 0 | 0 | 0 | 1 |
+| `bsc.doc` | 1 | 2 | 1 | 2 | 0 | 0 |
+| `bsc.driver` | 8 | 74 | 0 | 0 | 1 | 1 |
+| `bsc.evaluator` | 20 | 241 | 0 | 0 | 1 | 1 |
+| `bsc.if` | 4 | 51 | 0 | 0 | 0 | 2 |
+| `bsc.interra` | 206 | 81 | 2 | 4 | 164 | 0 |
+| `bsc.lib` | 31 | 249 | 7 | 37 | 3 | 6 |
+| `bsc.mcd` | 14 | 262 | 1 | 4 | 0 | 2 |
+| `bsc.misc` | 7 | 68 | 0 | 0 | 0 | 0 |
+| `bsc.names` | 16 | 110 | 1 | 2 | 0 | 1 |
+| `bsc.options` | 3 | 29 | 0 | 0 | 0 | 0 |
+| `bsc.preprocessor` | 2 | 27 | 0 | 0 | 0 | 0 |
+| `bsc.real` | 3 | 33 | 0 | 0 | 0 | 0 |
+| `bsc.scheduler` | 14 | 181 | 1 | 2 | 0 | 0 |
+| `bsc.showrules` | 1 | 6 | 0 | 0 | 0 | 0 |
+| `bsc.syntax` | 8 | 329 | 1 | 15 | 2 | 0 |
+| `bsc.synthesize` | 1 | 0 | 0 | 0 | 1 | 0 |
+| `bsc.typechecker` | 18 | 352 | 2 | 21 | 1 | 0 |
+| `bsc.vcdcheck` | 1 | 0 | 0 | 0 | 1 | 0 |
+| `bsc.verilog` | 31 | 408 | 3 | 4 | 0 | 1 |
 
 ## Complete remaining list
 
-| Origin | Static contracts | Initial classification |
-| --- | ---: | --- |
-| `testsuite/bsc.arrays/arrays.exp` | 23 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.arrays/dynamic/arrays_dynamic.exp` | 53 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.arrays/undefined/array_undefined.exp` | 30 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.assertions/sequences/sequences.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.binary/binary.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bluesim/debugging/debugging.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/interactive/interactive.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/misc/misc.exp` | 19 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bluesim/operators/operators.exp` | 10 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bluesim/parallel/parallel.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/schedule/schedule.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/gcd/gcd.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/gcd2/gcd2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/getput/getput.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/mcd/mcd.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/multiple_models/gcd/gcd.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/probes/probes.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/systemc.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/to_systemc/wide_gcd/wide_gcd.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluesim/vcd/vcd.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bluetcl/commands/commands.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/hierarchy/hierarchy.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/hierarchy2/hierarchy2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/packages/InstSynth/InstSynth.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bluetcl/packages/expandPorts/expandPorts.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/packages/makedepend/makedepend.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/packages/utils/utils.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/targeted/port_types/port_types.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bluetcl/targeted/type/type.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsc_examples/bsc_examples.exp` | 27 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/AmbaLoadDemo/amba_load_demo.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/AmbaSynthesis/amba_syn.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/Amba_dmac/amba_dmac.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/AssertionsDemo/assert_demo.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/FloatingPoint/floating_point.exp` | 12 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/Life/example_life.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/MacTestBench/mac_testbench.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/Maxtree/maxtree.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/RAMS/RAMS.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/SimpleIfcArgInvert/simple_ifc_arg_invert.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/bsvfifo/bsvfifo.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/cache-controller/cache-controller.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/configbus/configbus.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/cpu/cpu.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/fifo/fifo_FixedPtrSize/fifo_FixedPtrSize.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/fifo/fifo_RAM/fifo_RAM.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/fifo/fifo_UBit1/fifo_UBit1.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/fifo/fifo_UBit2/fifo_UBit2.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/fifo_arb/fifo_arb.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/gcd/gcd.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/h264/h264.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/mcd_Rand/rand.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/memq/priq.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/mesa/course_lab/course_lab.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv-cocoon/spiless-tx-bsv-cocoon.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/pong/pong.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/shifter/shifter.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/sudoku/sudoku.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/vending/vending.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/wallace/wallace.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1018/b1018.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1066/b1066.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1118/b1118.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1121/b1121.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1197/b1197.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1240/b1240.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1243/b1243.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1249/b1249.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1354/b1354.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1390/b1390.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1402/b1402.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1439/b1439.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1480/b1480.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1489/b1489.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1539/b1539.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1540/b1540.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1589/b1589.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1595/b1595.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1619/b1619.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1621/b1621.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1666/b1666.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1690/b1690.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1720/b1720.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1753/b1753.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1758/b1758.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b1796/b1796.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1894/b1894.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b1921/b1921.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b232/b232.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b260/b260.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b262/b262.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b264/b264.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b281/b281.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b292/b292.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b293/b293.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b302/b302.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b312/b312.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b323/b323.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b329/b329.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b335/b335.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b359/b359.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b378/b378.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b381/b381.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b399/b399.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b402/b402.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b405/b405.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b437/b437.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b484/b484.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b496/b496.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b508/b508.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b517/b517.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b518/b518.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b530/negativeshift.exp` | 5 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b535/b535.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b568/b568.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b569/b569.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b611/b611.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bugs/bluespec_inc/b621/b621.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b628/b628.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b631/b631.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b690/b690.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b752/b752.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b765/b765.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b791/b791.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b834/b834.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b848/b848.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b864/b864.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b893/b893.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b898/b898.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/bluespec_inc/b925/b925.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/github/gh276/gh276.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/github/gh836/gh836.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/perf-creg-blowup/perf-creg-blowup.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bugs/pre_bluespec_inc/pre_bluespec_inc.exp` | 18 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/case/case.exp` | 19 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/codegen.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/foreign/battery/battery.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/foreign/foreign.exp` | 5 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/rdy_en_pragmas/rdy_en_pragmas.exp` | 22 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/signature/signature.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/strings/strings.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/undet/undet.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/vector_interfaces/vector_interfaces.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.codegen/vector_modargs/vector_modargs.exp` | 23 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.compile/compile.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.compile/letrec/letrec.exp` | 23 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.doc/doc.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/bluesim/bluesim.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.driver/cpp/cpp.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/depend/depend.exp` | 18 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/gensign/gensign.exp` | 31 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/imports/imports.exp` | 10 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/mult_errors/mult_errors.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/no_filenames/no_filenames.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.driver/unused_imports/unused_imports.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/aggressive-conditions/aggressive-conditions.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/cache/def_cache.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.evaluator/curry/curry.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/errors/errors.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/evaluator.exp` | 30 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/fileIO/fileIO.exp` | 17 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/literal/literal.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/messages/message.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/opt/opt.exp` | 21 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/performance/performance.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/prims/impcondof/impcondof.exp` | 38 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/prims/module_fix/module_fix.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/prims/name/name.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/prims/type_of/type_of.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/prims/valueof/valueof.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/primtcons/primtcons.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/reginit/reginit.exp` | 15 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/show-progress/show-progress.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/undefined/undefined.exp` | 33 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.evaluator/uninit/uninit.exp` | 26 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.if/if.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.if/split-execution/2x2-switch-split/switch.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.if/split-execution/2x2-switch/switch.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.if/split/splitIf.exp` | 33 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/Library_latency/BGetPut/BGetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Library_latency/CGetPut/CGetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Library_latency/ClientServer/ClientServer.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Library_latency/GetPut/GetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Library_latency/RAM/RAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Library_latency/SRAM/SRAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Library_latency/SyncRAM/SyncRAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/MCD_library/AsyncRAM/asyncRAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/MCD_library/BitSync/bitsync.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/MCD_library/BitSync1/bitsync1.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/MCD_library/FIFOSync/SyncFIFO.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/MCD_library/NullCrossing/Nullcross.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/MCD_library/PulseHandShakeSync/PulseHandShake.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/MCD_library/RegSync/SyncReg.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/MCD_library/SpecialSyncFIFO/SpecialSyncFIFO.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/MCD_library/SpecialSyncReg/SpecialSyncReg.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/OVL/assertAlways1/assertAlways1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlways2/assertAlways2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge1/assertAlwaysOnEdge1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge2/assertAlwaysOnEdge2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge3/assertAlwaysOnEdge3.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge4/assertAlwaysOnEdge4.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge5/assertAlwaysOnEdge5.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge6/assertAlwaysOnEdge6.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertChange1/assertChange1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertChange2/assertChange2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertCycleSequence1/assertCycleSequence1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertCycleSequence2/assertCycleSequence2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertDecrement1/assertDecrement1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertDecrement2/assertDecrement2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertDelta1/assertDelta1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertDelta2/assertDelta2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertEvenParity1/assertEvenParity1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertEvenParity2/assertEvenParity2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFifoIndex1/assertFifoIndex1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFifoIndex2/assertFifoIndex2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFifoIndex3/assertFifoIndex3.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFifoIndex4/assertFifoIndex4.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFrame1/assertFrame1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFrame2/assertFrame2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertFrame3/assertFrame3.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertHandshake1/assertHandshake1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertHandshake2/assertHandshake2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertImplication1/assertImplication1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertImplication2/assertImplication2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertIncrement1/assertIncrement1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertIncrement2/assertIncrement2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNever1/assertNever1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNever2/assertNever2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNeverUnknown1/assertNeverUnknown1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNeverUnknown2/assertNeverUnknown2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNeverUnknownAsync1/assertNeverUnknownAsync1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNeverUnknownAsync2/assertNeverUnknownAsync2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNext1/assertNext1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNext2/assertNext2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNoOverflow1/assertNoOverflow1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNoOverflow2/assertNoOverflow2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNoTransition1/assertNoTransition1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNoTransition2/assertNoTransition2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNoUnderflow1/assertNoUnderflow1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertNoUnderflow2/assertNoUnderflow2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertOddParity1/assertOddParity1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertOddParity2/assertOddParity2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertOneCold1/assertOneCold1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertOneCold2/assertOneCold2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertOneHot1/assertOneHot1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertOneHot2/assertOneHot2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertProposition1/assertProposition1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertProposition2/assertProposition2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertQuiescent1/assertQuiescent1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertQuiescent2/assertQuiescent2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertRange1/assertRange1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertRange2/assertRange2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertRange3/assertRange3.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertTime1/assertTime1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertTime2/assertTime2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertTransition1/assertTransition1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertTransition2/assertTransition2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertUnchange1/assertUnchange1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertUnchange2/assertUnchange2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWidth1/assertWidth1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWidth2/assertWidth2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWidth3/assertWidth3.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWinChange1/assertWinChange1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWinChange2/assertWinChange2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWinUnchange1/assertWinUnchange1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWinUnchange2/assertWinUnchange2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWindow1/assertWindow1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertWindow2/assertWindow2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertZeroOneHot1/assertZeroOneHot1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/OVL/assertZeroOneHot2/assertZeroOneHot2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Path_Analysis/Imported_Modules/Imported_Modules.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/Path_Analysis/Input_Output_Path/Input_Output_Path.exp` | 16 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/StmtFSM/CycleTest/cycletest.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/StmtFSM/ServerInServer/serverinserver.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/StmtFSM/Square1/square1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/Square2/square2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/Square3/square3.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/Square4/square4.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/Square5/square5.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/Square6/square6.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/clearOfOnce/clearOfOnce.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/cycleUsage1/cycleUsage1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/cycleUsage2/cycleUsage2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/fifoTest/fifoTest.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/forInRepeat/forInRepeat.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/forInWhile/forInWhile.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/nestedForLoop1/nestedForLoop1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/nestedRepeatLoop1/nestedRepeatLoop1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/nestedWhileLoop1/nestedWhileLoop1.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/nestedWhileLoop2/nestedWhileLoop2.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/parAuto/parAuto.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/repeatInFor/repeatInFor.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/repeatInWhile/repeatInWhile.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/repeatTest/repeatTest.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/whileInFor/whileInFor.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/whileInRepeat/whileInRepeat.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/whilePar/whilePar.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/StmtFSM/whileWithinForLoop/whileWithinForLoop.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Urgency_Annotation/Negative_Testing/Negative_Testing.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Urgency_Annotation/Semantics/Semantics.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/Urgency_Annotation/Syntax/Syntax.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/commandline_options/array/array.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/commandline_options/handshake_protocol/handshake_protocol_cl.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/commandline_options/traffic_light_controller_separate/traffic_light_controller_separate.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/interactive/handshake_protocol/handshake_protocol.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/interactive/parity_checker/parity_checker.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/interactive/traffic_light_controller_hierar/traffic_light_controller_hier.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bluesim/interactive/traffic_light_controller_separate/traffic_light_controller.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bugs/bugID142/bugID142.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID156/bugID156.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID231/bugID231.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID239/bugID239.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bugs/bugID265/bugID265.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID336/bugID336.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID363/bugID363.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID364/bugID364.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID383/bugID383.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID403/bugID403.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/bugs/bugID413/bugID413.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/bugs/bugID415/bugID415.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/libraries/Array/Array.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/ArrayFile/ArrayFile.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Assert/Assert.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/libraries/BGetPut/BGetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/BitonicSort/BitonicSort.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Boolify/Boolify.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/CGetPut/CGetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/ClientServer/ClientServer.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/CompletionBuffer/CompletionBuffer.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/ConfigReg/ConfigReg.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Connectable/Connectable.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Enum/Enum.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Environment/Environment.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/libraries/EqFunction/EqFunction.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/FiFo/FiFo.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/FiFoF/FiFoF.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/GetPut/GetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/LFSR/LFSR.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/List/List.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/libraries/ListFIFO/ListFIFO.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/ListN/ListN.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/ListReg/ListReg.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Oint/Oint.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/PopCount/PopCount.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Pull/Pull.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Push/Push.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/RAM/RAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/RPush/RPush.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Reserved/Reserved.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/SRAM/SRAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/SRAMFile/SRAMFile.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/SyncRAM/SyncRAM.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Tabulate/Tabulate.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/UIntRange/UIntRange.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Vector/Vector.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/libraries/Wallace/Wallace.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/messages/EArbitrate/EArbitrate.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EBadVeriType/EBadVeriType.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EBigLiteral/EBigLiteral.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EBitSel/EBitSel.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EGeneric/EGeneric.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EHasImplicit/EHasImplicit.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EModule_/EModule_.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/ERTSHeapExhausted/ERTSHeapExhausted.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/ERTSOutOfMemory/ERTSOutOfMemory.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/ERTSStackOverflow/ERTSStackOverflow.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EResources/EResources.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/ERuleAssertion/ERuleAssertion.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EStringNF/EStringNF.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/ETooGeneral/ETooGeneral.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/ETooManySteps/ETooManySteps.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/EUnify/EUnify.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/WCycleDrop/WCycleDrop.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/WMissingRule/WMissingRule.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/messages/WUrgencyChoice/WUrgencyChoice.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.interra/operators/Arith/arith.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/operators/BitSel/bitsel.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/operators/Logic/logic.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/BypassFIFO/BypassFIFO.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/LoopyFIFO/LoopyFIFO.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/RWire_mult/RWire_mult.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/RegFile/RegFile.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/byte_en/byte_en.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/demux/demux.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.interra/relax_method_urgency/prod_con/prod_con.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.lib/BRAM/BRAM.exp` | 9 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/BuildList/BuildList.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/CReg/CReg.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/CShow/CShow.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/DefaultValue/DefaultValue.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/Divide/divide.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/FShow/FShow.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/FixedPoint/FixedPoint.exp` | 24 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/Foldable/Foldable.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/IsModule/is_module.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/dft64/bsv/paclib_dft.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/qsort/bsv/paclib_qsort.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/unit_tests/unit_test.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/Prelude/Prelude.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PrintType/PrintType.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/SquareRoot/squareroot.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/Stmt/FacTest/FacTest.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.lib/Stmt/RepeatTest/RepeatTest.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.lib/Stmt/Server/Server.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/Traversable/Traversable.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/fifo/depth_param/depth_param.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/fifo/fifo.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/getput/getput.exp` | 44 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/listn/liblistn.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/oint/oint.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/regfile/lib.exp` | 16 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/rwire/rwire.exp` | 31 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/sram/sram.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.lib/vector/libvector.exp` | 24 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/ClockDividers/ClockDividers.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/DisabledClocks/disabled_clocks.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Examples/Example.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Gating/Gating.exp` | 24 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Gating/attributes/attributes.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Gating/portprop/portprop.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Hierarchy/Hierarchy.exp` | 29 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/LevelFifo/LevelFifo.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Misc/mcd.exp` | 50 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/ModArgs/ModArgs.exp` | 31 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/MultErrors/mult_errors_mcd.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/NoClock/NoClock.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/NullCrossing/nullcrossing.exp` | 21 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/Reset/Reset.exp` | 41 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/deprecate/deprecate.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/divmod/divmod.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/eq3/eq3.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/lambda_calculus/lambda_calculus.exp` | 16 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/method_conditions/method_conditions.exp` | 17 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/mul/mul.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.misc/sal/sal.exp` | 16 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/hierarchy/hierarchy.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/alwaysEnabled/alwaysEnabled.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/alwaysReady/alwaysReady.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/bugs/bugs.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/enableTests/enableTests.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/misc/misc.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/paths/portnames.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/portTests/portTests.exp` | 10 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/prefixTests/methods/methods.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/prefixTests/sub_interfaces/sub_interfaces.exp` | 16 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/readyTests/readyTests.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/resultTests/resultTests.exp` | 10 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/portRenaming/vectorTests/vectorTests.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/rtl_names/names.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/signal_names/signal_names.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.names/state_names/state_names.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.options/messages/messages.exp` | 15 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.options/options.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.options/verilog-e/verilog-e.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.preprocessor/include/include.exp` | 5 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.preprocessor/misc/misc.exp` | 22 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.real/evaluator/errors/errors.exp` | 15 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.real/evaluator/evaluator.exp` | 15 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.real/parser/parser.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/attribute_scope/attribute_scope.exp` | 39 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/avmeth/avmeth.exp` | 5 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/disjoint/disjoint.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/dump/dump.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/earliness/earliness.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/mutually_exclusive/mutually_exclusive.exp` | 10 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/relax-schedule/relax-schedule.exp` | 18 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/resource/resource.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/rulesort/rulesort.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/sbr/sbr.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/sched-conditions/sched-conditions.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/scheduler.exp` | 19 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/urgency/urgency.exp` | 25 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.scheduler/use_cond/use_cond.exp` | 20 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.showrules/showrules.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bh/bh.exp` | 73 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bh/bh_pragmas/bh_pragmas.exp` | 15 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bh_parse_pretty/bh-parse-pretty.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.syntax/bsv05/bsv05.exp` | 227 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bsv05/method-args/method-args.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bsv05/statename/statename.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bsv05/strings/parse_strings.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.syntax/bsv05_parse_pretty/bsv05-parse-pretty.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.synthesize/synthesize.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.typechecker/bound-type-vars/bound-type-vars.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/class_defaults/class_defaults.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/deriving/deriving.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/dontcare/dontcare.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/foreignmodule/foreignmodule.exp` | 20 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/generics/generics.exp` | 7 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/higherrank/higherrank.exp` | 4 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/instances/incoherent/incoherent.exp` | 11 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/instances/instances.exp` | 43 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/instances/order/order.exp` | 16 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/instances/orphan/orphans.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.typechecker/literals/literals.exp` | 18 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/numeric/numeric.exp` | 74 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/partial/partial.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/string/string.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/typechecker.exp` | 17 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/typeclasses/coherence/coherence.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.typechecker/typeclasses/typeclasses.exp` | 73 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.vcdcheck/vcdcheck.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.verilog/astate/astate.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/comments/comments.exp` | 29 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/derived_bits/derived_bits.exp` | 8 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/dollar/dollar.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/dollar/renaming/rename.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/dollar/renaming2/rename.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/dollar/renaming4/rename.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/filter/filter.exp` | 5 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/foreign_module/foreign_module.exp` | 19 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/inline/inline.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/inout/inout.exp` | 35 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/noinline/divbug/noinline_divbug.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/noinline/noinline.exp` | 19 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/opt/opt.exp` | 9 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/parameters/parameters.exp` | 13 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/parameters/real/real_param.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/parameters/string/string_param.exp` | 10 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/portprops/portprops.exp` | 25 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/positivereset/ClockDividers/ClockDividers.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/positivereset/Reset/Reset.exp` | 35 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/positivereset/nameclash/nameclash.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/positivereset/simulation/simulation.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/quirks/quirks.exp` | 14 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/splitports/splitports.exp` | 36 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/tasks/interfacecalls/interfacecalls.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/tasks/plusargs/plusargs.exp` | 6 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/tasks/tasks.exp` | 64 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/undet/undet.exp` | 9 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/v95/v95.exp` | 5 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/vcd/vcd.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/verilog.exp` | 8 | Static contracts present; review remaining Tcl |
+| Origin | Static contracts | Readiness | Reason / unsupported Tcl |
+| --- | ---: | --- | --- |
+| `testsuite/bsc.arrays/arrays.exp` | 23 | blocked | known blocker: conditional branches and compile_verilog_fail_bug |
+| `testsuite/bsc.arrays/dynamic/arrays_dynamic.exp` | 53 | review | `compare_file_filter_ids`×1 (unsupported assertion), `compile_object_fail_error`×2 (unsupported contract), `if`×8 (control/state) |
+| `testsuite/bsc.arrays/undefined/array_undefined.exp` | 30 | review | `compile_verilog_fail_bug`×1 (unsupported contract), `if`×2 (control/state) |
+| `testsuite/bsc.assertions/sequences/sequences.exp` | 0 | dynamic/custom | no statically recognized contract; inspect dynamic Tcl |
+| `testsuite/bsc.binary/binary.exp` | 1 | review | `if`×2 (control/state), `set`×3 (control/state), `unset`×1 (control/state) |
+| `testsuite/bsc.bluesim/debugging/debugging.exp` | 0 | dynamic/custom | `compile_object_pass`×3 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×3 (manual toolchain) |
+| `testsuite/bsc.bluesim/interactive/interactive.exp` | 0 | dynamic/custom | `compare_file_filter_ids`×2 (unsupported assertion), `compile_object_pass`×8 (unsupported contract), `copy`×22 (filesystem), `if`×2 (control/state), `link_objects_pass`×8 (manual toolchain), `sim_output`×19 (manual toolchain), `sim_output_status`×3 (manual toolchain) |
+| `testsuite/bsc.bluesim/misc/misc.exp` | 19 | review | `compile_object_pass`×8 (unsupported contract), `copy`×1 (filesystem), `if`×8 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_objects_pass`×6 (manual toolchain), `set`×1 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bluesim/operators/operators.exp` | 10 | blocked | known blocker: Bluesim and Verilog bug gates are not modeled |
+| `testsuite/bsc.bluesim/parallel/parallel.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×3 (manual toolchain), `mkdir`×1 (filesystem), `move`×2 (filesystem), `set`×1 (control/state), `test_c_only_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bluesim/schedule/schedule.exp` | 0 | dynamic/custom | `compile_object_pass`×4 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×4 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/gcd/gcd.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/gcd2/gcd2.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/getput/getput.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/mcd/mcd.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/multiple_models/gcd/gcd.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×2 (unsupported contract), `create_systemc_objects_pass`×2 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/probes/probes.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/to_systemc/systemc.exp` | 0 | dynamic/custom | `compile_object_pass`×6 (unsupported contract), `create_systemc_objects_fail_error`×5 (custom helper), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state) |
+| `testsuite/bsc.bluesim/to_systemc/wide_gcd/wide_gcd.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
+| `testsuite/bsc.bluesim/vcd/vcd.exp` | 4 | review | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain), `vcdcheck_pass`×2 (custom helper) |
+| `testsuite/bsc.bluetcl/commands/commands.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×15 (custom helper), `bsc_compile`×4 (custom helper), `mkdir`×1 (filesystem), `set`×2 (control/state) |
+| `testsuite/bsc.bluetcl/hierarchy/hierarchy.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×2 (custom helper), `bsc_compile`×2 (custom helper) |
+| `testsuite/bsc.bluetcl/hierarchy2/hierarchy2.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×1 (custom helper), `bsc_compile_verilog`×1 (custom helper), `foreach`×1 (control/state), `if`×1 (control/state), `set`×2 (control/state) |
+| `testsuite/bsc.bluetcl/packages/InstSynth/InstSynth.exp` | 1 | review | `bluetcl_run_compare_pass`×1 (custom helper), `bsc_compile`×1 (custom helper), `if`×2 (control/state) |
+| `testsuite/bsc.bluetcl/packages/expandPorts/expandPorts.exp` | 0 | dynamic/custom | `bluetcl_compare`×2 (custom helper), `bluetcl_opt_pass`×2 (custom helper), `bsc_compile`×1 (custom helper), `foreach`×1 (control/state), `global`×1 (control/state), `if`×2 (control/state), `note`×2 (custom helper), `regsub`×1 (custom helper), `set`×9 (control/state) |
+| `testsuite/bsc.bluetcl/packages/makedepend/makedepend.exp` | 0 | dynamic/custom | `bluetcl_compare`×1 (custom helper), `bluetcl_exec_compare_fail`×6 (custom helper), `bluetcl_exec_compare_pass`×6 (custom helper), `mkdir`×1 (filesystem) |
+| `testsuite/bsc.bluetcl/packages/utils/utils.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×1 (custom helper) |
+| `testsuite/bsc.bluetcl/targeted/port_types/port_types.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×4 (custom helper), `bsc_compile`×4 (custom helper) |
+| `testsuite/bsc.bluetcl/targeted/type/type.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×1 (custom helper), `bsc_compile`×1 (custom helper) |
+| `testsuite/bsc.bsc_examples/bsc_examples.exp` | 27 | review | `compile_object_pass`×6 (unsupported contract), `if`×5 (control/state), `link_objects_pass`×4 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract), `test_c_veri_bsv_multi_options`×2 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/AmbaLoadDemo/amba_load_demo.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/AmbaSynthesis/amba_syn.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bsv_examples/Amba_dmac/amba_dmac.exp` | 2 | review | `compare_file_bug`×1 (unsupported assertion), `if`×1 (control/state), `link_verilog_no_main_pass`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/AssertionsDemo/assert_demo.exp` | 11 | review | `if`×1 (control/state), `make_pass`×1 (custom helper) |
+| `testsuite/bsc.bsv_examples/FloatingPoint/floating_point.exp` | 12 | review | `make_pass`×1 (custom helper) |
+| `testsuite/bsc.bsv_examples/Life/example_life.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bsv_examples/MacTestBench/mac_testbench.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `mkCrcCalculator.ba`×1 (custom helper), `mkMiiPhyLayer.ba`×1 (custom helper), `mkMiiPhyLayerRx.ba`×1 (custom helper), `mkMiiPhyLayerTx.ba`×1 (custom helper), `module_calculateCrcNext.ba`×1 (custom helper), `set`×1 (control/state), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/Maxtree/maxtree.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_c_only_bsv_multi_options`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/RAMS/RAMS.exp` | 0 | dynamic/custom | `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/SimpleIfcArgInvert/simple_ifc_arg_invert.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×2 (unsupported contract), `test_veri_only_bsv_multi`×2 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/bsvfifo/bsvfifo.exp` | 4 | blocked | known blocker: manual copy, erase, link, and simulation flow |
+| `testsuite/bsc.bsv_examples/cache-controller/cache-controller.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi_options`×2 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/configbus/configbus.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bsv_examples/cpu/cpu.exp` | 7 | review | `compile_object_pass`×4 (unsupported contract), `copy`×8 (filesystem), `if`×8 (control/state), `link_objects_pass`×4 (manual toolchain), `link_verilog_pass`×4 (manual toolchain), `sim_output`×4 (manual toolchain), `sim_verilog`×4 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/fifo/fifo_FixedPtrSize/fifo_FixedPtrSize.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/fifo/fifo_RAM/fifo_RAM.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/fifo/fifo_UBit1/fifo_UBit1.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/fifo/fifo_UBit2/fifo_UBit2.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/fifo_arb/fifo_arb.exp` | 4 | review | `compile_object_pass`×4 (unsupported contract), `copy`×8 (filesystem), `if`×8 (control/state), `link_objects_pass`×4 (manual toolchain), `link_verilog_pass`×4 (manual toolchain), `sim_output`×4 (manual toolchain), `sim_verilog`×4 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/gcd/gcd.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/h264/h264.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/mcd_Rand/rand.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi_options`×1 (unsupported contract), `test_veri_only_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/memq/priq.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bsv_examples/mesa/course_lab/course_lab.exp` | 7 | review | `cd`×2 (filesystem), `check_verilog_output`×1 (custom helper), `copy`×9 (filesystem), `erase`×7 (filesystem), `foreach`×1 (control/state), `global`×3 (control/state), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `mesa_cleanup`×3 (custom helper), `mesa_save_outputs`×4 (custom helper), `mesa_test_veri_and_sanitize_warnings`×4 (custom helper), `move`×3 (filesystem), `proc`×3 (control/state), `set`×2 (control/state), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv-cocoon/spiless-tx-bsv-cocoon.exp` | 1 | review | `check_verilog_output`×1 (custom helper), `erase`×2 (filesystem), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `move`×3 (filesystem), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv.exp` | 2 | review | `check_verilog_output`×1 (custom helper), `erase`×2 (filesystem), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `move`×3 (filesystem), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/pong/pong.exp` | 3 | review | `copy`×15 (filesystem), `erase`×7 (filesystem), `link_verilog_no_main_pass`×3 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/shifter/shifter.exp` | 14 | review | `compile_object_pass`×8 (unsupported contract), `copy`×16 (filesystem), `if`×16 (control/state), `link_objects_pass`×8 (manual toolchain), `link_verilog_pass`×8 (manual toolchain), `sim_output`×8 (manual toolchain), `sim_verilog`×8 (manual toolchain) |
+| `testsuite/bsc.bsv_examples/sudoku/sudoku.exp` | 0 | dynamic/custom | `set`×1 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/vending/vending.exp` | 3 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bsv_examples/wallace/wallace.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×4 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b1018/b1018.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1066/b1066.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1118/b1118.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b1121/b1121.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b1197/b1197.exp` | 1 | review | `dumpbi`×1 (custom helper), `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1240/b1240.exp` | 0 | dynamic/custom | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b1243/b1243.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b1249/b1249.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1354/b1354.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b1390/b1390.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1402/b1402.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1439/b1439.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `link_objects_pass`×2 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b1480/b1480.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b1489/b1489.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b1539/b1539.exp` | 2 | review | `compare_file_filter_prelude`×1 (unsupported assertion) |
+| `testsuite/bsc.bugs/bluespec_inc/b1540/b1540.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b1589/b1589.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b1595/b1595.exp` | 0 | dynamic/custom | `chmod`×1 (custom helper), `compile_object_pass`×3 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_fail`×1 (manual toolchain), `link_objects_pass`×1 (manual toolchain), `mkdir`×2 (filesystem), `move`×1 (filesystem) |
+| `testsuite/bsc.bugs/bluespec_inc/b1619/b1619.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1621/b1621.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1666/b1666.exp` | 2 | blocked | known blocker: expected Verilog link failure is not modeled |
+| `testsuite/bsc.bugs/bluespec_inc/b1690/b1690.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1720/b1720.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1753/b1753.exp` | 6 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1758/b1758.exp` | 3 | review | `if`×3 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b1796/b1796.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b1894/b1894.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `erase`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×3 (manual toolchain), `move`×3 (filesystem) |
+| `testsuite/bsc.bugs/bluespec_inc/b1921/b1921.exp` | 6 | review | `compile_fail_bug`×3 (unsupported contract), `find_regexp_fail_bug`×2 (unsupported assertion) |
+| `testsuite/bsc.bugs/bluespec_inc/b232/b232.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b260/b260.exp` | 0 | dynamic/custom | `bsc_compile_verilog`×1 (custom helper) |
+| `testsuite/bsc.bugs/bluespec_inc/b262/b262.exp` | 2 | review | `compile_object_pass`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b264/b264.exp` | 2 | review | `link_verilog_pass`×3 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b281/b281.exp` | 0 | dynamic/custom | `compile_pass_warning`×3 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b292/b292.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_fail`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b293/b293.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b302/b302.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b312/b312.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b323/b323.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b329/b329.exp` | 0 | dynamic/custom | `compile_pass_warning`×3 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b335/b335.exp` | 1 | review | `if`×1 (control/state), `link_verilog_pass`×2 (manual toolchain), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b359/b359.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b378/b378.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b381/b381.exp` | 2 | review | `compare_file_filtered`×1 (unsupported assertion), `compile_fail_bug`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b399/b399.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b402/b402.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b405/b405.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b437/b437.exp` | 0 | dynamic/custom | `compile_fail_error_bug`×3 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b484/b484.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b496/b496.exp` | 0 | dynamic/custom | `compile_fail_error_warnings`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b508/b508.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract) |
+| `testsuite/bsc.bugs/bluespec_inc/b517/b517.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b518/b518.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b530/negativeshift.exp` | 5 | review | `compile_object_fail_error`×4 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `erase`×5 (filesystem), `link_objects_pass`×1 (manual toolchain), `sim_final_state`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b535/b535.exp` | 3 | blocked | known blocker: manual copy, erase, link, and simulation flow |
+| `testsuite/bsc.bugs/bluespec_inc/b568/b568.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b569/b569.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b611/b611.exp` | 0 | dynamic/custom | `run_bsc2bsv`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b621/b621.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b628/b628.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b631/b631.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b690/b690.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b752/b752.exp` | 2 | review | `if`×2 (control/state), `set`×4 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b765/b765.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b791/b791.exp` | 3 | review | `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain) |
+| `testsuite/bsc.bugs/bluespec_inc/b834/b834.exp` | 1 | review | `compare_verilog_bug`×1 (unsupported assertion) |
+| `testsuite/bsc.bugs/bluespec_inc/b848/b848.exp` | 1 | review | `compare_verilog_bug`×1 (unsupported assertion) |
+| `testsuite/bsc.bugs/bluespec_inc/b864/b864.exp` | 4 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b893/b893.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/bluespec_inc/b898/b898.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/bluespec_inc/b925/b925.exp` | 8 | blocked | known blocker: backend-specific XFAIL and bug gate are not modeled |
+| `testsuite/bsc.bugs/github/gh276/gh276.exp` | 1 | review | `do_test`×6 (custom helper), `proc`×1 (control/state) |
+| `testsuite/bsc.bugs/github/gh836/gh836.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.bugs/perf-creg-blowup/perf-creg-blowup.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.bugs/pre_bluespec_inc/pre_bluespec_inc.exp` | 18 | review | `compile_object_pass`×6 (unsupported contract), `erase`×1 (filesystem) |
+| `testsuite/bsc.codegen/case/case.exp` | 19 | review | `find_n_strings_bug`×4 (unsupported assertion), `if`×9 (control/state) |
+| `testsuite/bsc.codegen/codegen.exp` | 4 | review | `compile_object_pass`×3 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.codegen/foreign/battery/battery.exp` | 1 | review | `[regexp`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `copy`×5 (filesystem), `if`×2 (control/state), `set`×5 (control/state), `test_c_veri_bsv_multi_options`×7 (unsupported contract) |
+| `testsuite/bsc.codegen/foreign/foreign.exp` | 5 | review | `copy`×8 (filesystem), `make_pass`×1 (custom helper), `set`×5 (control/state), `test_c_veri_bsv_multi`×19 (unsupported contract) |
+| `testsuite/bsc.codegen/rdy_en_pragmas/rdy_en_pragmas.exp` | 22 | review | `compile_object_pass`×1 (unsupported contract), `if`×8 (control/state), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.codegen/signature/signature.exp` | 14 | review | `compile_verilog_fail_error_bug`×7 (unsupported contract) |
+| `testsuite/bsc.codegen/strings/strings.exp` | 14 | review | `compare_file_filter_prelude`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.codegen/undet/undet.exp` | 8 | review | `if`×2 (control/state), `move`×8 (filesystem) |
+| `testsuite/bsc.codegen/vector_interfaces/vector_interfaces.exp` | 3 | review | `compile_backend_pass`×1 (unsupported contract) |
+| `testsuite/bsc.codegen/vector_modargs/vector_modargs.exp` | 23 | review | `if`×7 (control/state) |
+| `testsuite/bsc.compile/compile.exp` | 8 | blocked | known blocker: dynamic fixture replacement and delayed workflow |
+| `testsuite/bsc.compile/letrec/letrec.exp` | 23 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_pass_bug`×1 (unsupported contract) |
+| `testsuite/bsc.doc/doc.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.driver/bluesim/bluesim.exp` | 0 | dynamic/custom | `compile_object_pass`×3 (unsupported contract), `exec`×3 (manual toolchain), `if`×1 (control/state), `link_objects_pass`×3 (manual toolchain), `mkdir`×2 (filesystem), `move`×6 (filesystem), `nukedir`×2 (custom helper), `sim_output`×3 (manual toolchain), `touch`×1 (filesystem) |
+| `testsuite/bsc.driver/cpp/cpp.exp` | 6 | review | `if`×1 (control/state), `move`×1 (filesystem), `sed`×1 (custom helper) |
+| `testsuite/bsc.driver/depend/depend.exp` | 18 | review | `copy`×7 (filesystem), `erase`×4 (filesystem), `exec`×6 (manual toolchain), `global`×1 (control/state), `if`×4 (control/state), `make_lib`×2 (custom helper), `mkdir`×4 (filesystem), `proc`×1 (control/state), `set`×5 (control/state), `touch`×6 (filesystem) |
+| `testsuite/bsc.driver/gensign/gensign.exp` | 31 | blocked | known blocker: dumpbi/dumpbo and string-count workflow |
+| `testsuite/bsc.driver/imports/imports.exp` | 10 | review | `chmod`×2 (custom helper), `copy`×4 (filesystem), `erase`×3 (filesystem), `global`×1 (control/state), `make_lib`×2 (custom helper), `mkdir`×2 (filesystem), `move`×1 (filesystem), `proc`×1 (control/state), `set`×6 (control/state) |
+| `testsuite/bsc.driver/mult_errors/mult_errors.exp` | 1 | review | `compile_object_fail_error`×3 (unsupported contract), `compile_pass_warning`×1 (unsupported contract), `copy`×1 (filesystem), `find_n_error`×3 (unsupported assertion), `if`×3 (control/state) |
+| `testsuite/bsc.driver/no_filenames/no_filenames.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `mkdir`×4 (filesystem), `move`×4 (filesystem), `nukedir`×4 (custom helper), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.driver/unused_imports/unused_imports.exp` | 7 | review | `compile_pass_no_warning`×30 (unsupported contract), `compile_pass_warning`×11 (unsupported contract), `compile_pass_warning_bug`×3 (unsupported contract) |
+| `testsuite/bsc.evaluator/aggressive-conditions/aggressive-conditions.exp` | 8 | review | `compile_object_pass`×3 (unsupported contract), `find_n_error`×1 (unsupported assertion), `if`×6 (control/state), `link_objects_pass`×3 (manual toolchain) |
+| `testsuite/bsc.evaluator/cache/def_cache.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state) |
+| `testsuite/bsc.evaluator/curry/curry.exp` | 3 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×5 (unsupported contract), `if`×2 (control/state) |
+| `testsuite/bsc.evaluator/errors/errors.exp` | 13 | review | `find_n_error`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.evaluator/evaluator.exp` | 30 | review | `bsc_compile_verilog`×1 (custom helper), `compare_file_filter_ids`×1 (unsupported assertion), `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `erase`×11 (filesystem), `if`×10 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.evaluator/fileIO/fileIO.exp` | 17 | review | `compare_file_filter_prelude`×5 (unsupported assertion), `files_exist`×1 (custom helper), `if`×1 (control/state), `mkdir`×1 (filesystem) |
+| `testsuite/bsc.evaluator/literal/literal.exp` | 13 | review | `if`×1 (control/state) |
+| `testsuite/bsc.evaluator/messages/message.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.evaluator/opt/opt.exp` | 21 | review | `if`×3 (control/state), `touch`×1 (filesystem) |
+| `testsuite/bsc.evaluator/performance/performance.exp` | 3 | blocked | known blocker: native Windows code generation exceeds 300 seconds |
+| `testsuite/bsc.evaluator/prims/impcondof/impcondof.exp` | 38 | review | `1\'d0\:`×1 (custom helper), `1\'d1\:`×1 (custom helper), `endcase}`×1 (custom helper), `find\_regexp`×1 (custom helper), `if`×6 (control/state) |
+| `testsuite/bsc.evaluator/prims/module_fix/module_fix.exp` | 7 | review | `if`×1 (control/state) |
+| `testsuite/bsc.evaluator/prims/name/name.exp` | 4 | review | `if`×2 (control/state) |
+| `testsuite/bsc.evaluator/prims/type_of/type_of.exp` | 3 | review | `compile_object_pass`×1 (unsupported contract), `global`×1 (control/state), `if`×1 (control/state), `proc`×1 (control/state), `test_file_message`×6 (unsupported contract) |
+| `testsuite/bsc.evaluator/prims/valueof/valueof.exp` | 3 | review | `find_regexp_fail_bug`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.evaluator/primtcons/primtcons.exp` | 1 | review | `global`×2 (control/state), `proc`×1 (control/state), `set`×2 (control/state), `test_primtcon_normalization`×15 (unsupported contract) |
+| `testsuite/bsc.evaluator/reginit/reginit.exp` | 15 | review | `compile_object_fail`×1 (unsupported contract), `test_c_only`×2 (unsupported contract) |
+| `testsuite/bsc.evaluator/show-progress/show-progress.exp` | 1 | review | `copy`×2 (filesystem), `erase`×2 (filesystem), `global`×1 (control/state), `if`×1 (control/state), `proc`×1 (control/state), `sed`×1 (custom helper), `set`×1 (control/state), `test_elab`×4 (unsupported contract) |
+| `testsuite/bsc.evaluator/undefined/undefined.exp` | 33 | review | `compile_object_fail_error`×4 (unsupported contract), `dumpbi`×1 (custom helper), `if`×2 (control/state) |
+| `testsuite/bsc.evaluator/uninit/uninit.exp` | 26 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_verilog_fail_bug`×2 (unsupported contract), `compile_verilog_pass_bug`×2 (unsupported contract), `compile_verilog_pass_bug_error`×2 (unsupported contract), `find_n_error`×2 (unsupported assertion), `global`×1 (control/state), `if`×5 (control/state), `proc`×1 (control/state), `set`×1 (control/state), `test_uninit_fail`×30 (unsupported contract) |
+| `testsuite/bsc.if/if.exp` | 14 | review | `bsc_compile_verilog`×3 (custom helper), `compile_object_pass`×1 (unsupported contract), `compile_verilog_pass_bug`×1 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `proc`×1 (control/state), `sim_output`×1 (manual toolchain), `test_lifted`×5 (unsupported contract) |
+| `testsuite/bsc.if/split-execution/2x2-switch-split/switch.exp` | 2 | blocked | known blocker: manual interactive Bluesim and cycle assertions |
+| `testsuite/bsc.if/split-execution/2x2-switch/switch.exp` | 2 | blocked | known blocker: manual interactive Bluesim and cycle assertions |
+| `testsuite/bsc.if/split/splitIf.exp` | 33 | review | `compile_pass_bug_error`×1 (unsupported contract), `compile_verilog_fail_no_internal_error`×1 (unsupported contract), `compile_verilog_pass_no_warning`×2 (unsupported contract), `count_rules_after_splitIf`×32 (custom helper), `global`×3 (control/state), `if`×4 (control/state), `perl`×1 (custom helper), `proc`×1 (control/state), `set`×4 (control/state) |
+| `testsuite/bsc.interra/Library_latency/BGetPut/BGetPut.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.interra/Library_latency/CGetPut/CGetPut.exp` | 0 | dynamic/custom | `compile_object_pass`×4 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×4 (manual toolchain), `sim_output`×4 (manual toolchain) |
+| `testsuite/bsc.interra/Library_latency/ClientServer/ClientServer.exp` | 0 | dynamic/custom | `compile_object_pass`×7 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×7 (manual toolchain), `sim_output`×7 (manual toolchain) |
+| `testsuite/bsc.interra/Library_latency/GetPut/GetPut.exp` | 0 | dynamic/custom | `compile_object_pass`×5 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×5 (manual toolchain), `sim_output`×5 (manual toolchain) |
+| `testsuite/bsc.interra/Library_latency/RAM/RAM.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.interra/Library_latency/SRAM/SRAM.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.interra/Library_latency/SyncRAM/SyncRAM.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
+| `testsuite/bsc.interra/MCD_library/AsyncRAM/asyncRAM.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/BitSync/bitsync.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/BitSync1/bitsync1.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/FIFOSync/SyncFIFO.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/NullCrossing/Nullcross.exp` | 1 | review | `compile_object_fail_error`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/PulseHandShakeSync/PulseHandShake.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/RegSync/SyncReg.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/SpecialSyncFIFO/SpecialSyncFIFO.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/SpecialSyncReg/SpecialSyncReg.exp` | 1 | review | `test_c_veri_bsv_multi_options_separately`×2 (unsupported contract) |
+| `testsuite/bsc.interra/OVL/assertAlways1/assertAlways1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlways2/assertAlways2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge1/assertAlwaysOnEdge1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge2/assertAlwaysOnEdge2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge3/assertAlwaysOnEdge3.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge4/assertAlwaysOnEdge4.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge5/assertAlwaysOnEdge5.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertAlwaysOnEdge6/assertAlwaysOnEdge6.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertChange1/assertChange1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertChange2/assertChange2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertCycleSequence1/assertCycleSequence1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertCycleSequence2/assertCycleSequence2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertDecrement1/assertDecrement1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertDecrement2/assertDecrement2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertDelta1/assertDelta1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertDelta2/assertDelta2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertEvenParity1/assertEvenParity1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertEvenParity2/assertEvenParity2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFifoIndex1/assertFifoIndex1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFifoIndex2/assertFifoIndex2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFifoIndex3/assertFifoIndex3.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFifoIndex4/assertFifoIndex4.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFrame1/assertFrame1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFrame2/assertFrame2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertFrame3/assertFrame3.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertHandshake1/assertHandshake1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertHandshake2/assertHandshake2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertImplication1/assertImplication1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertImplication2/assertImplication2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertIncrement1/assertIncrement1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertIncrement2/assertIncrement2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNever1/assertNever1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNever2/assertNever2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNeverUnknown1/assertNeverUnknown1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNeverUnknown2/assertNeverUnknown2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNeverUnknownAsync1/assertNeverUnknownAsync1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNeverUnknownAsync2/assertNeverUnknownAsync2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNext1/assertNext1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNext2/assertNext2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNoOverflow1/assertNoOverflow1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNoOverflow2/assertNoOverflow2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNoTransition1/assertNoTransition1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNoTransition2/assertNoTransition2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNoUnderflow1/assertNoUnderflow1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertNoUnderflow2/assertNoUnderflow2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertOddParity1/assertOddParity1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertOddParity2/assertOddParity2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertOneCold1/assertOneCold1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertOneCold2/assertOneCold2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertOneHot1/assertOneHot1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertOneHot2/assertOneHot2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertProposition1/assertProposition1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertProposition2/assertProposition2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertQuiescent1/assertQuiescent1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertQuiescent2/assertQuiescent2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertRange1/assertRange1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertRange2/assertRange2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertRange3/assertRange3.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertTime1/assertTime1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertTime2/assertTime2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertTransition1/assertTransition1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertTransition2/assertTransition2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertUnchange1/assertUnchange1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertUnchange2/assertUnchange2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWidth1/assertWidth1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWidth2/assertWidth2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWidth3/assertWidth3.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWinChange1/assertWinChange1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWinChange2/assertWinChange2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWinUnchange1/assertWinUnchange1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWinUnchange2/assertWinUnchange2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWindow1/assertWindow1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertWindow2/assertWindow2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertZeroOneHot1/assertZeroOneHot1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/OVL/assertZeroOneHot2/assertZeroOneHot2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
+| `testsuite/bsc.interra/Path_Analysis/Imported_Modules/Imported_Modules.exp` | 14 | review | `compare_file_bug`×2 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.interra/Path_Analysis/Input_Output_Path/Input_Output_Path.exp` | 16 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/StmtFSM/CycleTest/cycletest.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.interra/StmtFSM/ServerInServer/serverinserver.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.interra/StmtFSM/Square1/square1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/Square2/square2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/Square3/square3.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/Square4/square4.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/Square5/square5.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/Square6/square6.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/clearOfOnce/clearOfOnce.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/cycleUsage1/cycleUsage1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/cycleUsage2/cycleUsage2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/fifoTest/fifoTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/forInRepeat/forInRepeat.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/forInWhile/forInWhile.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/nestedForLoop1/nestedForLoop1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/nestedRepeatLoop1/nestedRepeatLoop1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/nestedWhileLoop1/nestedWhileLoop1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/nestedWhileLoop2/nestedWhileLoop2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/parAuto/parAuto.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/repeatInFor/repeatInFor.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/repeatInWhile/repeatInWhile.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/repeatTest/repeatTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/whileInFor/whileInFor.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/whileInRepeat/whileInRepeat.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/whilePar/whilePar.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/StmtFSM/whileWithinForLoop/whileWithinForLoop.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/Urgency_Annotation/Negative_Testing/Negative_Testing.exp` | 0 | dynamic/custom | `compile_object_fail`×6 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state) |
+| `testsuite/bsc.interra/Urgency_Annotation/Semantics/Semantics.exp` | 0 | dynamic/custom | `compile_object_pass`×17 (unsupported contract), `find_n_warning`×3 (unsupported assertion), `if`×1 (control/state), `no_warnings`×10 (custom helper) |
+| `testsuite/bsc.interra/Urgency_Annotation/Syntax/Syntax.exp` | 0 | dynamic/custom | `compile_object_pass`×7 (unsupported contract), `compile_object_pass_bug`×1 (unsupported contract), `if`×1 (control/state), `no_warnings`×7 (custom helper) |
+| `testsuite/bsc.interra/bluesim/commandline_options/array/array.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.interra/bluesim/commandline_options/handshake_protocol/handshake_protocol_cl.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `copy`×1 (filesystem), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
+| `testsuite/bsc.interra/bluesim/commandline_options/traffic_light_controller_separate/traffic_light_controller_separate.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `copy`×2 (filesystem), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×2 (manual toolchain) |
+| `testsuite/bsc.interra/bluesim/interactive/handshake_protocol/handshake_protocol.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.interra/bluesim/interactive/parity_checker/parity_checker.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.interra/bluesim/interactive/traffic_light_controller_hierar/traffic_light_controller_hier.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.interra/bluesim/interactive/traffic_light_controller_separate/traffic_light_controller.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.interra/bugs/bugID142/bugID142.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID156/bugID156.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID231/bugID231.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID239/bugID239.exp` | 0 | dynamic/custom | no statically recognized contract; inspect dynamic Tcl |
+| `testsuite/bsc.interra/bugs/bugID265/bugID265.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID336/bugID336.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID363/bugID363.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID364/bugID364.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID383/bugID383.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID403/bugID403.exp` | 0 | dynamic/custom | no statically recognized contract; inspect dynamic Tcl |
+| `testsuite/bsc.interra/bugs/bugID413/bugID413.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/bugs/bugID415/bugID415.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/libraries/Array/Array.exp` | 0 | dynamic/custom | `test_c_veri_worker`×3 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/ArrayFile/ArrayFile.exp` | 0 | dynamic/custom | `test_c_veri_worker`×3 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Assert/Assert.exp` | 2 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×5 (control/state), `link_objects_pass`×2 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `sim_output_status`×2 (manual toolchain), `sim_verilog_status`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/BGetPut/BGetPut.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/BitonicSort/BitonicSort.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Boolify/Boolify.exp` | 0 | dynamic/custom | `test_c_veri_worker`×4 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/CGetPut/CGetPut.exp` | 0 | dynamic/custom | `compile_object_pass`×3 (unsupported contract), `if`×3 (control/state), `link_objects_pass`×3 (manual toolchain), `sim_output`×3 (manual toolchain), `test_c_veri_worker`×3 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/ClientServer/ClientServer.exp` | 0 | dynamic/custom | `test_c_veri_worker`×8 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/CompletionBuffer/CompletionBuffer.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/ConfigReg/ConfigReg.exp` | 0 | dynamic/custom | `copy`×24 (filesystem), `erase`×4 (filesystem), `test_c_veri_bsv_multi_options`×4 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/Connectable/Connectable.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Enum/Enum.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Environment/Environment.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `test_c_veri_worker`×3 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/EqFunction/EqFunction.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/FiFo/FiFo.exp` | 0 | dynamic/custom | `test_c_veri_worker`×4 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/FiFoF/FiFoF.exp` | 0 | dynamic/custom | `test_c_veri_worker`×4 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/GetPut/GetPut.exp` | 0 | dynamic/custom | `test_c_veri_worker`×7 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/LFSR/LFSR.exp` | 0 | dynamic/custom | `test_c_veri_worker`×6 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/List/List.exp` | 1 | review | `compile_object_fail`×3 (unsupported contract), `if`×3 (control/state), `test_c_veri_bsv_multi`×52 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/ListFIFO/ListFIFO.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/ListN/ListN.exp` | 0 | dynamic/custom | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi`×55 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/ListReg/ListReg.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Oint/Oint.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/PopCount/PopCount.exp` | 0 | dynamic/custom | `if`×1 (control/state), `test_c_veri_bsv_multi_options`×6 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/Pull/Pull.exp` | 0 | dynamic/custom | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain), `test_c_veri_worker`×7 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Push/Push.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×13 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/RAM/RAM.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/RPush/RPush.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain), `test_c_veri_worker`×8 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Reserved/Reserved.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/SRAM/SRAM.exp` | 0 | dynamic/custom | `test_c_veri_worker`×4 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/SRAMFile/SRAMFile.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/SyncRAM/SyncRAM.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Tabulate/Tabulate.exp` | 0 | dynamic/custom | `test_c_veri_worker`×3 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/UIntRange/UIntRange.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/libraries/Vector/Vector.exp` | 0 | dynamic/custom | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi`×56 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/Wallace/Wallace.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
+| `testsuite/bsc.interra/messages/EArbitrate/EArbitrate.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EBadVeriType/EBadVeriType.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EBigLiteral/EBigLiteral.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EBitSel/EBitSel.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EGeneric/EGeneric.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EHasImplicit/EHasImplicit.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EModule_/EModule_.exp` | 2 | review | `compare_file_bug`×1 (unsupported assertion), `find_n_error`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/ERTSHeapExhausted/ERTSHeapExhausted.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/ERTSOutOfMemory/ERTSOutOfMemory.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/ERTSStackOverflow/ERTSStackOverflow.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EResources/EResources.exp` | 1 | review | `compare_file_filter_ids`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/ERuleAssertion/ERuleAssertion.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/EStringNF/EStringNF.exp` | 1 | review | `find_n_error`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/ETooGeneral/ETooGeneral.exp` | 2 | review | `find_n_error`×2 (unsupported assertion) |
+| `testsuite/bsc.interra/messages/ETooManySteps/ETooManySteps.exp` | 1 | review | `find_n_warning`×1 (unsupported assertion) |
+| `testsuite/bsc.interra/messages/EUnify/EUnify.exp` | 3 | review | `find_n_error`×3 (unsupported assertion) |
+| `testsuite/bsc.interra/messages/WCycleDrop/WCycleDrop.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/WMissingRule/WMissingRule.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/messages/WUrgencyChoice/WUrgencyChoice.exp` | 2 | review | `if`×1 (control/state) |
+| `testsuite/bsc.interra/operators/Arith/arith.exp` | 0 | dynamic/custom | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract), `verbose`×1 (custom helper) |
+| `testsuite/bsc.interra/operators/BitSel/bitsel.exp` | 0 | dynamic/custom | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract), `verbose`×1 (custom helper) |
+| `testsuite/bsc.interra/operators/Logic/logic.exp` | 0 | dynamic/custom | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract), `verbose`×1 (custom helper) |
+| `testsuite/bsc.interra/relax_method_urgency/BypassFIFO/BypassFIFO.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/relax_method_urgency/LoopyFIFO/LoopyFIFO.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.interra/relax_method_urgency/RWire_mult/RWire_mult.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/relax_method_urgency/RegFile/RegFile.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/relax_method_urgency/byte_en/byte_en.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.interra/relax_method_urgency/demux/demux.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/relax_method_urgency/prod_con/prod_con.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.lib/BRAM/BRAM.exp` | 9 | review | `compile_object_fail_error`×2 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `compile_object_pass_warning`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass_bug`×1 (manual toolchain) |
+| `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | 2 | blocked | known blocker: shared native Windows elaboration exceeds 300 seconds |
+| `testsuite/bsc.lib/BuildList/BuildList.exp` | 1 | review | `test_veri_only`×1 (unsupported contract) |
+| `testsuite/bsc.lib/CReg/CReg.exp` | 11 | review | `compare_file_filtered`×2 (unsupported assertion), `if`×1 (control/state), `move`×6 (filesystem), `move_test_output`×3 (custom helper), `proc`×2 (control/state), `set`×4 (control/state), `testSize`×5 (custom helper) |
+| `testsuite/bsc.lib/CShow/CShow.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.lib/DefaultValue/DefaultValue.exp` | 3 | blocked | known blocker: compile_pass_warning is not modeled |
+| `testsuite/bsc.lib/Divide/divide.exp` | 2 | review | `do_test`×2 (custom helper), `proc`×1 (control/state) |
+| `testsuite/bsc.lib/FShow/FShow.exp` | 2 | blocked | known blocker: compile_pass_warning is not modeled |
+| `testsuite/bsc.lib/FixedPoint/FixedPoint.exp` | 24 | review | `find_n_warning`×7 (unsupported assertion), `if`×7 (control/state) |
+| `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` | 8 | blocked | known blocker: shared native Windows elaboration exceeds 600 seconds |
+| `testsuite/bsc.lib/Foldable/Foldable.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.lib/IsModule/is_module.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.lib/PAClib/dft64/bsv/paclib_dft.exp` | 3 | review | `if`×3 (control/state) |
+| `testsuite/bsc.lib/PAClib/qsort/bsv/paclib_qsort.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.lib/PAClib/unit_tests/unit_test.exp` | 2 | review | `foreach`×1 (control/state), `set`×1 (control/state) |
+| `testsuite/bsc.lib/Prelude/Prelude.exp` | 14 | review | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
+| `testsuite/bsc.lib/PrintType/PrintType.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.lib/SquareRoot/squareroot.exp` | 2 | review | `do_test`×2 (custom helper), `proc`×1 (control/state) |
+| `testsuite/bsc.lib/Stmt/FacTest/FacTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.lib/Stmt/RepeatTest/RepeatTest.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.lib/Stmt/Server/Server.exp` | 2 | review | `test_c_veri_bsv_multi`×2 (unsupported contract) |
+| `testsuite/bsc.lib/Traversable/Traversable.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.lib/fifo/depth_param/depth_param.exp` | 13 | review | `compile_object_fail_error`×1 (unsupported contract) |
+| `testsuite/bsc.lib/fifo/fifo.exp` | 14 | review | `awk`×1 (custom helper), `if`×4 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.lib/getput/getput.exp` | 44 | blocked | known blocker: dynamic Icarus probing and additional assertions |
+| `testsuite/bsc.lib/listn/liblistn.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.lib/oint/oint.exp` | 6 | blocked | known blocker: compile_verilog_pass_no_warning_bug is not modeled |
+| `testsuite/bsc.lib/regfile/lib.exp` | 16 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `if`×2 (control/state) |
+| `testsuite/bsc.lib/rwire/rwire.exp` | 31 | review | `compare_file_filter_ids`×2 (unsupported assertion), `copy`×4 (filesystem), `erase`×2 (filesystem), `if`×6 (control/state) |
+| `testsuite/bsc.lib/sram/sram.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
+| `testsuite/bsc.lib/vector/libvector.exp` | 24 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.mcd/ClockDividers/ClockDividers.exp` | 14 | review | `copy`×16 (filesystem), `erase`×4 (filesystem), `proc`×1 (control/state), `test_veri`×6 (unsupported contract) |
+| `testsuite/bsc.mcd/DisabledClocks/disabled_clocks.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.mcd/Examples/Example.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract) |
+| `testsuite/bsc.mcd/Gating/Gating.exp` | 24 | review | `set`×1 (control/state) |
+| `testsuite/bsc.mcd/Gating/attributes/attributes.exp` | 6 | review | `dont_find_port`×7 (custom helper), `find_port`×9 (unsupported assertion), `if`×1 (control/state), `proc`×2 (control/state) |
+| `testsuite/bsc.mcd/Gating/portprop/portprop.exp` | 8 | review | `if`×2 (control/state), `no_warnings`×1 (custom helper) |
+| `testsuite/bsc.mcd/Hierarchy/Hierarchy.exp` | 29 | review | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state), `set`×2 (control/state) |
+| `testsuite/bsc.mcd/LevelFifo/LevelFifo.exp` | 14 | review | `$majmin`×1 (custom helper), `[regexp`×1 (custom helper), `compile_object_fail_error`×5 (unsupported contract), `if`×2 (control/state), `set`×2 (control/state) |
+| `testsuite/bsc.mcd/Misc/mcd.exp` | 50 | review | `compare_file_bug`×5 (unsupported assertion), `compile_object_pass`×1 (unsupported contract), `compile_verilog_pass_no_warning`×1 (unsupported contract), `find_n_warning`×1 (unsupported assertion), `if`×4 (control/state), `link_objects_pass`×1 (manual toolchain), `set`×1 (control/state) |
+| `testsuite/bsc.mcd/ModArgs/ModArgs.exp` | 31 | blocked | known blocker: no-warning and no-internal-error contracts are not modeled |
+| `testsuite/bsc.mcd/MultErrors/mult_errors_mcd.exp` | 4 | review | `compile_object_fail_error`×3 (unsupported contract), `find_n_error`×6 (unsupported assertion), `if`×2 (control/state) |
+| `testsuite/bsc.mcd/NoClock/NoClock.exp` | 14 | review | `compile_object_pass`×1 (unsupported contract), `compile_object_pass_warning`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×3 (manual toolchain), `no_warnings`×2 (custom helper) |
+| `testsuite/bsc.mcd/NullCrossing/nullcrossing.exp` | 21 | review | `compile_object_fail_error`×2 (unsupported contract), `erase`×3 (filesystem), `if`×2 (control/state), `set`×3 (control/state) |
+| `testsuite/bsc.mcd/Reset/Reset.exp` | 41 | blocked | known blocker: dynamic branches, regular expressions, and simulation flow |
+| `testsuite/bsc.misc/deprecate/deprecate.exp` | 3 | review | `compile_pass_no_warning`×1 (unsupported contract), `compile_pass_warning`×2 (unsupported contract), `find_n_warning`×1 (unsupported assertion) |
+| `testsuite/bsc.misc/divmod/divmod.exp` | 8 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `set`×1 (control/state), `sim_output_status`×3 (manual toolchain) |
+| `testsuite/bsc.misc/eq3/eq3.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.misc/lambda_calculus/lambda_calculus.exp` | 16 | review | `compare_file_filter_ids`×20 (unsupported assertion), `if`×13 (control/state), `set`×1 (control/state) |
+| `testsuite/bsc.misc/method_conditions/method_conditions.exp` | 17 | review | `bluetcl_exec_compare_pass`×1 (custom helper), `check_positions`×17 (custom helper), `if`×10 (control/state), `proc`×1 (control/state), `set`×3 (control/state) |
+| `testsuite/bsc.misc/mul/mul.exp` | 7 | review | `if`×2 (control/state) |
+| `testsuite/bsc.misc/sal/sal.exp` | 16 | review | `compare_file_filter_ids`×20 (unsupported assertion), `copy`×1 (filesystem), `erase`×1 (filesystem), `foreach`×2 (control/state), `if`×13 (control/state), `set`×4 (control/state) |
+| `testsuite/bsc.names/hierarchy/hierarchy.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract), `if`×4 (control/state) |
+| `testsuite/bsc.names/portRenaming/alwaysEnabled/alwaysEnabled.exp` | 11 | review | `if`×1 (control/state) |
+| `testsuite/bsc.names/portRenaming/alwaysReady/alwaysReady.exp` | 11 | review | `if`×1 (control/state) |
+| `testsuite/bsc.names/portRenaming/bugs/bugs.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.names/portRenaming/enableTests/enableTests.exp` | 11 | blocked | known blocker: no-main link contract is not modeled |
+| `testsuite/bsc.names/portRenaming/misc/misc.exp` | 7 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×6 (unsupported contract), `if`×1 (control/state), `link_verilog_no_main_pass`×4 (manual toolchain) |
+| `testsuite/bsc.names/portRenaming/paths/portnames.exp` | 1 | review | `if`×1 (control/state) |
+| `testsuite/bsc.names/portRenaming/portTests/portTests.exp` | 10 | review | `link_verilog_no_main_pass`×8 (manual toolchain) |
+| `testsuite/bsc.names/portRenaming/prefixTests/methods/methods.exp` | 11 | review | `link_verilog_no_main_pass`×9 (manual toolchain) |
+| `testsuite/bsc.names/portRenaming/prefixTests/sub_interfaces/sub_interfaces.exp` | 16 | review | `if`×3 (control/state), `link_verilog_no_main_pass`×10 (manual toolchain) |
+| `testsuite/bsc.names/portRenaming/readyTests/readyTests.exp` | 11 | review | `link_verilog_no_main_pass`×8 (manual toolchain) |
+| `testsuite/bsc.names/portRenaming/resultTests/resultTests.exp` | 10 | review | `link_verilog_no_main_pass`×8 (manual toolchain) |
+| `testsuite/bsc.names/portRenaming/vectorTests/vectorTests.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.names/rtl_names/names.exp` | 2 | review | `check_rtl_name`×7 (custom helper), `find_n_strings_bug`×1 (unsupported assertion), `global`×2 (control/state), `if`×2 (control/state), `proc`×2 (control/state) |
+| `testsuite/bsc.names/signal_names/signal_names.exp` | 1 | review | `check_ats`×7 (custom helper), `compare_file_filter_ids`×1 (unsupported assertion), `global`×1 (control/state), `if`×1 (control/state), `proc`×1 (control/state), `set`×3 (control/state) |
+| `testsuite/bsc.names/state_names/state_names.exp` | 3 | review | `global`×1 (control/state), `if`×1 (control/state) |
+| `testsuite/bsc.options/messages/messages.exp` | 15 | review | `copy`×13 (filesystem), `if`×15 (control/state), `m4_process`×2 (custom helper), `test_basic_options`×3 (unsupported contract) |
+| `testsuite/bsc.options/options.exp` | 13 | review | `$majmin`×1 (custom helper), `[regexp`×1 (custom helper), `append`×1 (control/state), `bsc_compile_to_object`×2 (custom helper), `bsc_link_objects`×1 (custom helper), `compile_expand_if`×2 (unsupported contract), `compile_no_source_fail_error`×3 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `copy`×3 (filesystem), `do_m4`×3 (custom helper), `erase_many`×3 (custom helper), `files_exist`×8 (custom helper), `global`×2 (control/state), `if`×10 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `m4_process`×12 (custom helper), `mkdir`×11 (filesystem), `nukedir`×4 (custom helper), `proc`×3 (control/state), `sed`×2 (custom helper), `set`×12 (control/state), `test_basic_options`×14 (unsupported contract), `test_no_expand_if`×2 (unsupported contract), `touch`×3 (filesystem) |
+| `testsuite/bsc.options/verilog-e/verilog-e.exp` | 1 | review | `check_verilog_output`×2 (custom helper), `find_n_error`×2 (unsupported assertion), `if`×1 (control/state), `link_verilog_fail`×2 (manual toolchain), `link_verilog_pass`×4 (manual toolchain), `m4_process`×2 (custom helper), `move`×2 (filesystem), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.preprocessor/include/include.exp` | 5 | review | `chmod`×1 (custom helper), `compile_fail_bug`×1 (unsupported contract), `copy`×2 (filesystem), `if`×1 (control/state), `m4_process`×2 (custom helper), `mkdir`×2 (filesystem), `set`×2 (control/state) |
+| `testsuite/bsc.preprocessor/misc/misc.exp` | 22 | review | `compare_file_filtered`×5 (unsupported assertion), `compile_fail_bug`×2 (unsupported contract), `set`×3 (control/state) |
+| `testsuite/bsc.real/evaluator/errors/errors.exp` | 15 | review | `if`×1 (control/state) |
+| `testsuite/bsc.real/evaluator/evaluator.exp` | 15 | review | `if`×1 (control/state) |
+| `testsuite/bsc.real/parser/parser.exp` | 3 | review | `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/attribute_scope/attribute_scope.exp` | 39 | review | `compile_verilog_pass_bug`×5 (unsupported contract), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/avmeth/avmeth.exp` | 5 | review | `compare_file_filter_ids`×3 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/disjoint/disjoint.exp` | 6 | review | `compare_file_filter_ids`×3 (unsupported assertion), `compile_verilog_pass_no_warning_bug`×1 (unsupported contract), `if`×3 (control/state) |
+| `testsuite/bsc.scheduler/dump/dump.exp` | 6 | review | `erase`×2 (filesystem), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/earliness/earliness.exp` | 13 | review | `compile_verilog_pass_no_warning`×4 (unsupported contract), `compile_verilog_pass_warning_bug`×1 (unsupported contract), `copy`×1 (filesystem), `erase`×1 (filesystem), `find_n_warning`×3 (unsupported assertion), `if`×1 (control/state), `set`×1 (control/state) |
+| `testsuite/bsc.scheduler/mutually_exclusive/mutually_exclusive.exp` | 10 | review | `compile_verilog_fail_bug`×1 (unsupported contract), `compile_verilog_pass_no_warning`×1 (unsupported contract), `find_n_strings_bug`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/relax-schedule/relax-schedule.exp` | 18 | review | `compare_file_filter_ids`×12 (unsupported assertion), `compile_backend_pass`×1 (unsupported contract), `compile_object_fail_error`×11 (unsupported contract), `compile_object_pass`×4 (unsupported contract), `if`×16 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_objects_pass`×4 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `set`×1 (control/state) |
+| `testsuite/bsc.scheduler/resource/resource.exp` | 11 | review | `compare_file_filter_ids`×11 (unsupported assertion), `compile_verilog_schedule_fail`×8 (unsupported contract), `compile_verilog_schedule_pass_bug`×1 (unsupported contract), `find_n_error`×1 (unsupported assertion), `find_n_strings_bug`×1 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/rulesort/rulesort.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.scheduler/sbr/sbr.exp` | 3 | review | `compare_file_filter_ids`×1 (unsupported assertion), `compile_object_fail_error`×1 (unsupported contract), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/sched-conditions/sched-conditions.exp` | 4 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `copy`×3 (filesystem), `erase`×3 (filesystem), `find_n_warning`×2 (unsupported assertion), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/scheduler.exp` | 19 | review | `compare_file_filter_ids`×18 (unsupported assertion), `compile_verilog_schedule_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.scheduler/urgency/urgency.exp` | 25 | review | `compare_file_filter_ids`×13 (unsupported assertion), `compile_verilog_pass_no_warning_bug`×1 (unsupported contract), `compile_verilog_pass_warning_bug`×2 (unsupported contract), `compile_verilog_schedule_fail_bug`×1 (unsupported contract), `if`×1 (control/state) |
+| `testsuite/bsc.scheduler/use_cond/use_cond.exp` | 20 | review | `compile_object_pass`×3 (unsupported contract), `link_objects_pass`×3 (manual toolchain) |
+| `testsuite/bsc.showrules/showrules.exp` | 6 | review | `bsc_initialize`×1 (custom helper), `compile_object_pass`×6 (unsupported contract), `if`×13 (control/state), `link_objects_pass`×6 (manual toolchain), `link_verilog_pass`×6 (manual toolchain), `move`×6 (filesystem), `note`×1 (custom helper), `showrules`×12 (custom helper), `sim_output`×6 (manual toolchain), `sim_verilog_vcd`×6 (manual toolchain), `vcdcheck_pass`×12 (custom helper) |
+| `testsuite/bsc.syntax/bh/bh.exp` | 73 | review | `check_lex_pos`×4 (custom helper), `compile_pass_bug`×2 (unsupported contract), `dumpbi`×1 (custom helper), `if`×1 (control/state), `proc`×1 (control/state), `set`×1 (control/state) |
+| `testsuite/bsc.syntax/bh/bh_pragmas/bh_pragmas.exp` | 15 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.syntax/bh_parse_pretty/bh-parse-pretty.exp` | 0 | dynamic/custom | `compile_ppp_pass`×4 (unsupported contract), `compile_ppp_pass_bug`×1 (unsupported contract), `fail`×1 (custom helper), `global`×1 (control/state), `if`×2 (control/state), `incr_stat`×1 (custom helper), `pass`×1 (custom helper), `proc`×3 (control/state), `return`×2 (control/state), `set`×1 (control/state), `setup_xfail`×1 (custom helper), `strip_dump_wrapper`×1 (custom helper) |
+| `testsuite/bsc.syntax/bsv05/bsv05.exp` | 227 | review | `compile_fail_bug`×7 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `compile_pass_bug`×1 (unsupported contract), `compile_pass_bug_error`×1 (unsupported contract), `compile_pass_warning`×3 (unsupported contract), `dumpbi`×2 (custom helper), `if`×3 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
+| `testsuite/bsc.syntax/bsv05/method-args/method-args.exp` | 3 | review | `compile_pass_warning`×2 (unsupported contract), `compile_verilog_pass_no_warning`×1 (unsupported contract), `if`×1 (control/state), `no_warnings`×1 (custom helper) |
+| `testsuite/bsc.syntax/bsv05/statename/statename.exp` | 4 | review | `if`×1 (control/state) |
+| `testsuite/bsc.syntax/bsv05/strings/parse_strings.exp` | 7 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain) |
+| `testsuite/bsc.syntax/bsv05_parse_pretty/bsv05-parse-pretty.exp` | 0 | dynamic/custom | `compile_ppp_pass`×12 (unsupported contract), `fail`×1 (custom helper), `global`×1 (control/state), `if`×2 (control/state), `incr_stat`×1 (custom helper), `pass`×1 (custom helper), `proc`×3 (control/state), `return`×2 (control/state), `set`×1 (control/state), `setup_xfail`×1 (custom helper), `strip_dump_wrapper`×1 (custom helper) |
+| `testsuite/bsc.synthesize/synthesize.exp` | 0 | dynamic/custom | `compile_synthesize_verilog_pass_bug`×1 (unsupported contract) |
+| `testsuite/bsc.typechecker/bound-type-vars/bound-type-vars.exp` | 4 | review | `find_n_error`×1 (unsupported assertion) |
+| `testsuite/bsc.typechecker/class_defaults/class_defaults.exp` | 8 | review | `compile_verilog_pass_no_warning`×4 (unsupported contract), `if`×6 (control/state), `test_veri_only`×1 (unsupported contract) |
+| `testsuite/bsc.typechecker/deriving/deriving.exp` | 14 | review | `compile_pass_bug_error`×2 (unsupported contract), `test_veri_only`×1 (unsupported contract) |
+| `testsuite/bsc.typechecker/dontcare/dontcare.exp` | 14 | review | `compare_file_list`×1 (unsupported assertion), `erase`×1 (filesystem), `if`×1 (control/state), `move`×2 (filesystem) |
+| `testsuite/bsc.typechecker/foreignmodule/foreignmodule.exp` | 20 | review | `compile_fail_error_bug`×2 (unsupported contract) |
+| `testsuite/bsc.typechecker/generics/generics.exp` | 7 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.typechecker/higherrank/higherrank.exp` | 4 | review | `test_veri_only`×3 (unsupported contract) |
+| `testsuite/bsc.typechecker/instances/incoherent/incoherent.exp` | 11 | review | `compile_pass_warning`×1 (unsupported contract) |
+| `testsuite/bsc.typechecker/instances/instances.exp` | 43 | review | `compile_pass_no_warning`×1 (unsupported contract), `compile_pass_warning`×1 (unsupported contract) |
+| `testsuite/bsc.typechecker/instances/order/order.exp` | 16 | review | `erase`×5 (filesystem) |
+| `testsuite/bsc.typechecker/instances/orphan/orphans.exp` | 0 | dynamic/custom | `compile_pass_no_warning`×2 (unsupported contract), `compile_pass_warning`×2 (unsupported contract) |
+| `testsuite/bsc.typechecker/literals/literals.exp` | 18 | review | `if`×2 (control/state) |
+| `testsuite/bsc.typechecker/numeric/numeric.exp` | 74 | review | `compile_fail_bug`×8 (unsupported contract), `compile_pass_bug`×12 (unsupported contract), `compile_pass_no_warning`×4 (unsupported contract), `if`×2 (control/state) |
+| `testsuite/bsc.typechecker/partial/partial.exp` | 1 | review | `compile_pass_no_warning`×1 (unsupported contract), `compile_pass_warning`×5 (unsupported contract) |
+| `testsuite/bsc.typechecker/string/string.exp` | 14 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.typechecker/typechecker.exp` | 17 | review | `compile_object_pass`×1 (unsupported contract), `compile_pass_bug`×1 (unsupported contract) |
+| `testsuite/bsc.typechecker/typeclasses/coherence/coherence.exp` | 14 | review | `erase`×1 (filesystem), `find_n_warning`×6 (unsupported assertion) |
+| `testsuite/bsc.typechecker/typeclasses/typeclasses.exp` | 73 | review | `compile_backend_pass`×2 (unsupported contract) |
+| `testsuite/bsc.vcdcheck/vcdcheck.exp` | 0 | dynamic/custom | `vcdcheck_fail`×5 (custom helper), `vcdcheck_pass`×6 (custom helper) |
+| `testsuite/bsc.verilog/astate/astate.exp` | 13 | review | `compile_object_pass`×1 (unsupported contract), `if`×2 (control/state), `set`×1 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.verilog/comments/comments.exp` | 29 | review | `if`×25 (control/state), `move`×2 (filesystem), `touch`×1 (filesystem) |
+| `testsuite/bsc.verilog/derived_bits/derived_bits.exp` | 8 | review | `do_tests`×10 (custom helper), `proc`×1 (control/state) |
+| `testsuite/bsc.verilog/dollar/dollar.exp` | 1 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `link_objects_fail`×1 (manual toolchain) |
+| `testsuite/bsc.verilog/dollar/renaming/rename.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.verilog/dollar/renaming2/rename.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.verilog/dollar/renaming4/rename.exp` | 2 | review | `erase`×2 (filesystem), `link_verilog_pass`×1 (manual toolchain), `link_verilog_pass_bug`×1 (manual toolchain) |
+| `testsuite/bsc.verilog/filter/filter.exp` | 5 | review | `erase`×4 (filesystem), `if`×1 (control/state), `proc`×1 (control/state), `return`×1 (control/state), `set`×6 (control/state) |
+| `testsuite/bsc.verilog/foreign_module/foreign_module.exp` | 19 | blocked | known blocker: active failure source is missing |
+| `testsuite/bsc.verilog/inline/inline.exp` | 3 | review | `if`×3 (control/state) |
+| `testsuite/bsc.verilog/inout/inout.exp` | 35 | review | `bsc_initialize`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `erase`×2 (filesystem), `erase_many`×1 (custom helper), `find_n_error`×1 (unsupported assertion), `foreach`×2 (control/state), `global`×1 (control/state), `if`×3 (control/state), `move`×2 (filesystem), `proc`×1 (control/state), `set`×5 (control/state), `test_inout_simulation`×2 (unsupported contract) |
+| `testsuite/bsc.verilog/noinline/divbug/noinline_divbug.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
+| `testsuite/bsc.verilog/noinline/noinline.exp` | 19 | review | `if`×2 (control/state) |
+| `testsuite/bsc.verilog/opt/opt.exp` | 9 | review | `find_n_strings_bug`×1 (unsupported assertion), `find_regexp_bug`×1 (unsupported assertion), `if`×7 (control/state) |
+| `testsuite/bsc.verilog/parameters/parameters.exp` | 13 | review | `check_verilog_output`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `if`×3 (control/state), `link_objects_pass_bug`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `mkModulePort_WithStaticValue_TwoLevel_Sub2`×1 (custom helper), `move`×1 (filesystem), `sim_verilog`×1 (manual toolchain), `touch`×1 (filesystem) |
+| `testsuite/bsc.verilog/parameters/real/real_param.exp` | 6 | review | `if`×1 (control/state) |
+| `testsuite/bsc.verilog/parameters/string/string_param.exp` | 10 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_fail_error`×1 (unsupported contract) |
+| `testsuite/bsc.verilog/portprops/portprops.exp` | 25 | review | `if`×1 (control/state) |
+| `testsuite/bsc.verilog/positivereset/ClockDividers/ClockDividers.exp` | 14 | review | `copy`×16 (filesystem), `erase`×4 (filesystem), `proc`×1 (control/state), `set`×3 (control/state), `test_veri`×6 (unsupported contract) |
+| `testsuite/bsc.verilog/positivereset/Reset/Reset.exp` | 35 | review | `if`×12 (control/state), `no_warnings`×10 (custom helper), `set`×3 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.verilog/positivereset/nameclash/nameclash.exp` | 6 | review | `if`×2 (control/state) |
+| `testsuite/bsc.verilog/positivereset/simulation/simulation.exp` | 2 | review | `if`×2 (control/state), `move`×2 (filesystem), `set`×1 (control/state), `sim_output`×1 (manual toolchain), `sim_verilog_vcd`×1 (manual toolchain), `vcdcheck_pass`×2 (custom helper) |
+| `testsuite/bsc.verilog/quirks/quirks.exp` | 14 | review | `link_verilog_pass`×2 (manual toolchain) |
+| `testsuite/bsc.verilog/splitports/splitports.exp` | 36 | review | `if`×13 (control/state) |
+| `testsuite/bsc.verilog/tasks/interfacecalls/interfacecalls.exp` | 6 | review | `compare_file_bug`×3 (unsupported assertion), `compile_object_pass`×2 (unsupported contract), `copy`×4 (filesystem), `erase`×4 (filesystem), `if`×4 (control/state), `link_objects_pass`×2 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain), `sim_verilog`×2 (manual toolchain) |
+| `testsuite/bsc.verilog/tasks/plusargs/plusargs.exp` | 6 | review | `global`×3 (control/state), `if`×3 (control/state), `move`×2 (filesystem), `proc`×1 (control/state), `set`×2 (control/state), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain), `test_plusargs`×6 (unsupported contract) |
+| `testsuite/bsc.verilog/tasks/tasks.exp` | 64 | review | `$majmin`×1 (custom helper), `($verilog_compiler_version`×1 (custom helper), `[regexp`×1 (custom helper), `awk`×2 (custom helper), `compare_file_filtered`×1 (unsupported assertion), `compile_object_pass`×5 (unsupported contract), `copy`×1 (filesystem), `if`×7 (control/state), `link_objects_pass`×5 (manual toolchain), `link_verilog_pass`×4 (manual toolchain), `move`×4 (filesystem), `set`×6 (control/state), `sim_output`×1 (manual toolchain), `sim_output_status`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain), `sim_verilog_status`×1 (manual toolchain), `sort`×2 (custom helper) |
+| `testsuite/bsc.verilog/undet/undet.exp` | 9 | review | `if`×2 (control/state) |
+| `testsuite/bsc.verilog/v95/v95.exp` | 5 | review | `erase`×6 (filesystem) |
+| `testsuite/bsc.verilog/vcd/vcd.exp` | 2 | review | `link_verilog_pass`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
+| `testsuite/bsc.verilog/verilog.exp` | 8 | review | `if`×1 (control/state), `test_c_only`×5 (unsupported contract), `test_c_only_bs_modules_options`×1 (unsupported contract), `test_veri_only`×6 (unsupported contract) |

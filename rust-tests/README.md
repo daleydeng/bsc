@@ -18,8 +18,8 @@ pixi run just configure-oss-cad-suite D:\software\oss-cad-suite
 pixi run just test            # 使用全部缓存运行测试，并实时报告 contract 进度与重型场景
 pixi run just test-cold       # 禁用全部缓存，执行带实时进度的完整冷验证
 pixi run just test-alignment  # 只检查 Rust 声明是否仍与 testsuite 对齐
-pixi run just inventory-check # 检查完整剩余清单是否与当前迁移状态一致
-pixi run just inventory-update # 迁移后重建 rust-tests/REMAINING.md
+pixi run just inventory-check # 检查剩余清单、迁移 readiness 与 blocker registry
+pixi run just inventory-update # 迁移后重建 rust-tests/REMAINING.md 及候选队列
 pixi run just test-prune      # 清理中断或失败运行留下的 disposable work/artifact
 pixi run just test-z3         # 只运行 24 个 Z3 scheduler tests
 pixi run just test-upstream   # 对齐检查后运行全部已迁移 upstream contracts
@@ -102,8 +102,11 @@ pixi run just test-alignment
 - Rust scheduler case 列表必须与 `sat.exp` 的 `set sources` 顺序和内容一致，且每个 BSV/Yices expected 必须存在。
 - 全局 Rust contract name 与 simulation scenario name 必须分别唯一；scenario 的 source、expected outcome、backend requirement、VCD contract、generated modules、phase timeout 和 fixture 声明必须满足结构约束；同一 generation scenario 不允许混合 generation-success 与 generation-failure contract。
 - 递归统计整个 `testsuite` 的 `.exp` 测试来源，排除 `config/unix.exp`、`lib/bsc.exp` 和 `site.exp` 三个 harness 文件，并报告已迁移与剩余脚本数。迁移完成前，剩余项只报告覆盖率，不导致失败。
+- 对每份未迁移 `.exp` 分析活动 Tcl command vocabulary，分类为 `candidate`、`review`、`blocked` 或 `dynamic/custom`；报告 unsupported command 的类别、调用数、影响脚本数和静态 contract 数，并验证 curated blocker registry 中没有已经迁移或失效的来源。
 
-`test-upstream` 和默认 `test` 已自动先运行 alignment 与 `inventory-check`，因此 upstream 新增、删除或改名受支持的 Tcl 调用、Rust 完成新迁移但忘记更新剩余清单时，都会在执行较慢的 BSC tests 前快速失败。
+自动生成的 [`REMAINING.md`](REMAINING.md) 是剩余范围、readiness、候选优先级和 Tcl helper 杠杆的唯一事实来源。`candidate` 只表示现有 Rust 数据模型已覆盖脚本的活动命令词汇，迁移前仍须人工核对整份脚本的 fixture、options、golden、bug gate 和运行行为。
+
+`test-upstream` 和默认 `test` 已自动先运行 alignment 与 `inventory-check`，因此 upstream 新增、删除或改名受支持的 Tcl 调用、blocker registry 失效、Rust 完成新迁移但忘记更新剩余清单时，都会在执行较慢的 BSC tests 前快速失败。
 
 ## 工作目录与产物
 
