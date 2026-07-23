@@ -15,7 +15,13 @@ macro_rules! case_modules {
 }
 
 case_modules!(
+    amba_trans_model,
+    b402,
+    b621,
     b810,
+    b898,
+    backend_runtime_regressions,
+    bh_pragmas,
     bounds_select,
     bounds_update,
     case_syntax,
@@ -29,14 +35,25 @@ case_modules!(
     cross_suite_static_examples,
     cross_suite_static_language,
     cross_suite_static_library,
+    cshow,
     dynamic,
     dynamic_strings,
+    foldable,
     fwrite,
     gearbox,
+    generics,
+    gh836,
+    library_runtime,
+    life,
+    memq,
     read_desugaring,
     small_regressions,
     static_regressions,
+    stmt_fsm,
+    string_types,
     vcd_smoke,
+    vector,
+    vending,
 );
 
 pub(super) fn scenarios() -> &'static [SimulationScenario] {

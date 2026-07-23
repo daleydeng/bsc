@@ -225,6 +225,14 @@ Artifact actual 必须是 workspace 内的安全相对路径；expected 必须�
 
 随后完整迁移 `import-foreign` 的 74 个 compile contract，覆盖 warning count、compiler golden、generated RTL regex 和 2 个 `compare_verilog`。新增 Rust-only `ArtifactAssertion::ParsesAsSystemVerilog`，使用 `sv-parser 0.13.5` 对现有 4 个 Verilog golden actual 做 IEEE 1800-2017 syntax smoke；parser assertion 不进入 Tcl multiplicity，且不替代 normalized golden，真实 Verilog 工具链兼容继续由 Icarus 验证。当前累计覆盖 **322/860** 个来源和 **1637/4672** 个静态 contract；剩余 **538** 个来源、**3035** 个静态 contract，另有 221 个脚本需要动态或自定义 Tcl 分析。
 
+### Migration readiness 与首轮自动候选迁移
+
+剩余 inventory 进一步分析每份未迁移 `.exp` 的活动 Tcl command vocabulary，按 `candidate`、`review`、`blocked`、`dynamic/custom` 分类，并汇总 unsupported command 的类别、调用次数、影响脚本与静态 contract。Curated blocker registry 与未迁移来源集合双向守门；blocker 已迁移、删除或路径漂移时 `inventory-check` 会立即失败。静态 contract 分母由单元测试固定为 4672，避免 readiness 分析改变覆盖口径。
+
+首轮 analyzer 得到 33 个 lexical candidate、121 个静态 contract。全部候选经逐份 fixture/options/golden/bug-gate review 后整份迁移：新增 32 个 compile contract，以及 51 个 simulation scenario 展开的 89 个 backend contract，覆盖 vector、string/generics、BH pragma、library runtime、Verilog golden、warning count、额外 generated module、backend-specific generation、空 golden、VCD 和 artifact comparison。迁移后 lexical candidate 队列归零，累计覆盖 **355/860** 个来源和 **1758/4672** 个静态 contract；剩余 **505** 个来源、**2914** 个静态 contract，仍有 221 个脚本需要动态或自定义 Tcl 分析。
+
+首次完整运行通过 52 个 helper tests、24 个 scheduler tests 和 1734 个 upstream dynamic contracts；新增批次产生 32 个 BSC result cache miss/store 与 51 个 generation cache miss/store，全部 contract 通过。
+
 ### Generation cache 与性能基线
 
 默认 `test` 对成功的 simulation generation workspace 使用 SHA-256 内容寻址缓存；cache hit 仍重新执行 link、simulation 与 golden compare。完整 cache-fill 冷运行的 upstream artifact wall time 为 **435.5 秒**，128 个 simulation generation 全部 miss 并写入；随后完整热运行 128/128 hit，artifact wall time 为 **17.4 秒**，293 个 upstream case 均通过。

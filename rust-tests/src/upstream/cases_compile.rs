@@ -198,7 +198,9 @@ macro_rules! case_modules {
 case_modules!(
     attr_errors,
     b235,
+    b378,
     b810,
+    bh_pragmas,
     bluespec_inc_fail,
     bluespec_inc_golden,
     bluespec_inc_golden_mixed,
@@ -229,11 +231,14 @@ case_modules!(
     cross_suite_simulation_library,
     cross_suite_verilog_options,
     cross_suite_verilog_static,
+    disabled_clocks,
+    documentation,
     dynamic,
     enable_ready,
     enot_field,
     error_recovery,
     fwrite,
+    generics,
     import_foreign,
     infer_kinds,
     mismatch,
@@ -242,7 +247,10 @@ case_modules!(
     read_desugaring,
     small_regressions,
     sshow,
+    string_types,
     underscore,
+    vending,
+    verilog_golden_regressions,
 );
 
 pub(super) fn cases() -> &'static [CompileCase] {

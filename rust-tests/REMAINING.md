@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Remaining test scripts: **538**
-- Remaining statically declared contracts: **3035**
-- Lexically clean migration candidates: **33 scripts / 121 contracts**
+- Remaining test scripts: **505**
+- Remaining statically declared contracts: **2914**
+- Lexically clean migration candidates: **0 scripts / 0 contracts**
 - Static scripts requiring Tcl review or new helpers: **263 scripts / 2651 contracts**
 - Curated known blockers: **21 scripts / 263 contracts**
 - Fully dynamic/custom scripts: **221 scripts / 0 currently recognized contracts**
@@ -18,39 +18,6 @@
 
 | Origin | Static contracts |
 | --- | ---: |
-| `testsuite/bsc.lib/vector/libvector.exp` | 24 |
-| `testsuite/bsc.syntax/bh/bh_pragmas/bh_pragmas.exp` | 15 |
-| `testsuite/bsc.typechecker/string/string.exp` | 14 |
-| `testsuite/bsc.typechecker/generics/generics.exp` | 7 |
-| `testsuite/bsc.bugs/bluespec_inc/b621/b621.exp` | 4 |
-| `testsuite/bsc.bugs/bluespec_inc/b898/b898.exp` | 4 |
-| `testsuite/bsc.bugs/github/gh836/gh836.exp` | 4 |
-| `testsuite/bsc.lib/Foldable/Foldable.exp` | 4 |
-| `testsuite/bsc.mcd/DisabledClocks/disabled_clocks.exp` | 4 |
-| `testsuite/bsc.bsv_examples/vending/vending.exp` | 3 |
-| `testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp` | 2 |
-| `testsuite/bsc.bsv_examples/Life/example_life.exp` | 2 |
-| `testsuite/bsc.bsv_examples/memq/priq.exp` | 2 |
-| `testsuite/bsc.bugs/bluespec_inc/b378/b378.exp` | 2 |
-| `testsuite/bsc.bugs/bluespec_inc/b402/b402.exp` | 2 |
-| `testsuite/bsc.doc/doc.exp` | 2 |
-| `testsuite/bsc.interra/StmtFSM/CycleTest/cycletest.exp` | 2 |
-| `testsuite/bsc.interra/StmtFSM/ServerInServer/serverinserver.exp` | 2 |
-| `testsuite/bsc.lib/CShow/CShow.exp` | 2 |
-| `testsuite/bsc.lib/PrintType/PrintType.exp` | 2 |
-| `testsuite/bsc.lib/Traversable/Traversable.exp` | 2 |
-| `testsuite/bsc.lib/listn/liblistn.exp` | 2 |
-| `testsuite/bsc.names/portRenaming/vectorTests/vectorTests.exp` | 2 |
-| `testsuite/bsc.scheduler/rulesort/rulesort.exp` | 2 |
-| `testsuite/bsc.verilog/noinline/divbug/noinline_divbug.exp` | 2 |
-| `testsuite/bsc.bugs/bluespec_inc/b1354/b1354.exp` | 1 |
-| `testsuite/bsc.bugs/bluespec_inc/b1540/b1540.exp` | 1 |
-| `testsuite/bsc.bugs/bluespec_inc/b293/b293.exp` | 1 |
-| `testsuite/bsc.bugs/bluespec_inc/b302/b302.exp` | 1 |
-| `testsuite/bsc.bugs/bluespec_inc/b569/b569.exp` | 1 |
-| `testsuite/bsc.lib/PAClib/qsort/bsv/paclib_qsort.exp` | 1 |
-| `testsuite/bsc.verilog/dollar/renaming/rename.exp` | 1 |
-| `testsuite/bsc.verilog/dollar/renaming2/rename.exp` | 1 |
 
 ## Highest-leverage unsupported Tcl commands
 
@@ -109,29 +76,28 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `bsc.bluesim` | 15 | 33 | 0 | 0 | 12 | 1 |
 | `bsc.bluetcl` | 9 | 1 | 0 | 0 | 8 | 0 |
 | `bsc.bsc_examples` | 1 | 27 | 0 | 0 | 0 | 0 |
-| `bsc.bsv_examples` | 33 | 84 | 4 | 9 | 11 | 1 |
-| `bsc.bugs` | 74 | 136 | 10 | 21 | 15 | 3 |
+| `bsc.bsv_examples` | 29 | 75 | 0 | 0 | 11 | 1 |
+| `bsc.bugs` | 64 | 115 | 0 | 0 | 15 | 3 |
 | `bsc.codegen` | 10 | 113 | 0 | 0 | 0 | 0 |
 | `bsc.compile` | 2 | 31 | 0 | 0 | 0 | 1 |
-| `bsc.doc` | 1 | 2 | 1 | 2 | 0 | 0 |
 | `bsc.driver` | 8 | 74 | 0 | 0 | 1 | 1 |
 | `bsc.evaluator` | 20 | 241 | 0 | 0 | 1 | 1 |
 | `bsc.if` | 4 | 51 | 0 | 0 | 0 | 2 |
-| `bsc.interra` | 206 | 81 | 2 | 4 | 164 | 0 |
-| `bsc.lib` | 31 | 249 | 7 | 37 | 3 | 6 |
-| `bsc.mcd` | 14 | 262 | 1 | 4 | 0 | 2 |
+| `bsc.interra` | 204 | 77 | 0 | 0 | 164 | 0 |
+| `bsc.lib` | 24 | 212 | 0 | 0 | 3 | 6 |
+| `bsc.mcd` | 13 | 258 | 0 | 0 | 0 | 2 |
 | `bsc.misc` | 7 | 68 | 0 | 0 | 0 | 0 |
-| `bsc.names` | 16 | 110 | 1 | 2 | 0 | 1 |
+| `bsc.names` | 15 | 108 | 0 | 0 | 0 | 1 |
 | `bsc.options` | 3 | 29 | 0 | 0 | 0 | 0 |
 | `bsc.preprocessor` | 2 | 27 | 0 | 0 | 0 | 0 |
 | `bsc.real` | 3 | 33 | 0 | 0 | 0 | 0 |
-| `bsc.scheduler` | 14 | 181 | 1 | 2 | 0 | 0 |
+| `bsc.scheduler` | 13 | 179 | 0 | 0 | 0 | 0 |
 | `bsc.showrules` | 1 | 6 | 0 | 0 | 0 | 0 |
-| `bsc.syntax` | 8 | 329 | 1 | 15 | 2 | 0 |
+| `bsc.syntax` | 7 | 314 | 0 | 0 | 2 | 0 |
 | `bsc.synthesize` | 1 | 0 | 0 | 0 | 1 | 0 |
-| `bsc.typechecker` | 18 | 352 | 2 | 21 | 1 | 0 |
+| `bsc.typechecker` | 16 | 331 | 0 | 0 | 1 | 0 |
 | `bsc.vcdcheck` | 1 | 0 | 0 | 0 | 1 | 0 |
-| `bsc.verilog` | 31 | 408 | 3 | 4 | 0 | 1 |
+| `bsc.verilog` | 28 | 404 | 0 | 0 | 0 | 1 |
 
 ## Complete remaining list
 
@@ -170,11 +136,9 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract), `test_c_veri_bsv_multi_options`×2 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/AmbaLoadDemo/amba_load_demo.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/AmbaSynthesis/amba_syn.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bsv_examples/Amba_dmac/amba_dmac.exp` | 2 | review | `compare_file_bug`×1 (unsupported assertion), `if`×1 (control/state), `link_verilog_no_main_pass`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/AssertionsDemo/assert_demo.exp` | 11 | review | `if`×1 (control/state), `make_pass`×1 (custom helper) |
 | `testsuite/bsc.bsv_examples/FloatingPoint/floating_point.exp` | 12 | review | `make_pass`×1 (custom helper) |
-| `testsuite/bsc.bsv_examples/Life/example_life.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bsv_examples/MacTestBench/mac_testbench.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `mkCrcCalculator.ba`×1 (custom helper), `mkMiiPhyLayer.ba`×1 (custom helper), `mkMiiPhyLayerRx.ba`×1 (custom helper), `mkMiiPhyLayerTx.ba`×1 (custom helper), `module_calculateCrcNext.ba`×1 (custom helper), `set`×1 (control/state), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/Maxtree/maxtree.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_c_only_bsv_multi_options`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi_options`×1 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/RAMS/RAMS.exp` | 0 | dynamic/custom | `test_veri_only_bsv_multi`×1 (unsupported contract) |
@@ -191,14 +155,12 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bsv_examples/gcd/gcd.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×3 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/h264/h264.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/mcd_Rand/rand.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi_options`×1 (unsupported contract), `test_veri_only_bsv_multi_options`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/memq/priq.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bsv_examples/mesa/course_lab/course_lab.exp` | 7 | review | `cd`×2 (filesystem), `check_verilog_output`×1 (custom helper), `copy`×9 (filesystem), `erase`×7 (filesystem), `foreach`×1 (control/state), `global`×3 (control/state), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `mesa_cleanup`×3 (custom helper), `mesa_save_outputs`×4 (custom helper), `mesa_test_veri_and_sanitize_warnings`×4 (custom helper), `move`×3 (filesystem), `proc`×3 (control/state), `set`×2 (control/state), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv-cocoon/spiless-tx-bsv-cocoon.exp` | 1 | review | `check_verilog_output`×1 (custom helper), `erase`×2 (filesystem), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `move`×3 (filesystem), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv.exp` | 2 | review | `check_verilog_output`×1 (custom helper), `erase`×2 (filesystem), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `move`×3 (filesystem), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/pong/pong.exp` | 3 | review | `copy`×15 (filesystem), `erase`×7 (filesystem), `link_verilog_no_main_pass`×3 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/shifter/shifter.exp` | 14 | review | `compile_object_pass`×8 (unsupported contract), `copy`×16 (filesystem), `if`×16 (control/state), `link_objects_pass`×8 (manual toolchain), `link_verilog_pass`×8 (manual toolchain), `sim_output`×8 (manual toolchain), `sim_verilog`×8 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/sudoku/sudoku.exp` | 0 | dynamic/custom | `set`×1 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/vending/vending.exp` | 3 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bsv_examples/wallace/wallace.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×4 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b1018/b1018.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b1066/b1066.exp` | 2 | review | `if`×1 (control/state) |
@@ -208,14 +170,12 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bugs/bluespec_inc/b1240/b1240.exp` | 0 | dynamic/custom | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b1243/b1243.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b1249/b1249.exp` | 1 | review | `if`×1 (control/state) |
-| `testsuite/bsc.bugs/bluespec_inc/b1354/b1354.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b1390/b1390.exp` | 2 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b1402/b1402.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b1439/b1439.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `link_objects_pass`×2 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b1480/b1480.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b1489/b1489.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b1539/b1539.exp` | 2 | review | `compare_file_filter_prelude`×1 (unsupported assertion) |
-| `testsuite/bsc.bugs/bluespec_inc/b1540/b1540.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b1589/b1589.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b1595/b1595.exp` | 0 | dynamic/custom | `chmod`×1 (custom helper), `compile_object_pass`×3 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_fail`×1 (manual toolchain), `link_objects_pass`×1 (manual toolchain), `mkdir`×2 (filesystem), `move`×1 (filesystem) |
 | `testsuite/bsc.bugs/bluespec_inc/b1619/b1619.exp` | 3 | review | `if`×1 (control/state) |
@@ -234,17 +194,13 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bugs/bluespec_inc/b264/b264.exp` | 2 | review | `link_verilog_pass`×3 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b281/b281.exp` | 0 | dynamic/custom | `compile_pass_warning`×3 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b292/b292.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_fail`×1 (manual toolchain) |
-| `testsuite/bsc.bugs/bluespec_inc/b293/b293.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
-| `testsuite/bsc.bugs/bluespec_inc/b302/b302.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b312/b312.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b323/b323.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b329/b329.exp` | 0 | dynamic/custom | `compile_pass_warning`×3 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b335/b335.exp` | 1 | review | `if`×1 (control/state), `link_verilog_pass`×2 (manual toolchain), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b359/b359.exp` | 3 | review | `if`×1 (control/state) |
-| `testsuite/bsc.bugs/bluespec_inc/b378/b378.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b381/b381.exp` | 2 | review | `compare_file_filtered`×1 (unsupported assertion), `compile_fail_bug`×1 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b399/b399.exp` | 1 | review | `if`×1 (control/state) |
-| `testsuite/bsc.bugs/bluespec_inc/b402/b402.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b405/b405.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b437/b437.exp` | 0 | dynamic/custom | `compile_fail_error_bug`×3 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b484/b484.exp` | 1 | review | `if`×1 (control/state) |
@@ -255,9 +211,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bugs/bluespec_inc/b530/negativeshift.exp` | 5 | review | `compile_object_fail_error`×4 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `erase`×5 (filesystem), `link_objects_pass`×1 (manual toolchain), `sim_final_state`×1 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b535/b535.exp` | 3 | blocked | known blocker: manual copy, erase, link, and simulation flow |
 | `testsuite/bsc.bugs/bluespec_inc/b568/b568.exp` | 3 | review | `if`×1 (control/state) |
-| `testsuite/bsc.bugs/bluespec_inc/b569/b569.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b611/b611.exp` | 0 | dynamic/custom | `run_bsc2bsv`×1 (manual toolchain) |
-| `testsuite/bsc.bugs/bluespec_inc/b621/b621.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b628/b628.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b631/b631.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b690/b690.exp` | 3 | review | `if`×1 (control/state) |
@@ -268,10 +222,8 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bugs/bluespec_inc/b848/b848.exp` | 1 | review | `compare_verilog_bug`×1 (unsupported assertion) |
 | `testsuite/bsc.bugs/bluespec_inc/b864/b864.exp` | 4 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b893/b893.exp` | 1 | review | `if`×1 (control/state) |
-| `testsuite/bsc.bugs/bluespec_inc/b898/b898.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b925/b925.exp` | 8 | blocked | known blocker: backend-specific XFAIL and bug gate are not modeled |
 | `testsuite/bsc.bugs/github/gh276/gh276.exp` | 1 | review | `do_test`×6 (custom helper), `proc`×1 (control/state) |
-| `testsuite/bsc.bugs/github/gh836/gh836.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/perf-creg-blowup/perf-creg-blowup.exp` | 3 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/pre_bluespec_inc/pre_bluespec_inc.exp` | 18 | review | `compile_object_pass`×6 (unsupported contract), `erase`×1 (filesystem) |
 | `testsuite/bsc.codegen/case/case.exp` | 19 | review | `find_n_strings_bug`×4 (unsupported assertion), `if`×9 (control/state) |
@@ -286,7 +238,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.codegen/vector_modargs/vector_modargs.exp` | 23 | review | `if`×7 (control/state) |
 | `testsuite/bsc.compile/compile.exp` | 8 | blocked | known blocker: dynamic fixture replacement and delayed workflow |
 | `testsuite/bsc.compile/letrec/letrec.exp` | 23 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_pass_bug`×1 (unsupported contract) |
-| `testsuite/bsc.doc/doc.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.driver/bluesim/bluesim.exp` | 0 | dynamic/custom | `compile_object_pass`×3 (unsupported contract), `exec`×3 (manual toolchain), `if`×1 (control/state), `link_objects_pass`×3 (manual toolchain), `mkdir`×2 (filesystem), `move`×6 (filesystem), `nukedir`×2 (custom helper), `sim_output`×3 (manual toolchain), `touch`×1 (filesystem) |
 | `testsuite/bsc.driver/cpp/cpp.exp` | 6 | review | `if`×1 (control/state), `move`×1 (filesystem), `sed`×1 (custom helper) |
 | `testsuite/bsc.driver/depend/depend.exp` | 18 | review | `copy`×7 (filesystem), `erase`×4 (filesystem), `exec`×6 (manual toolchain), `global`×1 (control/state), `if`×4 (control/state), `make_lib`×2 (custom helper), `mkdir`×4 (filesystem), `proc`×1 (control/state), `set`×5 (control/state), `touch`×6 (filesystem) |
@@ -412,8 +363,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/OVL/assertZeroOneHot2/assertZeroOneHot2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
 | `testsuite/bsc.interra/Path_Analysis/Imported_Modules/Imported_Modules.exp` | 14 | review | `compare_file_bug`×2 (unsupported assertion), `if`×1 (control/state) |
 | `testsuite/bsc.interra/Path_Analysis/Input_Output_Path/Input_Output_Path.exp` | 16 | review | `if`×1 (control/state) |
-| `testsuite/bsc.interra/StmtFSM/CycleTest/cycletest.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
-| `testsuite/bsc.interra/StmtFSM/ServerInServer/serverinserver.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.interra/StmtFSM/Square1/square1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
 | `testsuite/bsc.interra/StmtFSM/Square2/square2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
 | `testsuite/bsc.interra/StmtFSM/Square3/square3.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
@@ -529,35 +478,27 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | 2 | blocked | known blocker: shared native Windows elaboration exceeds 300 seconds |
 | `testsuite/bsc.lib/BuildList/BuildList.exp` | 1 | review | `test_veri_only`×1 (unsupported contract) |
 | `testsuite/bsc.lib/CReg/CReg.exp` | 11 | review | `compare_file_filtered`×2 (unsupported assertion), `if`×1 (control/state), `move`×6 (filesystem), `move_test_output`×3 (custom helper), `proc`×2 (control/state), `set`×4 (control/state), `testSize`×5 (custom helper) |
-| `testsuite/bsc.lib/CShow/CShow.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/DefaultValue/DefaultValue.exp` | 3 | blocked | known blocker: compile_pass_warning is not modeled |
 | `testsuite/bsc.lib/Divide/divide.exp` | 2 | review | `do_test`×2 (custom helper), `proc`×1 (control/state) |
 | `testsuite/bsc.lib/FShow/FShow.exp` | 2 | blocked | known blocker: compile_pass_warning is not modeled |
 | `testsuite/bsc.lib/FixedPoint/FixedPoint.exp` | 24 | review | `find_n_warning`×7 (unsupported assertion), `if`×7 (control/state) |
 | `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` | 8 | blocked | known blocker: shared native Windows elaboration exceeds 600 seconds |
-| `testsuite/bsc.lib/Foldable/Foldable.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/IsModule/is_module.exp` | 3 | review | `if`×1 (control/state) |
 | `testsuite/bsc.lib/PAClib/dft64/bsv/paclib_dft.exp` | 3 | review | `if`×3 (control/state) |
-| `testsuite/bsc.lib/PAClib/qsort/bsv/paclib_qsort.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/PAClib/unit_tests/unit_test.exp` | 2 | review | `foreach`×1 (control/state), `set`×1 (control/state) |
 | `testsuite/bsc.lib/Prelude/Prelude.exp` | 14 | review | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
-| `testsuite/bsc.lib/PrintType/PrintType.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/SquareRoot/squareroot.exp` | 2 | review | `do_test`×2 (custom helper), `proc`×1 (control/state) |
 | `testsuite/bsc.lib/Stmt/FacTest/FacTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
 | `testsuite/bsc.lib/Stmt/RepeatTest/RepeatTest.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
 | `testsuite/bsc.lib/Stmt/Server/Server.exp` | 2 | review | `test_c_veri_bsv_multi`×2 (unsupported contract) |
-| `testsuite/bsc.lib/Traversable/Traversable.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/fifo/depth_param/depth_param.exp` | 13 | review | `compile_object_fail_error`×1 (unsupported contract) |
 | `testsuite/bsc.lib/fifo/fifo.exp` | 14 | review | `awk`×1 (custom helper), `if`×4 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
 | `testsuite/bsc.lib/getput/getput.exp` | 44 | blocked | known blocker: dynamic Icarus probing and additional assertions |
-| `testsuite/bsc.lib/listn/liblistn.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/oint/oint.exp` | 6 | blocked | known blocker: compile_verilog_pass_no_warning_bug is not modeled |
 | `testsuite/bsc.lib/regfile/lib.exp` | 16 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `if`×2 (control/state) |
 | `testsuite/bsc.lib/rwire/rwire.exp` | 31 | review | `compare_file_filter_ids`×2 (unsupported assertion), `copy`×4 (filesystem), `erase`×2 (filesystem), `if`×6 (control/state) |
 | `testsuite/bsc.lib/sram/sram.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
-| `testsuite/bsc.lib/vector/libvector.exp` | 24 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.mcd/ClockDividers/ClockDividers.exp` | 14 | review | `copy`×16 (filesystem), `erase`×4 (filesystem), `proc`×1 (control/state), `test_veri`×6 (unsupported contract) |
-| `testsuite/bsc.mcd/DisabledClocks/disabled_clocks.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.mcd/Examples/Example.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract) |
 | `testsuite/bsc.mcd/Gating/Gating.exp` | 24 | review | `set`×1 (control/state) |
 | `testsuite/bsc.mcd/Gating/attributes/attributes.exp` | 6 | review | `dont_find_port`×7 (custom helper), `find_port`×9 (unsupported assertion), `if`×1 (control/state), `proc`×2 (control/state) |
@@ -589,7 +530,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.names/portRenaming/prefixTests/sub_interfaces/sub_interfaces.exp` | 16 | review | `if`×3 (control/state), `link_verilog_no_main_pass`×10 (manual toolchain) |
 | `testsuite/bsc.names/portRenaming/readyTests/readyTests.exp` | 11 | review | `link_verilog_no_main_pass`×8 (manual toolchain) |
 | `testsuite/bsc.names/portRenaming/resultTests/resultTests.exp` | 10 | review | `link_verilog_no_main_pass`×8 (manual toolchain) |
-| `testsuite/bsc.names/portRenaming/vectorTests/vectorTests.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.names/rtl_names/names.exp` | 2 | review | `check_rtl_name`×7 (custom helper), `find_n_strings_bug`×1 (unsupported assertion), `global`×2 (control/state), `if`×2 (control/state), `proc`×2 (control/state) |
 | `testsuite/bsc.names/signal_names/signal_names.exp` | 1 | review | `check_ats`×7 (custom helper), `compare_file_filter_ids`×1 (unsupported assertion), `global`×1 (control/state), `if`×1 (control/state), `proc`×1 (control/state), `set`×3 (control/state) |
 | `testsuite/bsc.names/state_names/state_names.exp` | 3 | review | `global`×1 (control/state), `if`×1 (control/state) |
@@ -609,7 +549,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.scheduler/mutually_exclusive/mutually_exclusive.exp` | 10 | review | `compile_verilog_fail_bug`×1 (unsupported contract), `compile_verilog_pass_no_warning`×1 (unsupported contract), `find_n_strings_bug`×1 (unsupported assertion), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/relax-schedule/relax-schedule.exp` | 18 | review | `compare_file_filter_ids`×12 (unsupported assertion), `compile_backend_pass`×1 (unsupported contract), `compile_object_fail_error`×11 (unsupported contract), `compile_object_pass`×4 (unsupported contract), `if`×16 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_objects_pass`×4 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `set`×1 (control/state) |
 | `testsuite/bsc.scheduler/resource/resource.exp` | 11 | review | `compare_file_filter_ids`×11 (unsupported assertion), `compile_verilog_schedule_fail`×8 (unsupported contract), `compile_verilog_schedule_pass_bug`×1 (unsupported contract), `find_n_error`×1 (unsupported assertion), `find_n_strings_bug`×1 (unsupported assertion), `if`×1 (control/state) |
-| `testsuite/bsc.scheduler/rulesort/rulesort.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.scheduler/sbr/sbr.exp` | 3 | review | `compare_file_filter_ids`×1 (unsupported assertion), `compile_object_fail_error`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/sched-conditions/sched-conditions.exp` | 4 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `copy`×3 (filesystem), `erase`×3 (filesystem), `find_n_warning`×2 (unsupported assertion), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/scheduler.exp` | 19 | review | `compare_file_filter_ids`×18 (unsupported assertion), `compile_verilog_schedule_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
@@ -617,7 +556,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.scheduler/use_cond/use_cond.exp` | 20 | review | `compile_object_pass`×3 (unsupported contract), `link_objects_pass`×3 (manual toolchain) |
 | `testsuite/bsc.showrules/showrules.exp` | 6 | review | `bsc_initialize`×1 (custom helper), `compile_object_pass`×6 (unsupported contract), `if`×13 (control/state), `link_objects_pass`×6 (manual toolchain), `link_verilog_pass`×6 (manual toolchain), `move`×6 (filesystem), `note`×1 (custom helper), `showrules`×12 (custom helper), `sim_output`×6 (manual toolchain), `sim_verilog_vcd`×6 (manual toolchain), `vcdcheck_pass`×12 (custom helper) |
 | `testsuite/bsc.syntax/bh/bh.exp` | 73 | review | `check_lex_pos`×4 (custom helper), `compile_pass_bug`×2 (unsupported contract), `dumpbi`×1 (custom helper), `if`×1 (control/state), `proc`×1 (control/state), `set`×1 (control/state) |
-| `testsuite/bsc.syntax/bh/bh_pragmas/bh_pragmas.exp` | 15 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.syntax/bh_parse_pretty/bh-parse-pretty.exp` | 0 | dynamic/custom | `compile_ppp_pass`×4 (unsupported contract), `compile_ppp_pass_bug`×1 (unsupported contract), `fail`×1 (custom helper), `global`×1 (control/state), `if`×2 (control/state), `incr_stat`×1 (custom helper), `pass`×1 (custom helper), `proc`×3 (control/state), `return`×2 (control/state), `set`×1 (control/state), `setup_xfail`×1 (custom helper), `strip_dump_wrapper`×1 (custom helper) |
 | `testsuite/bsc.syntax/bsv05/bsv05.exp` | 227 | review | `compile_fail_bug`×7 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `compile_pass_bug`×1 (unsupported contract), `compile_pass_bug_error`×1 (unsupported contract), `compile_pass_warning`×3 (unsupported contract), `dumpbi`×2 (custom helper), `if`×3 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
 | `testsuite/bsc.syntax/bsv05/method-args/method-args.exp` | 3 | review | `compile_pass_warning`×2 (unsupported contract), `compile_verilog_pass_no_warning`×1 (unsupported contract), `if`×1 (control/state), `no_warnings`×1 (custom helper) |
@@ -630,7 +568,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.typechecker/deriving/deriving.exp` | 14 | review | `compile_pass_bug_error`×2 (unsupported contract), `test_veri_only`×1 (unsupported contract) |
 | `testsuite/bsc.typechecker/dontcare/dontcare.exp` | 14 | review | `compare_file_list`×1 (unsupported assertion), `erase`×1 (filesystem), `if`×1 (control/state), `move`×2 (filesystem) |
 | `testsuite/bsc.typechecker/foreignmodule/foreignmodule.exp` | 20 | review | `compile_fail_error_bug`×2 (unsupported contract) |
-| `testsuite/bsc.typechecker/generics/generics.exp` | 7 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.typechecker/higherrank/higherrank.exp` | 4 | review | `test_veri_only`×3 (unsupported contract) |
 | `testsuite/bsc.typechecker/instances/incoherent/incoherent.exp` | 11 | review | `compile_pass_warning`×1 (unsupported contract) |
 | `testsuite/bsc.typechecker/instances/instances.exp` | 43 | review | `compile_pass_no_warning`×1 (unsupported contract), `compile_pass_warning`×1 (unsupported contract) |
@@ -639,7 +576,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.typechecker/literals/literals.exp` | 18 | review | `if`×2 (control/state) |
 | `testsuite/bsc.typechecker/numeric/numeric.exp` | 74 | review | `compile_fail_bug`×8 (unsupported contract), `compile_pass_bug`×12 (unsupported contract), `compile_pass_no_warning`×4 (unsupported contract), `if`×2 (control/state) |
 | `testsuite/bsc.typechecker/partial/partial.exp` | 1 | review | `compile_pass_no_warning`×1 (unsupported contract), `compile_pass_warning`×5 (unsupported contract) |
-| `testsuite/bsc.typechecker/string/string.exp` | 14 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.typechecker/typechecker.exp` | 17 | review | `compile_object_pass`×1 (unsupported contract), `compile_pass_bug`×1 (unsupported contract) |
 | `testsuite/bsc.typechecker/typeclasses/coherence/coherence.exp` | 14 | review | `erase`×1 (filesystem), `find_n_warning`×6 (unsupported assertion) |
 | `testsuite/bsc.typechecker/typeclasses/typeclasses.exp` | 73 | review | `compile_backend_pass`×2 (unsupported contract) |
@@ -648,14 +584,11 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.verilog/comments/comments.exp` | 29 | review | `if`×25 (control/state), `move`×2 (filesystem), `touch`×1 (filesystem) |
 | `testsuite/bsc.verilog/derived_bits/derived_bits.exp` | 8 | review | `do_tests`×10 (custom helper), `proc`×1 (control/state) |
 | `testsuite/bsc.verilog/dollar/dollar.exp` | 1 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `link_objects_fail`×1 (manual toolchain) |
-| `testsuite/bsc.verilog/dollar/renaming/rename.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
-| `testsuite/bsc.verilog/dollar/renaming2/rename.exp` | 1 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.verilog/dollar/renaming4/rename.exp` | 2 | review | `erase`×2 (filesystem), `link_verilog_pass`×1 (manual toolchain), `link_verilog_pass_bug`×1 (manual toolchain) |
 | `testsuite/bsc.verilog/filter/filter.exp` | 5 | review | `erase`×4 (filesystem), `if`×1 (control/state), `proc`×1 (control/state), `return`×1 (control/state), `set`×6 (control/state) |
 | `testsuite/bsc.verilog/foreign_module/foreign_module.exp` | 19 | blocked | known blocker: active failure source is missing |
 | `testsuite/bsc.verilog/inline/inline.exp` | 3 | review | `if`×3 (control/state) |
 | `testsuite/bsc.verilog/inout/inout.exp` | 35 | review | `bsc_initialize`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `erase`×2 (filesystem), `erase_many`×1 (custom helper), `find_n_error`×1 (unsupported assertion), `foreach`×2 (control/state), `global`×1 (control/state), `if`×3 (control/state), `move`×2 (filesystem), `proc`×1 (control/state), `set`×5 (control/state), `test_inout_simulation`×2 (unsupported contract) |
-| `testsuite/bsc.verilog/noinline/divbug/noinline_divbug.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.verilog/noinline/noinline.exp` | 19 | review | `if`×2 (control/state) |
 | `testsuite/bsc.verilog/opt/opt.exp` | 9 | review | `find_n_strings_bug`×1 (unsupported assertion), `find_regexp_bug`×1 (unsupported assertion), `if`×7 (control/state) |
 | `testsuite/bsc.verilog/parameters/parameters.exp` | 13 | review | `check_verilog_output`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `if`×3 (control/state), `link_objects_pass_bug`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `mkModulePort_WithStaticValue_TwoLevel_Sub2`×1 (custom helper), `move`×1 (filesystem), `sim_verilog`×1 (manual toolchain), `touch`×1 (filesystem) |

@@ -71,6 +71,7 @@ fn compile_modes_build_distinct_unix_exp_argv() {
         .iter()
         .find(|case| matches!(case.mode, CompileMode::Verilog { .. }))
         .unwrap();
+    verilog.mode = CompileMode::Verilog { module: None };
     assert_eq!(
         compile_arguments(&verilog),
         [
