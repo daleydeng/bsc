@@ -1,265 +1,297 @@
 //! Origins:
-//! - `testsuite/bsc.evaluator/prims/when/when.exp`
-//! - `testsuite/bsc.bugs/bluespec_inc/b1424/b1424.exp`
-//! - `testsuite/bsc.bugs/bluespec_inc/b1658/b1658.exp`
-//! - `testsuite/bsc.bugs/bluespec_inc/b540/b540.exp`
-//! - `testsuite/bsc.bsv_examples/SHA1/SHA1.exp`
-//! - `testsuite/bsc.bsv_examples/SHA256/SHA2.exp`
-//! - `testsuite/bsc.bsv_examples/SHA512/SHA2.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1302/b1302.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1314/b1314.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1353/b1353.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b431/b431.exp`
+//! - `testsuite/bsc.bsv_examples/Misc/example_misc.exp`
+//! - `testsuite/bsc.bsv_examples/stepcounter/stepcounter.exp`
+//! - `testsuite/bsc.evaluator/prims/isancestor/isancestor.exp`
+//! - `testsuite/bsc.lib/ClientServer/ClientServer.exp`
+//! - `testsuite/bsc.lib/fork/fork.exp`
+//! - `testsuite/bsc.lib/list_ops/list_ops.exp`
+//! - `testsuite/bsc.lib/RegA/rega.exp`
+//! - `testsuite/bsc.lib/regtwo/regtwo.exp`
+//! - `testsuite/bsc.lib/Reserved/Reserved.exp`
+//! - `testsuite/bsc.lib/Stmt/Modules/Modules.exp`
+//! - `testsuite/bsc.lib/Tieoff/Tieoff.exp`
+//! - `testsuite/bsc.misc/crc/crc.exp`
+//! - `testsuite/bsc.typechecker/reflect/reflect.exp`
+//! - `testsuite/bsc.evaluator/prims/build_module/build_module.exp`
+//! - `testsuite/bsc.lib/Complex/Complex.exp`
+//! - `testsuite/bsc.bsv_examples/xbar/xbar.exp`
 
-use super::SimulationCase;
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
-pub(super) const CASES: &[SimulationCase] = &[
-    bluesim_case!(
-        "bsc.evaluator/prims/when::When::bluesim",
-        "testsuite/bsc.evaluator/prims/when",
-        "When",
-        "sysWhen.out.expected"
+macro_rules! shared_scenario_with_fixtures {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal, $fixtures:expr) => {
+        SimulationScenario {
+            name: concat!($prefix, "::", $module),
+            fixture_dir: $fixture_dir,
+            source: concat!($module, ".bsv"),
+            fixtures: $fixtures,
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::bluesim"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::icarus"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
+        }
+    };
+}
+
+macro_rules! shared_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal) => {
+        shared_scenario_with_fixtures!(
+            $prefix,
+            $fixture_dir,
+            $module,
+            $expected,
+            &[concat!($module, ".bsv"), $expected]
+        )
+    };
+}
+
+macro_rules! backend_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal, $backend_name:literal, $backend:ident, $vcd:ident, $requirement:ident) => {
+        SimulationScenario {
+            name: concat!($prefix, "::", $module, "::", $backend_name, "-generation"),
+            fixture_dir: $fixture_dir,
+            source: concat!($module, ".bsv"),
+            fixtures: &[concat!($module, ".bsv"), $expected],
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
+            timeout: crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[SimulationContract {
+                name: concat!($prefix, "::", $module, "::", $backend_name),
+                expected: $expected,
+                link_options: &[],
+                simulation_options: &[],
+                sort_output: false,
+                backend: SimulationBackend::$backend,
+                vcd: VcdExpectation::$vcd,
+                requirement: Requirement::$requirement,
+            }],
+        }
+    };
+}
+
+macro_rules! bluesim_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal) => {
+        backend_scenario!(
+            $prefix,
+            $fixture_dir,
+            $module,
+            $expected,
+            "bluesim",
+            Bluesim,
+            BluesimOutputMatchesNormal,
+            BluesimEnabled
+        )
+    };
+}
+
+macro_rules! icarus_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal) => {
+        backend_scenario!(
+            $prefix,
+            $fixture_dir,
+            $module,
+            $expected,
+            "icarus",
+            Icarus,
+            IcarusSmoke,
+            VerilogEnabled
+        )
+    };
+}
+
+const B1302_DIR: &str = "testsuite/bsc.bugs/bluespec_inc/b1302";
+const B1302_FIXTURES: &[&str] = &[
+    "RFile2.bsv",
+    "EHR2.bsv",
+    "EHR_new.bsv",
+    "sysRFile2.out.expected",
+];
+
+const STEP_COUNTER_DIR: &str = "testsuite/bsc.bsv_examples/stepcounter";
+const STEP_COUNTER_FIXTURES: &[&str] = &[
+    "TestStepCounter.bsv",
+    "StepCounter.bsv",
+    "sysTestStepCounter.out.expected",
+];
+
+const XBAR_DIR: &str = "testsuite/bsc.bsv_examples/xbar";
+const XBAR_FIXTURES: &[&str] = &["Tb.bsv", "XBar.bsv", "sysTb.out.expected"];
+
+pub(super) const SCENARIOS: &[SimulationScenario] = &[
+    shared_scenario_with_fixtures!(
+        "bsc.bugs/bluespec_inc/b1302",
+        B1302_DIR,
+        "RFile2",
+        "sysRFile2.out.expected",
+        B1302_FIXTURES
     ),
-    icarus_case!(
-        "bsc.evaluator/prims/when::When::icarus",
-        "testsuite/bsc.evaluator/prims/when",
-        "When",
-        "sysWhen.out.expected"
+    shared_scenario!(
+        "bsc.bugs/bluespec_inc/b1314",
+        "testsuite/bsc.bugs/bluespec_inc/b1314",
+        "Test",
+        "sysTest.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::InstOrder1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "InstOrder1",
-        "sysInstOrder1.out.expected"
+    shared_scenario!(
+        "bsc.bugs/bluespec_inc/b1353",
+        "testsuite/bsc.bugs/bluespec_inc/b1353",
+        "Bug1353",
+        "sysBug1353.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::InstOrder1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "InstOrder1",
-        "sysInstOrder1.out.expected"
+    shared_scenario!(
+        "bsc.bugs/bluespec_inc/b431",
+        "testsuite/bsc.bugs/bluespec_inc/b431",
+        "Bug431",
+        "sysBug431.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::InstOrder2::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "InstOrder2",
-        "sysInstOrder2.out.expected"
+    shared_scenario!(
+        "bsc.bsv_examples/Misc",
+        "testsuite/bsc.bsv_examples/Misc",
+        "TestShifter64",
+        "sysTestShifter64.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::InstOrder2::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "InstOrder2",
-        "sysInstOrder2.out.expected"
+    shared_scenario_with_fixtures!(
+        "bsc.bsv_examples/stepcounter",
+        STEP_COUNTER_DIR,
+        "TestStepCounter",
+        "sysTestStepCounter.out.expected",
+        STEP_COUNTER_FIXTURES
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::FunctionLocation1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "FunctionLocation1",
-        "sysFunctionLocation1.out.expected"
+    shared_scenario!(
+        "bsc.evaluator/prims/isancestor",
+        "testsuite/bsc.evaluator/prims/isancestor",
+        "IsAncestor",
+        "sysIsAncestor.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::FunctionLocation1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "FunctionLocation1",
-        "sysFunctionLocation1.out.expected"
+    shared_scenario!(
+        "bsc.lib/ClientServer",
+        "testsuite/bsc.lib/ClientServer",
+        "TestToGPClientServer",
+        "sysTestToGPClientServer.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::FunctionLocation2::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "FunctionLocation2",
-        "sysFunctionLocation2.out.expected"
+    icarus_scenario!(
+        "bsc.lib/fork",
+        "testsuite/bsc.lib/fork",
+        "ForkTest",
+        "sysForkTest.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::FunctionLocation2::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "FunctionLocation2",
-        "sysFunctionLocation2.out.expected"
+    bluesim_scenario!(
+        "bsc.lib/list_ops",
+        "testsuite/bsc.lib/list_ops",
+        "SortGroupTest",
+        "sysSortGroupTest.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::ForLoop1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "ForLoop1",
-        "sysForLoop1.out.expected"
+    shared_scenario!(
+        "bsc.lib/RegA",
+        "testsuite/bsc.lib/RegA",
+        "TestRegA",
+        "sysTestRegA.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::ForLoop1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "ForLoop1",
-        "sysForLoop1.out.expected"
+    shared_scenario!(
+        "bsc.lib/regtwo",
+        "testsuite/bsc.lib/regtwo",
+        "RegTwoTest",
+        "sysRegTwoTest.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleOrder1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleOrder1",
-        "sysRuleOrder1.out.expected"
+    shared_scenario!(
+        "bsc.lib/Reserved",
+        "testsuite/bsc.lib/Reserved",
+        "ReservedTest",
+        "sysReservedTest.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleOrder1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleOrder1",
-        "sysRuleOrder1.out.expected"
+    shared_scenario!(
+        "bsc.lib/Stmt/Modules",
+        "testsuite/bsc.lib/Stmt/Modules",
+        "AlwaysFSM_OneAction",
+        "sysAlwaysFSM_OneAction.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleOrder2::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleOrder2",
-        "sysRuleOrder2.out.expected"
+    shared_scenario!(
+        "bsc.lib/Tieoff",
+        "testsuite/bsc.lib/Tieoff",
+        "TieOffTest",
+        "sysTieOffTest.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleOrder2::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleOrder2",
-        "sysRuleOrder2.out.expected"
+    shared_scenario!(
+        "bsc.misc/crc",
+        "testsuite/bsc.misc/crc",
+        "CRCTest1",
+        "sysCRCTest1.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleOrder3::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleOrder3",
-        "sysRuleOrder3.out.expected"
+    shared_scenario!(
+        "bsc.typechecker/reflect",
+        "testsuite/bsc.typechecker/reflect",
+        "TypeOf",
+        "sysTypeOf.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleOrder3::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleOrder3",
-        "sysRuleOrder3.out.expected"
+    shared_scenario!(
+        "bsc.typechecker/reflect",
+        "testsuite/bsc.typechecker/reflect",
+        "TypeEQ",
+        "sysTypeEQ.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleNameClash1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleNameClash1",
-        "sysRuleNameClash1.out.expected"
+    shared_scenario!(
+        "bsc.evaluator/prims/build_module",
+        "testsuite/bsc.evaluator/prims/build_module",
+        "RoseTest",
+        "sysRoseTest.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleNameClash1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleNameClash1",
-        "sysRuleNameClash1.out.expected"
+    shared_scenario!(
+        "bsc.evaluator/prims/build_module",
+        "testsuite/bsc.evaluator/prims/build_module",
+        "FShowFIFO",
+        "sysFShowFIFO.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleNameClash2::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleNameClash2",
-        "sysRuleNameClash2.out.expected"
+    shared_scenario!(
+        "bsc.lib/Complex",
+        "testsuite/bsc.lib/Complex",
+        "CmplxTest",
+        "sysCmplxTest.out.expected"
     ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::RuleNameClash2::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "RuleNameClash2",
-        "sysRuleNameClash2.out.expected"
+    shared_scenario!(
+        "bsc.lib/Complex",
+        "testsuite/bsc.lib/Complex",
+        "CmplxSatAdd",
+        "sysCmplxSatAdd.out.expected"
     ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::MethodOrder1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "MethodOrder1",
-        "sysMethodOrder1.c.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::MethodOrder1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "MethodOrder1",
-        "sysMethodOrder1.v.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::MethodOrder2::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "MethodOrder2",
-        "sysMethodOrder2.c.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::MethodOrder2::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "MethodOrder2",
-        "sysMethodOrder2.v.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1424::MethodOrder3::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "MethodOrder3",
-        "sysMethodOrder3.c.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b1424::MethodOrder3::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b1424",
-        "MethodOrder3",
-        "sysMethodOrder3.v.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1658::MethodArg_ActionValue::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1658",
-        "MethodArg_ActionValue",
-        "bug1658.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1658::MethodArg_Value::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1658",
-        "MethodArg_Value",
-        "bug1658.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1658::ModulePort::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1658",
-        "ModulePort",
-        "bug1658.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b1658::ModuleParam::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b1658",
-        "ModuleParam",
-        "bug1658.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b540::Bug540_1::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b540",
-        "Bug540_1",
-        "sysBug540_1.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b540::Bug540_1::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b540",
-        "Bug540_1",
-        "sysBug540_1.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bugs/bluespec_inc/b540::Bug540_2::bluesim",
-        "testsuite/bsc.bugs/bluespec_inc/b540",
-        "Bug540_2",
-        "sysBug540_2.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bugs/bluespec_inc/b540::Bug540_2::icarus",
-        "testsuite/bsc.bugs/bluespec_inc/b540",
-        "Bug540_2",
-        "sysBug540_2.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bsv_examples/SHA1::KenSha1::bluesim",
-        "testsuite/bsc.bsv_examples/SHA1",
-        "KenSha1",
-        "sysKenSha1.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bsv_examples/SHA1::KenSha1::icarus",
-        "testsuite/bsc.bsv_examples/SHA1",
-        "KenSha1",
-        "sysKenSha1.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bsv_examples/SHA256::KenSha2::bluesim",
-        "testsuite/bsc.bsv_examples/SHA256",
-        "KenSha2",
-        "sysKenSha2.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bsv_examples/SHA256::KenSha2::icarus",
-        "testsuite/bsc.bsv_examples/SHA256",
-        "KenSha2",
-        "sysKenSha2.out.expected"
-    ),
-    bluesim_case!(
-        "bsc.bsv_examples/SHA512::KenSha2::bluesim",
-        "testsuite/bsc.bsv_examples/SHA512",
-        "KenSha2",
-        "sysKenSha2.out.expected"
-    ),
-    icarus_case!(
-        "bsc.bsv_examples/SHA512::KenSha2::icarus",
-        "testsuite/bsc.bsv_examples/SHA512",
-        "KenSha2",
-        "sysKenSha2.out.expected"
+    shared_scenario_with_fixtures!(
+        "bsc.bsv_examples/xbar",
+        XBAR_DIR,
+        "Tb",
+        "sysTb.out.expected",
+        XBAR_FIXTURES
     ),
 ];

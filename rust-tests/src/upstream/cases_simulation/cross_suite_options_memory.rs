@@ -2,69 +2,53 @@
 //! - `testsuite/bsc.mcd/MakeClock/MakeClock.exp`
 //! - `testsuite/bsc.lib/BRAM/Lat/Lat.exp`
 
-use super::SimulationCase;
-use crate::upstream::{GenerationStrategy, Requirement, ResourceClass, SimulationBackend};
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
-macro_rules! backend_pair {
-    ($bluesim:ident, $icarus:ident, $prefix:literal, $fixture_dir:literal, $module:literal, $expected:literal, $compile_options:expr, [$($extra_fixture:literal),* $(,)?]) => {
-        backend_pair!(
-            $bluesim,
-            $icarus,
-            $prefix,
-            $fixture_dir,
-            $module,
-            $expected,
-            $compile_options,
-            [$($extra_fixture),*],
-            ResourceClass::Normal,
-            $crate::BSC_TIMEOUT
-        );
-    };
-    ($bluesim:ident, $icarus:ident, $prefix:literal, $fixture_dir:literal, $module:literal, $expected:literal, $compile_options:expr, [$($extra_fixture:literal),* $(,)?], $resource:expr, $timeout:expr) => {
-        pub(super) const $bluesim: SimulationCase = SimulationCase {
-            name: concat!($prefix, "::", $module, "::bluesim"),
+macro_rules! shared_scenario {
+    ($constant:ident, $prefix:literal, $fixture_dir:literal, $module:literal, $expected:literal, $compile_options:expr, [$($extra_fixture:literal),* $(,)?]) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!($prefix, "::", $module),
             fixture_dir: $fixture_dir,
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected, $($extra_fixture),*],
             top: concat!("sys", $module),
             generated_modules: &[],
-            expected: $expected,
             compile_options: $compile_options,
-            link_options: &[],
-            simulation_options: &[],
-            sort_output: false,
-            backend: SimulationBackend::Bluesim,
             generation: GenerationStrategy::SharedElaboration,
-            vcd: $crate::upstream::VcdExpectation::None,
-            requirement: Requirement::BluesimEnabled,
-            timeout: $timeout,
-            resource: $resource,
-        };
-        pub(super) const $icarus: SimulationCase = SimulationCase {
-            name: concat!($prefix, "::", $module, "::icarus"),
-            fixture_dir: $fixture_dir,
-            source: concat!($module, ".bsv"),
-            fixtures: &[concat!($module, ".bsv"), $expected, $($extra_fixture),*],
-            top: concat!("sys", $module),
-            generated_modules: &[],
-            expected: $expected,
-            compile_options: $compile_options,
-            link_options: &[],
-            simulation_options: &[],
-            sort_output: false,
-            backend: SimulationBackend::Icarus,
-            generation: GenerationStrategy::SharedElaboration,
-            vcd: $crate::upstream::VcdExpectation::None,
-            requirement: Requirement::VerilogEnabled,
-            timeout: $timeout,
-            resource: $resource,
+            timeout: $crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::bluesim"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::icarus"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
         };
     };
 }
 
-backend_pair!(
-    MAKE_CLOCK_BLUESIM,
-    MAKE_CLOCK_ICARUS,
+shared_scenario!(
+    MAKE_CLOCK,
     "bsc.mcd/MakeClock",
     "testsuite/bsc.mcd/MakeClock",
     "MakeClockTest",
@@ -73,9 +57,8 @@ backend_pair!(
     []
 );
 
-backend_pair!(
-    LAT_112_BLUESIM,
-    LAT_112_ICARUS,
+shared_scenario!(
+    LAT_112,
     "bsc.lib/BRAM/Lat",
     "testsuite/bsc.lib/BRAM/Lat",
     "Lat112",
@@ -83,9 +66,8 @@ backend_pair!(
     &[],
     ["Latency1Port.bsv"]
 );
-backend_pair!(
-    LAT_122_BLUESIM,
-    LAT_122_ICARUS,
+shared_scenario!(
+    LAT_122,
     "bsc.lib/BRAM/Lat",
     "testsuite/bsc.lib/BRAM/Lat",
     "Lat122",
@@ -93,9 +75,8 @@ backend_pair!(
     &[],
     ["Latency1Port.bsv"]
 );
-backend_pair!(
-    LAT_124_BLUESIM,
-    LAT_124_ICARUS,
+shared_scenario!(
+    LAT_124,
     "bsc.lib/BRAM/Lat",
     "testsuite/bsc.lib/BRAM/Lat",
     "Lat124",
@@ -104,13 +85,4 @@ backend_pair!(
     ["Latency1Port.bsv"]
 );
 
-pub(super) const CASES: &[SimulationCase] = &[
-    MAKE_CLOCK_BLUESIM,
-    MAKE_CLOCK_ICARUS,
-    LAT_112_BLUESIM,
-    LAT_112_ICARUS,
-    LAT_122_BLUESIM,
-    LAT_122_ICARUS,
-    LAT_124_BLUESIM,
-    LAT_124_ICARUS,
-];
+pub(super) const SCENARIOS: &[SimulationScenario] = &[MAKE_CLOCK, LAT_112, LAT_122, LAT_124];

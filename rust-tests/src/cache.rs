@@ -729,13 +729,40 @@ fn collect_tree_at(
     Ok(())
 }
 
-fn copy_directory_contents(source: &Path, destination: &Path) -> Result<(), String> {
-    ensure_regular_directory(source, "copy source")?;
-    ensure_regular_directory(destination, "copy destination")?;
-    copy_directory_at(source, destination)
+pub(crate) fn copy_directory_contents(source: &Path, destination: &Path) -> Result<(), String> {
+    transfer_directory_contents(source, destination, FileTransfer::Copy)
 }
 
-fn copy_directory_at(source: &Path, destination: &Path) -> Result<(), String> {
+// This is only for disposable run-scoped workspaces. Persistent cache restores
+// intentionally use real copies so a test process can never mutate cache entries.
+pub(crate) fn hard_link_or_copy_directory_contents(
+    source: &Path,
+    destination: &Path,
+) -> Result<(), String> {
+    transfer_directory_contents(source, destination, FileTransfer::HardLinkOrCopy)
+}
+
+#[derive(Clone, Copy)]
+enum FileTransfer {
+    Copy,
+    HardLinkOrCopy,
+}
+
+fn transfer_directory_contents(
+    source: &Path,
+    destination: &Path,
+    transfer: FileTransfer,
+) -> Result<(), String> {
+    ensure_regular_directory(source, "copy source")?;
+    ensure_regular_directory(destination, "copy destination")?;
+    transfer_directory_at(source, destination, transfer)
+}
+
+fn transfer_directory_at(
+    source: &Path,
+    destination: &Path,
+    transfer: FileTransfer,
+) -> Result<(), String> {
     let entries = fs::read_dir(source)
         .map_err(|error| io_error("read copy source directory", source, error))?;
     for entry in entries {
@@ -751,16 +778,10 @@ fn copy_directory_at(source: &Path, destination: &Path) -> Result<(), String> {
         }
         if file_type.is_dir() {
             ensure_or_create_destination_directory(&destination_path)?;
-            copy_directory_at(&source_path, &destination_path)?;
+            transfer_directory_at(&source_path, &destination_path, transfer)?;
         } else if file_type.is_file() {
             ensure_destination_can_be_file(&destination_path)?;
-            fs::copy(&source_path, &destination_path).map_err(|error| {
-                format!(
-                    "copy {} to {}: {error}",
-                    source_path.display(),
-                    destination_path.display()
-                )
-            })?;
+            transfer_file(&source_path, &destination_path, transfer)?;
         } else {
             return Err(format!(
                 "cannot copy special file: {}",
@@ -769,6 +790,31 @@ fn copy_directory_at(source: &Path, destination: &Path) -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+fn transfer_file(source: &Path, destination: &Path, transfer: FileTransfer) -> Result<(), String> {
+    let copy = || {
+        fs::copy(source, destination).map(|_| ()).map_err(|error| {
+            format!(
+                "copy {} to {}: {error}",
+                source.display(),
+                destination.display()
+            )
+        })
+    };
+    match transfer {
+        FileTransfer::Copy => copy(),
+        FileTransfer::HardLinkOrCopy => match fs::hard_link(source, destination) {
+            Ok(()) => Ok(()),
+            Err(link_error) => copy().map_err(|copy_error| {
+                format!(
+                    "hard-link {} to {} failed ({link_error}); fallback {copy_error}",
+                    source.display(),
+                    destination.display()
+                )
+            }),
+        },
+    }
 }
 
 fn ensure_regular_directory(path: &Path, description: &str) -> Result<(), String> {
@@ -1056,6 +1102,31 @@ fn write_result_hit_log(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn workspace_clone_uses_hard_links_when_available() {
+        let temp = TestDirectory::new("workspace-hardlinks");
+        let source = temp.path().join("source");
+        let destination = temp.path().join("destination");
+        fs::create_dir_all(source.join("nested")).unwrap();
+        fs::create_dir_all(&destination).unwrap();
+        fs::write(source.join("nested").join("model.v"), "generated\n").unwrap();
+
+        hard_link_or_copy_directory_contents(&source, &destination).unwrap();
+        let cloned = destination.join("nested").join("model.v");
+        assert_eq!(fs::read_to_string(&cloned).unwrap(), "generated\n");
+
+        let probe_source = temp.path().join("probe-source");
+        let probe_destination = temp.path().join("probe-destination");
+        fs::write(&probe_source, "probe\n").unwrap();
+        if fs::hard_link(&probe_source, &probe_destination).is_ok() {
+            fs::write(&cloned, "linked\n").unwrap();
+            assert_eq!(
+                fs::read_to_string(source.join("nested").join("model.v")).unwrap(),
+                "linked\n"
+            );
+        }
+    }
 
     #[test]
     fn stored_input_is_a_hit_and_restores_files() {

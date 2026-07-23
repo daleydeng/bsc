@@ -6,10 +6,10 @@
 
 - 已迁移来源：310/860
 - 尚未迁移来源：550
-- 已迁移静态 contract：1305/4161
-- 尚未迁移静态 contract：2856
-- 完全需要动态或自定义 Tcl 分析的脚本：250
-- 最近稳定提交：`7af594bc Expand static compile and simulation coverage`
+- 已迁移静态 contract：1305/4368
+- 尚未迁移静态 contract：3063
+- 完全需要动态或自定义 Tcl 分析的脚本：233
+- 最近稳定提交：`32f25c34 Redesign simulation tests around shared generation scenarios`
 
 候选进入本文件的硬条件：必须完整迁移一整份 `.exp` 的全部活动 contract 和 assertion；不得只摘取 compile/simulation 调用；不得忽略 XFAIL、bug gate、generated artifact、手工 link/sim 或额外输出比较。
 

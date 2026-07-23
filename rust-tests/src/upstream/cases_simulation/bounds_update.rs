@@ -1,56 +1,66 @@
 //! Origin: `testsuite/bsc.arrays/bounds/update/update.exp`.
 
-use super::SimulationCase;
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
 const FIXTURE_DIR: &str = "testsuite/bsc.arrays/bounds/update";
 
-macro_rules! bounds_cases {
-    ($bluesim:ident, $icarus:ident, $module:literal) => {
-        pub(super) const $bluesim: SimulationCase = bluesim_case!(
-            concat!("bsc.arrays/bounds/update::", $module, "::bluesim"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
-        pub(super) const $icarus: SimulationCase = icarus_case!(
-            concat!("bsc.arrays/bounds/update::", $module, "::icarus"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
+macro_rules! bounds_scenario {
+    ($constant:ident, $module:literal) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!("bsc.arrays/bounds/update::", $module),
+            fixture_dir: FIXTURE_DIR,
+            source: concat!($module, ".bsv"),
+            fixtures: &[
+                concat!($module, ".bsv"),
+                concat!("sys", $module, ".out.expected"),
+            ],
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: $crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!("bsc.arrays/bounds/update::", $module, "::bluesim"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!("bsc.arrays/bounds/update::", $module, "::icarus"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
+        };
     };
 }
 
-bounds_cases!(ARRAY_1_BLUESIM, ARRAY_1_ICARUS, "ArrayInBounds1");
-bounds_cases!(ARRAY_2_BLUESIM, ARRAY_2_ICARUS, "ArrayInBounds2");
-bounds_cases!(LIST_1_BLUESIM, LIST_1_ICARUS, "ListInBounds1");
-bounds_cases!(LIST_2_BLUESIM, LIST_2_ICARUS, "ListInBounds2");
-bounds_cases!(VECTOR_1_BLUESIM, VECTOR_1_ICARUS, "VectorInBounds1");
-bounds_cases!(VECTOR_2_BLUESIM, VECTOR_2_ICARUS, "VectorInBounds2");
-bounds_cases!(LIST_N_1_BLUESIM, LIST_N_1_ICARUS, "ListNInBounds1");
-bounds_cases!(LIST_N_2_BLUESIM, LIST_N_2_ICARUS, "ListNInBounds2");
-bounds_cases!(BIT_1_BLUESIM, BIT_1_ICARUS, "BitInBounds1");
-bounds_cases!(BIT_2_BLUESIM, BIT_2_ICARUS, "BitInBounds2");
+bounds_scenario!(ARRAY_1, "ArrayInBounds1");
+bounds_scenario!(ARRAY_2, "ArrayInBounds2");
+bounds_scenario!(LIST_1, "ListInBounds1");
+bounds_scenario!(LIST_2, "ListInBounds2");
+bounds_scenario!(VECTOR_1, "VectorInBounds1");
+bounds_scenario!(VECTOR_2, "VectorInBounds2");
+bounds_scenario!(LIST_N_1, "ListNInBounds1");
+bounds_scenario!(LIST_N_2, "ListNInBounds2");
+bounds_scenario!(BIT_1, "BitInBounds1");
+bounds_scenario!(BIT_2, "BitInBounds2");
 
-pub(super) const CASES: &[SimulationCase] = &[
-    ARRAY_1_BLUESIM,
-    ARRAY_1_ICARUS,
-    ARRAY_2_BLUESIM,
-    ARRAY_2_ICARUS,
-    LIST_1_BLUESIM,
-    LIST_1_ICARUS,
-    LIST_2_BLUESIM,
-    LIST_2_ICARUS,
-    VECTOR_1_BLUESIM,
-    VECTOR_1_ICARUS,
-    VECTOR_2_BLUESIM,
-    VECTOR_2_ICARUS,
-    LIST_N_1_BLUESIM,
-    LIST_N_1_ICARUS,
-    LIST_N_2_BLUESIM,
-    LIST_N_2_ICARUS,
-    BIT_1_BLUESIM,
-    BIT_1_ICARUS,
-    BIT_2_BLUESIM,
-    BIT_2_ICARUS,
+pub(super) const SCENARIOS: &[SimulationScenario] = &[
+    ARRAY_1, ARRAY_2, LIST_1, LIST_2, VECTOR_1, VECTOR_2, LIST_N_1, LIST_N_2, BIT_1, BIT_2,
 ];

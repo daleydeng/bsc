@@ -8,71 +8,104 @@
 //! - `testsuite/bsc.misc/format/format.exp`
 //! - `testsuite/bsc.mcd/ClockMux/clockmux.exp`
 
-use super::SimulationCase;
-use crate::upstream::{Requirement, SimulationBackend};
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
-macro_rules! simulation_case {
-    ($name:expr, $fixture_dir:expr, $module:literal, $expected:expr, $backend:expr, $requirement:expr) => {
-        SimulationCase {
-            name: $name,
+macro_rules! shared_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal) => {
+        SimulationScenario {
+            name: concat!($prefix, "::", $module),
             fixture_dir: $fixture_dir,
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
             generated_modules: &[],
-            expected: $expected,
             compile_options: &[],
-            link_options: &[],
-            simulation_options: &[],
-            sort_output: false,
-            backend: $backend,
-            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
-            vcd: $crate::upstream::VcdExpectation::None,
-            requirement: $requirement,
-            timeout: $crate::BSC_TIMEOUT,
-            resource: $crate::upstream::ResourceClass::Normal,
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::bluesim"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::icarus"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
         }
     };
 }
 
-macro_rules! bluesim {
-    ($prefix:literal, $fixture_dir:expr, $module:literal) => {
-        bluesim!(
+macro_rules! backend_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal, $backend_name:literal, $backend:ident, $vcd:ident, $requirement:ident) => {
+        SimulationScenario {
+            name: concat!($prefix, "::", $module, "::", $backend_name, "-generation"),
+            fixture_dir: $fixture_dir,
+            source: concat!($module, ".bsv"),
+            fixtures: &[concat!($module, ".bsv"), $expected],
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
+            timeout: crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[SimulationContract {
+                name: concat!($prefix, "::", $module, "::", $backend_name),
+                expected: $expected,
+                link_options: &[],
+                simulation_options: &[],
+                sort_output: false,
+                backend: SimulationBackend::$backend,
+                vcd: VcdExpectation::$vcd,
+                requirement: Requirement::$requirement,
+            }],
+        }
+    };
+}
+
+macro_rules! bluesim_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal) => {
+        backend_scenario!(
             $prefix,
             $fixture_dir,
             $module,
-            concat!("sys", $module, ".out.expected")
-        )
-    };
-    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:expr) => {
-        simulation_case!(
-            concat!($prefix, "::", $module, "::bluesim"),
-            $fixture_dir,
-            $module,
             $expected,
-            SimulationBackend::Bluesim,
-            Requirement::BluesimEnabled
+            "bluesim",
+            Bluesim,
+            BluesimOutputMatchesNormal,
+            BluesimEnabled
         )
     };
 }
 
-macro_rules! icarus {
-    ($prefix:literal, $fixture_dir:expr, $module:literal) => {
-        icarus!(
+macro_rules! icarus_scenario {
+    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:literal) => {
+        backend_scenario!(
             $prefix,
             $fixture_dir,
             $module,
-            concat!("sys", $module, ".out.expected")
-        )
-    };
-    ($prefix:literal, $fixture_dir:expr, $module:literal, $expected:expr) => {
-        simulation_case!(
-            concat!($prefix, "::", $module, "::icarus"),
-            $fixture_dir,
-            $module,
             $expected,
-            SimulationBackend::Icarus,
-            Requirement::VerilogEnabled
+            "icarus",
+            Icarus,
+            IcarusSmoke,
+            VerilogEnabled
         )
     };
 }
@@ -86,143 +119,262 @@ const BITEXTRACT_DIR: &str = "testsuite/bsc.misc/bitextract";
 const FORMAT_DIR: &str = "testsuite/bsc.misc/format";
 const CLOCK_MUX_DIR: &str = "testsuite/bsc.mcd/ClockMux";
 
-pub(super) const CASES: &[SimulationCase] = &[
+pub(super) const SCENARIOS: &[SimulationScenario] = &[
     // testsuite/bsc.verilog/schedule/schedule.exp
-    bluesim!("bsc.verilog/schedule", SCHEDULE_DIR, "EspositoPreempt"),
-    icarus!("bsc.verilog/schedule", SCHEDULE_DIR, "EspositoPreempt"),
+    shared_scenario!(
+        "bsc.verilog/schedule",
+        SCHEDULE_DIR,
+        "EspositoPreempt",
+        "sysEspositoPreempt.out.expected"
+    ),
     // testsuite/bsc.verilog/tasks/real/real_tasks.exp
-    bluesim!("bsc.verilog/tasks/real", REAL_TASKS_DIR, "RealDisplay"),
-    icarus!("bsc.verilog/tasks/real", REAL_TASKS_DIR, "RealDisplay"),
-    bluesim!("bsc.verilog/tasks/real", REAL_TASKS_DIR, "RealDisplay2"),
-    icarus!("bsc.verilog/tasks/real", REAL_TASKS_DIR, "RealDisplay2"),
-    bluesim!("bsc.verilog/tasks/real", REAL_TASKS_DIR, "RealDisplayErr1"),
-    bluesim!("bsc.verilog/tasks/real", REAL_TASKS_DIR, "RealDisplayErr2"),
+    shared_scenario!(
+        "bsc.verilog/tasks/real",
+        REAL_TASKS_DIR,
+        "RealDisplay",
+        "sysRealDisplay.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.verilog/tasks/real",
+        REAL_TASKS_DIR,
+        "RealDisplay2",
+        "sysRealDisplay2.out.expected"
+    ),
+    bluesim_scenario!(
+        "bsc.verilog/tasks/real",
+        REAL_TASKS_DIR,
+        "RealDisplayErr1",
+        "sysRealDisplayErr1.out.expected"
+    ),
+    bluesim_scenario!(
+        "bsc.verilog/tasks/real",
+        REAL_TASKS_DIR,
+        "RealDisplayErr2",
+        "sysRealDisplayErr2.out.expected"
+    ),
     // testsuite/bsc.verilog/tasks/time/time.exp
-    icarus!(
+    icarus_scenario!(
         "bsc.verilog/tasks/time",
         TIME_TASKS_DIR,
         "PrintTime",
         "sysPrintTime.v.out.expected"
     ),
-    bluesim!("bsc.verilog/tasks/time", TIME_TASKS_DIR, "PrintTime"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.verilog/tasks/time",
+        TIME_TASKS_DIR,
+        "PrintTime",
+        "sysPrintTime.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.verilog/tasks/time",
         TIME_TASKS_DIR,
         "DisplayTime",
         "sysDisplayTime.v.out.expected"
     ),
-    bluesim!("bsc.verilog/tasks/time", TIME_TASKS_DIR, "DisplayTime"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.verilog/tasks/time",
+        TIME_TASKS_DIR,
+        "DisplayTime",
+        "sysDisplayTime.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.verilog/tasks/time",
         TIME_TASKS_DIR,
         "RegTime",
         "sysRegTime.v.out.expected"
     ),
-    bluesim!("bsc.verilog/tasks/time", TIME_TASKS_DIR, "RegTime"),
+    bluesim_scenario!(
+        "bsc.verilog/tasks/time",
+        TIME_TASKS_DIR,
+        "RegTime",
+        "sysRegTime.out.expected"
+    ),
     // testsuite/bsc.typechecker/display/display.exp
-    bluesim!("bsc.typechecker/display", DISPLAY_DIR, "DisplayBits"),
-    icarus!("bsc.typechecker/display", DISPLAY_DIR, "DisplayBits"),
-    bluesim!("bsc.typechecker/display", DISPLAY_DIR, "DisplayLiteral"),
-    icarus!("bsc.typechecker/display", DISPLAY_DIR, "DisplayLiteral"),
-    bluesim!(
+    shared_scenario!(
         "bsc.typechecker/display",
         DISPLAY_DIR,
-        "DisplaySizedLiteral"
+        "DisplayBits",
+        "sysDisplayBits.out.expected"
     ),
-    icarus!(
+    shared_scenario!(
         "bsc.typechecker/display",
         DISPLAY_DIR,
-        "DisplaySizedLiteral"
+        "DisplayLiteral",
+        "sysDisplayLiteral.out.expected"
     ),
-    icarus!("bsc.typechecker/display", DISPLAY_DIR, "DisplayRealLiteral"),
-    bluesim!(
+    shared_scenario!(
+        "bsc.typechecker/display",
+        DISPLAY_DIR,
+        "DisplaySizedLiteral",
+        "sysDisplaySizedLiteral.out.expected"
+    ),
+    icarus_scenario!(
+        "bsc.typechecker/display",
+        DISPLAY_DIR,
+        "DisplayRealLiteral",
+        "sysDisplayRealLiteral.out.expected"
+    ),
+    bluesim_scenario!(
         "bsc.typechecker/display",
         DISPLAY_DIR,
         "DisplayRealLiteral",
         "sysDisplayRealLiteral.c.out.expected"
     ),
     // testsuite/bsc.syntax/bsv05/stmt/stmt.exp
-    bluesim!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor"),
-    icarus!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor"),
-    bluesim!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_ArrayUpd_Reg"),
-    icarus!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_ArrayUpd_Reg"),
-    bluesim!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_ArrayUpd_Elem"),
-    icarus!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_ArrayUpd_Elem"),
-    bluesim!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_RangeUpd"),
-    icarus!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_RangeUpd"),
-    bluesim!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_FieldUpd_Field"),
-    icarus!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_FieldUpd_Field"),
-    bluesim!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_FieldUpd_Reg"),
-    icarus!("bsc.syntax/bsv05/stmt", STMT_DIR, "StmtFor_FieldUpd_Reg"),
+    shared_scenario!(
+        "bsc.syntax/bsv05/stmt",
+        STMT_DIR,
+        "StmtFor",
+        "sysStmtFor.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.syntax/bsv05/stmt",
+        STMT_DIR,
+        "StmtFor_ArrayUpd_Reg",
+        "sysStmtFor_ArrayUpd_Reg.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.syntax/bsv05/stmt",
+        STMT_DIR,
+        "StmtFor_ArrayUpd_Elem",
+        "sysStmtFor_ArrayUpd_Elem.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.syntax/bsv05/stmt",
+        STMT_DIR,
+        "StmtFor_RangeUpd",
+        "sysStmtFor_RangeUpd.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.syntax/bsv05/stmt",
+        STMT_DIR,
+        "StmtFor_FieldUpd_Field",
+        "sysStmtFor_FieldUpd_Field.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.syntax/bsv05/stmt",
+        STMT_DIR,
+        "StmtFor_FieldUpd_Reg",
+        "sysStmtFor_FieldUpd_Reg.out.expected"
+    ),
     // testsuite/bsc.misc/bitextract/bitextract.exp
-    bluesim!("bsc.misc/bitextract", BITEXTRACT_DIR, "BitExtractInRange"),
-    icarus!("bsc.misc/bitextract", BITEXTRACT_DIR, "BitExtractInRange"),
-    bluesim!("bsc.misc/bitextract", BITEXTRACT_DIR, "BitUpdateInRange"),
-    icarus!("bsc.misc/bitextract", BITEXTRACT_DIR, "BitUpdateInRange"),
+    shared_scenario!(
+        "bsc.misc/bitextract",
+        BITEXTRACT_DIR,
+        "BitExtractInRange",
+        "sysBitExtractInRange.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.misc/bitextract",
+        BITEXTRACT_DIR,
+        "BitUpdateInRange",
+        "sysBitUpdateInRange.out.expected"
+    ),
     // testsuite/bsc.misc/format/format.exp
-    bluesim!("bsc.misc/format", FORMAT_DIR, "Format1"),
-    icarus!("bsc.misc/format", FORMAT_DIR, "Format1"),
-    bluesim!("bsc.misc/format", FORMAT_DIR, "Format2"),
-    icarus!("bsc.misc/format", FORMAT_DIR, "Format2"),
-    bluesim!("bsc.misc/format", FORMAT_DIR, "Format3"),
-    icarus!("bsc.misc/format", FORMAT_DIR, "Format3"),
-    bluesim!(
+    shared_scenario!(
+        "bsc.misc/format",
+        FORMAT_DIR,
+        "Format1",
+        "sysFormat1.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.misc/format",
+        FORMAT_DIR,
+        "Format2",
+        "sysFormat2.out.expected"
+    ),
+    shared_scenario!(
+        "bsc.misc/format",
+        FORMAT_DIR,
+        "Format3",
+        "sysFormat3.out.expected"
+    ),
+    bluesim_scenario!(
         "bsc.misc/format",
         FORMAT_DIR,
         "Format4",
         "sysFormat4.c.out.expected"
     ),
-    icarus!(
+    icarus_scenario!(
         "bsc.misc/format",
         FORMAT_DIR,
         "Format4",
         "sysFormat4.v.out.expected"
     ),
-    bluesim!(
+    bluesim_scenario!(
         "bsc.misc/format",
         FORMAT_DIR,
         "Format5",
         "sysFormat5.c.out.expected"
     ),
-    icarus!(
+    icarus_scenario!(
         "bsc.misc/format",
         FORMAT_DIR,
         "Format5",
         "sysFormat5.v.out.expected"
     ),
-    bluesim!("bsc.misc/format", FORMAT_DIR, "Bug1572"),
-    icarus!("bsc.misc/format", FORMAT_DIR, "Bug1572"),
+    shared_scenario!(
+        "bsc.misc/format",
+        FORMAT_DIR,
+        "Bug1572",
+        "sysBug1572.out.expected"
+    ),
     // testsuite/bsc.mcd/ClockMux/clockmux.exp
-    bluesim!("bsc.mcd/ClockMux", CLOCK_MUX_DIR, "ClockMux"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.mcd/ClockMux",
+        CLOCK_MUX_DIR,
+        "ClockMux",
+        "sysClockMux.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.mcd/ClockMux",
         CLOCK_MUX_DIR,
         "ClockMux",
         "sysClockMux.v.out.expected"
     ),
-    bluesim!("bsc.mcd/ClockMux", CLOCK_MUX_DIR, "ClockSelect"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.mcd/ClockMux",
+        CLOCK_MUX_DIR,
+        "ClockSelect",
+        "sysClockSelect.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.mcd/ClockMux",
         CLOCK_MUX_DIR,
         "ClockSelect",
         "sysClockSelect.v.out.expected"
     ),
-    bluesim!("bsc.mcd/ClockMux", CLOCK_MUX_DIR, "UngatedClockMux"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.mcd/ClockMux",
+        CLOCK_MUX_DIR,
+        "UngatedClockMux",
+        "sysUngatedClockMux.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.mcd/ClockMux",
         CLOCK_MUX_DIR,
         "UngatedClockMux",
         "sysUngatedClockMux.v.out.expected"
     ),
-    bluesim!("bsc.mcd/ClockMux", CLOCK_MUX_DIR, "UngatedClockSelect"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.mcd/ClockMux",
+        CLOCK_MUX_DIR,
+        "UngatedClockSelect",
+        "sysUngatedClockSelect.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.mcd/ClockMux",
         CLOCK_MUX_DIR,
         "UngatedClockSelect",
         "sysUngatedClockSelect.v.out.expected"
     ),
-    bluesim!("bsc.mcd/ClockMux", CLOCK_MUX_DIR, "SlowSelectClock"),
-    icarus!(
+    bluesim_scenario!(
+        "bsc.mcd/ClockMux",
+        CLOCK_MUX_DIR,
+        "SlowSelectClock",
+        "sysSlowSelectClock.out.expected"
+    ),
+    icarus_scenario!(
         "bsc.mcd/ClockMux",
         CLOCK_MUX_DIR,
         "SlowSelectClock",

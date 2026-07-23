@@ -1,78 +1,14 @@
-use super::{CaseModule, SimulationCase};
+use super::{CaseModule, SimulationScenario};
 use std::sync::OnceLock;
-
-macro_rules! bluesim_case {
-    ($name:expr, $fixture_dir:expr, $module:expr, $expected:expr) => {
-        bluesim_case!($name, $fixture_dir, $module, $expected, &[])
-    };
-    ($name:expr, $fixture_dir:expr, $module:expr, $expected:expr, $compile_options:expr) => {
-        $crate::upstream::SimulationCase {
-            name: $name,
-            fixture_dir: $fixture_dir,
-            source: concat!($module, ".bsv"),
-            fixtures: &[concat!($module, ".bsv"), $expected],
-            top: concat!("sys", $module),
-            generated_modules: &[],
-            expected: $expected,
-            compile_options: $compile_options,
-            link_options: &[],
-            simulation_options: &[],
-            sort_output: false,
-            backend: $crate::upstream::SimulationBackend::Bluesim,
-            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
-            vcd: $crate::upstream::VcdExpectation::None,
-            requirement: $crate::upstream::Requirement::BluesimEnabled,
-            timeout: $crate::BSC_TIMEOUT,
-            resource: $crate::upstream::ResourceClass::Normal,
-        }
-    };
-}
-
-macro_rules! icarus_case {
-    ($name:expr, $fixture_dir:expr, $module:expr, $expected:expr) => {
-        icarus_case!($name, $fixture_dir, $module, $expected, &[])
-    };
-    ($name:expr, $fixture_dir:expr, $module:expr, $expected:expr, $compile_options:expr) => {
-        icarus_case!(
-            $name,
-            $fixture_dir,
-            $module,
-            $expected,
-            $compile_options,
-            $crate::upstream::Requirement::VerilogEnabled
-        )
-    };
-    ($name:expr, $fixture_dir:expr, $module:expr, $expected:expr, $compile_options:expr, $requirement:expr) => {
-        $crate::upstream::SimulationCase {
-            name: $name,
-            fixture_dir: $fixture_dir,
-            source: concat!($module, ".bsv"),
-            fixtures: &[concat!($module, ".bsv"), $expected],
-            top: concat!("sys", $module),
-            generated_modules: &[],
-            expected: $expected,
-            compile_options: $compile_options,
-            link_options: &[],
-            simulation_options: &[],
-            sort_output: false,
-            backend: $crate::upstream::SimulationBackend::Icarus,
-            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
-            vcd: $crate::upstream::VcdExpectation::None,
-            requirement: $requirement,
-            timeout: $crate::BSC_TIMEOUT,
-            resource: $crate::upstream::ResourceClass::Normal,
-        }
-    };
-}
 
 macro_rules! case_modules {
     ($($module:ident),+ $(,)?) => {
         $(mod $module;)+
 
-        pub(super) const MODULES: &[CaseModule<SimulationCase>] = &[
+        pub(super) const MODULES: &[CaseModule<SimulationScenario>] = &[
             $(CaseModule {
                 name: stringify!($module),
-                cases: $module::CASES,
+                cases: $module::SCENARIOS,
             },)+
         ];
     };
@@ -99,9 +35,9 @@ case_modules!(
     vcd_smoke,
 );
 
-pub(super) fn cases() -> &'static [SimulationCase] {
-    static CASES: OnceLock<Vec<SimulationCase>> = OnceLock::new();
-    CASES
+pub(super) fn scenarios() -> &'static [SimulationScenario] {
+    static SCENARIOS: OnceLock<Vec<SimulationScenario>> = OnceLock::new();
+    SCENARIOS
         .get_or_init(|| {
             MODULES
                 .iter()

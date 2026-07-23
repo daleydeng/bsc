@@ -5,10 +5,11 @@ fn main() -> ExitCode {
     match check_alignment() {
         Ok(summary) => {
             println!(
-                "alignment ok: {} scripts, {} compile cases, {} simulation cases, {} scheduler cases",
+                "alignment ok: {} scripts, {} compile cases, {} simulation scenarios, {} simulation contracts, {} scheduler cases",
                 summary.scripts,
                 summary.compile_cases,
-                summary.simulation_cases,
+                summary.simulation_scenarios,
+                summary.simulation_contracts,
                 summary.scheduler_cases
             );
             println!(

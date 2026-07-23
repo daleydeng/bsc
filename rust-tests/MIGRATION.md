@@ -6,7 +6,7 @@
 
 Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 scheduler 静态 tests；数量较大、需要运行时发现/筛选的 upstream case 由 `src/bin/upstream.rs` 自定义动态 runner 承载。
 
-只读取 `testsuite/` 中的 fixture 和 golden。每个 case 将声明的文件复制到独立 workspace 后运行，不在原 testsuite 目录中生成或修改文件。
+只读取 `testsuite/` 中的 fixture 和 golden。Compile case 使用独立 workspace；simulation 由声明式 `SimulationScenario` 生成一次，再把 generation workspace 复制到各 `SimulationContract` 的隔离 workspace。不在原 testsuite 目录中生成或修改文件。
 
 每个 case 模块必须用 `//! Origin:` 注释标出原始 `.exp`。`pixi run just test-alignment` 会把来源脚本中的受支持 Tcl API 调用展开为 compile/Bluesim/Icarus contract multiset，并与 Rust 注册表、golden 声明和 scheduler case 列表逐项比较；默认 `test` 和 `test-upstream` 均将此检查作为前置守门。
 
@@ -117,7 +117,7 @@ Phase 2 前三批累计迁移 **44 个 `.exp` 脚本、84 个动态 compile case
 
 ### Phase 3 第一批：Bluesim/Icarus simulation matrix
 
-新增 `SimulationCase`、`SimulationBackend` 与统一 `UpstreamCase` runner，按 backend 独立执行 generate → link → simulate → golden compare。完整迁移 `dynamic.exp`、bounds select/update 和 `Gearbox.exp` 的成功仿真 contract，共展开 **62 个 simulation case**：31 Bluesim、31 Icarus。
+这一阶段最初新增 `SimulationCase`、`SimulationBackend` 与统一 `UpstreamCase` runner，按 backend 独立执行 generate → link → simulate → golden compare。该历史平铺模型现已被声明式 `SimulationScenario` + `SimulationContract` 取代；以下数量仍记录当时迁移批次。完整迁移 `dynamic.exp`、bounds select/update 和 `Gearbox.exp` 的成功仿真 contract，共展开 **62 个 simulation contract**：31 Bluesim、31 Icarus。
 
 Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，Icarus 产物是 `vvp` 字节码而不是 Win32 `.exe`；runner 按 backend 选择启动器，将 `inst/bin/core` 前置到 `PATH`，并为 MSYS `sh` 转换 `BLUESPECDIR`。Icarus 输出按 legacy 规则过滤 `$readmem`、`$finish` 和 `VCD info` 噪声。`CTEST=0` 与 `VTEST=0` 分别显式跳过 Bluesim 和 Verilog/Icarus case。
 

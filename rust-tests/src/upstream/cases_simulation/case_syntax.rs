@@ -1,39 +1,57 @@
 //! Origin: `testsuite/bsc.syntax/bsv05/case/case.exp`.
 
-use super::SimulationCase;
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
 const FIXTURE_DIR: &str = "testsuite/bsc.syntax/bsv05/case";
 
-macro_rules! case_simulation_cases {
-    ($bluesim:ident, $icarus:ident, $module:literal) => {
-        pub(super) const $bluesim: SimulationCase = bluesim_case!(
-            concat!("bsc.syntax/bsv05/case::", $module, "::bluesim"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
-        pub(super) const $icarus: SimulationCase = icarus_case!(
-            concat!("bsc.syntax/bsv05/case::", $module, "::icarus"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
+macro_rules! case_scenario {
+    ($constant:ident, $module:literal) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!("bsc.syntax/bsv05/case::", $module),
+            fixture_dir: FIXTURE_DIR,
+            source: concat!($module, ".bsv"),
+            fixtures: &[
+                concat!($module, ".bsv"),
+                concat!("sys", $module, ".out.expected"),
+            ],
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: $crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!("bsc.syntax/bsv05/case::", $module, "::bluesim"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!("bsc.syntax/bsv05/case::", $module, "::icarus"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
+        };
     };
 }
 
-case_simulation_cases!(
-    MATCHES_MIXED_LIT_BLUESIM,
-    MATCHES_MIXED_LIT_ICARUS,
-    "CaseMatches_MixedLit"
-);
-case_simulation_cases!(MIXED_HEX_BLUESIM, MIXED_HEX_ICARUS, "CaseMixedHex");
-case_simulation_cases!(MIXED_OCT_BLUESIM, MIXED_OCT_ICARUS, "CaseMixedOct");
+case_scenario!(MATCHES_MIXED_LIT, "CaseMatches_MixedLit");
+case_scenario!(MIXED_HEX, "CaseMixedHex");
+case_scenario!(MIXED_OCT, "CaseMixedOct");
 
-pub(super) const CASES: &[SimulationCase] = &[
-    MATCHES_MIXED_LIT_BLUESIM,
-    MATCHES_MIXED_LIT_ICARUS,
-    MIXED_HEX_BLUESIM,
-    MIXED_HEX_ICARUS,
-    MIXED_OCT_BLUESIM,
-    MIXED_OCT_ICARUS,
-];
+pub(super) const SCENARIOS: &[SimulationScenario] = &[MATCHES_MIXED_LIT, MIXED_HEX, MIXED_OCT];

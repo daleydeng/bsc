@@ -1,7 +1,7 @@
 use crate::locate_project_root;
 use crate::upstream::{
-    compile_case_modules, compile_cases, simulation_case_modules, simulation_cases, CaseModule,
-    SimulationBackend,
+    compile_case_modules, compile_cases, simulation_scenario_modules, simulation_scenarios,
+    validate_simulation_scenario, CaseModule, GenerationStrategy, SimulationBackend,
 };
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -13,7 +13,8 @@ const SCHEDULER_ORIGINS: &[&str] = &["testsuite/bsc.scheduler/sat/sat.exp"];
 pub struct AlignmentSummary {
     pub scripts: usize,
     pub compile_cases: usize,
-    pub simulation_cases: usize,
+    pub simulation_scenarios: usize,
+    pub simulation_contracts: usize,
     pub scheduler_cases: usize,
     pub total_test_scripts: usize,
     pub migrated_test_scripts: usize,
@@ -27,7 +28,11 @@ pub struct AlignmentSummary {
 pub fn check_alignment() -> Result<AlignmentSummary, String> {
     let project_root = locate_project_root()?;
     let compile_cases = compile_cases();
-    let simulation_cases = simulation_cases();
+    let simulation_scenarios = simulation_scenarios();
+    let simulation_contracts = simulation_scenarios
+        .iter()
+        .map(|scenario| scenario.contracts.len())
+        .sum::<usize>();
     let scripts = check_upstream_cases(&project_root)?;
     let scheduler_cases = check_scheduler_sat(&project_root)?;
     let inventory = inventory_testsuite(&project_root, scheduler_cases)?;
@@ -36,7 +41,7 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
         .total_test_scripts
         .checked_sub(migrated_test_scripts)
         .ok_or_else(|| "migrated test script count exceeds testsuite script count".to_owned())?;
-    let migrated_contracts = compile_cases.len() + simulation_cases.len() + scheduler_cases;
+    let migrated_contracts = compile_cases.len() + simulation_contracts + scheduler_cases;
     let remaining_statically_declared_contracts = inventory
         .total_statically_declared_contracts
         .checked_sub(migrated_contracts)
@@ -47,7 +52,8 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
     Ok(AlignmentSummary {
         scripts,
         compile_cases: compile_cases.len(),
-        simulation_cases: simulation_cases.len(),
+        simulation_scenarios: simulation_scenarios.len(),
+        simulation_contracts,
         scheduler_cases,
         total_test_scripts: inventory.total_test_scripts,
         migrated_test_scripts,
@@ -179,11 +185,11 @@ fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, Str
         .iter()
         .map(|origin| (*origin).to_owned())
         .collect::<BTreeSet<_>>();
-    for fixture_dir in compile_cases()
-        .iter()
-        .map(|case| case.fixture_dir)
-        .chain(simulation_cases().iter().map(|case| case.fixture_dir))
-    {
+    for fixture_dir in compile_cases().iter().map(|case| case.fixture_dir).chain(
+        simulation_scenarios()
+            .iter()
+            .map(|scenario| scenario.fixture_dir),
+    ) {
         let origin = find_sole_exp(project_root, fixture_dir)?;
         origins.insert(project_relative_unix_path(project_root, &origin)?);
     }
@@ -209,8 +215,16 @@ fn count_statically_declared_contracts(source: &str) -> usize {
             | "compile_verilog_fail_error"
             | "compile_verilog_pass_warning"
             | "test_c_only_bsv"
-            | "test_veri_only_bsv" => 1,
-            "test_c_veri_bsv" | "test_c_veri_bsv_modules_options" => 2,
+            | "test_c_only_bsv_modules"
+            | "test_c_only_bsv_modules_options"
+            | "test_veri_only_bsv"
+            | "test_veri_only_bsv_modules"
+            | "test_veri_only_bsv_modules_options" => 1,
+            "test_c_veri_bsv"
+            | "test_c_veri_bsv_modules"
+            | "test_c_veri_bsv_modules_options"
+            | "test_c_veri_bsv_separately"
+            | "test_c_veri_bsv_modules_options_separately" => 2,
             _ => 0,
         })
         .sum()
@@ -442,7 +456,7 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
     check_case_modules(
         project_root,
         "rust-tests/src/upstream/cases_simulation",
-        simulation_case_modules(),
+        simulation_scenario_modules(),
         |case| case.fixture_dir,
     )?;
 
@@ -466,19 +480,44 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
         }
     }
 
-    for case in simulation_cases() {
-        if !names.insert(case.name) {
-            return Err(format!("duplicate Rust case name: {}", case.name));
+    let mut scenario_names = BTreeSet::new();
+    for scenario in simulation_scenarios() {
+        validate_simulation_scenario(scenario)?;
+        if !scenario_names.insert(scenario.name) {
+            return Err(format!(
+                "duplicate Rust simulation scenario name: {}",
+                scenario.name
+            ));
         }
-        check_declared_fixtures(project_root, case.fixture_dir, case.fixtures, case.name)?;
-        let backend = match case.backend {
-            SimulationBackend::Bluesim => "bluesim",
-            SimulationBackend::Icarus => "icarus",
-        };
+        check_declared_fixtures(
+            project_root,
+            scenario.fixture_dir,
+            scenario.fixtures,
+            scenario.name,
+        )?;
         add_count(
-            &mut registered.entry(case.fixture_dir).or_default().contracts,
-            contract_key(backend, case.source),
+            &mut registered
+                .entry(scenario.fixture_dir)
+                .or_default()
+                .generations,
+            generation_key(scenario.generation, scenario.source),
         );
+        for contract in scenario.contracts {
+            if !names.insert(contract.name) {
+                return Err(format!("duplicate Rust contract name: {}", contract.name));
+            }
+            let backend = match contract.backend {
+                SimulationBackend::Bluesim => "bluesim",
+                SimulationBackend::Icarus => "icarus",
+            };
+            add_count(
+                &mut registered
+                    .entry(scenario.fixture_dir)
+                    .or_default()
+                    .contracts,
+                contract_key(backend, scenario.source),
+            );
+        }
     }
 
     for (fixture_dir, actual) in &registered {
@@ -493,6 +532,12 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
             &expected.goldens,
             &actual.goldens,
         )?;
+        compare_counts(
+            &origin,
+            "generation strategies",
+            &expected.generations,
+            &actual.generations,
+        )?;
     }
 
     Ok(registered.len())
@@ -502,6 +547,7 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
 struct Counts {
     contracts: BTreeMap<String, usize>,
     goldens: BTreeMap<String, usize>,
+    generations: BTreeMap<String, usize>,
 }
 
 fn check_declared_fixtures(
@@ -583,24 +629,48 @@ fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
                 let source = required_word(&words, 1, origin, line_index)?;
                 add_count(&mut counts.contracts, contract_key("compile", source));
             }
-            "test_c_veri_bsv" | "test_c_veri_bsv_modules_options" => {
+            "test_c_veri_bsv" | "test_c_veri_bsv_modules" | "test_c_veri_bsv_modules_options" => {
                 let module = required_word(&words, 1, origin, line_index)?;
                 let source = format!("{module}.bsv");
                 add_count(&mut counts.contracts, contract_key("bluesim", &source));
                 add_count(&mut counts.contracts, contract_key("icarus", &source));
-            }
-            "test_c_only_bsv" => {
-                let module = required_word(&words, 1, origin, line_index)?;
                 add_count(
-                    &mut counts.contracts,
-                    contract_key("bluesim", &format!("{module}.bsv")),
+                    &mut counts.generations,
+                    generation_key_name("shared", &source),
                 );
             }
-            "test_veri_only_bsv" => {
+            "test_c_veri_bsv_separately" | "test_c_veri_bsv_modules_options_separately" => {
                 let module = required_word(&words, 1, origin, line_index)?;
+                let source = format!("{module}.bsv");
+                add_count(&mut counts.contracts, contract_key("bluesim", &source));
+                add_count(&mut counts.contracts, contract_key("icarus", &source));
                 add_count(
-                    &mut counts.contracts,
-                    contract_key("icarus", &format!("{module}.bsv")),
+                    &mut counts.generations,
+                    generation_key_name("bluesim", &source),
+                );
+                add_count(
+                    &mut counts.generations,
+                    generation_key_name("icarus", &source),
+                );
+            }
+            "test_c_only_bsv" | "test_c_only_bsv_modules" | "test_c_only_bsv_modules_options" => {
+                let module = required_word(&words, 1, origin, line_index)?;
+                let source = format!("{module}.bsv");
+                add_count(&mut counts.contracts, contract_key("bluesim", &source));
+                add_count(
+                    &mut counts.generations,
+                    generation_key_name("bluesim", &source),
+                );
+            }
+            "test_veri_only_bsv"
+            | "test_veri_only_bsv_modules"
+            | "test_veri_only_bsv_modules_options" => {
+                let module = required_word(&words, 1, origin, line_index)?;
+                let source = format!("{module}.bsv");
+                add_count(&mut counts.contracts, contract_key("icarus", &source));
+                add_count(
+                    &mut counts.generations,
+                    generation_key_name("icarus", &source),
                 );
             }
             "compare_file" => {
@@ -648,6 +718,19 @@ fn required_word<'a>(
 
 fn contract_key(kind: &str, source: &str) -> String {
     format!("{kind}:{source}")
+}
+
+fn generation_key(strategy: GenerationStrategy, source: &str) -> String {
+    let strategy = match strategy {
+        GenerationStrategy::BackendSpecific(SimulationBackend::Bluesim) => "bluesim",
+        GenerationStrategy::BackendSpecific(SimulationBackend::Icarus) => "icarus",
+        GenerationStrategy::SharedElaboration => "shared",
+    };
+    generation_key_name(strategy, source)
+}
+
+fn generation_key_name(strategy: &str, source: &str) -> String {
+    format!("{strategy}:{source}")
 }
 
 fn add_count(counts: &mut BTreeMap<String, usize>, key: String) {
@@ -789,8 +872,9 @@ mod tests {
             "compile_fail_error Bad.bsv T0001\n",
             "compare_file Bad.bsv.bsc-out\n",
             "test_c_veri_bsv Both\n",
-            "test_c_only_bsv COnly expected\n",
-            "test_veri_only_bsv VOnly expected\n",
+            "test_c_veri_bsv_separately Separate\n",
+            "test_c_only_bsv_modules_options COnly {} {} expected\n",
+            "test_veri_only_bsv_modules VOnly {} expected\n",
         );
         let actual = parse_exp_contracts(source, Path::new("sample.exp")).unwrap();
         let expected_contracts = [
@@ -798,6 +882,8 @@ mod tests {
             ("compile:Bad.bsv", 1),
             ("bluesim:Both.bsv", 1),
             ("icarus:Both.bsv", 1),
+            ("bluesim:Separate.bsv", 1),
+            ("icarus:Separate.bsv", 1),
             ("bluesim:COnly.bsv", 1),
             ("icarus:VOnly.bsv", 1),
         ]
@@ -806,6 +892,16 @@ mod tests {
         .collect();
         assert_eq!(actual.contracts, expected_contracts);
         assert_eq!(actual.goldens, BTreeMap::from([("Bad.bsv".to_owned(), 1)]));
+        assert_eq!(
+            actual.generations,
+            BTreeMap::from([
+                ("shared:Both.bsv".to_owned(), 1),
+                ("bluesim:Separate.bsv".to_owned(), 1),
+                ("icarus:Separate.bsv".to_owned(), 1),
+                ("bluesim:COnly.bsv".to_owned(), 1),
+                ("icarus:VOnly.bsv".to_owned(), 1),
+            ])
+        );
     }
 
     #[test]
@@ -815,11 +911,13 @@ mod tests {
             "test_c_veri_bsv Both\n",
             "test_c_only_bsv COnly expected\n",
             "test_veri_only_bsv VOnly expected\n",
+            "test_c_veri_bsv_separately Separate\n",
+            "test_c_only_bsv_modules CModules {}\n",
             "# compile_fail Ignored.bsv\n",
             "compare_file Good.bsv.bsc-out\n",
             "foreach item $items {\n",
         );
-        assert_eq!(count_statically_declared_contracts(source), 5);
+        assert_eq!(count_statically_declared_contracts(source), 8);
     }
 
     #[test]

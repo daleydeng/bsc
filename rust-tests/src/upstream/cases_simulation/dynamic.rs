@@ -1,51 +1,62 @@
 //! Origin: `testsuite/bsc.evaluator/dynamic/dynamic.exp`.
 
-use super::SimulationCase;
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
 const FIXTURE_DIR: &str = "testsuite/bsc.evaluator/dynamic";
 
-macro_rules! dynamic_cases {
-    ($bluesim:ident, $icarus:ident, $module:literal) => {
-        pub(super) const $bluesim: SimulationCase = bluesim_case!(
-            concat!("bsc.evaluator/dynamic::", $module, "::bluesim"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
-        pub(super) const $icarus: SimulationCase = icarus_case!(
-            concat!("bsc.evaluator/dynamic::", $module, "::icarus"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
+macro_rules! dynamic_scenario {
+    ($constant:ident, $module:literal) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!("bsc.evaluator/dynamic::", $module),
+            fixture_dir: FIXTURE_DIR,
+            source: concat!($module, ".bsv"),
+            fixtures: &[
+                concat!($module, ".bsv"),
+                concat!("sys", $module, ".out.expected"),
+            ],
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: $crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!("bsc.evaluator/dynamic::", $module, "::bluesim"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!("bsc.evaluator/dynamic::", $module, "::icarus"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
+        };
     };
 }
 
-dynamic_cases!(INTEGER_BLUESIM, INTEGER_ICARUS, "DynamicInteger");
-dynamic_cases!(
-    INTEGER_NESTED_BLUESIM,
-    INTEGER_NESTED_ICARUS,
-    "DynamicIntegerNested"
-);
-dynamic_cases!(DIV_BLUESIM, DIV_ICARUS, "DynamicDiv");
-dynamic_cases!(NEG_BLUESIM, NEG_ICARUS, "DynamicNeg");
-dynamic_cases!(NEG_2_BLUESIM, NEG_2_ICARUS, "DynamicNeg2");
-dynamic_cases!(LT_BLUESIM, LT_ICARUS, "DynamicLT");
-dynamic_cases!(ADD_BLUESIM, ADD_ICARUS, "DynamicAdd");
+dynamic_scenario!(INTEGER, "DynamicInteger");
+dynamic_scenario!(INTEGER_NESTED, "DynamicIntegerNested");
+dynamic_scenario!(DIV, "DynamicDiv");
+dynamic_scenario!(NEG, "DynamicNeg");
+dynamic_scenario!(NEG_2, "DynamicNeg2");
+dynamic_scenario!(LT, "DynamicLT");
+dynamic_scenario!(ADD, "DynamicAdd");
 
-pub(super) const CASES: &[SimulationCase] = &[
-    INTEGER_BLUESIM,
-    INTEGER_ICARUS,
-    INTEGER_NESTED_BLUESIM,
-    INTEGER_NESTED_ICARUS,
-    DIV_BLUESIM,
-    DIV_ICARUS,
-    NEG_BLUESIM,
-    NEG_ICARUS,
-    NEG_2_BLUESIM,
-    NEG_2_ICARUS,
-    LT_BLUESIM,
-    LT_ICARUS,
-    ADD_BLUESIM,
-    ADD_ICARUS,
-];
+pub(super) const SCENARIOS: &[SimulationScenario] =
+    &[INTEGER, INTEGER_NESTED, DIV, NEG, NEG_2, LT, ADD];

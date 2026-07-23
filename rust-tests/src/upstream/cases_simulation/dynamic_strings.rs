@@ -1,67 +1,69 @@
 //! Origin: `testsuite/bsc.evaluator/dynamic/strings/dynamic_strings.exp`.
 
-use super::SimulationCase;
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
 const FIXTURE_DIR: &str = "testsuite/bsc.evaluator/dynamic/strings";
 
-macro_rules! string_cases {
-    ($bluesim:ident, $icarus:ident, $module:literal) => {
-        string_cases!(
-            $bluesim,
-            $icarus,
-            $module,
-            $crate::upstream::Requirement::VerilogEnabled
-        );
+macro_rules! string_scenario {
+    ($constant:ident, $module:literal) => {
+        string_scenario!($constant, $module, Requirement::VerilogEnabled);
     };
-    ($bluesim:ident, $icarus:ident, $module:literal, $requirement:expr) => {
-        pub(super) const $bluesim: SimulationCase = bluesim_case!(
-            concat!("bsc.evaluator/dynamic/strings::", $module, "::bluesim"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected")
-        );
-        pub(super) const $icarus: SimulationCase = icarus_case!(
-            concat!("bsc.evaluator/dynamic/strings::", $module, "::icarus"),
-            FIXTURE_DIR,
-            $module,
-            concat!("sys", $module, ".out.expected"),
-            &[],
-            $requirement
-        );
+    ($constant:ident, $module:literal, $icarus_requirement:expr) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!("bsc.evaluator/dynamic/strings::", $module),
+            fixture_dir: FIXTURE_DIR,
+            source: concat!($module, ".bsv"),
+            fixtures: &[
+                concat!($module, ".bsv"),
+                concat!("sys", $module, ".out.expected"),
+            ],
+            top: concat!("sys", $module),
+            generated_modules: &[],
+            compile_options: &[],
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: $crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[
+                SimulationContract {
+                    name: concat!("bsc.evaluator/dynamic/strings::", $module, "::bluesim"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!("bsc.evaluator/dynamic/strings::", $module, "::icarus"),
+                    expected: concat!("sys", $module, ".out.expected"),
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: $icarus_requirement,
+                },
+            ],
+        };
     };
 }
 
-string_cases!(MUX_BLUESIM, MUX_ICARUS, "StringMux");
-string_cases!(CONCAT_BLUESIM, CONCAT_ICARUS, "StringConcat");
-string_cases!(
-    INTEGER_BLUESIM,
-    INTEGER_ICARUS,
-    "StringInteger",
-    crate::upstream::Requirement::IcarusAtLeast(12)
-);
-string_cases!(
-    INTEGER_WITH_NULL_BLUESIM,
-    INTEGER_WITH_NULL_ICARUS,
+string_scenario!(MUX, "StringMux");
+string_scenario!(CONCAT, "StringConcat");
+string_scenario!(INTEGER, "StringInteger", Requirement::IcarusAtLeast(12));
+string_scenario!(
+    INTEGER_WITH_NULL,
     "StringIntegerWithNull",
-    crate::upstream::Requirement::IcarusAtLeast(13)
+    Requirement::IcarusAtLeast(13)
 );
-string_cases!(EQ_BLUESIM, EQ_ICARUS, "StringEQ");
-string_cases!(LT_BLUESIM, LT_ICARUS, "StringLT");
-string_cases!(FORMAT_BLUESIM, FORMAT_ICARUS, "DynamicFormatString");
+string_scenario!(EQ, "StringEQ");
+string_scenario!(LT, "StringLT");
+string_scenario!(FORMAT, "DynamicFormatString");
 
-pub(super) const CASES: &[SimulationCase] = &[
-    MUX_BLUESIM,
-    MUX_ICARUS,
-    CONCAT_BLUESIM,
-    CONCAT_ICARUS,
-    INTEGER_BLUESIM,
-    INTEGER_ICARUS,
-    INTEGER_WITH_NULL_BLUESIM,
-    INTEGER_WITH_NULL_ICARUS,
-    EQ_BLUESIM,
-    EQ_ICARUS,
-    LT_BLUESIM,
-    LT_ICARUS,
-    FORMAT_BLUESIM,
-    FORMAT_ICARUS,
-];
+pub(super) const SCENARIOS: &[SimulationScenario] =
+    &[MUX, CONCAT, INTEGER, INTEGER_WITH_NULL, EQ, LT, FORMAT];

@@ -6,107 +6,100 @@
 //! - `testsuite/bsc.verilog/positivereset/SyncReset/SyncReset.exp`
 //! - `testsuite/bsc.real/evaluator/undef/undef.exp`
 
-use super::SimulationCase;
-use crate::upstream::{GenerationStrategy, Requirement, ResourceClass, SimulationBackend};
+use super::SimulationScenario;
+use crate::upstream::{
+    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
+    VcdExpectation,
+};
 
-macro_rules! simulation_case {
-    ($constant:ident, $name:expr, $fixture_dir:expr, $module:literal, $expected:expr, $fixtures:expr, $compile_options:expr, $generated_modules:expr, $backend:expr, $requirement:expr, $heavy:expr) => {
-        simulation_case!(
-            $constant,
-            $name,
-            $fixture_dir,
-            $module,
-            $expected,
-            $fixtures,
-            $compile_options,
-            $generated_modules,
-            &[],
-            GenerationStrategy::BackendSpecific,
-            $backend,
-            $requirement,
-            $heavy
-        );
-    };
-    ($constant:ident, $name:expr, $fixture_dir:expr, $module:literal, $expected:expr, $fixtures:expr, $compile_options:expr, $generated_modules:expr, $link_options:expr, $backend:expr, $requirement:expr, $heavy:expr) => {
-        simulation_case!(
-            $constant,
-            $name,
-            $fixture_dir,
-            $module,
-            $expected,
-            $fixtures,
-            $compile_options,
-            $generated_modules,
-            $link_options,
-            GenerationStrategy::BackendSpecific,
-            $backend,
-            $requirement,
-            $heavy
-        );
-    };
-    ($constant:ident, $name:expr, $fixture_dir:expr, $module:literal, $expected:expr, $fixtures:expr, $compile_options:expr, $generated_modules:expr, $link_options:expr, $generation:expr, $backend:expr, $requirement:expr, $heavy:expr) => {
-        pub(super) const $constant: SimulationCase = SimulationCase {
-            name: $name,
+macro_rules! shared_scenario {
+    (
+        $constant:ident,
+        $prefix:literal,
+        $fixture_dir:expr,
+        $module:literal,
+        $expected:expr,
+        $fixtures:expr,
+        $compile_options:expr,
+        $generated_modules:expr,
+        $timeout:expr,
+        $resource:expr
+    ) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!($prefix, "::", $module),
             fixture_dir: $fixture_dir,
             source: concat!($module, ".bsv"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
             generated_modules: $generated_modules,
-            expected: $expected,
             compile_options: $compile_options,
-            link_options: $link_options,
-            simulation_options: &[],
-            sort_output: false,
-            backend: $backend,
-            generation: $generation,
-            vcd: $crate::upstream::VcdExpectation::None,
-            requirement: $requirement,
-            timeout: if $heavy {
-                $crate::BSC_HEAVY_TIMEOUT
-            } else {
-                $crate::BSC_TIMEOUT
-            },
-            resource: if $heavy {
-                ResourceClass::Heavy
-            } else {
-                ResourceClass::Normal
-            },
+            generation: GenerationStrategy::SharedElaboration,
+            timeout: $timeout,
+            resource: $resource,
+            contracts: &[
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::bluesim"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Bluesim,
+                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    requirement: Requirement::BluesimEnabled,
+                },
+                SimulationContract {
+                    name: concat!($prefix, "::", $module, "::icarus"),
+                    expected: $expected,
+                    link_options: &[],
+                    simulation_options: &[],
+                    sort_output: false,
+                    backend: SimulationBackend::Icarus,
+                    vcd: VcdExpectation::IcarusSmoke,
+                    requirement: Requirement::VerilogEnabled,
+                },
+            ],
         };
     };
 }
 
-macro_rules! backend_pair {
-    ($bluesim:ident, $icarus:ident, $prefix:literal, $fixture_dir:expr, $module:literal, $expected:expr, $fixtures:expr, $compile_options:expr, $generated_modules:expr, $heavy:expr) => {
-        simulation_case!(
-            $bluesim,
-            concat!($prefix, "::", $module, "::bluesim"),
-            $fixture_dir,
-            $module,
-            $expected,
-            $fixtures,
-            $compile_options,
-            $generated_modules,
-            &[],
-            GenerationStrategy::SharedElaboration,
-            SimulationBackend::Bluesim,
-            Requirement::BluesimEnabled,
-            $heavy
-        );
-        simulation_case!(
-            $icarus,
-            concat!($prefix, "::", $module, "::icarus"),
-            $fixture_dir,
-            $module,
-            $expected,
-            $fixtures,
-            $compile_options,
-            $generated_modules,
-            &[],
-            GenerationStrategy::SharedElaboration,
-            SimulationBackend::Icarus,
-            Requirement::VerilogEnabled,
-            $heavy
-        );
+macro_rules! backend_scenario {
+    (
+        $constant:ident,
+        $prefix:literal,
+        $fixture_dir:expr,
+        $module:literal,
+        $expected:expr,
+        $fixtures:expr,
+        $compile_options:expr,
+        $generated_modules:expr,
+        $link_options:expr,
+        $backend_name:literal,
+        $backend:ident,
+        $vcd:ident,
+        $requirement:ident
+    ) => {
+        pub(super) const $constant: SimulationScenario = SimulationScenario {
+            name: concat!($prefix, "::", $module, "::", $backend_name, "-generation"),
+            fixture_dir: $fixture_dir,
+            source: concat!($module, ".bsv"),
+            fixtures: $fixtures,
+            top: concat!("sys", $module),
+            generated_modules: $generated_modules,
+            compile_options: $compile_options,
+            generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
+            timeout: $crate::BSC_TIMEOUT,
+            resource: ResourceClass::Normal,
+            contracts: &[SimulationContract {
+                name: concat!($prefix, "::", $module, "::", $backend_name),
+                expected: $expected,
+                link_options: $link_options,
+                simulation_options: &[],
+                sort_output: false,
+                backend: SimulationBackend::$backend,
+                vcd: VcdExpectation::$vcd,
+                requirement: Requirement::$requirement,
+            }],
+        };
     };
 }
 
@@ -127,23 +120,22 @@ const AES_FIXTURES: &[&str] = &[
     "key256.vectors",
 ];
 const AES_GENERATED_MODULES: &[&str] = &["mkRconRom", "mkSboxRom", "mkInvSboxRom", "mkAes"];
-backend_pair!(
-    AES_BLUESIM,
-    AES_ICARUS,
+shared_scenario!(
+    AES,
     "bsc.bsv_examples/AES",
     AES_DIR,
     "Aes_TB",
     AES_EXPECTED,
     AES_FIXTURES,
-    &["-steps", "500000", "-elab"],
+    &["-steps", "500000"],
     AES_GENERATED_MODULES,
-    true
+    crate::BSC_HEAVY_TIMEOUT,
+    ResourceClass::Heavy
 );
 
 const FP_DIR: &str = "testsuite/bsc.bsv_examples/FP";
-backend_pair!(
-    FP_BASIC_BLUESIM,
-    FP_BASIC_ICARUS,
+shared_scenario!(
+    FP_BASIC,
     "bsc.bsv_examples/FP",
     FP_DIR,
     "Basic",
@@ -151,11 +143,11 @@ backend_pair!(
     &["Basic.bsv", "FloatingPoint.bsv", "sysBasic.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    FP_ARITH_BLUESIM,
-    FP_ARITH_ICARUS,
+shared_scenario!(
+    FP_ARITH,
     "bsc.bsv_examples/FP",
     FP_DIR,
     "Arith",
@@ -163,11 +155,11 @@ backend_pair!(
     &["Arith.bsv", "FloatingPoint.bsv", "sysArith.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    FP_SYNTH_BLUESIM,
-    FP_SYNTH_ICARUS,
+shared_scenario!(
+    FP_SYNTH,
     "bsc.bsv_examples/FP",
     FP_DIR,
     "Synth",
@@ -175,11 +167,11 @@ backend_pair!(
     &["Synth.bsv", "FloatingPoint.bsv", "sysSynth.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    FP_ARITH_PIPE_BLUESIM,
-    FP_ARITH_PIPE_ICARUS,
+shared_scenario!(
+    FP_ARITH_PIPE,
     "bsc.bsv_examples/FP",
     FP_DIR,
     "ArithPipe",
@@ -191,11 +183,11 @@ backend_pair!(
     ],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    FP_PIPE_MULT_BLUESIM,
-    FP_PIPE_MULT_ICARUS,
+shared_scenario!(
+    FP_PIPE_MULT,
     "bsc.bsv_examples/FP",
     FP_DIR,
     "PipeMult",
@@ -203,13 +195,13 @@ backend_pair!(
     &["PipeMult.bsv", "FloatingPoint.bsv", "sysPipeMult.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
 
 const GLIBC_RANDOM_DIR: &str = "testsuite/bsc.bsv_examples/GlibcRandom";
-backend_pair!(
-    GLIBC_RANDOM_FAST_BLUESIM,
-    GLIBC_RANDOM_FAST_ICARUS,
+shared_scenario!(
+    GLIBC_RANDOM_FAST,
     "bsc.bsv_examples/GlibcRandom",
     GLIBC_RANDOM_DIR,
     "tbFast",
@@ -217,11 +209,11 @@ backend_pair!(
     &["tbFast.bsv", "GlibcRandom.bsv", "systbFast.out.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    GLIBC_RANDOM_SLOW_BLUESIM,
-    GLIBC_RANDOM_SLOW_ICARUS,
+shared_scenario!(
+    GLIBC_RANDOM_SLOW,
     "bsc.bsv_examples/GlibcRandom",
     GLIBC_RANDOM_DIR,
     "tbSlow",
@@ -229,13 +221,13 @@ backend_pair!(
     &["tbSlow.bsv", "GlibcRandom.bsv", "systbSlow.out.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
 
 const MIMO_DIR: &str = "testsuite/bsc.bsv_examples/mimo";
-backend_pair!(
-    MIMO_BASIC_BLUESIM,
-    MIMO_BASIC_ICARUS,
+shared_scenario!(
+    MIMO_BASIC,
     "bsc.bsv_examples/mimo",
     MIMO_DIR,
     "Basic",
@@ -243,11 +235,11 @@ backend_pair!(
     &["Basic.bsv", "sysBasic.expected"],
     &[],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    MIMO_TRAFFIC_REG_BLUESIM,
-    MIMO_TRAFFIC_REG_ICARUS,
+shared_scenario!(
+    MIMO_TRAFFIC_REG,
     "bsc.bsv_examples/mimo",
     MIMO_DIR,
     "TrafficREG",
@@ -255,11 +247,11 @@ backend_pair!(
     &["TrafficREG.bsv", "sysTrafficREG.out.expected"],
     &["-no-aggressive-conditions"],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
-backend_pair!(
-    MIMO_TRAFFIC_BRAM_BLUESIM,
-    MIMO_TRAFFIC_BRAM_ICARUS,
+shared_scenario!(
+    MIMO_TRAFFIC_BRAM,
     "bsc.bsv_examples/mimo",
     MIMO_DIR,
     "TrafficBRAM",
@@ -267,20 +259,17 @@ backend_pair!(
     &["TrafficBRAM.bsv", "sysTrafficBRAM.out.expected"],
     &["-no-aggressive-conditions"],
     &[],
-    false
+    crate::BSC_TIMEOUT,
+    ResourceClass::Normal
 );
 
 const POSITIVE_RESET_DIR: &str = "testsuite/bsc.verilog/positivereset/SyncReset";
 const POSITIVE_RESET_OPTIONS: &[&str] = &["-reset-prefix", "RESET_P", "-D", "BSV_POSITIVE_RESET"];
 macro_rules! positive_reset_pair {
     ($bluesim:ident, $icarus:ident, $module:literal, $bluesim_expected:literal, $icarus_expected:literal) => {
-        simulation_case!(
+        backend_scenario!(
             $bluesim,
-            concat!(
-                "bsc.verilog/positivereset/SyncReset::",
-                $module,
-                "::bluesim"
-            ),
+            "bsc.verilog/positivereset/SyncReset",
             POSITIVE_RESET_DIR,
             $module,
             $bluesim_expected,
@@ -288,13 +277,14 @@ macro_rules! positive_reset_pair {
             POSITIVE_RESET_OPTIONS,
             &[],
             POSITIVE_RESET_OPTIONS,
-            SimulationBackend::Bluesim,
-            Requirement::BluesimEnabled,
-            false
+            "bluesim",
+            Bluesim,
+            BluesimOutputMatchesNormal,
+            BluesimEnabled
         );
-        simulation_case!(
+        backend_scenario!(
             $icarus,
-            concat!("bsc.verilog/positivereset/SyncReset::", $module, "::icarus"),
+            "bsc.verilog/positivereset/SyncReset",
             POSITIVE_RESET_DIR,
             $module,
             $icarus_expected,
@@ -302,9 +292,10 @@ macro_rules! positive_reset_pair {
             POSITIVE_RESET_OPTIONS,
             &[],
             POSITIVE_RESET_OPTIONS,
-            SimulationBackend::Icarus,
-            Requirement::VerilogEnabled,
-            false
+            "icarus",
+            Icarus,
+            IcarusSmoke,
+            VerilogEnabled
         );
     };
 }
@@ -331,9 +322,9 @@ positive_reset_pair!(
     "sysRstTest_V2.v.out.expected"
 );
 
-simulation_case!(
+backend_scenario!(
     UNDEF_DYNAMIC_SELECT_ICARUS,
-    "bsc.real/evaluator/undef::DontCareDynSelectStaticArrayReal::icarus",
+    "bsc.real/evaluator/undef",
     "testsuite/bsc.real/evaluator/undef",
     "DontCareDynSelectStaticArrayReal",
     "sysDontCareDynSelectStaticArrayReal.out.expected",
@@ -343,34 +334,25 @@ simulation_case!(
     ],
     &[],
     &[],
-    SimulationBackend::Icarus,
-    Requirement::VerilogEnabled,
-    false
+    &[],
+    "icarus",
+    Icarus,
+    IcarusSmoke,
+    VerilogEnabled
 );
 
-pub(super) const CASES: &[SimulationCase] = &[
-    AES_BLUESIM,
-    AES_ICARUS,
-    FP_BASIC_BLUESIM,
-    FP_BASIC_ICARUS,
-    FP_ARITH_BLUESIM,
-    FP_ARITH_ICARUS,
-    FP_SYNTH_BLUESIM,
-    FP_SYNTH_ICARUS,
-    FP_ARITH_PIPE_BLUESIM,
-    FP_ARITH_PIPE_ICARUS,
-    FP_PIPE_MULT_BLUESIM,
-    FP_PIPE_MULT_ICARUS,
-    GLIBC_RANDOM_FAST_BLUESIM,
-    GLIBC_RANDOM_FAST_ICARUS,
-    GLIBC_RANDOM_SLOW_BLUESIM,
-    GLIBC_RANDOM_SLOW_ICARUS,
-    MIMO_BASIC_BLUESIM,
-    MIMO_BASIC_ICARUS,
-    MIMO_TRAFFIC_REG_BLUESIM,
-    MIMO_TRAFFIC_REG_ICARUS,
-    MIMO_TRAFFIC_BRAM_BLUESIM,
-    MIMO_TRAFFIC_BRAM_ICARUS,
+pub(super) const SCENARIOS: &[SimulationScenario] = &[
+    AES,
+    FP_BASIC,
+    FP_ARITH,
+    FP_SYNTH,
+    FP_ARITH_PIPE,
+    FP_PIPE_MULT,
+    GLIBC_RANDOM_FAST,
+    GLIBC_RANDOM_SLOW,
+    MIMO_BASIC,
+    MIMO_TRAFFIC_REG,
+    MIMO_TRAFFIC_BRAM,
     POSITIVE_RESET_BLUESIM,
     POSITIVE_RESET_ICARUS,
     POSITIVE_RESET_V1_BLUESIM,
