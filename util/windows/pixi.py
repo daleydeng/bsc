@@ -25,7 +25,7 @@ GHC_WINDOWS_BINDIST_SHA256 = (
 CABAL_VERSION = "3.10.3.0"
 HACKAGE_MIRROR = "https://mirrors.ustc.edu.cn/hackage/"
 HASKELL_PACKAGES = ("old-time", "regex-compat", "split", "strict-concurrency", "syb")
-ICARUS_ACTIONS = {"doctor", "smoke", "test-upstream", "test-rust", "test", "test-cold"}
+ICARUS_ACTIONS = {"doctor", "smoke"}
 
 
 def fail(message: str) -> NoReturn:
@@ -132,7 +132,7 @@ def prepend_path(*paths: Path) -> None:
     os.environ["PATH"] = os.pathsep.join([*(str(path) for path in paths), current])
 
 
-def prepare_environment(root: Path, conda: Path, oss_root: Path | None, jobs: int) -> bool:
+def prepare_environment(root: Path, conda: Path, oss_root: Path | None, jobs: int) -> None:
     os.environ["BSC_BUILD_JOBS"] = str(jobs)
     os.environ["GHCUP_INSTALL_BASE_PREFIX"] = str(root / ".pixi")
     os.environ["CABAL_DIR"] = str(root / ".pixi" / "cabal")
@@ -182,9 +182,7 @@ def prepare_environment(root: Path, conda: Path, oss_root: Path | None, jobs: in
     os.environ.setdefault("CCACHE_DIR", str(root / ".pixi" / "cache" / "ccache"))
     os.environ.setdefault("CCACHE_BASEDIR", str(root))
     os.environ.setdefault("CCACHE_MAXSIZE", "10G")
-    ccache_managed_cxx = "CXX" not in os.environ
-    if ccache_managed_cxx:
-        os.environ["CXX"] = "ccache c++"
+    os.environ.setdefault("CXX", "ccache c++")
 
     os.environ["PKG_CONFIG_PATH"] = os.pathsep.join(
         (
@@ -197,7 +195,6 @@ def prepare_environment(root: Path, conda: Path, oss_root: Path | None, jobs: in
     os.environ["GIT_SSL_CAINFO"] = str(ca_bundle)
     os.environ["CURL_CA_BUNDLE"] = str(ca_bundle)
     os.environ["CARGO_TARGET_DIR"] = str(root / ".pixi" / "tmp" / "cargo-target")
-    return ccache_managed_cxx
 
 
 def sha256(path: Path) -> str:
@@ -345,85 +342,6 @@ export CURL_CA_BUNDLE="$SSL_CERT_FILE"
         script.unlink(missing_ok=True)
 
 
-def cargo_test(jobs: int, *arguments: str) -> None:
-    run(
-        [
-            "cargo.exe",
-            "test",
-            "--locked",
-            "--manifest-path",
-            "rust-tests/Cargo.toml",
-            "--jobs",
-            str(jobs),
-            *arguments,
-            "--",
-            "--test-threads",
-            str(jobs),
-        ]
-    )
-
-
-def alignment_check(jobs: int) -> None:
-    run(
-        [
-            "cargo.exe",
-            "run",
-            "--locked",
-            "--manifest-path",
-            "rust-tests/Cargo.toml",
-            "--bin",
-            "alignment",
-            "--jobs",
-            str(jobs),
-        ]
-    )
-
-
-def remaining_inventory(jobs: int, mode: str) -> None:
-    run(
-        [
-            "cargo.exe",
-            "run",
-            "--locked",
-            "--manifest-path",
-            "rust-tests/Cargo.toml",
-            "--bin",
-            "remaining",
-            "--jobs",
-            str(jobs),
-            "--",
-            mode,
-        ]
-    )
-
-
-def upstream_tests(jobs: int, arguments: Sequence[str] = ()) -> None:
-    alignment_check(jobs)
-    remaining_inventory(jobs, "--check")
-    run(
-        [
-            "cargo.exe",
-            "run",
-            "--locked",
-            "--manifest-path",
-            "rust-tests/Cargo.toml",
-            "--bin",
-            "upstream",
-            "--jobs",
-            str(jobs),
-            "--",
-            *arguments,
-            "--test-threads",
-            str(jobs),
-        ]
-    )
-
-
-def all_rust_tests(jobs: int) -> None:
-    cargo_test(jobs, "--lib", "--test", "scheduler_sat")
-    upstream_tests(jobs)
-
-
 def doctor_command() -> str:
     return """set -u
 failed=0
@@ -449,14 +367,7 @@ exit "$failed"
 """
 
 
-def dispatch(
-    action: str,
-    root: Path,
-    conda: Path,
-    jobs: int,
-    ccache_managed_cxx: bool,
-    arguments: Sequence[str],
-) -> None:
+def dispatch(action: str, root: Path, conda: Path, jobs: int) -> None:
     if action == "toolchain":
         initialize_toolchain(root, conda)
     elif action == "haskell-deps":
@@ -472,28 +383,6 @@ def dispatch(
         invoke_msys(root, conda, f"make -j{jobs} GHCJOBS={jobs} install-src")
     elif action == "smoke":
         invoke_msys(root, conda, "make check-smoke")
-    elif action == "test-z3":
-        cargo_test(jobs, "--test", "scheduler_sat")
-    elif action == "test-alignment":
-        alignment_check(jobs)
-    elif action == "inventory-check":
-        remaining_inventory(jobs, "--check")
-    elif action == "inventory-update":
-        remaining_inventory(jobs, "--write")
-    elif action == "test-upstream":
-        upstream_tests(jobs, arguments)
-    elif action in {"test-rust", "test"}:
-        all_rust_tests(jobs)
-    elif action == "test-cold":
-        os.environ["BSC_TEST_CACHE"] = "0"
-        os.environ["CCACHE_DISABLE"] = "1"
-        if ccache_managed_cxx:
-            os.environ["CXX"] = "c++"
-        all_rust_tests(jobs)
-    elif action == "ccache-stats":
-        run(["ccache.exe", "--show-stats"])
-    elif action == "ccache-clear":
-        run(["ccache.exe", "--clear"])
     elif action == "clean":
         invoke_msys(root, conda, "make full_clean")
     elif action == "shell":
@@ -517,14 +406,13 @@ def main() -> None:
             fail("Usage: pixi run just configure-oss-cad-suite <path>")
         save_oss_root(config, sys.argv[2])
         return
-    arguments = sys.argv[2:]
-    if action != "test-upstream" and arguments:
+    if len(sys.argv) != 2:
         fail(f"Unexpected arguments for action: {action}")
 
     jobs = configured_jobs()
     oss_root = resolve_oss_root(config, required=action in ICARUS_ACTIONS)
-    ccache_managed_cxx = prepare_environment(root, conda, oss_root, jobs)
-    dispatch(action, root, conda, jobs, ccache_managed_cxx, arguments)
+    prepare_environment(root, conda, oss_root, jobs)
+    dispatch(action, root, conda, jobs)
 
 
 if __name__ == "__main__":
