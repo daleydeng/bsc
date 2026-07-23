@@ -1,7 +1,8 @@
 use crate::locate_project_root;
 use crate::upstream::{
     compile_case_modules, compile_cases, simulation_scenario_modules, simulation_scenarios,
-    validate_simulation_scenario, CaseModule, GenerationStrategy, SimulationBackend,
+    validate_simulation_scenario, ArtifactAssertion, ArtifactNormalization, CaseModule,
+    DiagnosticKind, GenerationStrategy, SimulationBackend, TextAssertion,
 };
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -214,13 +215,17 @@ fn count_statically_declared_contracts(source: &str) -> usize {
             | "compile_verilog_fail"
             | "compile_verilog_fail_error"
             | "compile_verilog_pass_warning"
+            | "compile_verilog_schedule_pass"
             | "test_c_only_bsv"
             | "test_c_only_bsv_modules"
             | "test_c_only_bsv_modules_options"
             | "test_veri_only_bsv"
             | "test_veri_only_bsv_modules"
             | "test_veri_only_bsv_modules_options" => 1,
-            "test_c_veri_bsv"
+            "test_c_veri"
+            | "test_c_veri_bs_modules"
+            | "test_c_veri_bs_modules_options"
+            | "test_c_veri_bsv"
             | "test_c_veri_bsv_modules"
             | "test_c_veri_bsv_modules_options"
             | "test_c_veri_bsv_separately"
@@ -478,6 +483,16 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
                 case.source.to_owned(),
             );
         }
+        for key in case
+            .assertions
+            .iter()
+            .filter_map(|assertion| artifact_assertion_key(*assertion))
+        {
+            add_count(
+                &mut registered.entry(case.fixture_dir).or_default().assertions,
+                key,
+            );
+        }
     }
 
     let mut scenario_names = BTreeSet::new();
@@ -517,6 +532,19 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
                     .contracts,
                 contract_key(backend, scenario.source),
             );
+            for key in contract
+                .assertions
+                .iter()
+                .filter_map(|assertion| artifact_assertion_key(*assertion))
+            {
+                add_count(
+                    &mut registered
+                        .entry(scenario.fixture_dir)
+                        .or_default()
+                        .assertions,
+                    key,
+                );
+            }
         }
     }
 
@@ -538,6 +566,12 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
             &expected.generations,
             &actual.generations,
         )?;
+        compare_counts(
+            &origin,
+            "artifact assertions",
+            &expected.assertions,
+            &actual.assertions,
+        )?;
     }
 
     Ok(registered.len())
@@ -548,6 +582,7 @@ struct Counts {
     contracts: BTreeMap<String, usize>,
     goldens: BTreeMap<String, usize>,
     generations: BTreeMap<String, usize>,
+    assertions: BTreeMap<String, usize>,
 }
 
 fn check_declared_fixtures(
@@ -625,13 +660,24 @@ fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
             | "compile_verilog_pass"
             | "compile_verilog_fail"
             | "compile_verilog_fail_error"
-            | "compile_verilog_pass_warning" => {
+            | "compile_verilog_pass_warning"
+            | "compile_verilog_schedule_pass" => {
                 let source = required_word(&words, 1, origin, line_index)?;
                 add_count(&mut counts.contracts, contract_key("compile", source));
             }
             "test_c_veri_bsv" | "test_c_veri_bsv_modules" | "test_c_veri_bsv_modules_options" => {
                 let module = required_word(&words, 1, origin, line_index)?;
                 let source = format!("{module}.bsv");
+                add_count(&mut counts.contracts, contract_key("bluesim", &source));
+                add_count(&mut counts.contracts, contract_key("icarus", &source));
+                add_count(
+                    &mut counts.generations,
+                    generation_key_name("shared", &source),
+                );
+            }
+            "test_c_veri" | "test_c_veri_bs_modules" | "test_c_veri_bs_modules_options" => {
+                let module = required_word(&words, 1, origin, line_index)?;
+                let source = format!("{module}.bs");
                 add_count(&mut counts.contracts, contract_key("bluesim", &source));
                 add_count(&mut counts.contracts, contract_key("icarus", &source));
                 add_count(
@@ -675,26 +721,362 @@ fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
             }
             "compare_file" => {
                 let output = required_word(&words, 1, origin, line_index)?;
-                let source = if output == "[make_bsc_output_name" {
-                    required_word(&words, 2, origin, line_index)?
+                if output == "[make_bsc_output_name" {
+                    let source = required_word(&words, 2, origin, line_index)?;
+                    add_count(&mut counts.goldens, source.to_owned());
+                } else if let Some(source) = output
+                    .strip_suffix(".bsc-vcomp-out")
+                    .or_else(|| output.strip_suffix(".bsc-out"))
+                {
+                    add_count(&mut counts.goldens, source.to_owned());
                 } else {
-                    output
-                        .strip_suffix(".bsc-vcomp-out")
-                        .or_else(|| output.strip_suffix(".bsc-out"))
-                        .ok_or_else(|| {
-                            format!(
-                                "unsupported compare_file target at {}:{}: {output}",
-                                origin.display(),
-                                line_index + 1
-                            )
-                        })?
-                };
-                add_count(&mut counts.goldens, source.to_owned());
+                    let expected = words
+                        .get(2)
+                        .map(|value| value.trim_matches(['"', '{', '}']))
+                        .filter(|value| !value.is_empty())
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| format!("{output}.expected"));
+                    add_count(
+                        &mut counts.assertions,
+                        matches_assertion_key(
+                            output,
+                            &expected,
+                            ArtifactNormalization::GoldenOutput,
+                        ),
+                    );
+                }
+            }
+            "compare_verilog" => {
+                let output = required_word(&words, 1, origin, line_index)?;
+                let expected = words
+                    .get(2)
+                    .map(|value| value.trim_matches(['"', '{', '}']))
+                    .filter(|value| !value.is_empty())
+                    .map(str::to_owned)
+                    .unwrap_or_else(|| format!("{output}.expected"));
+                add_count(
+                    &mut counts.assertions,
+                    matches_assertion_key(output, &expected, ArtifactNormalization::Verilog),
+                );
             }
             _ => {}
         }
     }
+    parse_exp_assertions(source, origin, &mut counts)?;
     Ok(counts)
+}
+
+fn parse_exp_assertions(source: &str, origin: &Path, counts: &mut Counts) -> Result<(), String> {
+    for command in logical_tcl_commands(source) {
+        let name = command.split_whitespace().next().unwrap_or_default();
+        if !is_supported_tcl_assertion(name) {
+            continue;
+        }
+        let words = tcl_words(&command)
+            .map_err(|error| format!("parse assertion in {}: {error}", origin.display()))?;
+        let argument = |index: usize| {
+            words.get(index).map(String::as_str).ok_or_else(|| {
+                format!(
+                    "missing argument {index} for assertion in {}: {command}",
+                    origin.display()
+                )
+            })
+        };
+        let path = normalize_assertion_path(argument(1)?)?;
+        let key = match name {
+            "find_n_strings" => line_count_assertion_key(
+                &path,
+                argument(2)?,
+                parse_assertion_count(argument(3)?, origin)?,
+            ),
+            "string_occurs" => contains_assertion_key(&path, argument(2)?),
+            "string_does_not_occur" => does_not_contain_assertion_key(&path, argument(2)?),
+            "find_regexp" => regex_assertion_key(&path, argument(2)?),
+            "find_regexp_fail" => regex_does_not_match_assertion_key(&path, argument(2)?),
+            "find_n_regexp" => regex_count_assertion_key(
+                &path,
+                argument(2)?,
+                parse_assertion_count(argument(3)?, origin)?,
+            ),
+            "find_n_emsg" => diagnostic_assertion_key(
+                &path,
+                parse_diagnostic_kind(argument(2)?, origin)?,
+                argument(3)?,
+                parse_assertion_count(argument(4)?, origin)?,
+            ),
+            _ => unreachable!(),
+        };
+        add_count(&mut counts.assertions, key);
+    }
+    Ok(())
+}
+
+fn is_supported_tcl_assertion(name: &str) -> bool {
+    matches!(
+        name,
+        "find_n_strings"
+            | "string_occurs"
+            | "string_does_not_occur"
+            | "find_regexp"
+            | "find_regexp_fail"
+            | "find_n_regexp"
+            | "find_n_emsg"
+    )
+}
+
+fn logical_tcl_commands(source: &str) -> Vec<String> {
+    let mut commands = Vec::new();
+    let mut current = String::new();
+    let mut separator = None;
+    for raw_line in source.lines() {
+        if current.is_empty()
+            && (raw_line.trim().is_empty() || raw_line.trim_start().starts_with('#'))
+        {
+            continue;
+        }
+        let preserve_multiline_pattern = separator == Some('\n');
+        let line = if preserve_multiline_pattern {
+            raw_line
+        } else {
+            raw_line.trim_start()
+        };
+        let (part, continued) = match line.trim_end().strip_suffix('\\') {
+            Some(part) => (part.trim_end(), true),
+            None => (line, false),
+        };
+        if let Some(separator) = separator.take() {
+            current.push(separator);
+        }
+        current.push_str(part);
+
+        let name = current.split_whitespace().next().unwrap_or_default();
+        let grouped_assertion =
+            is_supported_tcl_assertion(name) && !tcl_groups_are_balanced(&current);
+        if continued || grouped_assertion {
+            separator = Some(if continued { ' ' } else { '\n' });
+        } else if !current.is_empty() && !current.starts_with('#') {
+            commands.push(std::mem::take(&mut current));
+        } else {
+            current.clear();
+        }
+    }
+    if !current.is_empty() {
+        commands.push(current);
+    }
+    commands
+}
+
+fn tcl_groups_are_balanced(command: &str) -> bool {
+    let mut closing = Vec::new();
+    let mut escaped = false;
+    for character in command.chars() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if character == '\\' {
+            escaped = true;
+            continue;
+        }
+        match closing.last().copied() {
+            Some('}') => match character {
+                '{' => closing.push('}'),
+                '}' => {
+                    closing.pop();
+                }
+                _ => {}
+            },
+            Some('"') => match character {
+                '"' => {
+                    closing.pop();
+                }
+                '[' => closing.push(']'),
+                _ => {}
+            },
+            Some(']') => match character {
+                '{' => closing.push('}'),
+                '"' => closing.push('"'),
+                '[' => closing.push(']'),
+                ']' => {
+                    closing.pop();
+                }
+                _ => {}
+            },
+            None => match character {
+                '{' => closing.push('}'),
+                '"' => closing.push('"'),
+                '[' => closing.push(']'),
+                _ => {}
+            },
+            Some(_) => unreachable!(),
+        }
+    }
+    closing.is_empty()
+}
+
+fn tcl_words(command: &str) -> Result<Vec<String>, String> {
+    let chars = command.chars().collect::<Vec<_>>();
+    let mut words = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        while index < chars.len() && chars[index].is_whitespace() {
+            index += 1;
+        }
+        if index == chars.len() {
+            break;
+        }
+        let opening = chars[index];
+        if matches!(opening, '{' | '[' | '"') {
+            let closing = match opening {
+                '{' => '}',
+                '[' => ']',
+                '"' => '"',
+                _ => unreachable!(),
+            };
+            let preserve_delimiters = opening == '[';
+            let start = index;
+            index += 1;
+            let content_start = index;
+            let mut depth = 1;
+            while index < chars.len() {
+                if opening != '"' && chars[index] == opening {
+                    depth += 1;
+                } else if chars[index] == closing {
+                    depth -= 1;
+                    if depth == 0 {
+                        break;
+                    }
+                }
+                index += 1;
+            }
+            if index == chars.len() {
+                return Err(format!("unterminated {opening} group: {command}"));
+            }
+            let word = if preserve_delimiters {
+                chars[start..=index].iter().collect()
+            } else {
+                chars[content_start..index].iter().collect()
+            };
+            words.push(word);
+            index += 1;
+        } else {
+            let start = index;
+            while index < chars.len() && !chars[index].is_whitespace() {
+                index += 1;
+            }
+            words.push(chars[start..index].iter().collect());
+        }
+    }
+    Ok(words)
+}
+
+fn normalize_assertion_path(path: &str) -> Result<String, String> {
+    if let Some(source) = path
+        .strip_prefix("[make_bsc_output_name ")
+        .and_then(|value| value.strip_suffix(']'))
+    {
+        if source.is_empty() {
+            return Err("make_bsc_output_name assertion has no source".to_owned());
+        }
+        Ok(format!("{source}.bsc-out"))
+    } else if let Some(source) = path.strip_suffix(".bsc-vcomp-out") {
+        Ok(format!("{source}.bsc-out"))
+    } else {
+        Ok(path.to_owned())
+    }
+}
+
+fn parse_assertion_count(value: &str, origin: &Path) -> Result<usize, String> {
+    value.parse().map_err(|error| {
+        format!(
+            "invalid assertion count {value:?} in {}: {error}",
+            origin.display()
+        )
+    })
+}
+
+fn parse_diagnostic_kind(value: &str, origin: &Path) -> Result<DiagnosticKind, String> {
+    match value.trim_matches('"') {
+        "Error" => Ok(DiagnosticKind::Error),
+        "Warning" => Ok(DiagnosticKind::Warning),
+        other => Err(format!(
+            "unsupported diagnostic kind {other:?} in {}",
+            origin.display()
+        )),
+    }
+}
+
+fn artifact_assertion_key(assertion: ArtifactAssertion) -> Option<String> {
+    let key = match assertion {
+        ArtifactAssertion::Exists { path } => format!("exists:{path:?}"),
+        ArtifactAssertion::Text { path, assertion } => match assertion {
+            TextAssertion::Contains { text } => contains_assertion_key(path, text),
+            TextAssertion::DoesNotContain { text } => does_not_contain_assertion_key(path, text),
+            TextAssertion::LineCount { text, count } => line_count_assertion_key(path, text, count),
+            TextAssertion::Regex { pattern } => regex_assertion_key(path, pattern),
+            TextAssertion::RegexDoesNotMatch { pattern } => {
+                regex_does_not_match_assertion_key(path, pattern)
+            }
+            TextAssertion::RegexCount { pattern, count } => {
+                regex_count_assertion_key(path, pattern, count)
+            }
+            TextAssertion::DiagnosticCount { kind, tag, count } => {
+                diagnostic_assertion_key(path, kind, tag, count)
+            }
+        },
+        ArtifactAssertion::Matches {
+            actual,
+            expected,
+            normalization,
+        } => matches_assertion_key(actual, expected, normalization),
+        ArtifactAssertion::ParsesAsSystemVerilog { .. } => return None,
+    };
+    Some(key)
+}
+
+fn matches_assertion_key(
+    actual: &str,
+    expected: &str,
+    normalization: ArtifactNormalization,
+) -> String {
+    let normalization = match normalization {
+        ArtifactNormalization::Exact => "exact",
+        ArtifactNormalization::GoldenOutput => "golden-output",
+        ArtifactNormalization::Verilog => "verilog",
+    };
+    format!("matches:{actual:?}:{expected:?}:{normalization}")
+}
+
+fn contains_assertion_key(path: &str, text: &str) -> String {
+    format!("contains:{path:?}:{text:?}")
+}
+
+fn does_not_contain_assertion_key(path: &str, text: &str) -> String {
+    format!("does-not-contain:{path:?}:{text:?}")
+}
+
+fn line_count_assertion_key(path: &str, text: &str, count: usize) -> String {
+    format!("line-count:{path:?}:{text:?}:{count}")
+}
+
+fn regex_assertion_key(path: &str, pattern: &str) -> String {
+    format!("regex:{path:?}:{pattern:?}")
+}
+
+fn regex_does_not_match_assertion_key(path: &str, pattern: &str) -> String {
+    format!("regex-does-not-match:{path:?}:{pattern:?}")
+}
+
+fn regex_count_assertion_key(path: &str, pattern: &str, count: usize) -> String {
+    format!("regex-count:{path:?}:{pattern:?}:{count}")
+}
+
+fn diagnostic_assertion_key(path: &str, kind: DiagnosticKind, tag: &str, count: usize) -> String {
+    let kind = match kind {
+        DiagnosticKind::Error => "Error",
+        DiagnosticKind::Warning => "Warning",
+    };
+    format!("diagnostic-count:{path:?}:{kind}:{tag:?}:{count}")
 }
 
 fn required_word<'a>(
@@ -905,10 +1287,154 @@ mod tests {
     }
 
     #[test]
+    fn parses_supported_tcl_artifact_assertions() {
+        let source = concat!(
+            "find_n_strings Output.bsc-out {argument 2} 1\n",
+            "string_occurs Generated.v {input  CLK;}\n",
+            "string_does_not_occur Generated.v {input  GATE;}\n",
+            "find_regexp [make_bsc_output_name Source.bsv] \\\n",
+            "    {Source\\.bsv\", line 2, column 8:}\n",
+            "find_n_regexp Output.bsc-out {Error:} 2\n",
+            "find_n_emsg Output.bsc-out \"Error\" G0055 1\n",
+            "compare_file Generated.dat\n",
+            "compare_file Other.dat Custom.expected\n",
+            "compare_verilog Generated.v\n",
+            "# string_occurs Ignored.v {ignored}\n",
+        );
+        let actual = parse_exp_contracts(source, Path::new("sample.exp")).unwrap();
+        assert_eq!(
+            actual.assertions,
+            BTreeMap::from([
+                (
+                    line_count_assertion_key("Output.bsc-out", "argument 2", 1),
+                    1
+                ),
+                (contains_assertion_key("Generated.v", "input  CLK;"), 1),
+                (
+                    does_not_contain_assertion_key("Generated.v", "input  GATE;"),
+                    1,
+                ),
+                (
+                    regex_assertion_key("Source.bsv.bsc-out", r#"Source\.bsv", line 2, column 8:"#,),
+                    1,
+                ),
+                (regex_count_assertion_key("Output.bsc-out", "Error:", 2), 1),
+                (
+                    diagnostic_assertion_key("Output.bsc-out", DiagnosticKind::Error, "G0055", 1,),
+                    1,
+                ),
+                (
+                    matches_assertion_key(
+                        "Generated.dat",
+                        "Generated.dat.expected",
+                        ArtifactNormalization::GoldenOutput,
+                    ),
+                    1,
+                ),
+                (
+                    matches_assertion_key(
+                        "Other.dat",
+                        "Custom.expected",
+                        ArtifactNormalization::GoldenOutput,
+                    ),
+                    1,
+                ),
+                (
+                    matches_assertion_key(
+                        "Generated.v",
+                        "Generated.v.expected",
+                        ArtifactNormalization::Verilog,
+                    ),
+                    1,
+                ),
+            ])
+        );
+    }
+
+    #[test]
+    fn parses_negative_regex_assertions_with_tcl_word_forms_and_multiplicity() {
+        let source = concat!(
+            "find_regexp_fail Generated.bsv.bsc-vcomp-out {forbidden.*port}\n",
+            "find_regexp_fail \"Quoted Output.log\" \"^Internal Error$\"\n",
+            "find_regexp_fail [make_bsc_output_name Source.bsv] \\\n",
+            "    {Internal.*Error}\n",
+            "find_regexp_fail BracedMultiline.log {^first$\n",
+            "    second$}\n",
+            "find_regexp_fail QuotedMultiline.log \"^alpha$\n",
+            "  omega$\"\n",
+            "find_regexp_fail Generated.bsv.bsc-vcomp-out {forbidden.*port}\n",
+        );
+        let actual = parse_exp_contracts(source, Path::new("sample.exp")).unwrap();
+        assert_eq!(
+            actual.assertions,
+            BTreeMap::from([
+                (
+                    regex_does_not_match_assertion_key("Generated.bsv.bsc-out", "forbidden.*port",),
+                    2,
+                ),
+                (
+                    regex_does_not_match_assertion_key("Quoted Output.log", "^Internal Error$",),
+                    1,
+                ),
+                (
+                    regex_does_not_match_assertion_key("Source.bsv.bsc-out", "Internal.*Error",),
+                    1,
+                ),
+                (
+                    regex_does_not_match_assertion_key(
+                        "BracedMultiline.log",
+                        "^first$\n    second$",
+                    ),
+                    1,
+                ),
+                (
+                    regex_does_not_match_assertion_key("QuotedMultiline.log", "^alpha$\n  omega$",),
+                    1,
+                ),
+            ])
+        );
+        assert_eq!(
+            artifact_assertion_key(ArtifactAssertion::Text {
+                path: "Generated.bsv.bsc-out",
+                assertion: TextAssertion::RegexDoesNotMatch {
+                    pattern: "forbidden.*port",
+                },
+            }),
+            Some(regex_does_not_match_assertion_key(
+                "Generated.bsv.bsc-out",
+                "forbidden.*port"
+            ))
+        );
+    }
+
+    #[test]
+    fn excludes_rust_only_parser_assertions_from_upstream_multiplicity() {
+        let assertions = [
+            ArtifactAssertion::ParsesAsSystemVerilog {
+                path: "Generated.v",
+            },
+            ArtifactAssertion::Text {
+                path: "Generated.v",
+                assertion: TextAssertion::Contains { text: "module" },
+            },
+        ];
+        let mut aligned = BTreeMap::new();
+        for key in assertions.into_iter().filter_map(artifact_assertion_key) {
+            add_count(&mut aligned, key);
+        }
+
+        assert_eq!(
+            aligned,
+            BTreeMap::from([(contains_assertion_key("Generated.v", "module"), 1)])
+        );
+    }
+
+    #[test]
     fn counts_statically_declared_contract_multiplicity() {
         let source = concat!(
             "compile_pass Good.bsv\n",
             "test_c_veri_bsv Both\n",
+            "test_c_veri ClassicBoth\n",
             "test_c_only_bsv COnly expected\n",
             "test_veri_only_bsv VOnly expected\n",
             "test_c_veri_bsv_separately Separate\n",
@@ -917,7 +1443,7 @@ mod tests {
             "compare_file Good.bsv.bsc-out\n",
             "foreach item $items {\n",
         );
-        assert_eq!(count_statically_declared_contracts(source), 8);
+        assert_eq!(count_statically_declared_contracts(source), 10);
     }
 
     #[test]

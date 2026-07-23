@@ -29,7 +29,7 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 
 - 建立 upstream 动态 runner；唯一直接第三方依赖为 `sha2`，仅用于 generation cache 的稳定内容寻址。
 - 建立可扩展的 `CompileCase`、`CompileExpectation`、diagnostic 和可选 golden 模型。
-- 对齐 `testsuite/config/unix.exp` 的通用 compile 行为：独立 cwd、fixture staging、BSC 参数、`.bo`、非零退出、诊断计数及 legacy golden diff。
+- 对齐 `testsuite/config/unix.exp` 的通用 compile 行为：独立 cwd、fixture staging、BSC 参数、`.bo`、非零退出、诊断计数及 golden diff。
 - 支持 `--list`、substring filter、`--exact`、`--test-threads N` 和固定 worker queue。
 - workspace/artifact 使用进程级唯一 run-id，避免并发 runner 互删。
 
@@ -43,7 +43,7 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 ### Phase 3：模板型与后端矩阵（backend capability/policy 已启动）
 
 - 将 Tcl 循环和参数矩阵显式展开为可单独筛选、单独报告的动态 case。
-- 已增加一等 Verilog compile mode、Bluesim/Icarus simulation pipeline、`BluesimEnabled`/`VerilogEnabled` requirement、`CTEST`/`VTEST` policy 和显式 skip 结果；generate、link、simulate 共享进程、日志、超时、归一化和 diff 基础设施。
+- 已增加一等 Verilog compile mode、Bluesim/Icarus simulation pipeline、`BluesimEnabled`/`VerilogEnabled` requirement、原生 CLI backend policy 和显式 skip 结果；generate、link、simulate 共享进程、日志、超时、归一化和 diff 基础设施。
 - 保持每个展开 case 的 fixture/workspace 隔离，避免矩阵并行时共享产物。
 
 ### Phase 4：专用脚本
@@ -64,15 +64,15 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 
 | `.exp` | 动态 case | 预期 | 额外检查 |
 | --- | --- | --- | --- |
-| `b600/b600.exp` | `b600::Bug600.bsv` | Pass | 生成 `Bug600.bo` |
-| `b267/b267.exp` | `b267::Bug267.bs` | Pass | 生成 `Bug267.bo` |
-| `b1040/b1040.exp` | `b1040::Bug1040.bsv` | Fail | `Error` / `P0127` / 1 |
-| `b417/b417.exp` | `b417::Bug417.bsv` | Fail | `Error` / `S0007` / 1 |
-| `b492/b492.exp` | `b492::Bug492_1.bs` | Fail | `Error` / `T0046` / 1 |
-| `b1586/b1586.exp` | `b1586::Bug1586.bsv` | Fail | `Bug1586.bsv.bsc-out.expected` |
-| `b269/b269.exp` | `b269::Bug269.bsv` | Fail | `Error` / `P0070` / 1；golden |
-| `b1493/b1493.exp` | `b1493::Bug1493.bsv` | Pass | 生成 `Bug1493.bo` |
-| `b1493/b1493.exp` | `b1493::Bug1493_Bad.bsv` | Fail | `Error` / `T0020` / 1 |
+| `b600/b600.exp` | `bsc.bugs/bluespec_inc/b600::Bug600.bsv` | Pass | 生成 `Bug600.bo` |
+| `b267/b267.exp` | `bsc.bugs/bluespec_inc/b267::Bug267.bs` | Pass | 生成 `Bug267.bo` |
+| `b1040/b1040.exp` | `bsc.bugs/bluespec_inc/b1040::Bug1040.bsv` | Fail | `Error` / `P0127` / 1 |
+| `b417/b417.exp` | `bsc.bugs/bluespec_inc/b417::Bug417.bsv` | Fail | `Error` / `S0007` / 1 |
+| `b492/b492.exp` | `bsc.bugs/bluespec_inc/b492::Bug492_1.bs` | Fail | `Error` / `T0046` / 1 |
+| `b1586/b1586.exp` | `bsc.bugs/bluespec_inc/b1586::Bug1586.bsv` | Fail | `Bug1586.bsv.bsc-out.expected` |
+| `b269/b269.exp` | `bsc.bugs/bluespec_inc/b269::Bug269.bsv` | Fail | `Error` / `P0070` / 1；golden |
+| `b1493/b1493.exp` | `bsc.bugs/bluespec_inc/b1493::Bug1493.bsv` | Pass | 生成 `Bug1493.bo` |
+| `b1493/b1493.exp` | `bsc.bugs/bluespec_inc/b1493::Bug1493_Bad.bsv` | Fail | `Error` / `T0020` / 1 |
 
 截至 Phase 1，Rust 测试层共覆盖 **33 个独立 case**：上述 9 个 upstream compile case，加上 24 个 Z3 scheduler case。
 
@@ -90,7 +90,7 @@ Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 sche
 
 目录覆盖包括 `testsuite/bsc.bugs/bluespec_inc`、`testsuite/bsc.bugs/github`、`testsuite/bsc.interra/{bugs,messages}` 和 `testsuite/bsc.syntax/bsv05/moduletype`。`b580` 也是双调用脚本，因此 40 个脚本相对 44 个 case 的四个增量分别来自 `b580` 与三份 mixed 脚本。
 
-Phase 1 的 9 个 case name 原样保留，以兼容已有 substring/exact filter。新增非 `bluespec_inc` case 使用包含 testsuite 目录语义的稳定 ID。所有 case 显式声明 source fixture；9 个 golden case 同时显式声明对应 `<source>.bsc-out.expected` fixture。
+所有 case 使用包含 testsuite 目录语义的稳定 ID，不保留早期 runner 的短名称别名。每个 case 显式声明 source fixture；9 个 golden case 同时显式声明对应 `<source>.bsc-out.expected` fixture。
 
 ### Phase 2 第二批
 
@@ -107,7 +107,7 @@ Phase 1 的 9 个 case name 原样保留，以兼容已有 substring/exact filte
 
 完整迁移 `bsc.syntax/bsv05/underscore/underscore.exp`，新增 17 个动态 case：4 个 frontend Pass、10 个 Error/tag/count=1 Fail 和 3 个 Verilog Pass。3 个 Verilog case 的 module 均为空，argv 对齐 `bsc_compile_verilog`，并按 `check_intermediate_files` 检查 source stem 对应的 `.bo`。
 
-本批同时引入一等 `CompileMode` 和 `Requirement`：普通 frontend compile 不借用 `options: ["-verilog"]`，Verilog mode 负责 `-u -verilog` 及非空 module 的 `-g`；`VTEST` policy 默认启用，`VTEST=0` 时 3 个 Verilog case 明确 SKIP，另外 81 个 case 仍运行。结果和汇总区分 passed/skipped/failed，只有 failed 导致非零退出码。
+本批同时引入一等 `CompileMode` 和 `Requirement`：普通 frontend compile 不借用 `options: ["-verilog"]`，Verilog mode 负责 `-u -verilog` 及非空 module 的 `-g`；backend policy 默认启用全部后端，显式禁用 Verilog 时对应 case 明确 SKIP，其他 case 仍运行。结果和汇总区分 passed/skipped/failed，只有 failed 导致非零退出码。
 
 Phase 2 前三批累计迁移 **44 个 `.exp` 脚本、84 个动态 compile case**：36 Pass、11 普通 Fail、37 tagged Fail、13 golden；mode 为 81 frontend、3 Verilog。
 
@@ -119,7 +119,7 @@ Phase 2 前三批累计迁移 **44 个 `.exp` 脚本、84 个动态 compile case
 
 这一阶段最初新增 `SimulationCase`、`SimulationBackend` 与统一 `UpstreamCase` runner，按 backend 独立执行 generate → link → simulate → golden compare。该历史平铺模型现已被声明式 `SimulationScenario` + `SimulationContract` 取代；以下数量仍记录当时迁移批次。完整迁移 `dynamic.exp`、bounds select/update 和 `Gearbox.exp` 的成功仿真 contract，共展开 **62 个 simulation contract**：31 Bluesim、31 Icarus。
 
-Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，Icarus 产物是 `vvp` 字节码而不是 Win32 `.exe`；runner 按 backend 选择启动器，将 `inst/bin/core` 前置到 `PATH`，并为 MSYS `sh` 转换 `BLUESPECDIR`。Icarus 输出按 legacy 规则过滤 `$readmem`、`$finish` 和 `VCD info` 噪声。`CTEST=0` 与 `VTEST=0` 分别显式跳过 Bluesim 和 Verilog/Icarus case。
+Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，Icarus 产物是 `vvp` 字节码而不是 Win32 `.exe`；runner 按 backend 选择启动器，将 `inst/bin/core` 前置到 `PATH`，并为 MSYS `sh` 转换 `BLUESPECDIR`。Icarus 输出过滤 `$readmem`、`$finish` 和 `VCD info` 非确定性噪声；`--no-bluesim` 与 `--no-verilog` 分别显式跳过对应 backend case。
 
 截至第一批，Rust 测试层完整覆盖 **49 个 `.exp` 脚本、212 个独立 contract case**：188 个 upstream 动态 case（126 compile + 62 simulation），加上 24 个 Z3 scheduler case。
 
@@ -199,6 +199,32 @@ Rust case 模块采用稳定的“来源范围 + contract 形态”命名，例�
 
 剩余工作也已固化为可检查产物：`remaining` Rust binary 复用 alignment 的来源注册与静态 contract 解析，生成 [`REMAINING.md`](REMAINING.md) 中全部未迁移 `.exp`，并验证脚本数与 contract 总和严格等于 alignment summary；[`NEXT.md`](NEXT.md) 保存人工核对过的安全候选、迁移顺序和阻塞原因。`inventory-update` 用于迁移后重建清单，`inventory-check` 已进入默认测试前置守门，避免文档再次过期。
 
+### Phase 3 第十三批：通用 artifact assertions 与 classic simulation
+
+Compile contract 新增一等 `ArtifactAssertion` / `TextAssertion`，支持文件存在性、固定字符串存在/不存在、固定字符串匹配行数、多行正则及诊断 tag 精确计数。检查在 compile/golden 后执行；BSC result cache 命中恢复 workspace 后仍重新执行 assertions，不把最终 pass/fail 缓存起来。
+
+Alignment 同步解析 `find_n_strings`、`string_occurs`、`string_does_not_occur`、`find_regexp`、`find_n_regexp` 和 `find_n_emsg`，包括 Tcl 行续写、brace/quoted 参数及 `[make_bsc_output_name ...]` 路径，并与 Rust assertion 逐项、逐数量核对。classic `.bs` helper `test_c_veri`、`test_c_veri_bs_modules`、`test_c_veri_bs_modules_options` 归一化为 shared elaboration 下的 Bluesim/Icarus 双 contract；补齐其静态权重后，可静态识别的全仓库 contract 分母由旧估算 4368 校正为 4600。
+
+本批完整迁移 5 个来源、149 个 contract：`bsc.typechecker/mismatch` 12 个 compile、`enableReady` 6 个 compile、`moduleArgs` 39 个 compile、`context-errors` 59 个 compile，以及 `constructors` 的 29 个 compile 和 4 个双后端 simulation contract。当前累计覆盖 **315/860** 个来源和 **1454/4600** 个静态 contract；剩余 **545** 个来源、**3146** 个静态 contract，另有 226 个脚本需要动态或自定义 Tcl 分析。
+
+### 测试执行架构收敛
+
+删除早期按单 contract 打平的 `UpstreamCase`、`all_cases`、`select_cases` 和 `build_work_items` 兼容层。CLI 现在直接从 compile registry 与 scenario registry 构造 `ExecutionPlan`；simulation contract 在选择阶段始终保留所属 `SimulationScenario`，runner 不再通过指针扫描猜测并重建分组。早期 `bluespec_inc` 短 case ID 也全部替换为与其他模块一致的来源路径式稳定 ID，不提供旧名称别名。
+
+Backend policy 同步脱离 Tcl harness 的 `CTEST`/`VTEST` 环境变量，改用原生 `--no-bluesim` / `--no-verilog` CLI。代码中的 `legacy_*` golden 命名已收敛为实现语义命名；golden 归一化和 Icarus 噪声过滤本身仍作为 upstream contract 的必要行为保留。
+
+### 统一 artifact comparison 与 schedule contract
+
+Compile 与 simulation pipeline 现在共用 `upstream/artifact.rs` 的 `ArtifactAssertion` 执行器。除文件存在和文本断言外，`Matches` 支持 `Exact`、`GoldenOutput`、`Verilog` 三种归一化策略：`Exact` 做字节精确比较；`GoldenOutput` 对齐 upstream 的换行、scientific exponent、`diff -b` 空白和已知噪声规则；`Verilog` 进一步移除 compiler banner，并归一化 generated identifier 中的数字后缀。不一致时统一生成 `artifact-N.diff`。
+
+Artifact actual 必须是 workspace 内的安全相对路径；expected 必须作为 fixture 显式声明，且不得与 actual 指向同一文件。BSC result cache 或 generation cache 命中只恢复 workspace，所有 compile/simulation assertions 仍会重新执行；simulation 的普通输出、VCD contract 和 backend-specific side effect 也使用同一模型。
+
+新增 `CompileMode::VerilogSchedule`，严格对齐 `compile_verilog_schedule_pass` 的 `-resource-simple -show-schedule -dschedule -dresources -dvschedinfo -verilog` 参数。Alignment 同时解析并逐数量核对 `compare_file` 与 `compare_verilog`；识别 schedule helper 后，全仓库可静态识别 contract 分母由 4600 校正为 4672，其中新增 72 个是此前未识别的 upstream schedule contract。
+
+本批完整迁移 4 个来源、52 个 contract：`error_recovery` 11 个 compile，`CompletionBuffer` 1 个 schedule compile和 2 个 simulation，`Cntrs` 2 个 compile 和 6 个 simulation，`fwrite` 7 个 compile fail 和 23 个 backend-specific simulation。随后迁移 `SShow` 的 1 个指定 top Verilog compile contract，并通过同一 artifact runner 比较 elaboration 生成的 `sysTestSShow.out`；完整迁移 `paths` 的 56 个 Verilog compile contract、56 条正向和 77 条负向 generated RTL regex assertion。`TextAssertion::RegexDoesNotMatch` 与 alignment 的 `find_regexp_fail` 成为一等 contract；文本断言在入口按 Tcl 文本读取语义统一 CRLF/CR，alignment 将 Tcl Verilog helper 的 `.bsc-vcomp-out` 映射为 runner 的 canonical `.bsc-out`，不在 runner 中生成兼容 alias。
+
+随后完整迁移 `import-foreign` 的 74 个 compile contract，覆盖 warning count、compiler golden、generated RTL regex 和 2 个 `compare_verilog`。新增 Rust-only `ArtifactAssertion::ParsesAsSystemVerilog`，使用 `sv-parser 0.13.5` 对现有 4 个 Verilog golden actual 做 IEEE 1800-2017 syntax smoke；parser assertion 不进入 Tcl multiplicity，且不替代 normalized golden，真实 Verilog 工具链兼容继续由 Icarus 验证。当前累计覆盖 **322/860** 个来源和 **1637/4672** 个静态 contract；剩余 **538** 个来源、**3035** 个静态 contract，另有 221 个脚本需要动态或自定义 Tcl 分析。
+
 ### Generation cache 与性能基线
 
 默认 `test` 对成功的 simulation generation workspace 使用 SHA-256 内容寻址缓存；cache hit 仍重新执行 link、simulation 与 golden compare。完整 cache-fill 冷运行的 upstream artifact wall time 为 **435.5 秒**，128 个 simulation generation 全部 miss 并写入；随后完整热运行 128/128 hit，artifact wall time 为 **17.4 秒**，293 个 upstream case 均通过。
@@ -213,6 +239,7 @@ Bluesim link 的生成 C++ 编译进一步使用 Pixi 管理的 `ccache`。在�
 
 - Frontend argv：`<options> -no-show-timestamps -no-show-version`、可选 `-u`，最后为 `<source>`。
 - Verilog argv：`<options> -no-show-timestamps -no-show-version -u -verilog`，module 非空时追加 `-g <module>`，最后为 `<source>`。
+- VerilogSchedule argv：在 Verilog 模式基础上加入 `-resource-simple -show-schedule -dschedule -dresources -dvschedinfo`，严格对齐 upstream schedule helper。
 - cwd：当前 case 的唯一 workspace。
 - 输出：workspace 中的 `<source>.bsc-out`；完整命令、stdout/stderr、退出状态和耗时另写 artifact `bsc.log`。
 - Pass：退出成功且 workspace 中存在 `<stem>.bo`；当前 Verilog Pass 也按 upstream `check_intermediate_files` 检查该 `.bo`。
@@ -220,6 +247,7 @@ Bluesim link 的生成 C++ 编译进一步使用 Pixi 管理的 `ccache`。在�
 - Fail：退出非零。
 - FailWithDiagnostic：在 Fail 基础上，等价统计 Tcl `regexp -all -line {Error:.+\(TAG\)$}` 的行尾 tag；真实 BSC 输出形如 `Error: "file", line ..., column ...: (TAG)`。
 - Golden：双方先忽略包含 `SystemC` 或 `dumpfile parameter` 的整行，再按 `diff -b` 语义归一水平空白；不一致时写 `golden.diff`。
-- Capability policy：启动时读取 `CTEST`/`VTEST`，默认启用；`CTEST=0` 跳过 `BluesimEnabled`，`VTEST=0` 跳过所有 Verilog/Icarus requirement；`IcarusAtLeast(N)` 通过 `iverilog -V` 探测主版本，版本不足或无法确定时显式跳过。
+- Artifact assertions：compile 与 simulation 共用同一执行器，在 cache 恢复后的 workspace 中检查安全相对路径；`Contains`/`DoesNotContain` 检查固定字符串，`LineCount` 统计包含固定字符串的行数，`Regex`/`RegexCount` 使用 multiline Rust regex，`DiagnosticCount` 复用统一 diagnostic 计数。`Matches` 支持 `Exact`、`GoldenOutput`、`Verilog` 三种比较；expected 必须是显式 fixture，且不得与 actual 相同；不一致时写 `artifact-N.diff`。
+- Capability policy：默认启用全部后端；`--no-bluesim` 跳过 `BluesimEnabled`，`--no-verilog` 跳过所有 Verilog/Icarus requirement；`IcarusAtLeast(N)` 通过 `iverilog -V` 探测主版本，版本不足或无法确定时显式跳过。
 - 结果：每个 case 为 Passed、Skipped(reason) 或 Failed(error)，汇总分别计数，只有 failed 影响退出码。
 - 隔离：每次 runner 使用 `<pid>-<时间戳>` run-id，每个 case 只清理自己的 workspace/artifact 子目录。

@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    VcdExpectation,
+    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.scheduler/conflict_free";
@@ -19,27 +19,29 @@ macro_rules! shared_scenario {
             generated_modules: &[],
             compile_options: $compile_options,
             generation: GenerationStrategy::SharedElaboration,
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[
                 SimulationContract {
                     name: concat!("bsc.scheduler/conflict_free::", $module, "::bluesim"),
-                    expected: $expected,
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: $expected },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Bluesim,
-                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    vcd: Some(VcdContract::output_matches_normal()),
                     requirement: Requirement::BluesimEnabled,
                 },
                 SimulationContract {
                     name: concat!("bsc.scheduler/conflict_free::", $module, "::icarus"),
-                    expected: $expected,
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: $expected },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Icarus,
-                    vcd: VcdExpectation::IcarusSmoke,
+                    vcd: Some(VcdContract::parse()),
                     requirement: Requirement::VerilogEnabled,
                 },
             ],
@@ -54,7 +56,7 @@ macro_rules! backend_scenario {
         $expected:literal,
         $backend:ident,
         $backend_name:literal,
-        $vcd:ident,
+        $vcd:expr,
         $requirement:expr
     ) => {
         pub(super) const $constant: SimulationScenario = SimulationScenario {
@@ -72,7 +74,7 @@ macro_rules! backend_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[SimulationContract {
                 name: concat!(
@@ -81,12 +83,13 @@ macro_rules! backend_scenario {
                     "::",
                     $backend_name
                 ),
-                expected: $expected,
+                assertions: &[],
                 link_options: &[],
                 simulation_options: &[],
-                sort_output: false,
+                expectation: ExpectedOutcome::Pass { output: $expected },
+                output: OutputNormalization::Preserve,
                 backend: SimulationBackend::$backend,
-                vcd: VcdExpectation::$vcd,
+                vcd: $vcd,
                 requirement: $requirement,
             }],
         };
@@ -112,7 +115,7 @@ backend_scenario!(
     "sysConflictFreeNotOK.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 backend_scenario!(
@@ -121,7 +124,7 @@ backend_scenario!(
     "sysConflictFreeNotOK.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 shared_scenario!(
@@ -136,7 +139,7 @@ backend_scenario!(
     "sysCFExecOrder1.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 backend_scenario!(
@@ -145,7 +148,7 @@ backend_scenario!(
     "sysCFExecOrder1.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 shared_scenario!(
@@ -166,7 +169,7 @@ backend_scenario!(
     "sysCFSwitch.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 backend_scenario!(
@@ -175,7 +178,7 @@ backend_scenario!(
     "sysCFSwitch.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 

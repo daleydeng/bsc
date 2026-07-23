@@ -32,6 +32,7 @@ pub(super) const B1497_MPMC_TLM: CompileCase = CompileCase {
         "MPMC.defines",
         "TLM.defines",
     ],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],
@@ -49,6 +50,7 @@ pub(super) const B1497_CACHE_CONTROLLER: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/bluespec_inc/b1497",
     source: "Cache_Controller.bsv",
     fixtures: &["Cache_Controller.bsv", "SRAM_Interfaces.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &["-let-gen"],
@@ -77,6 +79,7 @@ pub(super) const B578_BUG578_SIMPLE: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/bluespec_inc/b578",
     source: "Bug578_simple.bs",
     fixtures: &["Bug578_simple.bs", "Bug578_simple.bs.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0131",
@@ -99,6 +102,7 @@ pub(super) const B675_BUG675_MODULE_COLLECT: CompileCase = CompileCase {
         "Bug675_ModuleCollect.bsv",
         "Bug675_ModuleCollect.bsv.bsc-out.expected",
     ],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0030",
@@ -120,6 +124,7 @@ pub(super) const B675_BUG675_MODULE_COLLECT_CLASSIC: CompileCase = CompileCase {
         "Bug675_ModuleCollect_Classic.bs",
         "Bug675_ModuleCollect_Classic.bs.bsc-out.expected",
     ],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0030",
@@ -138,6 +143,7 @@ pub(super) const B675_SIMPLE: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/bluespec_inc/b675",
     source: "Simple.bs",
     fixtures: &["Simple.bs", "Simple.bs.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0030",
@@ -165,6 +171,7 @@ pub(super) const B737_METHOD_SELF_REFERENCE: CompileCase = CompileCase {
         "MethodSelfReference.bsv",
         "MethodSelfReference.bsv.bsc-out.expected",
     ],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0004",
@@ -186,6 +193,7 @@ pub(super) const B737_METHOD_TO_METHOD_REFERENCE: CompileCase = CompileCase {
         "MethodToMethodReference.bsv",
         "MethodToMethodReference.bsv.bsc-out.expected",
     ],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0004",
@@ -207,6 +215,7 @@ pub(super) const B737_METHOD_INTERNAL_NAME_CLASH: CompileCase = CompileCase {
         "MethodInternalNameClash.bsv",
         "MethodInternalNameClash.bsv.bsc-out.expected",
     ],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0011",
@@ -228,6 +237,7 @@ pub(super) const B737_METHOD_EXTERNAL_NAME_CLASH: CompileCase = CompileCase {
         "MethodExternalNameClash.bsv",
         "MethodExternalNameClash.bsv.bsc-out.expected",
     ],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0011",
@@ -269,6 +279,7 @@ pub(super) const B753_BUG753: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/bluespec_inc/b753",
     source: "Bug753.bsv",
     fixtures: &["Bug753.bsv", "SVA2.bs"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],
@@ -281,6 +292,7 @@ pub(super) const B753_BUG753_CLASSIC: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/bluespec_inc/b753",
     source: "Bug753_Classic.bs",
     fixtures: &["Bug753_Classic.bs", "SVA2.bs"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],

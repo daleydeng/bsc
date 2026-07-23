@@ -45,6 +45,7 @@ pub(super) const ALWAYS_READY_WRONG_LOC_INTERFACE_WITH_ARG: CompileCase = Compil
     fixture_dir: "testsuite/bsc.names/portRenaming/invalidAttrs/always_ready",
     source: "WrongLoc_InterfaceWithArg.bsv",
     fixtures: &["WrongLoc_InterfaceWithArg.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "P0159",
@@ -62,6 +63,7 @@ pub(super) const OSC_WRONG_LOC_INOUT_ARG: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.names/portRenaming/invalidAttrs/osc",
     source: "WrongLoc_InoutArg.bsv",
     fixtures: &["WrongLoc_InoutArg.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "P0181",
@@ -79,6 +81,7 @@ pub(super) const PREFIX_RESULT_TEST01: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.names/portRenaming/conflicts/prefixResult",
     source: "Test01.bsv",
     fixtures: &["Test01.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "G0055",
@@ -96,6 +99,7 @@ pub(super) const BREAK_OUTSIDE_FSM: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/StmtFSM/breakOutsideFSM",
     source: "breakOutsideFSM.bsv",
     fixtures: &["breakOutsideFSM.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "P0163",
@@ -113,6 +117,7 @@ pub(super) const CONTINUE_OUTSIDE_FSM: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/StmtFSM/continueOutsideFSM",
     source: "continueOutsideFSM.bsv",
     fixtures: &["continueOutsideFSM.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "P0164",
@@ -130,6 +135,7 @@ pub(super) const CONTINUE_OUTSIDE_LOOP: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/StmtFSM/continueOutsideLoop",
     source: "continueOutsideLoop.bsv",
     fixtures: &["continueOutsideLoop.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "S0015",
@@ -147,6 +153,7 @@ pub(super) const ENO_NF3: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/messages/ENoNF",
     source: "ENoNF3.bs",
     fixtures: &["ENoNF3.bs"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "G0070",
@@ -164,6 +171,7 @@ pub(super) const E_STMT_CONTEXT1: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/messages/EStmtContext",
     source: "EStmtContext1.bs",
     fixtures: &["EStmtContext1.bs"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "T0045",
@@ -181,6 +189,7 @@ pub(super) const GH678: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/github/gh678",
     source: "Test.bs",
     fixtures: &["Test.bs", "GenCRepr.bs", "SizedVector.bs", "State.bs"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],
@@ -194,6 +203,7 @@ pub(super) const CONDITION_WIRES: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bsv_examples/ConditionWires",
     source: "DemonstrateConditions.bsv",
     fixtures: &["DemonstrateConditions.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &["+RTS", "-K10M", "-RTS"],
@@ -328,6 +338,7 @@ pub(super) const BUG_ID_154: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID154",
     source: "BsTop.bs",
     fixtures: &["BsTop.bs", "BsTop.bs.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "BsTop.bs.bsc-out.expected",
@@ -343,6 +354,7 @@ pub(super) const BUG_ID_161: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID161",
     source: "Test.bs",
     fixtures: &["Test.bs", "Test.bs.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "Test.bs.bsc-out.expected",

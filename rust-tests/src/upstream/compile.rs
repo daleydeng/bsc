@@ -1,9 +1,13 @@
+use super::artifact::{
+    check_artifact_assertions, compare_golden_output, validate_artifact_assertions,
+};
 use super::{
-    compare_legacy_golden, count_diagnostics, describe_exit, is_safe_relative, reset_directory,
-    stage_fixture_paths, CompileCase, CompileExpectation, CompileMode, Requirement, RunPaths,
+    count_diagnostics, describe_exit, is_safe_relative, reset_directory, stage_fixture_paths,
+    CompileCase, CompileExpectation, CompileMode, Requirement, RunPaths,
 };
 use crate::cache::{BscResultCache, ResultCacheLookup};
 use crate::{run_bsc, Toolchain, BSC_TIMEOUT};
+
 use std::fs;
 use std::path::Path;
 
@@ -69,13 +73,15 @@ pub(super) fn run_compile_case(
 
     if let Some(golden) = case.golden {
         let expected_path = work_dir.join(golden.expected);
-        compare_legacy_golden(
+        compare_golden_output(
             &result.output,
             &expected_path,
             &output_path,
             &artifact_dir.join("golden.diff"),
         )?;
     }
+
+    check_artifact_assertions(case.assertions, &work_dir, &artifact_dir, case.name)?;
 
     if let Some(key) = cache_key {
         if let Err(error) = result_cache.store(&key, &work_dir, &result) {
@@ -100,8 +106,17 @@ pub(super) fn compile_arguments(case: &CompileCase) -> Vec<&str> {
                 arguments.push("-u");
             }
         }
-        CompileMode::Verilog { module } => {
+        CompileMode::Verilog { module } | CompileMode::VerilogSchedule { module } => {
             arguments.push("-u");
+            if matches!(case.mode, CompileMode::VerilogSchedule { .. }) {
+                arguments.extend_from_slice(&[
+                    "-resource-simple",
+                    "-show-schedule",
+                    "-dschedule",
+                    "-dresources",
+                    "-dvschedinfo",
+                ]);
+            }
             arguments.push("-verilog");
             if let Some(module) = module.filter(|module| !module.is_empty()) {
                 arguments.push("-g");
@@ -216,6 +231,22 @@ pub(super) fn validate_case(case: &CompileCase) -> Result<(), String> {
             case.name
         ));
     }
+    let canonical_prefix = case
+        .fixture_dir
+        .strip_prefix("testsuite/")
+        .map(|origin| format!("{origin}::"))
+        .ok_or_else(|| {
+            format!(
+                "compile case {} has a non-testsuite fixture root",
+                case.name
+            )
+        })?;
+    if !case.name.starts_with(&canonical_prefix) {
+        return Err(format!(
+            "compile case {} must use canonical prefix {canonical_prefix}",
+            case.name
+        ));
+    }
     if !case.fixtures.contains(&case.source) {
         return Err(format!(
             "compile case {} must declare source {} as a fixture",
@@ -238,6 +269,7 @@ pub(super) fn validate_case(case: &CompileCase) -> Result<(), String> {
             ));
         }
     }
+    validate_artifact_assertions(case.assertions, case.fixtures, case.name)?;
     match case.mode {
         CompileMode::Frontend if case.requirement == Requirement::Always => {}
         CompileMode::Frontend => {
@@ -246,15 +278,20 @@ pub(super) fn validate_case(case: &CompileCase) -> Result<(), String> {
                 case.name
             ))
         }
-        CompileMode::Verilog { .. } if case.requirement == Requirement::VerilogEnabled => {}
-        CompileMode::Verilog { .. } => {
+        CompileMode::Verilog { .. } | CompileMode::VerilogSchedule { .. }
+            if case.requirement == Requirement::VerilogEnabled => {}
+        CompileMode::Verilog { .. } | CompileMode::VerilogSchedule { .. } => {
             return Err(format!(
                 "Verilog compile case {} must require the Verilog backend",
                 case.name
             ))
         }
     }
-    if matches!(case.mode, CompileMode::Verilog { .. }) && case.nodeps {
+    if matches!(
+        case.mode,
+        CompileMode::Verilog { .. } | CompileMode::VerilogSchedule { .. }
+    ) && case.nodeps
+    {
         return Err(format!(
             "Verilog compile case {} cannot disable the required -u option",
             case.name

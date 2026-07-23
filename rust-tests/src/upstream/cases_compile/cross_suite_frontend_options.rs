@@ -14,6 +14,7 @@ macro_rules! frontend_case {
             fixture_dir: $fixture_dir,
             source: $source,
             fixtures: $fixtures,
+            assertions: &[],
             expectation: $expectation,
             golden: None,
             options: $options,
@@ -84,6 +85,7 @@ macro_rules! verilog_fail_error {
             fixture_dir: $fixture_dir,
             source: $source,
             fixtures: &[$source],
+            assertions: &[],
             expectation: CompileExpectation::FailWithDiagnostic {
                 kind: DiagnosticKind::Error,
                 tag: $tag,

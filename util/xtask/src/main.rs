@@ -1,9 +1,12 @@
 mod environment;
+mod msys;
 mod tasks;
+mod toolchain;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use environment::PreparedEnvironment;
+use environment::{EnvironmentRequirements, OssRequirement, PreparedEnvironment};
+use std::path::PathBuf;
 use tasks::Tasks;
 use xshell::Shell;
 
@@ -21,6 +24,25 @@ struct Cli {
 
 #[derive(Debug, Subcommand)]
 enum Task {
+    /// Configure an existing OSS CAD Suite installation.
+    ConfigureOssCadSuite {
+        /// OSS CAD Suite installation root.
+        root: PathBuf,
+    },
+    /// Install and select the project-local GHC and Cabal toolchain.
+    Toolchain,
+    /// Install BSC's Haskell package dependencies.
+    HaskellDeps,
+    /// Report the exact tools and platform seen by the native build.
+    Doctor,
+    /// Build and install BSC into ./inst.
+    Build,
+    /// Run the upstream smoke test.
+    Smoke,
+    /// Remove upstream build and installation directories.
+    Clean,
+    /// Enter the Pixi-managed MSYS2 shell.
+    Shell,
     /// Run the migrated scheduler SAT tests against Z3.
     TestZ3,
     /// Verify Rust declarations against their upstream Tcl origins.
@@ -51,22 +73,37 @@ enum Task {
 }
 
 impl Task {
-    fn requires_oss(&self) -> bool {
-        matches!(
-            self,
-            Self::TestUpstream { .. } | Self::TestRust | Self::Test | Self::TestCold
-        )
+    fn environment_requirements(&self) -> EnvironmentRequirements {
+        match self {
+            Self::Doctor | Self::Smoke => EnvironmentRequirements::native(OssRequirement::Required),
+            Self::Shell => EnvironmentRequirements::native(OssRequirement::Optional),
+            Self::Toolchain | Self::HaskellDeps | Self::Build | Self::Clean => {
+                EnvironmentRequirements::native(OssRequirement::None)
+            }
+            Self::TestUpstream { .. } | Self::TestRust | Self::Test | Self::TestCold => {
+                EnvironmentRequirements::basic(OssRequirement::Required)
+            }
+            _ => EnvironmentRequirements::basic(OssRequirement::None),
+        }
     }
 }
 
 fn run() -> Result<()> {
     let task = Cli::parse().task;
-    let environment = PreparedEnvironment::prepare(task.requires_oss())?;
+    let environment = PreparedEnvironment::prepare(task.environment_requirements())?;
     let shell = Shell::new()?;
     shell.change_dir(&environment.root);
     let tasks = Tasks::new(&shell, &environment);
 
     match task {
+        Task::ConfigureOssCadSuite { root } => tasks.configure_oss_cad_suite(&root),
+        Task::Toolchain => tasks.toolchain(),
+        Task::HaskellDeps => tasks.haskell_deps(),
+        Task::Doctor => tasks.doctor(),
+        Task::Build => tasks.build(),
+        Task::Smoke => tasks.smoke(),
+        Task::Clean => tasks.clean(),
+        Task::Shell => tasks.shell(),
         Task::TestZ3 => tasks.test_z3(),
         Task::TestAlignment => tasks.test_alignment(),
         Task::InventoryCheck => tasks.inventory_check(),

@@ -9,7 +9,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    VcdExpectation,
+    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
 };
 
 macro_rules! shared_scenario {
@@ -34,27 +34,29 @@ macro_rules! shared_scenario {
             generated_modules: $generated_modules,
             compile_options: $compile_options,
             generation: GenerationStrategy::SharedElaboration,
-            timeout: $timeout,
+            timeouts: SimulationTimeouts::uniform($timeout),
             resource: $resource,
             contracts: &[
                 SimulationContract {
                     name: concat!($prefix, "::", $module, "::bluesim"),
-                    expected: $expected,
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: $expected },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Bluesim,
-                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    vcd: Some(VcdContract::output_matches_normal()),
                     requirement: Requirement::BluesimEnabled,
                 },
                 SimulationContract {
                     name: concat!($prefix, "::", $module, "::icarus"),
-                    expected: $expected,
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: $expected },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Icarus,
-                    vcd: VcdExpectation::IcarusSmoke,
+                    vcd: Some(VcdContract::parse()),
                     requirement: Requirement::VerilogEnabled,
                 },
             ],
@@ -75,7 +77,7 @@ macro_rules! backend_scenario {
         $link_options:expr,
         $backend_name:literal,
         $backend:ident,
-        $vcd:ident,
+        $vcd:expr,
         $requirement:ident
     ) => {
         pub(super) const $constant: SimulationScenario = SimulationScenario {
@@ -87,16 +89,17 @@ macro_rules! backend_scenario {
             generated_modules: $generated_modules,
             compile_options: $compile_options,
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[SimulationContract {
                 name: concat!($prefix, "::", $module, "::", $backend_name),
-                expected: $expected,
+                assertions: &[],
                 link_options: $link_options,
                 simulation_options: &[],
-                sort_output: false,
+                expectation: ExpectedOutcome::Pass { output: $expected },
+                output: OutputNormalization::Preserve,
                 backend: SimulationBackend::$backend,
-                vcd: VcdExpectation::$vcd,
+                vcd: $vcd,
                 requirement: Requirement::$requirement,
             }],
         };
@@ -279,7 +282,7 @@ macro_rules! positive_reset_pair {
             POSITIVE_RESET_OPTIONS,
             "bluesim",
             Bluesim,
-            BluesimOutputMatchesNormal,
+            Some(VcdContract::output_matches_normal()),
             BluesimEnabled
         );
         backend_scenario!(
@@ -294,7 +297,7 @@ macro_rules! positive_reset_pair {
             POSITIVE_RESET_OPTIONS,
             "icarus",
             Icarus,
-            IcarusSmoke,
+            Some(VcdContract::parse()),
             VerilogEnabled
         );
     };
@@ -337,7 +340,7 @@ backend_scenario!(
     &[],
     "icarus",
     Icarus,
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     VerilogEnabled
 );
 

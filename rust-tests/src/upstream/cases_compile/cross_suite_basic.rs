@@ -22,6 +22,7 @@ pub(super) const B373: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bugs/bluespec_inc/b373",
     source: "Temp.bsv",
     fixtures: &["Temp.bsv", "Wallace.bs"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "S0015",

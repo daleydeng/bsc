@@ -3,32 +3,84 @@ use std::ffi::OsString;
 use std::fs::{self, File};
 use std::io::{self, BufReader, Read};
 use std::path::{Path, PathBuf};
+use std::process::Command;
 
 use anyhow::{ensure, Context, Result};
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum OssRequirement {
+    None,
+    Optional,
+    Required,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct EnvironmentRequirements {
+    pub oss: OssRequirement,
+    pub native_toolchain: bool,
+}
+
+impl EnvironmentRequirements {
+    pub const fn basic(oss: OssRequirement) -> Self {
+        Self {
+            oss,
+            native_toolchain: false,
+        }
+    }
+
+    pub const fn native(oss: OssRequirement) -> Self {
+        Self {
+            oss,
+            native_toolchain: true,
+        }
+    }
+}
+
 pub struct PreparedEnvironment {
     pub root: PathBuf,
+    pub conda: PathBuf,
     pub jobs: usize,
     pub ccache_managed_cxx: bool,
 }
 
 impl PreparedEnvironment {
-    pub fn prepare(requires_oss: bool) -> Result<Self> {
+    pub fn prepare(requirements: EnvironmentRequirements) -> Result<Self> {
         let root = required_directory("PIXI_PROJECT_ROOT")?;
         let conda = required_directory("CONDA_PREFIX")?;
         let jobs = configured_jobs()?;
 
         env::set_var("BSC_BUILD_JOBS", jobs.to_string());
+        env::set_var("GHCUP_INSTALL_BASE_PREFIX", root.join(".pixi"));
+        env::set_var("CABAL_DIR", root.join(".pixi/cabal"));
+        env::set_var("CABAL_CONFIG", root.join(".pixi/cabal/config"));
+        env::set_var("MSYSTEM", "MINGW64");
+        env::set_var("CHERE_INVOKING", "1");
         env::set_var("CARGO_TARGET_DIR", root.join(".pixi/tmp/cargo-target"));
 
         let conda_bin = conda.join("Library/bin");
-        if requires_oss {
+        if requirements.native_toolchain {
+            let ghcup_bin = ghcup_bindir(&root)?;
+            env::set_var("BSC_GHCUP_BIN", &ghcup_bin);
+            prepend_path([
+                ghcup_bin,
+                conda.join("Library/mingw-w64/bin"),
+                conda.join("Library/usr/bin"),
+                conda_bin.clone(),
+            ])?;
+        }
+
+        if requirements.oss != OssRequirement::None {
             let config = root.join(".pixi/oss-cad-suite-root.txt");
-            let oss_root = resolve_oss_root(&config)?.with_context(|| {
-                "OSS CAD Suite with iverilog/vvp was not configured; run \
-                 'pixi run just configure-oss-cad-suite <path>' or set OSS_CAD_SUITE_ROOT"
-            })?;
-            configure_oss(&root, &conda_bin, &oss_root)?;
+            let oss_root = resolve_oss_root(&root, &config)?;
+            if requirements.oss == OssRequirement::Required {
+                let oss_root = oss_root.with_context(|| {
+                    "OSS CAD Suite with iverilog/vvp was not configured; run \
+                     'pixi run just configure-oss-cad-suite <path>' or set OSS_CAD_SUITE_ROOT"
+                })?;
+                configure_oss(&root, &conda_bin, &oss_root)?;
+            } else if let Some(oss_root) = oss_root {
+                configure_oss(&root, &conda_bin, &oss_root)?;
+            }
         }
 
         which::which("ccache.exe").context("Pixi-managed ccache.exe was not found on PATH")?;
@@ -54,10 +106,35 @@ impl PreparedEnvironment {
 
         Ok(Self {
             root,
+            conda,
             jobs,
             ccache_managed_cxx,
         })
     }
+}
+
+fn ghcup_bindir(root: &Path) -> Result<PathBuf> {
+    let ghcup =
+        which::which("ghcup.exe").context("Pixi-managed ghcup.exe was not found on PATH")?;
+    let output = Command::new(&ghcup)
+        .args(["whereis", "bindir"])
+        .current_dir(root)
+        .output()
+        .with_context(|| format!("could not query GHCup bindir using {}", ghcup.display()))?;
+    ensure!(
+        output.status.success(),
+        "GHCup could not resolve its bindir: {}",
+        String::from_utf8_lossy(&output.stderr).trim()
+    );
+    let output = String::from_utf8(output.stdout).context("GHCup bindir is not valid UTF-8")?;
+    let bindir = normalize_windows_path(OsString::from(output.trim()));
+    ensure!(
+        bindir.is_dir(),
+        "GHCup bindir does not exist: {}",
+        bindir.display()
+    );
+    dunce::canonicalize(&bindir)
+        .with_context(|| format!("could not resolve GHCup bindir: {}", bindir.display()))
 }
 
 fn required_directory(name: &str) -> Result<PathBuf> {
@@ -92,7 +169,7 @@ fn configured_jobs() -> Result<usize> {
     Ok(jobs)
 }
 
-fn resolve_oss_root(config: &Path) -> Result<Option<PathBuf>> {
+fn resolve_oss_root(project_root: &Path, config: &Path) -> Result<Option<PathBuf>> {
     let mut candidates = Vec::new();
     candidates.extend(env::var_os("OSS_CAD_SUITE_ROOT"));
     candidates.extend(env::var_os("YOSYSHQ_ROOT"));
@@ -111,9 +188,49 @@ fn resolve_oss_root(config: &Path) -> Result<Option<PathBuf>> {
 
     Ok(candidates
         .into_iter()
+        .filter(|candidate| !candidate.is_empty())
         .map(normalize_windows_path)
+        .map(|candidate| {
+            if candidate.is_absolute() {
+                candidate
+            } else {
+                project_root.join(candidate)
+            }
+        })
         .find(|candidate| valid_oss_root(candidate))
         .map(|path| dunce::canonicalize(&path).unwrap_or(path)))
+}
+
+pub fn save_oss_root(project_root: &Path, candidate: &Path) -> Result<PathBuf> {
+    let candidate = normalize_windows_path(candidate.as_os_str().to_owned());
+    let candidate = if candidate.is_absolute() {
+        candidate
+    } else {
+        project_root.join(candidate)
+    };
+    ensure!(
+        valid_oss_root(&candidate),
+        "not a valid OSS CAD Suite root: {}",
+        candidate.display()
+    );
+    let oss_root = dunce::canonicalize(&candidate).with_context(|| {
+        format!(
+            "could not resolve OSS CAD Suite root: {}",
+            candidate.display()
+        )
+    })?;
+    let config = project_root.join(".pixi/oss-cad-suite-root.txt");
+    let parent = config
+        .parent()
+        .context("OSS CAD Suite configuration path has no parent")?;
+    fs::create_dir_all(parent).with_context(|| format!("could not create {}", parent.display()))?;
+    let text = oss_root
+        .to_str()
+        .context("OSS CAD Suite root is not valid UTF-8")?;
+    fs::write(&config, format!("{text}\n"))
+        .with_context(|| format!("could not write {}", config.display()))?;
+    println!("Configured OSS CAD Suite: {}", oss_root.display());
+    Ok(oss_root)
 }
 
 fn normalize_windows_path(candidate: OsString) -> PathBuf {

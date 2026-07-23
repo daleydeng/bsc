@@ -4,12 +4,12 @@
 
 ## 当前基线
 
-- 已迁移来源：310/860
-- 尚未迁移来源：550
-- 已迁移静态 contract：1305/4368
-- 尚未迁移静态 contract：3063
-- 完全需要动态或自定义 Tcl 分析的脚本：233
-- 最近稳定提交：`32f25c34 Redesign simulation tests around shared generation scenarios`
+- 已迁移来源：322/860
+- 尚未迁移来源：538
+- 已迁移静态 contract：1637/4672
+- 尚未迁移静态 contract：3035
+- 完全需要动态或自定义 Tcl 分析的脚本：221
+- 最近稳定提交：`453f001a Add cargo xtask orchestration for Windows tests`
 
 候选进入本文件的硬条件：必须完整迁移一整份 `.exp` 的全部活动 contract 和 assertion；不得只摘取 compile/simulation 调用；不得忽略 XFAIL、bug gate、generated artifact、手工 link/sim 或额外输出比较。
 
@@ -57,8 +57,8 @@
 
 ### 其他静态 frontend：5 个，60 个 contract
 
-- [x] `testsuite/bsc.syntax/bsv05/interface/interface.exp` — 28；4 个 legacy `compile_fail source TAG` 的 TAG 保留在 options 参数
-- [x] `testsuite/bsc.typechecker/assignment/assignment.exp` — 18；`StructUpdReg.bsv` 保留 legacy options；`RegStructWrite.bsv` 保留 frontend 与 Verilog 两个 contract
+- [x] `testsuite/bsc.syntax/bsv05/interface/interface.exp` — 28；4 个 upstream `compile_fail source TAG` 调用的 TAG 保留在 options 参数
+- [x] `testsuite/bsc.typechecker/assignment/assignment.exp` — 18；`StructUpdReg.bsv` 保留 upstream options；`RegStructWrite.bsv` 保留 frontend 与 Verilog 两个 contract
 - [x] `testsuite/bsc.interra/messages/EBadIfcType/EBadIfcType.exp` — 5；frontend tagged Fail，options 含 `-verilog -g <top>`，不是 Verilog mode
 - [x] `testsuite/bsc.preprocessor/ifdef/ifdef.exp` — 5 Pass
 - [x] `testsuite/bsc.driver/symtab/symtab.exp` — 4 Pass；递归 stage 8 个 `*_Wrapper.bsv` / `*_Leaf.bsv`
@@ -123,6 +123,32 @@
 - [x] `testsuite/bsc.verilog/positivereset/SyncReset/SyncReset.exp` — 将临时 `BSC_OPTIONS` 展开为 case-local 生成与链接参数 `-reset-prefix RESET_P -D BSV_POSITIVE_RESET`
 - [x] `testsuite/bsc.real/evaluator/undef/undef.exp` — `$vtest` 条件直接映射为 `Requirement::VerilogEnabled`
 
+## 已完成：artifact/text assertion 第一批
+
+通用 `ArtifactAssertion` / `TextAssertion` 已覆盖固定字符串、匹配行数、多行正则、诊断计数及文件存在性检查；alignment 会把 `.exp` assertion 与 Rust 声明逐项、逐数量核对。
+
+- [x] `testsuite/bsc.typechecker/mismatch/mismatch.exp` — 12 个 compile contract；覆盖 `find_n_strings`
+- [x] `testsuite/bsc.names/portRenaming/conflicts/enableReady/enableReady.exp` — 6 个 compile contract；覆盖 `find_n_emsg`
+- [x] `testsuite/bsc.names/portRenaming/moduleArgs/moduleArgs.exp` — 39 个 compile contract；覆盖 generated Verilog 的 `string_occurs` / `string_does_not_occur`
+- [x] `testsuite/bsc.typechecker/context-errors/context-errors.exp` — 59 个 compile contract；19 个 compiler golden 和 3 个位置正则 assertion
+- [x] `testsuite/bsc.typechecker/constructors/constructors.exp` — 29 个 compile contract、2 个 shared-elaboration scenario、4 个 Bluesim/Icarus simulation contract
+
+classic `test_c_veri*` helper 的静态权重补齐后，contract inventory 会同时统计 `.bs` 双后端 contract；因此全仓库可静态识别的 contract 分母由旧估算 4368 校正为 4600。
+
+## 已完成：统一 artifact comparison 与 schedule contract
+
+共享 `artifact` 模块现在由 compile 和 simulation pipeline 共同使用，支持文件存在、文本断言以及 exact、golden-output、Verilog 三种 actual/expected 比较。`VerilogSchedule` compile mode 对齐 `compile_verilog_schedule_pass`，alignment 同步核对 `compare_file` 和 `compare_verilog`。
+
+- [x] `testsuite/bsc.typechecker/error_recovery/error_recovery.exp` — 11 个 compile contract；包含 `-continue-after-errors` 后生成 Verilog比较
+- [x] `testsuite/bsc.lib/CompletionBuffer/CompletionBuffer.exp` — 1 个 schedule compile、2 个 shared simulation contract
+- [x] `testsuite/bsc.lib/Cntrs/Cntrs.exp` — 2 个 compile、6 个 shared simulation contract；比较 `.sched` 与 generated Verilog
+- [x] `testsuite/bsc.misc/fwrite/fwrite.exp` — 7 个 compile fail、23 个 backend-specific simulation contract；逐 backend 比较 `*.dat.out` 副产物
+- [x] `testsuite/bsc.lib/SShow/SShow.exp` — 1 个指定 top 的 Verilog compile contract；比较 elaboration 生成的 `sysTestSShow.out`
+- [x] `testsuite/bsc.scheduler/paths/paths.exp` — 56 个 Verilog compile contract；56 条正向、77 条负向 generated RTL regex assertion；新增 `find_regexp_fail` 对齐
+- [x] `testsuite/bsc.syntax/bsv05/import-foreign/import-foreign.exp` — 74 个 compile contract；覆盖 warning count、compiler golden、generated RTL regex 和 2 个 `compare_verilog`；后者同时通过 `sv-parser` syntax smoke
+
+识别 `compile_verilog_schedule_pass` 后，全仓库可静态识别 contract 分母由 4600 校正为 4672；新增的 72 个 contract 来自此前被归为自定义 Tcl 的 schedule 调用，并非本批凭空增加测试。
+
 ## 明确阻塞，不得机械迁移
 
 | Origin | 阻塞原因 |
@@ -132,11 +158,8 @@
 | `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | `BRAM0Test.bsv` 的共享 `-verilog -elab` 在原生 Windows 串行运行超过 300 秒；不能用 backend-specific 生成绕开 upstream 的共享 elaboration 语义 |
 | `testsuite/bsc.bugs/bluespec_inc/b925/b925.exp` | Bluesim XFAIL / bug gate，当前 Requirement 无法表达 |
 | `testsuite/bsc.bluesim/operators/operators.exp` | 同时存在 Bluesim 和 Verilog bug gate |
-| `testsuite/bsc.misc/fwrite/fwrite.exp` | 需要比较 simulation 生成的 `*.dat.out` 副产物 |
 | `testsuite/bsc.if/split-execution/2x2-switch-split/switch.exp` | 手工 interactive Bluesim 和 cycle assertion |
 | `testsuite/bsc.if/split-execution/2x2-switch/switch.exp` | 手工 interactive Bluesim 和 cycle assertion |
-| `testsuite/bsc.lib/CompletionBuffer/CompletionBuffer.exp` | `compile_verilog_schedule_pass` 和 `.sched` artifact 比较 |
-| `testsuite/bsc.lib/Cntrs/Cntrs.exp` | schedule / generated Verilog artifact 比较 |
 | `testsuite/bsc.lib/DefaultValue/DefaultValue.exp` | `compile_pass_warning` 尚未建模 |
 | `testsuite/bsc.lib/FShow/FShow.exp` | `compile_pass_warning` 尚未建模 |
 | `testsuite/bsc.lib/oint/oint.exp` | `compile_verilog_pass_no_warning_bug` bug gate |
@@ -145,21 +168,12 @@
 | `testsuite/bsc.bsv_examples/bsvfifo/bsvfifo.exp` | copy/erase/manual link/simulation 流程 |
 | `testsuite/bsc.bugs/bluespec_inc/b535/b535.exp` | copy/erase/manual link/simulation 流程 |
 | `testsuite/bsc.arrays/arrays.exp` | 条件分支和 `compile_verilog_fail_bug` |
-| `testsuite/bsc.syntax/bsv05/import-foreign/import-foreign.exp` | 动态分支、正则 assertion 和 generated Verilog 比较 |
-| `testsuite/bsc.typechecker/context-errors/context-errors.exp` | compile 后还有大量位置正则 assertion |
-| `testsuite/bsc.scheduler/paths/paths.exp` | 核心语义是生成 RTL 路径检查 |
-| `testsuite/bsc.names/portRenaming/moduleArgs/moduleArgs.exp` | 大量 `string_occurs` / `string_does_not_occur` assertion |
 | `testsuite/bsc.mcd/ModArgs/ModArgs.exp` | 多种未支持 no-warning/no-internal-error contract |
 | `testsuite/bsc.driver/gensign/gensign.exp` | dumpbi/dumpbo 和字符串计数流程 |
 | `testsuite/bsc.mcd/Reset/Reset.exp` | 动态分支、正则和 simulation 混合流程 |
-| `testsuite/bsc.typechecker/constructors/constructors.exp` | 额外字符串/正则 assertion 和 simulation |
-| `testsuite/bsc.typechecker/mismatch/mismatch.exp` | tagged fail 后还有活动 `find_n_strings` assertion |
 | `testsuite/bsc.names/portRenaming/enableTests/enableTests.exp` | compile 后还有 no-main link contract |
 | `testsuite/bsc.compile/compile.exp` | 动态替换 fixture 和延迟流程 |
-| `testsuite/bsc.lib/SShow/SShow.exp` | 比较 simulation 输出，不是 compiler golden |
 | `testsuite/bsc.verilog/foreign_module/foreign_module.exp` | 活动 fail source 缺失，当前 fixture contract 无法表达 |
-| `testsuite/bsc.names/portRenaming/conflicts/enableReady/enableReady.exp` | 额外 error-count assertion |
-| `testsuite/bsc.typechecker/error_recovery/error_recovery.exp` | generated Verilog 比较 |
 
 ## 维护流程
 

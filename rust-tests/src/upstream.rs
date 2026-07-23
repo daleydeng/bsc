@@ -1,4 +1,4 @@
-use crate::{normalize_diff_b_text, readable_diff, Toolchain};
+use crate::{normalize_diff_b_text, Toolchain};
 use regex::Regex;
 use std::ffi::OsString;
 use std::fs;
@@ -44,9 +44,83 @@ pub struct GoldenExpectation {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TextAssertion {
+    Contains {
+        text: &'static str,
+    },
+    DoesNotContain {
+        text: &'static str,
+    },
+    LineCount {
+        text: &'static str,
+        count: usize,
+    },
+    Regex {
+        pattern: &'static str,
+    },
+    RegexDoesNotMatch {
+        pattern: &'static str,
+    },
+    RegexCount {
+        pattern: &'static str,
+        count: usize,
+    },
+    DiagnosticCount {
+        kind: DiagnosticKind,
+        tag: &'static str,
+        count: usize,
+    },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArtifactNormalization {
+    Exact,
+    GoldenOutput,
+    Verilog,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArtifactAssertion {
+    Exists {
+        path: &'static str,
+    },
+    Text {
+        path: &'static str,
+        assertion: TextAssertion,
+    },
+    ParsesAsSystemVerilog {
+        path: &'static str,
+    },
+    Matches {
+        actual: &'static str,
+        expected: &'static str,
+        normalization: ArtifactNormalization,
+    },
+}
+
+impl ArtifactAssertion {
+    pub fn actual_path(self) -> &'static str {
+        match self {
+            Self::Exists { path }
+            | Self::Text { path, .. }
+            | Self::ParsesAsSystemVerilog { path } => path,
+            Self::Matches { actual, .. } => actual,
+        }
+    }
+
+    pub fn expected_path(self) -> Option<&'static str> {
+        match self {
+            Self::Matches { expected, .. } => Some(expected),
+            Self::Exists { .. } | Self::Text { .. } | Self::ParsesAsSystemVerilog { .. } => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CompileMode {
     Frontend,
     Verilog { module: Option<&'static str> },
+    VerilogSchedule { module: Option<&'static str> },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -65,19 +139,12 @@ pub struct RunnerPolicy {
 }
 
 impl RunnerPolicy {
-    pub fn from_environment(
-        ctest: Option<&std::ffi::OsStr>,
-        vtest: Option<&std::ffi::OsStr>,
-    ) -> Self {
+    pub fn new(bluesim_enabled: bool, verilog_enabled: bool) -> Self {
         Self {
-            bluesim_enabled: ctest != Some(std::ffi::OsStr::new("0")),
-            verilog_enabled: vtest != Some(std::ffi::OsStr::new("0")),
+            bluesim_enabled,
+            verilog_enabled,
             iverilog_major: None,
         }
-    }
-
-    pub fn from_vtest(value: Option<&std::ffi::OsStr>) -> Self {
-        Self::from_environment(None, value)
     }
 
     pub fn with_iverilog_major(mut self, major: Option<u32>) -> Self {
@@ -89,11 +156,15 @@ impl RunnerPolicy {
         match requirement {
             Requirement::Always => None,
             Requirement::BluesimEnabled if self.bluesim_enabled => None,
-            Requirement::BluesimEnabled => Some("Bluesim backend disabled by CTEST=0".to_owned()),
+            Requirement::BluesimEnabled => {
+                Some("Bluesim backend disabled by --no-bluesim".to_owned())
+            }
             Requirement::VerilogEnabled if self.verilog_enabled => None,
-            Requirement::VerilogEnabled => Some("Verilog backend disabled by VTEST=0".to_owned()),
+            Requirement::VerilogEnabled => {
+                Some("Verilog backend disabled by --no-verilog".to_owned())
+            }
             Requirement::IcarusAtLeast(_) if !self.verilog_enabled => {
-                Some("Verilog backend disabled by VTEST=0".to_owned())
+                Some("Verilog backend disabled by --no-verilog".to_owned())
             }
             Requirement::IcarusAtLeast(required) => match self.iverilog_major {
                 Some(actual) if actual >= required => None,
@@ -110,7 +181,7 @@ impl RunnerPolicy {
 
 impl Default for RunnerPolicy {
     fn default() -> Self {
-        Self::from_vtest(None)
+        Self::new(true, true)
     }
 }
 
@@ -133,6 +204,7 @@ pub struct CompileCase {
     pub fixture_dir: &'static str,
     pub source: &'static str,
     pub fixtures: &'static [&'static str],
+    pub assertions: &'static [ArtifactAssertion],
     pub expectation: CompileExpectation,
     pub golden: Option<GoldenExpectation>,
     pub options: &'static [&'static str],
@@ -148,10 +220,124 @@ pub enum SimulationBackend {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum VcdExpectation {
-    None,
-    BluesimOutputMatchesNormal,
-    IcarusSmoke,
+pub enum SimulationPhase {
+    Generation,
+    Link,
+    Simulation,
+    Vcd,
+}
+
+impl SimulationPhase {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Generation => "generation",
+            Self::Link => "link",
+            Self::Simulation => "simulation",
+            Self::Vcd => "VCD simulation",
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExpectedOutcome {
+    Pass {
+        output: &'static str,
+    },
+    Fail {
+        phase: SimulationPhase,
+        output: Option<&'static str>,
+    },
+    XFail {
+        phase: SimulationPhase,
+        reason: &'static str,
+    },
+}
+
+impl ExpectedOutcome {
+    pub const fn expected_failure_phase(self) -> Option<SimulationPhase> {
+        match self {
+            Self::Pass { .. } => None,
+            Self::Fail { phase, .. } | Self::XFail { phase, .. } => Some(phase),
+        }
+    }
+
+    pub const fn expected_output(self) -> Option<&'static str> {
+        match self {
+            Self::Pass { output } => Some(output),
+            Self::Fail { output, .. } => output,
+            Self::XFail { .. } => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OutputNormalization {
+    Preserve,
+    SortedLines,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VcdOutputExpectation {
+    ParseOnly,
+    MatchesNormal,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct VcdContract {
+    pub output: VcdOutputExpectation,
+}
+
+impl VcdContract {
+    pub const fn parse() -> Self {
+        Self {
+            output: VcdOutputExpectation::ParseOnly,
+        }
+    }
+
+    pub const fn output_matches_normal() -> Self {
+        Self {
+            output: VcdOutputExpectation::MatchesNormal,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SimulationTimeouts {
+    pub generation: std::time::Duration,
+    pub link: std::time::Duration,
+    pub simulation: std::time::Duration,
+    pub vcd: std::time::Duration,
+}
+
+impl SimulationTimeouts {
+    pub const fn uniform(timeout: std::time::Duration) -> Self {
+        Self {
+            generation: timeout,
+            link: timeout,
+            simulation: timeout,
+            vcd: timeout,
+        }
+    }
+
+    pub const fn with_generation(mut self, timeout: std::time::Duration) -> Self {
+        self.generation = timeout;
+        self
+    }
+
+    pub const fn with_link(mut self, timeout: std::time::Duration) -> Self {
+        self.link = timeout;
+        self
+    }
+
+    pub const fn with_simulation(mut self, timeout: std::time::Duration) -> Self {
+        self.simulation = timeout;
+        self
+    }
+
+    pub const fn with_vcd(mut self, timeout: std::time::Duration) -> Self {
+        self.vcd = timeout;
+        self
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -176,7 +362,7 @@ pub struct SimulationScenario {
     pub generated_modules: &'static [&'static str],
     pub compile_options: &'static [&'static str],
     pub generation: GenerationStrategy,
-    pub timeout: std::time::Duration,
+    pub timeouts: SimulationTimeouts,
     pub resource: ResourceClass,
     pub contracts: &'static [SimulationContract],
 }
@@ -184,12 +370,13 @@ pub struct SimulationScenario {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SimulationContract {
     pub name: &'static str,
-    pub expected: &'static str,
+    pub assertions: &'static [ArtifactAssertion],
     pub link_options: &'static [&'static str],
     pub simulation_options: &'static [&'static str],
-    pub sort_output: bool,
+    pub expectation: ExpectedOutcome,
+    pub output: OutputNormalization,
     pub backend: SimulationBackend,
-    pub vcd: VcdExpectation,
+    pub vcd: Option<VcdContract>,
     pub requirement: Requirement,
 }
 
@@ -199,31 +386,38 @@ pub(crate) struct CaseModule<C: 'static> {
     pub cases: &'static [C],
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum UpstreamCase {
-    Compile(CompileCase),
-    Simulation {
-        scenario: &'static SimulationScenario,
-        contract: &'static SimulationContract,
-    },
+#[derive(Debug, Default)]
+pub struct ExecutionPlan {
+    pub(super) compile_cases: Vec<CompileCase>,
+    pub(super) simulations: Vec<PlannedSimulation>,
 }
 
-impl UpstreamCase {
-    pub fn name(self) -> &'static str {
-        match self {
-            Self::Compile(case) => case.name,
-            Self::Simulation { contract, .. } => contract.name,
-        }
+impl ExecutionPlan {
+    pub fn contract_count(&self) -> usize {
+        self.compile_cases.len()
+            + self
+                .simulations
+                .iter()
+                .map(|simulation| simulation.contracts.len())
+                .sum::<usize>()
     }
 
-    pub fn requirement(self) -> Requirement {
-        match self {
-            Self::Compile(case) => case.requirement,
-            Self::Simulation { contract, .. } => contract.requirement,
-        }
+    pub fn contract_names(&self) -> impl Iterator<Item = &'static str> + '_ {
+        self.compile_cases.iter().map(|case| case.name).chain(
+            self.simulations
+                .iter()
+                .flat_map(|simulation| simulation.contracts.iter().map(|contract| contract.name)),
+        )
     }
 }
 
+#[derive(Debug)]
+pub(super) struct PlannedSimulation {
+    pub scenario: &'static SimulationScenario,
+    pub contracts: Vec<&'static SimulationContract>,
+}
+
+mod artifact;
 mod cases_compile;
 mod cases_simulation;
 mod compile;
@@ -231,13 +425,18 @@ mod runner;
 mod simulation;
 
 #[cfg(test)]
+use artifact::{check_artifact_assertions, check_text_assertion, validate_artifact_assertions};
+#[cfg(test)]
 use compile::{compile_arguments, validate_case};
 #[cfg(test)]
-use runner::{build_work_items, run_fixed_queue, WorkItem};
-pub use runner::{run_cases, summarize_outcomes, CaseOutcome, CaseResult, RunPaths, RunSummary};
-#[cfg(test)]
-use simulation::clean_iverilog_output;
+use runner::run_fixed_queue;
+pub use runner::{run_plan, summarize_outcomes, CaseOutcome, CaseResult, RunPaths, RunSummary};
 pub(crate) use simulation::validate_simulation_scenario;
+#[cfg(test)]
+use simulation::{
+    clean_iverilog_output, evaluate_contract_outcome, normalize_contract_output, validate_vcd,
+    ContractRunOutcome, PhaseFailure,
+};
 
 pub fn compile_cases() -> &'static [CompileCase] {
     cases_compile::cases()
@@ -253,20 +452,6 @@ pub(crate) fn compile_case_modules() -> &'static [CaseModule<CompileCase>] {
 
 pub(crate) fn simulation_scenario_modules() -> &'static [CaseModule<SimulationScenario>] {
     cases_simulation::MODULES
-}
-
-pub fn all_cases() -> Vec<UpstreamCase> {
-    compile_cases()
-        .iter()
-        .copied()
-        .map(UpstreamCase::Compile)
-        .chain(simulation_scenarios().iter().flat_map(|scenario| {
-            scenario
-                .contracts
-                .iter()
-                .map(|contract| UpstreamCase::Simulation { scenario, contract })
-        }))
-        .collect()
 }
 
 pub fn count_diagnostics(output: &str, kind: DiagnosticKind, tag: &str) -> usize {
@@ -297,7 +482,7 @@ fn normalize_windows_scientific_exponents(text: &str) -> String {
     pattern.replace_all(text, "${1}${2}${3}").into_owned()
 }
 
-pub fn normalize_legacy_golden(text: &str) -> String {
+pub fn normalize_golden_output(text: &str) -> String {
     let normalized_newlines = text.replace("\r\n", "\n").replace('\r', "\n");
     let normalized_newlines = normalize_windows_scientific_exponents(&normalized_newlines);
     let mut filtered = String::with_capacity(normalized_newlines.len());
@@ -316,36 +501,6 @@ pub fn normalize_legacy_golden(text: &str) -> String {
         .strip_suffix('\n')
         .unwrap_or(&normalized)
         .to_owned()
-}
-
-fn compare_legacy_golden(
-    actual: &str,
-    expected_path: &Path,
-    actual_path: &Path,
-    diff_path: &Path,
-) -> Result<(), String> {
-    let expected = fs::read_to_string(expected_path)
-        .map_err(|error| format!("read golden {}: {error}", expected_path.display()))?;
-    let expected = normalize_legacy_golden(&expected);
-    let actual = normalize_legacy_golden(actual);
-    if expected == actual {
-        return Ok(());
-    }
-
-    let diff = readable_diff(
-        &expected,
-        &actual,
-        &expected_path.display().to_string(),
-        &actual_path.display().to_string(),
-    );
-    fs::write(diff_path, diff)
-        .map_err(|error| format!("write golden diff {}: {error}", diff_path.display()))?;
-    Err(format!(
-        "{} differs from {}; see {}",
-        actual_path.display(),
-        expected_path.display(),
-        diff_path.display()
-    ))
 }
 
 fn stage_fixture_paths(
@@ -421,6 +576,8 @@ fn describe_exit(exit_code: Option<i32>) -> String {
 pub struct CliOptions {
     pub list: bool,
     pub exact: bool,
+    pub bluesim_enabled: bool,
+    pub verilog_enabled: bool,
     pub test_threads: usize,
     pub filter: Option<String>,
 }
@@ -430,6 +587,8 @@ impl Default for CliOptions {
         Self {
             list: false,
             exact: false,
+            bluesim_enabled: true,
+            verilog_enabled: true,
             test_threads: thread::available_parallelism()
                 .map(|count| count.get())
                 .unwrap_or(1),
@@ -453,6 +612,8 @@ where
         match argument {
             "--list" => options.list = true,
             "--exact" => options.exact = true,
+            "--no-bluesim" => options.bluesim_enabled = false,
+            "--no-verilog" => options.verilog_enabled = false,
             "--test-threads" => {
                 index += 1;
                 let value = arguments
@@ -503,15 +664,35 @@ fn set_filter(options: &mut CliOptions, filter: &str) -> Result<(), String> {
     Ok(())
 }
 
-pub fn select_cases<'a>(cases: &'a [UpstreamCase], options: &CliOptions) -> Vec<&'a UpstreamCase> {
-    cases
+pub fn select_plan(options: &CliOptions) -> ExecutionPlan {
+    let matches = |name: &str| match &options.filter {
+        None => true,
+        Some(filter) if options.exact => name == filter,
+        Some(filter) => name.contains(filter),
+    };
+    let compile_cases = compile_cases()
         .iter()
-        .filter(|case| match &options.filter {
-            None => true,
-            Some(filter) if options.exact => case.name() == filter,
-            Some(filter) => case.name().contains(filter),
+        .copied()
+        .filter(|case| matches(case.name))
+        .collect();
+    let simulations = simulation_scenarios()
+        .iter()
+        .filter_map(|scenario| {
+            let contracts = scenario
+                .contracts
+                .iter()
+                .filter(|contract| matches(contract.name))
+                .collect::<Vec<_>>();
+            (!contracts.is_empty()).then_some(PlannedSimulation {
+                scenario,
+                contracts,
+            })
         })
-        .collect()
+        .collect();
+    ExecutionPlan {
+        compile_cases,
+        simulations,
+    }
 }
 
 #[cfg(test)]

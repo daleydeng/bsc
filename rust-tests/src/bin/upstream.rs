@@ -1,6 +1,6 @@
 use bsc_rust_tests::upstream::{
-    all_cases, parse_cli, probe_iverilog_major, run_cases, select_cases, summarize_outcomes,
-    CaseResult, RunPaths, RunnerPolicy, UpstreamCase,
+    parse_cli, probe_iverilog_major, run_plan, select_plan, summarize_outcomes, CaseResult,
+    RunPaths, RunnerPolicy,
 };
 use bsc_rust_tests::{current_run_id, Toolchain};
 use std::env;
@@ -12,7 +12,9 @@ fn main() -> ExitCode {
         Ok(_) => ExitCode::from(1),
         Err(error) => {
             eprintln!("error: {error}");
-            eprintln!("usage: upstream [--list] [FILTER] [--exact] [--test-threads N]");
+            eprintln!(
+                "usage: upstream [--list] [FILTER] [--exact] [--no-bluesim] [--no-verilog] [--test-threads N]"
+            );
             ExitCode::from(2)
         }
     }
@@ -20,39 +22,37 @@ fn main() -> ExitCode {
 
 fn run() -> Result<bool, String> {
     let options = parse_cli(env::args_os().skip(1))?;
-    let policy = RunnerPolicy::from_environment(
-        env::var_os("CTEST").as_deref(),
-        env::var_os("VTEST").as_deref(),
-    )
-    .with_iverilog_major(probe_iverilog_major());
-    let available = all_cases();
-    let selected = select_cases(&available, &options);
+    let policy = RunnerPolicy::new(options.bluesim_enabled, options.verilog_enabled)
+        .with_iverilog_major(probe_iverilog_major());
+    let plan = select_plan(&options);
+    let total = plan.contract_count();
     if options.list {
-        for case in &selected {
-            println!("{}: test", case.name());
+        for name in plan.contract_names() {
+            println!("{name}: test");
         }
         println!();
-        println!("{} tests", selected.len());
+        println!("{total} tests");
         return Ok(true);
     }
 
-    let cases: Vec<UpstreamCase> = selected.into_iter().copied().collect();
-    let total = cases.len();
     println!("running {total} tests");
-    if cases.is_empty() {
+    if total == 0 {
         println!();
-        println!("test result: ok. 0 passed; 0 skipped; 0 failed");
+        println!("test result: ok. 0 passed; 0 xfailed; 0 skipped; 0 failed");
         return Ok(true);
     }
 
     let toolchain = Toolchain::discover()?;
     let run_paths = RunPaths::new(&toolchain.project_root, current_run_id());
-    let outcomes = run_cases(toolchain, run_paths, cases, policy, options.test_threads);
+    let outcomes = run_plan(toolchain, run_paths, plan, policy, options.test_threads);
     let summary = summarize_outcomes(&outcomes);
     let mut failures = Vec::new();
     for outcome in &outcomes {
         match &outcome.result {
-            CaseResult::Passed => println!("test {} ... ok", outcome.name),
+            CaseResult::Passed => {}
+            CaseResult::XFailed(reason) => {
+                println!("test {} ... XFAIL: {reason}", outcome.name)
+            }
             CaseResult::Skipped(reason) => {
                 println!("test {} ... SKIPPED: {reason}", outcome.name)
             }
@@ -76,13 +76,13 @@ fn run() -> Result<bool, String> {
     println!();
     if summary.failed == 0 {
         println!(
-            "test result: ok. {} passed; {} skipped; 0 failed",
-            summary.passed, summary.skipped
+            "test result: ok. {} passed; {} xfailed; {} skipped; 0 failed",
+            summary.passed, summary.xfailed, summary.skipped
         );
     } else {
         println!(
-            "test result: FAILED. {} passed; {} skipped; {} failed",
-            summary.passed, summary.skipped, summary.failed
+            "test result: FAILED. {} passed; {} xfailed; {} skipped; {} failed",
+            summary.passed, summary.xfailed, summary.skipped, summary.failed
         );
     }
     Ok(summary.failed == 0)

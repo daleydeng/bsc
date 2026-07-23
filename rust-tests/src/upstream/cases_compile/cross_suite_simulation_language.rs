@@ -15,6 +15,7 @@ macro_rules! compile_case {
             fixture_dir: $fixture_dir,
             source: $source,
             fixtures: $fixtures,
+            assertions: &[],
             expectation: $expectation,
             golden: $golden,
             options: $options,

@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    VcdExpectation,
+    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.evaluator/dynamic/strings";
@@ -25,27 +25,29 @@ macro_rules! string_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[
                 SimulationContract {
                     name: concat!("bsc.evaluator/dynamic/strings::", $module, "::bluesim"),
-                    expected: concat!("sys", $module, ".out.expected"),
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: concat!("sys", $module, ".out.expected") },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Bluesim,
-                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    vcd: Some(VcdContract::output_matches_normal()),
                     requirement: Requirement::BluesimEnabled,
                 },
                 SimulationContract {
                     name: concat!("bsc.evaluator/dynamic/strings::", $module, "::icarus"),
-                    expected: concat!("sys", $module, ".out.expected"),
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: concat!("sys", $module, ".out.expected") },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Icarus,
-                    vcd: VcdExpectation::IcarusSmoke,
+                    vcd: Some(VcdContract::parse()),
                     requirement: $icarus_requirement,
                 },
             ],

@@ -1,10 +1,24 @@
+mod outcome;
+mod vcd;
+
+#[cfg(test)]
+pub(super) use self::outcome::clean_iverilog_output;
+use self::outcome::normalize_backend_output;
+pub(super) use self::outcome::{
+    evaluate_contract_outcome, normalize_contract_output, ContractRunOutcome, PhaseFailure,
+};
+use self::vcd::run_vcd_contract;
+#[cfg(test)]
+pub(super) use self::vcd::validate_vcd;
+use super::artifact::{
+    check_artifact_assertions, compare_golden_output, validate_artifact_assertions,
+};
 use super::{
-    compare_legacy_golden, describe_exit, is_safe_relative, normalize_legacy_golden,
-    reset_directory, GenerationStrategy, Requirement, RunPaths, SimulationBackend,
-    SimulationContract, SimulationScenario, VcdExpectation,
+    is_safe_relative, reset_directory, ExpectedOutcome, GenerationStrategy, Requirement, RunPaths,
+    SimulationBackend, SimulationContract, SimulationPhase, SimulationScenario,
 };
 use crate::cache::{hard_link_or_copy_directory_contents, CacheLookup, GenerationCache};
-use crate::{readable_diff, run_bsc, run_command, Toolchain};
+use crate::{run_bsc, run_command, Toolchain};
 use std::fs;
 use std::path::Path;
 
@@ -46,47 +60,65 @@ pub(super) fn ensure_simulation_generation(
     backends: &[SimulationBackend],
     work_dir: &Path,
     artifact_dir: &Path,
-) -> Result<(), String> {
+) -> Result<(), PhaseFailure> {
     let compile_arguments = simulation_compile_arguments(scenario);
     let compile_log = artifact_dir.join("compile.log");
     let fixture_root = toolchain.project_root.join(scenario.fixture_dir);
-    let (generation_needed, cache_key) = match generation_cache.lookup(
-        &fixture_root,
-        scenario.fixtures,
-        &compile_arguments,
-        work_dir,
-        &compile_log,
-    ) {
-        Ok(CacheLookup::Hit) => (false, None),
-        Ok(CacheLookup::Miss(key)) => (true, Some(key)),
-        Ok(CacheLookup::Disabled) => (true, None),
-        Err(error) => {
-            eprintln!(
-                "warning: generation cache lookup failed for {}: {error}",
-                scenario.name
-            );
-            (true, None)
+    let cache_allowed = scenario.contracts.iter().all(|contract| {
+        contract.expectation.expected_failure_phase() != Some(SimulationPhase::Generation)
+    });
+    let (generation_needed, cache_key) = if cache_allowed {
+        match generation_cache.lookup(
+            &fixture_root,
+            scenario.fixtures,
+            &compile_arguments,
+            work_dir,
+            &compile_log,
+        ) {
+            Ok(CacheLookup::Hit) => (false, None),
+            Ok(CacheLookup::Miss(key)) => (true, Some(key)),
+            Ok(CacheLookup::Disabled) => (true, None),
+            Err(error) => {
+                eprintln!(
+                    "warning: generation cache lookup failed for {}: {error}",
+                    scenario.name
+                );
+                (true, None)
+            }
         }
+    } else {
+        (true, None)
     };
     if generation_needed {
-        run_required_bsc_step(
+        let result = run_bsc(
             toolchain,
             &compile_arguments,
             work_dir,
             &compile_log,
-            "generate simulation model",
-            scenario.timeout,
-        )?;
+            scenario.timeouts.generation,
+        )
+        .map_err(|error| PhaseFailure::new(SimulationPhase::Generation, error))?;
+        if !result.success {
+            return Err(PhaseFailure::command(
+                SimulationPhase::Generation,
+                "simulation model generation",
+                result,
+                &compile_log,
+            ));
+        }
     }
 
     for backend in backends {
         for generated_file in generated_model_files(scenario, *backend) {
             if !work_dir.join(&generated_file).is_file() {
-                return Err(format!(
-                    "BSC did not generate {} for {}; see {}",
-                    generated_file,
-                    scenario.name,
-                    compile_log.display()
+                return Err(PhaseFailure::new(
+                    SimulationPhase::Generation,
+                    format!(
+                        "BSC did not generate {} for {}; see {}",
+                        generated_file,
+                        scenario.name,
+                        compile_log.display()
+                    ),
                 ));
             }
         }
@@ -108,12 +140,34 @@ pub(super) fn run_simulation_contract(
     scenario: &SimulationScenario,
     contract: &SimulationContract,
     generation_dir: &Path,
-) -> Result<(), String> {
+) -> Result<ContractRunOutcome, String> {
     let (work_dir, artifact_dir) = run_paths.for_name(contract.name);
     reset_directory(&work_dir)?;
     reset_directory(&artifact_dir)?;
     hard_link_or_copy_directory_contents(generation_dir, &work_dir)?;
 
+    let execution =
+        execute_simulation_contract(toolchain, scenario, contract, &work_dir, &artifact_dir);
+    evaluate_contract_outcome(contract, execution, &work_dir, &artifact_dir)
+}
+
+pub(super) fn evaluate_generation_outcome(
+    contract: &SimulationContract,
+    execution: Result<(), PhaseFailure>,
+    generation_dir: &Path,
+    artifact_dir: &Path,
+) -> Result<ContractRunOutcome, String> {
+    reset_directory(artifact_dir)?;
+    evaluate_contract_outcome(contract, execution, generation_dir, artifact_dir)
+}
+
+fn execute_simulation_contract(
+    toolchain: &Toolchain,
+    scenario: &SimulationScenario,
+    contract: &SimulationContract,
+    work_dir: &Path,
+    artifact_dir: &Path,
+) -> Result<(), PhaseFailure> {
     let generated = generated_model_files(scenario, contract.backend);
     let mut link_arguments = Vec::with_capacity(contract.link_options.len() + 10);
     link_arguments.extend_from_slice(&["-no-show-timestamps", "-no-show-version"]);
@@ -126,14 +180,26 @@ pub(super) fn run_simulation_contract(
     link_arguments.extend_from_slice(&["-e", scenario.top, "-o", scenario.top]);
     link_arguments.extend_from_slice(contract.link_options);
     link_arguments.extend(generated.iter().map(String::as_str));
-    run_required_bsc_step(
+    let link_log = artifact_dir.join("link.log");
+    let result = run_bsc(
         toolchain,
         &link_arguments,
-        &work_dir,
-        &artifact_dir.join("link.log"),
-        "link simulation executable",
-        scenario.timeout,
-    )?;
+        work_dir,
+        &link_log,
+        scenario.timeouts.link,
+    )
+    .map_err(|error| PhaseFailure::new(SimulationPhase::Link, error))?;
+    if !result.success {
+        return Err(PhaseFailure::command(
+            SimulationPhase::Link,
+            "simulation executable link",
+            result,
+            &link_log,
+        ));
+    }
+    if contract.expectation.expected_failure_phase() == Some(SimulationPhase::Link) {
+        return Ok(());
+    }
 
     let mut executable = work_dir.join(scenario.top);
     if !executable.is_file() && cfg!(windows) {
@@ -143,10 +209,13 @@ pub(super) fn run_simulation_contract(
         }
     }
     if !executable.is_file() {
-        return Err(format!(
-            "BSC did not link simulation executable {}; see {}",
-            executable.display(),
-            artifact_dir.join("link.log").display()
+        return Err(PhaseFailure::new(
+            SimulationPhase::Link,
+            format!(
+                "BSC did not link simulation executable {}; see {}",
+                executable.display(),
+                link_log.display()
+            ),
         ));
     }
 
@@ -173,190 +242,69 @@ pub(super) fn run_simulation_contract(
         toolchain,
         program,
         &simulation_arguments,
-        &work_dir,
+        work_dir,
         &simulation_log,
-        scenario.timeout,
-    )?;
+        scenario.timeouts.simulation,
+    )
+    .map_err(|error| PhaseFailure::new(SimulationPhase::Simulation, error))?;
     if !result.success {
-        return Err(format!(
-            "simulation for {} exited {}; see {}",
-            contract.name,
-            describe_exit(result.exit_code),
-            simulation_log.display()
+        return Err(PhaseFailure::command(
+            SimulationPhase::Simulation,
+            "simulation",
+            result,
+            &simulation_log,
         ));
     }
-
-    let normal_output = match contract.backend {
-        SimulationBackend::Bluesim => result.output,
-        SimulationBackend::Icarus => clean_iverilog_output(&result.output),
-    };
-    let mut output = normal_output.clone();
-    if contract.sort_output {
-        let mut lines: Vec<_> = output.lines().collect();
-        lines.sort_unstable();
-        output = lines.join("\n");
-        if !output.is_empty() {
-            output.push('\n');
-        }
-    }
-    let output_path = work_dir.join("simulation.out");
-    fs::write(&output_path, &output)
-        .map_err(|error| format!("write simulation output {}: {error}", output_path.display()))?;
-    compare_legacy_golden(
-        &output,
-        &work_dir.join(contract.expected),
-        &output_path,
-        &artifact_dir.join("golden.diff"),
-    )?;
-    run_vcd_contract(
-        toolchain,
-        scenario,
-        contract,
-        &work_dir,
-        &artifact_dir,
-        &executable,
-        launcher,
-        &normal_output,
-    )
-}
-
-fn run_vcd_contract(
-    toolchain: &Toolchain,
-    scenario: &SimulationScenario,
-    contract: &SimulationContract,
-    work_dir: &Path,
-    artifact_dir: &Path,
-    executable: &Path,
-    launcher: Option<&str>,
-    normal_output: &str,
-) -> Result<(), String> {
-    if contract.vcd == VcdExpectation::None {
+    if contract.expectation.expected_failure_phase() == Some(SimulationPhase::Simulation) {
         return Ok(());
     }
 
-    let vcd_name = format!("{}.vcd", scenario.top);
-    let mut arguments =
-        Vec::with_capacity(contract.simulation_options.len() + usize::from(launcher.is_some()) + 2);
-    if launcher.is_some() {
-        arguments.push(scenario.top);
-    }
-    match contract.vcd {
-        VcdExpectation::None => unreachable!(),
-        VcdExpectation::BluesimOutputMatchesNormal => {
-            arguments.extend_from_slice(&["-V", &vcd_name]);
-        }
-        VcdExpectation::IcarusSmoke => arguments.push("+bscvcd"),
-    }
-    arguments.extend_from_slice(contract.simulation_options);
-
-    let program = launcher.map_or(executable, Path::new);
-    let log_path = artifact_dir.join("vcd-simulation.log");
-    let result = run_command(
-        toolchain,
-        program,
-        &arguments,
-        work_dir,
-        &log_path,
-        scenario.timeout,
-    )?;
-    if !result.success {
-        return Err(format!(
-            "VCD simulation for {} exited {}; see {}",
-            contract.name,
-            describe_exit(result.exit_code),
-            log_path.display()
-        ));
-    }
-
-    let vcd_output = match contract.backend {
-        SimulationBackend::Bluesim => result.output,
-        SimulationBackend::Icarus => clean_iverilog_output(&result.output),
-    };
-    let output_path = artifact_dir.join("vcd-simulation.out");
-    fs::write(&output_path, &vcd_output).map_err(|error| {
-        format!(
-            "write VCD simulation output {}: {error}",
-            output_path.display()
+    let normal_output = normalize_backend_output(contract.backend, &result.output);
+    let output = normalize_contract_output(contract.output, &normal_output);
+    let output_path = work_dir.join("simulation.out");
+    fs::write(&output_path, &output).map_err(|error| {
+        PhaseFailure::new(
+            SimulationPhase::Simulation,
+            format!("write simulation output {}: {error}", output_path.display()),
         )
     })?;
-
-    let generated_vcd = match contract.vcd {
-        VcdExpectation::None => unreachable!(),
-        VcdExpectation::BluesimOutputMatchesNormal => work_dir.join(&vcd_name),
-        VcdExpectation::IcarusSmoke => work_dir.join("dump.vcd"),
-    };
-    let metadata = fs::metadata(&generated_vcd)
-        .map_err(|error| format!("read generated VCD {}: {error}", generated_vcd.display()))?;
-    if !metadata.is_file() || metadata.len() == 0 {
-        return Err(format!(
-            "VCD simulation for {} did not generate a non-empty {}",
-            contract.name,
-            generated_vcd.display()
-        ));
-    }
-    fs::copy(&generated_vcd, artifact_dir.join("simulation.vcd")).map_err(|error| {
-        format!(
-            "copy generated VCD {} into artifacts: {error}",
-            generated_vcd.display()
+    if let ExpectedOutcome::Pass { output: expected } = contract.expectation {
+        compare_golden_output(
+            &output,
+            &work_dir.join(expected),
+            &output_path,
+            &artifact_dir.join("golden.diff"),
         )
-    })?;
-
-    if contract.vcd == VcdExpectation::BluesimOutputMatchesNormal {
-        let expected = normalize_legacy_golden(normal_output);
-        let actual = normalize_legacy_golden(&vcd_output);
-        if expected != actual {
-            let diff_path = artifact_dir.join("vcd-output.diff");
-            let diff = readable_diff(
-                &expected,
-                &actual,
-                "normal Bluesim output",
-                "VCD Bluesim output",
-            );
-            fs::write(&diff_path, diff).map_err(|error| {
-                format!("write VCD output diff {}: {error}", diff_path.display())
-            })?;
-            return Err(format!(
-                "VCD simulation changed output for {}; see {}",
-                contract.name,
-                diff_path.display()
-            ));
-        }
+        .map_err(|message| PhaseFailure {
+            phase: SimulationPhase::Simulation,
+            message,
+            output: Some(output.clone()),
+        })?;
     }
 
-    Ok(())
-}
-
-fn run_required_bsc_step(
-    toolchain: &Toolchain,
-    arguments: &[&str],
-    work_dir: &Path,
-    log_path: &Path,
-    action: &str,
-    timeout: std::time::Duration,
-) -> Result<(), String> {
-    let result = run_bsc(toolchain, arguments, work_dir, log_path, timeout)?;
-    if result.success {
-        Ok(())
-    } else {
-        Err(format!(
-            "BSC failed to {action} {}; see {}",
-            describe_exit(result.exit_code),
-            log_path.display()
-        ))
+    if contract.vcd.is_some() {
+        run_vcd_contract(
+            toolchain,
+            scenario,
+            contract,
+            work_dir,
+            artifact_dir,
+            &executable,
+            launcher,
+            &normal_output,
+        )?;
     }
-}
+    if contract.expectation.expected_failure_phase() == Some(SimulationPhase::Vcd) {
+        return Ok(());
+    }
 
-pub(super) fn clean_iverilog_output(output: &str) -> String {
-    output
-        .lines()
-        .filter(|line| {
-            !line.starts_with("$readmem")
-                && !(line.starts_with("WARNING:") && line.contains("$readmem"))
-                && !line.contains("$finish")
-                && !line.starts_with("VCD info")
-        })
-        .map(|line| format!("{line}\n"))
-        .collect()
+    check_artifact_assertions(contract.assertions, work_dir, artifact_dir, contract.name).map_err(
+        |message| PhaseFailure {
+            phase: SimulationPhase::Simulation,
+            message,
+            output: Some(output),
+        },
+    )
 }
 
 pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Result<(), String> {
@@ -374,6 +322,22 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
             scenario.name
         ));
     }
+    let canonical_prefix = scenario
+        .fixture_dir
+        .strip_prefix("testsuite/")
+        .map(|origin| format!("{origin}::"))
+        .ok_or_else(|| {
+            format!(
+                "simulation scenario {} has a non-testsuite fixture root",
+                scenario.name
+            )
+        })?;
+    if !scenario.name.starts_with(&canonical_prefix) {
+        return Err(format!(
+            "simulation scenario {} must use canonical prefix {canonical_prefix}",
+            scenario.name
+        ));
+    }
     if scenario
         .generated_modules
         .iter()
@@ -387,9 +351,17 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
             scenario.name
         ));
     }
-    if scenario.timeout.is_zero() {
+    if [
+        scenario.timeouts.generation,
+        scenario.timeouts.link,
+        scenario.timeouts.simulation,
+        scenario.timeouts.vcd,
+    ]
+    .iter()
+    .any(|timeout| timeout.is_zero())
+    {
         return Err(format!(
-            "simulation scenario {} has a zero timeout",
+            "simulation scenario {} has a zero phase timeout",
             scenario.name
         ));
     }
@@ -412,17 +384,41 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
     }
 
     let mut contract_names = std::collections::BTreeSet::new();
+    let mut generation_failure_contracts = 0;
     for contract in scenario.contracts {
+        let expected_output = contract.expectation.expected_output();
         if contract.name.is_empty()
+            || !contract.name.starts_with(&canonical_prefix)
             || !contract_names.insert(contract.name)
-            || !is_safe_relative(contract.expected)
-            || !scenario.fixtures.contains(&contract.expected)
+            || expected_output.is_some_and(|output| {
+                !is_safe_relative(output) || !scenario.fixtures.contains(&output)
+            })
         {
             return Err(format!(
                 "simulation scenario {} has an invalid contract {}",
                 scenario.name, contract.name
             ));
         }
+        if matches!(
+            contract.expectation,
+            ExpectedOutcome::XFail { reason: "", .. }
+        ) {
+            return Err(format!(
+                "simulation contract {} has an empty XFAIL reason",
+                contract.name
+            ));
+        }
+        let expected_failure_phase = contract.expectation.expected_failure_phase();
+        if expected_failure_phase == Some(SimulationPhase::Generation) {
+            generation_failure_contracts += 1;
+        }
+        if expected_failure_phase == Some(SimulationPhase::Vcd) && contract.vcd.is_none() {
+            return Err(format!(
+                "simulation contract {} expects a VCD failure without enabling VCD",
+                contract.name
+            ));
+        }
+        validate_artifact_assertions(contract.assertions, scenario.fixtures, contract.name)?;
         let requirement_matches_backend = match contract.backend {
             SimulationBackend::Bluesim => contract.requirement == Requirement::BluesimEnabled,
             SimulationBackend::Icarus => matches!(
@@ -436,21 +432,13 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
                 contract.name
             ));
         }
-        let vcd_matches_backend = matches!(
-            (contract.backend, contract.vcd),
-            (_, VcdExpectation::None)
-                | (
-                    SimulationBackend::Bluesim,
-                    VcdExpectation::BluesimOutputMatchesNormal
-                )
-                | (SimulationBackend::Icarus, VcdExpectation::IcarusSmoke)
-        );
-        if !vcd_matches_backend {
-            return Err(format!(
-                "simulation contract {} has a backend/VCD expectation mismatch",
-                contract.name
-            ));
-        }
+    }
+    if generation_failure_contracts != 0 && generation_failure_contracts != scenario.contracts.len()
+    {
+        return Err(format!(
+            "simulation scenario {} mixes generation-failure and generation-success contracts",
+            scenario.name
+        ));
     }
 
     match scenario.generation {

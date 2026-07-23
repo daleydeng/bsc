@@ -1,10 +1,12 @@
 use std::env;
 use std::ffi::OsString;
+use std::path::Path;
 
 use anyhow::{Context, Result};
 use xshell::{cmd, Shell};
 
-use crate::environment::PreparedEnvironment;
+use crate::environment::{save_oss_root, PreparedEnvironment};
+use crate::{msys, toolchain};
 
 pub struct Tasks<'a> {
     shell: &'a Shell,
@@ -19,6 +21,39 @@ impl<'a> Tasks<'a> {
             environment,
             cargo: env::var_os("CARGO").unwrap_or_else(|| OsString::from("cargo")),
         }
+    }
+
+    pub fn configure_oss_cad_suite(&self, root: &Path) -> Result<()> {
+        save_oss_root(&self.environment.root, root)?;
+        Ok(())
+    }
+
+    pub fn toolchain(&self) -> Result<()> {
+        toolchain::initialize(self.environment)
+    }
+
+    pub fn haskell_deps(&self) -> Result<()> {
+        toolchain::install_dependencies(self.environment)
+    }
+
+    pub fn doctor(&self) -> Result<()> {
+        msys::doctor(self.environment)
+    }
+
+    pub fn build(&self) -> Result<()> {
+        msys::build(self.environment)
+    }
+
+    pub fn smoke(&self) -> Result<()> {
+        msys::smoke(self.environment)
+    }
+
+    pub fn clean(&self) -> Result<()> {
+        msys::clean(self.environment)
+    }
+
+    pub fn shell(&self) -> Result<()> {
+        msys::shell(self.environment)
     }
 
     pub fn test_z3(&self) -> Result<()> {

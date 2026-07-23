@@ -7,7 +7,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    VcdExpectation,
+    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
 };
 
 macro_rules! shared_scenario {
@@ -30,27 +30,29 @@ macro_rules! shared_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
-            timeout: $timeout,
+            timeouts: SimulationTimeouts::uniform($timeout),
             resource: $resource,
             contracts: &[
                 SimulationContract {
                     name: concat!($name, "::bluesim"),
-                    expected: $expected,
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: $expected },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Bluesim,
-                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    vcd: Some(VcdContract::output_matches_normal()),
                     requirement: Requirement::BluesimEnabled,
                 },
                 SimulationContract {
                     name: concat!($name, "::icarus"),
-                    expected: $expected,
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: $expected },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Icarus,
-                    vcd: VcdExpectation::IcarusSmoke,
+                    vcd: Some(VcdContract::parse()),
                     requirement: Requirement::VerilogEnabled,
                 },
             ],
@@ -68,7 +70,7 @@ macro_rules! backend_scenario {
         $fixtures:expr,
         $backend:ident,
         $backend_name:literal,
-        $vcd:ident,
+        $vcd:expr,
         $requirement:expr,
         $timeout:expr,
         $resource:expr
@@ -82,16 +84,17 @@ macro_rules! backend_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
-            timeout: $timeout,
+            timeouts: SimulationTimeouts::uniform($timeout),
             resource: $resource,
             contracts: &[SimulationContract {
                 name: concat!($name_prefix, $module, "::", $backend_name),
-                expected: $expected,
+                assertions: &[],
                 link_options: &[],
                 simulation_options: &[],
-                sort_output: false,
+                expectation: ExpectedOutcome::Pass { output: $expected },
+                output: OutputNormalization::Preserve,
                 backend: SimulationBackend::$backend,
-                vcd: VcdExpectation::$vcd,
+                vcd: $vcd,
                 requirement: $requirement,
             }],
         };
@@ -148,7 +151,7 @@ macro_rules! bram_scenario {
         $expected:literal,
         $backend:ident,
         $backend_name:literal,
-        $vcd:ident,
+        $vcd:expr,
         $requirement:expr,
         $timeout:expr,
         $resource:expr
@@ -176,7 +179,7 @@ bram_scenario!(
     "sysBRAMTest.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled,
     crate::BSC_TIMEOUT,
     ResourceClass::Normal
@@ -187,7 +190,7 @@ bram_scenario!(
     "sysBRAMTest.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled,
     crate::BSC_TIMEOUT,
     ResourceClass::Normal
@@ -198,7 +201,7 @@ bram_scenario!(
     "sysBRAM1Test.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled,
     crate::BSC_TIMEOUT,
     ResourceClass::Normal
@@ -209,7 +212,7 @@ bram_scenario!(
     "sysBRAM1Test.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled,
     std::time::Duration::from_secs(600),
     ResourceClass::Heavy
@@ -220,7 +223,7 @@ bram_scenario!(
     "sysBRAMPipelined.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled,
     crate::BSC_TIMEOUT,
     ResourceClass::Normal
@@ -231,7 +234,7 @@ bram_scenario!(
     "sysBRAMPipelined.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled,
     crate::BSC_TIMEOUT,
     ResourceClass::Normal

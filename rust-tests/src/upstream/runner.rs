@@ -1,17 +1,22 @@
 use super::compile::run_compile_case;
 use super::simulation::{
-    ensure_simulation_generation, run_simulation_contract, validate_simulation_scenario,
+    ensure_simulation_generation, evaluate_generation_outcome, run_simulation_contract,
+    validate_simulation_scenario, ContractRunOutcome, PhaseFailure,
 };
 use super::{
-    reset_directory, sanitize_case_name, stage_fixture_paths, CompileCase, GenerationStrategy,
-    ResourceClass, RunnerPolicy, SimulationContract, SimulationScenario, UpstreamCase,
+    reset_directory, sanitize_case_name, stage_fixture_paths, CompileCase, ExecutionPlan,
+    GenerationStrategy, ResourceClass, RunnerPolicy, SimulationContract, SimulationPhase,
+    SimulationScenario,
 };
 use crate::cache::{BscResultCache, GenerationCache};
 use crate::Toolchain;
 use std::collections::VecDeque;
+use std::io::{self, Write};
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
+use std::time::{Duration, Instant};
 
 #[derive(Debug, Clone)]
 pub struct RunPaths {
@@ -46,6 +51,7 @@ impl RunPaths {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CaseResult {
     Passed,
+    XFailed(String),
     Skipped(String),
     Failed(String),
 }
@@ -59,6 +65,7 @@ pub struct CaseOutcome {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct RunSummary {
     pub passed: usize,
+    pub xfailed: usize,
     pub skipped: usize,
     pub failed: usize,
 }
@@ -68,6 +75,7 @@ pub fn summarize_outcomes(outcomes: &[CaseOutcome]) -> RunSummary {
     for outcome in outcomes {
         match outcome.result {
             CaseResult::Passed => summary.passed += 1,
+            CaseResult::XFailed(_) => summary.xfailed += 1,
             CaseResult::Skipped(_) => summary.skipped += 1,
             CaseResult::Failed(_) => summary.failed += 1,
         }
@@ -91,33 +99,144 @@ impl WorkItem {
             Self::Simulation { scenario, .. } => scenario.resource,
         }
     }
-}
 
-pub(super) fn build_work_items(cases: Vec<UpstreamCase>) -> Vec<WorkItem> {
-    let mut work = Vec::new();
-    for case in cases {
-        match case {
-            UpstreamCase::Compile(case) => work.push(WorkItem::Compile(case)),
-            UpstreamCase::Simulation { scenario, contract } => {
-                let existing = work.iter_mut().find_map(|item| match item {
-                    WorkItem::Simulation {
-                        scenario: registered,
-                        contracts,
-                    } if std::ptr::eq(*registered, scenario) => Some(contracts),
-                    _ => None,
-                });
-                if let Some(contracts) = existing {
-                    contracts.push(contract);
-                } else {
-                    work.push(WorkItem::Simulation {
-                        scenario,
-                        contracts: vec![contract],
-                    });
-                }
-            }
+    fn label(&self) -> &'static str {
+        match self {
+            Self::Compile(case) => case.name,
+            Self::Simulation { scenario, .. } => scenario.name,
         }
     }
-    work
+}
+
+const PROGRESS_INTERVAL: Duration = Duration::from_secs(10);
+const PROGRESS_CONTRACT_STEP: usize = 100;
+
+#[derive(Clone, Copy)]
+enum ProgressPhase {
+    Parallel = 0,
+    Heavy = 1,
+}
+
+struct ProgressState {
+    total: usize,
+    completed: AtomicUsize,
+    phase: AtomicUsize,
+    stop: AtomicBool,
+    started: Instant,
+    output: Mutex<()>,
+}
+
+impl ProgressState {
+    fn report(&self, detail: Option<&str>) {
+        let _output = self.output.lock().expect("progress output lock poisoned");
+        let completed = self.completed.load(Ordering::Relaxed).min(self.total);
+        let phase = match self.phase.load(Ordering::Relaxed) {
+            value if value == ProgressPhase::Heavy as usize => "heavy",
+            _ => "parallel",
+        };
+        let percentage = if self.total == 0 {
+            100.0
+        } else {
+            completed as f64 * 100.0 / self.total as f64
+        };
+        let detail = detail
+            .map(|detail| format!(", {detail}"))
+            .unwrap_or_default();
+        let mut output = io::stdout().lock();
+        let _ = writeln!(
+            output,
+            "progress: {completed}/{} ({percentage:.1}%), phase={phase}, elapsed={}{}",
+            self.total,
+            format_elapsed(self.started.elapsed()),
+            detail
+        );
+        let _ = output.flush();
+    }
+
+    fn advance(&self, count: usize) {
+        let previous = self.completed.fetch_add(count, Ordering::Relaxed);
+        let completed = (previous + count).min(self.total);
+        if completed < self.total
+            && previous / PROGRESS_CONTRACT_STEP != completed / PROGRESS_CONTRACT_STEP
+        {
+            self.report(None);
+        }
+    }
+}
+
+struct ProgressReporter {
+    state: Arc<ProgressState>,
+    worker: Option<thread::JoinHandle<()>>,
+}
+
+impl ProgressReporter {
+    fn start(total: usize) -> Self {
+        let state = Arc::new(ProgressState {
+            total,
+            completed: AtomicUsize::new(0),
+            phase: AtomicUsize::new(ProgressPhase::Parallel as usize),
+            stop: AtomicBool::new(false),
+            started: Instant::now(),
+            output: Mutex::new(()),
+        });
+        state.report(Some("started"));
+
+        let worker_state = Arc::clone(&state);
+        let worker = thread::spawn(move || loop {
+            thread::park_timeout(PROGRESS_INTERVAL);
+            if worker_state.stop.load(Ordering::Acquire) {
+                break;
+            }
+            worker_state.report(None);
+        });
+        Self {
+            state,
+            worker: Some(worker),
+        }
+    }
+
+    fn state(&self) -> Arc<ProgressState> {
+        Arc::clone(&self.state)
+    }
+
+    fn enter_heavy_phase(&self, scenario_count: usize) {
+        self.state
+            .phase
+            .store(ProgressPhase::Heavy as usize, Ordering::Relaxed);
+        self.state.report(Some(&format!(
+            "entering {scenario_count} serialized heavy scenario(s)"
+        )));
+    }
+
+    fn finish(mut self) {
+        self.stop_worker();
+        self.state.report(Some("complete"));
+    }
+
+    fn stop_worker(&mut self) {
+        self.state.stop.store(true, Ordering::Release);
+        if let Some(worker) = self.worker.take() {
+            worker.thread().unpark();
+            let _ = worker.join();
+        }
+    }
+}
+
+impl Drop for ProgressReporter {
+    fn drop(&mut self) {
+        self.stop_worker();
+    }
+}
+
+fn format_elapsed(elapsed: Duration) -> String {
+    let seconds = elapsed.as_secs();
+    let minutes = seconds / 60;
+    let seconds = seconds % 60;
+    if minutes == 0 {
+        format!("{seconds}s")
+    } else {
+        format!("{minutes}m {seconds:02}s")
+    }
 }
 
 fn prepare_simulation_generation(
@@ -126,17 +245,21 @@ fn prepare_simulation_generation(
     generation_cache: &GenerationCache,
     scenario: &SimulationScenario,
     contracts: &[&SimulationContract],
-) -> Result<PathBuf, String> {
-    validate_simulation_scenario(scenario)?;
+) -> Result<PathBuf, PhaseFailure> {
+    validate_simulation_scenario(scenario)
+        .map_err(|error| PhaseFailure::new(SimulationPhase::Generation, error))?;
     let (work_dir, artifact_dir) = run_paths.for_name(scenario.name);
-    reset_directory(&work_dir)?;
-    reset_directory(&artifact_dir)?;
+    reset_directory(&work_dir)
+        .map_err(|error| PhaseFailure::new(SimulationPhase::Generation, error))?;
+    reset_directory(&artifact_dir)
+        .map_err(|error| PhaseFailure::new(SimulationPhase::Generation, error))?;
     stage_fixture_paths(
         toolchain,
         scenario.fixture_dir,
         scenario.fixtures,
         &work_dir,
-    )?;
+    )
+    .map_err(|error| PhaseFailure::new(SimulationPhase::Generation, error))?;
     let mut backends = Vec::new();
     for contract in contracts {
         if !backends.contains(&contract.backend) {
@@ -209,10 +332,13 @@ fn run_simulation_work_item(
         prepare_simulation_generation(toolchain, run_paths, generation_cache, scenario, &enabled)
     }));
     let generation = match preparation {
-        Ok(Ok(work_dir)) => Ok(work_dir),
-        Ok(Err(error)) => Err(error),
-        Err(panic) => Err(format!("generation panicked: {}", panic_message(panic))),
+        Ok(result) => result,
+        Err(panic) => Err(PhaseFailure::new(
+            SimulationPhase::Generation,
+            format!("generation panicked: {}", panic_message(panic)),
+        )),
     };
+    let (generation_work_dir, _) = run_paths.for_name(scenario.name);
 
     contracts
         .into_iter()
@@ -220,11 +346,23 @@ fn run_simulation_work_item(
             let result = if let Some(reason) = policy.skip_reason(contract.requirement) {
                 CaseResult::Skipped(reason)
             } else {
-                match &generation {
-                    Err(error) => CaseResult::Failed(format!(
-                        "generation for scenario {} failed: {error}",
-                        scenario.name
-                    )),
+                let execution = match &generation {
+                    Err(failure) => {
+                        let (_, artifact_dir) = run_paths.for_name(contract.name);
+                        evaluate_generation_outcome(
+                            contract,
+                            Err(failure.clone()),
+                            &generation_work_dir,
+                            &artifact_dir,
+                        )
+                    }
+                    Ok(generation_dir)
+                        if contract.expectation.expected_failure_phase()
+                            == Some(SimulationPhase::Generation) =>
+                    {
+                        let (_, artifact_dir) = run_paths.for_name(contract.name);
+                        evaluate_generation_outcome(contract, Ok(()), generation_dir, &artifact_dir)
+                    }
                     Ok(generation_dir) => {
                         match std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                             run_simulation_contract(
@@ -235,14 +373,15 @@ fn run_simulation_work_item(
                                 generation_dir,
                             )
                         })) {
-                            Ok(Ok(())) => CaseResult::Passed,
-                            Ok(Err(error)) => CaseResult::Failed(error),
-                            Err(panic) => CaseResult::Failed(format!(
-                                "runner panicked: {}",
-                                panic_message(panic)
-                            )),
+                            Ok(result) => result,
+                            Err(panic) => Err(format!("runner panicked: {}", panic_message(panic))),
                         }
                     }
+                };
+                match execution {
+                    Ok(ContractRunOutcome::Passed) => CaseResult::Passed,
+                    Ok(ContractRunOutcome::XFailed(reason)) => CaseResult::XFailed(reason),
+                    Err(error) => CaseResult::Failed(error),
                 }
             };
             CaseOutcome {
@@ -283,15 +422,27 @@ fn run_work_item(
     }
 }
 
-pub fn run_cases(
+pub fn run_plan(
     toolchain: Toolchain,
     run_paths: RunPaths,
-    cases: Vec<UpstreamCase>,
+    plan: ExecutionPlan,
     policy: RunnerPolicy,
     test_threads: usize,
 ) -> Vec<CaseOutcome> {
-    let contract_count = cases.len();
-    let work = build_work_items(cases);
+    let contract_count = plan.contract_count();
+    let mut work = plan
+        .compile_cases
+        .into_iter()
+        .map(WorkItem::Compile)
+        .collect::<Vec<_>>();
+    work.extend(
+        plan.simulations
+            .into_iter()
+            .map(|simulation| WorkItem::Simulation {
+                scenario: simulation.scenario,
+                contracts: simulation.contracts,
+            }),
+    );
     let simulation_scenarios = work
         .iter()
         .filter(|item| matches!(item, WorkItem::Simulation { .. }))
@@ -317,6 +468,7 @@ pub fn run_cases(
         "execution plan: {simulation_contracts} simulation contracts in {simulation_scenarios} generation scenarios ({shared_scenarios} shared); {} compile contracts",
         contract_count - simulation_contracts
     );
+    let progress = ProgressReporter::start(contract_count);
 
     let generation_cache = Arc::new(match GenerationCache::new(&toolchain) {
         Ok(cache) => cache,
@@ -345,35 +497,46 @@ pub fn run_cases(
     let worker_run_paths = Arc::clone(&run_paths);
     let worker_generation_cache = Arc::clone(&generation_cache);
     let worker_result_cache = Arc::clone(&result_cache);
+    let parallel_progress = progress.state();
     let mut outcomes: Vec<CaseOutcome> = run_fixed_queue(parallel, test_threads, move |work| {
-        run_work_item(
+        let outcomes = run_work_item(
             &worker_toolchain,
             &worker_run_paths,
             &worker_generation_cache,
             &worker_result_cache,
             work,
             policy,
-        )
+        );
+        parallel_progress.advance(outcomes.len());
+        outcomes
     })
     .into_iter()
     .flatten()
     .collect();
     let heavy_generation_cache = Arc::clone(&generation_cache);
     let heavy_result_cache = Arc::clone(&result_cache);
+    if !heavy.is_empty() {
+        progress.enter_heavy_phase(heavy.len());
+    }
+    let heavy_progress = progress.state();
     outcomes.extend(
         run_fixed_queue(heavy, 1, move |work| {
-            run_work_item(
+            heavy_progress.report(Some(&format!("scenario={}", work.label())));
+            let outcomes = run_work_item(
                 &toolchain,
                 &run_paths,
                 &heavy_generation_cache,
                 &heavy_result_cache,
                 work,
                 policy,
-            )
+            );
+            heavy_progress.advance(outcomes.len());
+            outcomes
         })
         .into_iter()
         .flatten(),
     );
+    progress.finish();
     let cache = generation_cache.summary();
     if cache.enabled {
         println!(
@@ -442,5 +605,17 @@ fn panic_message(panic: Box<dyn std::any::Any + Send>) -> String {
         message.clone()
     } else {
         "unknown panic payload".to_owned()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::format_elapsed;
+    use std::time::Duration;
+
+    #[test]
+    fn progress_elapsed_time_is_compact() {
+        assert_eq!(format_elapsed(Duration::from_secs(9)), "9s");
+        assert_eq!(format_elapsed(Duration::from_secs(125)), "2m 05s");
     }
 }

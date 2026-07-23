@@ -34,6 +34,7 @@ pub(super) const BUG_ID_198: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID198",
     source: "bug.bsv",
     fixtures: &["bug.bsv", "bug.bsv.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "bug.bsv.bsc-out.expected",
@@ -49,6 +50,7 @@ pub(super) const BUG_ID_235: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID235",
     source: "TcheckFail.bsv",
     fixtures: &["TcheckFail.bsv", "TcheckFail.bsv.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "TcheckFail.bsv.bsc-out.expected",
@@ -64,6 +66,7 @@ pub(super) const BUG_ID_238: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID238",
     source: "IfElseIf.bsv",
     fixtures: &["IfElseIf.bsv", "IfElseIf.bsv.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "IfElseIf.bsv.bsc-out.expected",
@@ -93,6 +96,7 @@ pub(super) const BUG_ID_278: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID278",
     source: "bug.bsv",
     fixtures: &["bug.bsv", "bug.bsv.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "bug.bsv.bsc-out.expected",
@@ -108,6 +112,7 @@ pub(super) const BUG_ID_279: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID279",
     source: "bug.bsv",
     fixtures: &["bug.bsv", "bug.bsv.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "bug.bsv.bsc-out.expected",
@@ -123,6 +128,7 @@ pub(super) const BUG_ID_299: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/bugs/bugID299",
     source: "bug.bsv",
     fixtures: &["bug.bsv", "bug.bsv.bsc-out.expected"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: Some(GoldenExpectation {
         expected: "bug.bsv.bsc-out.expected",
@@ -162,6 +168,7 @@ pub(super) const PONG_TB_TOP_LEVEL_FRONTEND: CompileCase = CompileCase {
         "Score.bs",
         "Decimal.bs",
     ],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &["-let-gen"],
@@ -192,6 +199,7 @@ pub(super) const PONG_TB_TOP_LEVEL_VERILOG: CompileCase = CompileCase {
         "Score.bs",
         "Decimal.bs",
     ],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &["-let-gen"],
@@ -207,6 +215,7 @@ pub(super) const PORT_REPLICATOR: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bsv_examples/PortReplicator",
     source: "PortReplicator.bsv",
     fixtures: &["PortReplicator.bsv", "AsyncROM.bs"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],
@@ -220,6 +229,7 @@ pub(super) const PORT_REPLICATOR_2: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.bsv_examples/PortReplicator",
     source: "PortReplicator2.bsv",
     fixtures: &["PortReplicator2.bsv", "AsyncROM.bs"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],
@@ -398,6 +408,7 @@ pub(super) const E_NOT_ALWAYS_READY_STRICT: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/messages/ENotAlwaysReady",
     source: "ENotAlwaysReady.bs",
     fixtures: &["ENotAlwaysReady.bs"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "G0006",
@@ -417,6 +428,7 @@ pub(super) const E_NOT_ALWAYS_READY_UNSAFE: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.interra/messages/ENotAlwaysReady",
     source: "ENotAlwaysReady.bs",
     fixtures: &["ENotAlwaysReady.bs"],
+    assertions: &[],
     expectation: CompileExpectation::PassWithDiagnostic {
         kind: DiagnosticKind::Warning,
         tag: "G0006",

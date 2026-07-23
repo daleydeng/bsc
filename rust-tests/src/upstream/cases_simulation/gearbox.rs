@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    VcdExpectation,
+    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.mcd/Gearbox";
@@ -15,7 +15,7 @@ macro_rules! gearbox_scenario {
         $expected:literal,
         $backend:ident,
         $backend_name:literal,
-        $vcd:ident,
+        $vcd:expr,
         $requirement:expr
     ) => {
         pub(super) const $constant: SimulationScenario = SimulationScenario {
@@ -33,16 +33,17 @@ macro_rules! gearbox_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[SimulationContract {
                 name: concat!("bsc.mcd/Gearbox::", $module, "::", $backend_name),
-                expected: $expected,
+                assertions: &[],
                 link_options: &[],
                 simulation_options: &[],
-                sort_output: false,
+                expectation: ExpectedOutcome::Pass { output: $expected },
+                output: OutputNormalization::Preserve,
                 backend: SimulationBackend::$backend,
-                vcd: VcdExpectation::$vcd,
+                vcd: $vcd,
                 requirement: $requirement,
             }],
         };
@@ -55,7 +56,7 @@ gearbox_scenario!(
     "sysGearboxFullSpeedTest.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 gearbox_scenario!(
@@ -64,7 +65,7 @@ gearbox_scenario!(
     "sysGearboxFullSpeedTest.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 gearbox_scenario!(
@@ -73,7 +74,7 @@ gearbox_scenario!(
     "sysGearboxBubbleTest.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 gearbox_scenario!(
@@ -82,7 +83,7 @@ gearbox_scenario!(
     "sysGearboxBubbleTest.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 gearbox_scenario!(
@@ -91,7 +92,7 @@ gearbox_scenario!(
     "sysGearbox1to1Test.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 gearbox_scenario!(
@@ -100,7 +101,7 @@ gearbox_scenario!(
     "sysGearbox1to1Test.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 gearbox_scenario!(
@@ -109,7 +110,7 @@ gearbox_scenario!(
     "sysGearboxSameClockTest.c.out.expected",
     Bluesim,
     "bluesim",
-    BluesimOutputMatchesNormal,
+    Some(VcdContract::output_matches_normal()),
     Requirement::BluesimEnabled
 );
 gearbox_scenario!(
@@ -118,7 +119,7 @@ gearbox_scenario!(
     "sysGearboxSameClockTest.v.out.expected",
     Icarus,
     "icarus",
-    IcarusSmoke,
+    Some(VcdContract::parse()),
     Requirement::VerilogEnabled
 );
 

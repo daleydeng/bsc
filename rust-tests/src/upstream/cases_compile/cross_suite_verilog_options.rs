@@ -13,6 +13,7 @@ macro_rules! frontend_error {
             fixture_dir: $fixture_dir,
             source: $source,
             fixtures: &[$source],
+            assertions: &[],
             expectation: CompileExpectation::FailWithDiagnostic {
                 kind: DiagnosticKind::Error,
                 tag: $tag,
@@ -34,6 +35,7 @@ macro_rules! frontend_pass {
             fixture_dir: $fixture_dir,
             source: $source,
             fixtures: &[$source],
+            assertions: &[],
             expectation: CompileExpectation::Pass,
             golden: None,
             options: &[],
@@ -51,6 +53,7 @@ macro_rules! verilog_pass {
             fixture_dir: $fixture_dir,
             source: $source,
             fixtures: &[$source],
+            assertions: &[],
             expectation: CompileExpectation::Pass,
             golden: None,
             options: $options,

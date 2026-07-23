@@ -9,7 +9,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    VcdExpectation,
+    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
 };
 
 macro_rules! radix_sort_scenario {
@@ -27,16 +27,17 @@ macro_rules! radix_sort_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::Bluesim),
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[SimulationContract {
                 name: concat!("bsc.lib/PAClib/RadixSort/", $revision, "::Tb::bluesim"),
-                expected: "sysTb.out.expected",
+                assertions: &[],
                 link_options: &[],
                 simulation_options: &[],
-                sort_output: false,
+                expectation: ExpectedOutcome::Pass { output: "sysTb.out.expected" },
+                output: OutputNormalization::Preserve,
                 backend: SimulationBackend::Bluesim,
-                vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                vcd: Some(VcdContract::output_matches_normal()),
                 requirement: Requirement::BluesimEnabled,
             }],
         };
@@ -83,7 +84,7 @@ macro_rules! turbo_fifo_scenario {
             generated_modules: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
-            timeout: $crate::BSC_TIMEOUT,
+            timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
             resource: ResourceClass::Normal,
             contracts: &[
                 SimulationContract {
@@ -92,12 +93,13 @@ macro_rules! turbo_fifo_scenario {
                         $variant,
                         "::TurboFIFOTest::bluesim"
                     ),
-                    expected: "sysTurboFIFOTest.out.expected",
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: "sysTurboFIFOTest.out.expected" },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Bluesim,
-                    vcd: VcdExpectation::BluesimOutputMatchesNormal,
+                    vcd: Some(VcdContract::output_matches_normal()),
                     requirement: Requirement::BluesimEnabled,
                 },
                 SimulationContract {
@@ -106,12 +108,13 @@ macro_rules! turbo_fifo_scenario {
                         $variant,
                         "::TurboFIFOTest::icarus"
                     ),
-                    expected: "sysTurboFIFOTest.out.expected",
+                    assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    sort_output: false,
+                    expectation: ExpectedOutcome::Pass { output: "sysTurboFIFOTest.out.expected" },
+                    output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Icarus,
-                    vcd: VcdExpectation::IcarusSmoke,
+                    vcd: Some(VcdContract::parse()),
                     requirement: Requirement::VerilogEnabled,
                 },
             ],

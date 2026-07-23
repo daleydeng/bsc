@@ -12,6 +12,7 @@ pub(super) const POSITIVE_RESET_INVALID_ARGUMENTS: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.verilog/positivereset/SyncReset",
     source: "RstTest_E1.bsv",
     fixtures: &["RstTest_E1.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::FailWithDiagnostic {
         kind: DiagnosticKind::Error,
         tag: "G0042",
@@ -29,6 +30,7 @@ pub(super) const UNDEF_REAL_PRIMITIVE: CompileCase = CompileCase {
     fixture_dir: "testsuite/bsc.real/evaluator/undef",
     source: "DontCareRealPrim.bsv",
     fixtures: &["DontCareRealPrim.bsv"],
+    assertions: &[],
     expectation: CompileExpectation::Pass,
     golden: None,
     options: &[],
