@@ -211,6 +211,7 @@ case_modules!(
     cross_suite_mixed,
     cross_suite_multi,
     cross_suite_simulation_examples,
+    cross_suite_simulation_examples_wrappers,
     cross_suite_simulation_language,
     cross_suite_simulation_library,
     cross_suite_verilog_options,

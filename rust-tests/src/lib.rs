@@ -14,6 +14,7 @@ pub(crate) mod cache;
 pub mod upstream;
 
 pub const BSC_TIMEOUT: Duration = Duration::from_secs(300);
+pub const BSC_HEAVY_TIMEOUT: Duration = Duration::from_secs(600);
 
 #[derive(Debug, Clone)]
 pub struct Toolchain {

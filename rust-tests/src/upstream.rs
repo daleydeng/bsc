@@ -150,21 +150,43 @@ pub enum SimulationBackend {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VcdExpectation {
+    None,
+    BluesimOutputMatchesNormal,
+    IcarusSmoke,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GenerationStrategy {
+    BackendSpecific,
+    SharedElaboration,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ResourceClass {
+    Normal,
+    Heavy,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SimulationCase {
     pub name: &'static str,
     pub fixture_dir: &'static str,
     pub source: &'static str,
     pub fixtures: &'static [&'static str],
     pub top: &'static str,
+    pub generated_modules: &'static [&'static str],
     pub expected: &'static str,
     pub compile_options: &'static [&'static str],
     pub link_options: &'static [&'static str],
     pub simulation_options: &'static [&'static str],
     pub sort_output: bool,
     pub backend: SimulationBackend,
+    pub generation: GenerationStrategy,
+    pub vcd: VcdExpectation,
     pub requirement: Requirement,
     pub timeout: std::time::Duration,
-    pub heavy: bool,
+    pub resource: ResourceClass,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -194,10 +216,10 @@ impl UpstreamCase {
         }
     }
 
-    fn heavy(self) -> bool {
+    fn resource_class(self) -> ResourceClass {
         match self {
-            Self::Compile(_) => false,
-            Self::Simulation(case) => case.heavy,
+            Self::Compile(_) => ResourceClass::Normal,
+            Self::Simulation(case) => case.resource,
         }
     }
 }
@@ -347,33 +369,53 @@ fn run_compile_case(
     Ok(())
 }
 
-fn run_simulation_case(
+fn simulation_compile_arguments(case: &SimulationCase) -> Vec<&str> {
+    let mut arguments = Vec::with_capacity(case.compile_options.len() + 9);
+    arguments.extend_from_slice(case.compile_options);
+    arguments.extend_from_slice(&["-no-show-timestamps", "-no-show-version", "-u"]);
+    match case.generation {
+        GenerationStrategy::BackendSpecific => match case.backend {
+            SimulationBackend::Bluesim => arguments.push("-sim"),
+            SimulationBackend::Icarus => arguments.push("-verilog"),
+        },
+        GenerationStrategy::SharedElaboration => {
+            arguments.push("-verilog");
+            if !case.compile_options.contains(&"-elab") {
+                arguments.push("-elab");
+            }
+        }
+    }
+    arguments.extend_from_slice(&["-g", case.top, case.source]);
+    arguments
+}
+
+fn generated_model_files(case: &SimulationCase, backend: SimulationBackend) -> Vec<String> {
+    let extension = match backend {
+        SimulationBackend::Bluesim => "ba",
+        SimulationBackend::Icarus => "v",
+    };
+    std::iter::once(case.top)
+        .chain(case.generated_modules.iter().copied())
+        .map(|module| format!("{module}.{extension}"))
+        .collect()
+}
+
+fn ensure_simulation_generation(
     toolchain: &Toolchain,
-    run_paths: &RunPaths,
     generation_cache: &GenerationCache,
     case: &SimulationCase,
+    backends: &[SimulationBackend],
+    work_dir: &Path,
+    artifact_dir: &Path,
 ) -> Result<(), String> {
-    validate_simulation_case(case)?;
-    let (work_dir, artifact_dir) = run_paths.for_name(case.name);
-    reset_directory(&work_dir)?;
-    reset_directory(&artifact_dir)?;
-    stage_fixture_paths(toolchain, case.fixture_dir, case.fixtures, &work_dir)?;
-
-    let mut compile_arguments = Vec::with_capacity(case.compile_options.len() + 8);
-    compile_arguments.extend_from_slice(case.compile_options);
-    compile_arguments.extend_from_slice(&["-no-show-timestamps", "-no-show-version", "-u"]);
-    match case.backend {
-        SimulationBackend::Bluesim => compile_arguments.push("-sim"),
-        SimulationBackend::Icarus => compile_arguments.push("-verilog"),
-    }
-    compile_arguments.extend_from_slice(&["-g", case.top, case.source]);
+    let compile_arguments = simulation_compile_arguments(case);
     let compile_log = artifact_dir.join("compile.log");
     let fixture_root = toolchain.project_root.join(case.fixture_dir);
     let (generation_needed, cache_key) = match generation_cache.lookup(
         &fixture_root,
         case.fixtures,
         &compile_arguments,
-        &work_dir,
+        work_dir,
         &compile_log,
     ) {
         Ok(CacheLookup::Hit) => (false, None),
@@ -391,34 +433,57 @@ fn run_simulation_case(
         run_required_bsc_step(
             toolchain,
             &compile_arguments,
-            &work_dir,
+            work_dir,
             &compile_log,
             "generate simulation model",
             case.timeout,
         )?;
     }
 
-    let generated = match case.backend {
-        SimulationBackend::Bluesim => format!("{}.ba", case.top),
-        SimulationBackend::Icarus => format!("{}.v", case.top),
-    };
-    if !work_dir.join(&generated).is_file() {
-        return Err(format!(
-            "BSC did not generate {} for {}; see {}",
-            generated,
-            case.name,
-            compile_log.display()
-        ));
+    for backend in backends {
+        for generated_file in generated_model_files(case, *backend) {
+            if !work_dir.join(&generated_file).is_file() {
+                return Err(format!(
+                    "BSC did not generate {} for {}; see {}",
+                    generated_file,
+                    case.name,
+                    compile_log.display()
+                ));
+            }
+        }
     }
     if let Some(key) = cache_key {
-        if let Err(error) = generation_cache.store(&key, &work_dir) {
+        if let Err(error) = generation_cache.store(&key, work_dir) {
             eprintln!(
                 "warning: generation cache store failed for {}: {error}",
                 case.name
             );
         }
     }
+    Ok(())
+}
 
+fn run_simulation_case(
+    toolchain: &Toolchain,
+    run_paths: &RunPaths,
+    generation_cache: &GenerationCache,
+    case: &SimulationCase,
+) -> Result<(), String> {
+    validate_simulation_case(case)?;
+    let (work_dir, artifact_dir) = run_paths.for_name(case.name);
+    reset_directory(&work_dir)?;
+    reset_directory(&artifact_dir)?;
+    stage_fixture_paths(toolchain, case.fixture_dir, case.fixtures, &work_dir)?;
+    ensure_simulation_generation(
+        toolchain,
+        generation_cache,
+        case,
+        &[case.backend],
+        &work_dir,
+        &artifact_dir,
+    )?;
+
+    let generated = generated_model_files(case, case.backend);
     let mut link_arguments = Vec::with_capacity(case.link_options.len() + 10);
     link_arguments.extend_from_slice(&["-no-show-timestamps", "-no-show-version"]);
     match case.backend {
@@ -429,7 +494,7 @@ fn run_simulation_case(
     }
     link_arguments.extend_from_slice(&["-e", case.top, "-o", case.top]);
     link_arguments.extend_from_slice(case.link_options);
-    link_arguments.push(&generated);
+    link_arguments.extend(generated.iter().map(String::as_str));
     run_required_bsc_step(
         toolchain,
         &link_arguments,
@@ -490,10 +555,11 @@ fn run_simulation_case(
         ));
     }
 
-    let mut output = match case.backend {
+    let normal_output = match case.backend {
         SimulationBackend::Bluesim => result.output,
         SimulationBackend::Icarus => clean_iverilog_output(&result.output),
     };
+    let mut output = normal_output.clone();
     if case.sort_output {
         let mut lines: Vec<_> = output.lines().collect();
         lines.sort_unstable();
@@ -510,7 +576,121 @@ fn run_simulation_case(
         &work_dir.join(case.expected),
         &output_path,
         &artifact_dir.join("golden.diff"),
+    )?;
+    run_vcd_contract(
+        toolchain,
+        case,
+        &work_dir,
+        &artifact_dir,
+        &executable,
+        launcher,
+        &normal_output,
     )
+}
+
+fn run_vcd_contract(
+    toolchain: &Toolchain,
+    case: &SimulationCase,
+    work_dir: &Path,
+    artifact_dir: &Path,
+    executable: &Path,
+    launcher: Option<&str>,
+    normal_output: &str,
+) -> Result<(), String> {
+    if case.vcd == VcdExpectation::None {
+        return Ok(());
+    }
+
+    let vcd_name = format!("{}.vcd", case.top);
+    let mut arguments =
+        Vec::with_capacity(case.simulation_options.len() + usize::from(launcher.is_some()) + 2);
+    if launcher.is_some() {
+        arguments.push(case.top);
+    }
+    match case.vcd {
+        VcdExpectation::None => unreachable!(),
+        VcdExpectation::BluesimOutputMatchesNormal => {
+            arguments.extend_from_slice(&["-V", &vcd_name]);
+        }
+        VcdExpectation::IcarusSmoke => arguments.push("+bscvcd"),
+    }
+    arguments.extend_from_slice(case.simulation_options);
+
+    let program = launcher.map_or(executable, Path::new);
+    let log_path = artifact_dir.join("vcd-simulation.log");
+    let result = run_command(
+        toolchain,
+        program,
+        &arguments,
+        work_dir,
+        &log_path,
+        case.timeout,
+    )?;
+    if !result.success {
+        return Err(format!(
+            "VCD simulation for {} exited {}; see {}",
+            case.name,
+            describe_exit(result.exit_code),
+            log_path.display()
+        ));
+    }
+
+    let vcd_output = match case.backend {
+        SimulationBackend::Bluesim => result.output,
+        SimulationBackend::Icarus => clean_iverilog_output(&result.output),
+    };
+    let output_path = artifact_dir.join("vcd-simulation.out");
+    fs::write(&output_path, &vcd_output).map_err(|error| {
+        format!(
+            "write VCD simulation output {}: {error}",
+            output_path.display()
+        )
+    })?;
+
+    let generated_vcd = match case.vcd {
+        VcdExpectation::None => unreachable!(),
+        VcdExpectation::BluesimOutputMatchesNormal => work_dir.join(&vcd_name),
+        VcdExpectation::IcarusSmoke => work_dir.join("dump.vcd"),
+    };
+    let metadata = fs::metadata(&generated_vcd)
+        .map_err(|error| format!("read generated VCD {}: {error}", generated_vcd.display()))?;
+    if !metadata.is_file() || metadata.len() == 0 {
+        return Err(format!(
+            "VCD simulation for {} did not generate a non-empty {}",
+            case.name,
+            generated_vcd.display()
+        ));
+    }
+    fs::copy(&generated_vcd, artifact_dir.join("simulation.vcd")).map_err(|error| {
+        format!(
+            "copy generated VCD {} into artifacts: {error}",
+            generated_vcd.display()
+        )
+    })?;
+
+    if case.vcd == VcdExpectation::BluesimOutputMatchesNormal {
+        let expected = normalize_legacy_golden(normal_output);
+        let actual = normalize_legacy_golden(&vcd_output);
+        if expected != actual {
+            let diff_path = artifact_dir.join("vcd-output.diff");
+            let diff = readable_diff(
+                &expected,
+                &actual,
+                "normal Bluesim output",
+                "VCD Bluesim output",
+            );
+            fs::write(&diff_path, diff).map_err(|error| {
+                format!("write VCD output diff {}: {error}", diff_path.display())
+            })?;
+            return Err(format!(
+                "VCD simulation changed output for {}; see {}",
+                case.name,
+                diff_path.display()
+            ));
+        }
+    }
+
+    Ok(())
 }
 
 fn run_required_bsc_step(
@@ -697,7 +877,11 @@ pub fn normalize_legacy_golden(text: &str) -> String {
             filtered.push_str(line);
         }
     }
-    normalize_diff_b_text(&filtered)
+    let normalized = normalize_diff_b_text(&filtered);
+    normalized
+        .strip_suffix('\n')
+        .unwrap_or(&normalized)
+        .to_owned()
 }
 
 fn compare_legacy_golden(
@@ -827,9 +1011,26 @@ fn validate_simulation_case(case: &SimulationCase) -> Result<(), String> {
         || !is_safe_relative(case.source)
         || !is_safe_relative(case.expected)
         || case.top.is_empty()
+        || case
+            .generated_modules
+            .iter()
+            .any(|module| module.is_empty())
     {
         return Err(format!(
             "simulation case {} contains an empty name or unsafe path",
+            case.name
+        ));
+    }
+    if case
+        .generated_modules
+        .iter()
+        .enumerate()
+        .any(|(index, module)| {
+            *module == case.top || case.generated_modules[..index].contains(module)
+        })
+    {
+        return Err(format!(
+            "simulation case {} contains duplicate generated modules",
             case.name
         ));
     }
@@ -862,6 +1063,21 @@ fn validate_simulation_case(case: &SimulationCase) -> Result<(), String> {
     if !requirement_matches_backend {
         return Err(format!(
             "simulation case {} has a backend/requirement mismatch",
+            case.name
+        ));
+    }
+    let vcd_matches_backend = matches!(
+        (case.backend, case.vcd),
+        (_, VcdExpectation::None)
+            | (
+                SimulationBackend::Bluesim,
+                VcdExpectation::BluesimOutputMatchesNormal
+            )
+            | (SimulationBackend::Icarus, VcdExpectation::IcarusSmoke)
+    );
+    if !vcd_matches_backend {
+        return Err(format!(
+            "simulation case {} has a backend/VCD expectation mismatch",
             case.name
         ));
     }
@@ -1040,6 +1256,179 @@ pub fn summarize_outcomes(outcomes: &[CaseOutcome]) -> RunSummary {
     summary
 }
 
+#[derive(Debug)]
+enum WorkItem {
+    Independent(UpstreamCase),
+    SharedSimulation(Vec<SimulationCase>),
+}
+
+impl WorkItem {
+    fn resource_class(&self) -> ResourceClass {
+        match self {
+            Self::Independent(case) => case.resource_class(),
+            Self::SharedSimulation(cases) => {
+                cases
+                    .first()
+                    .expect("shared simulation work item is not empty")
+                    .resource
+            }
+        }
+    }
+}
+
+fn shared_generation_compatible(left: &SimulationCase, right: &SimulationCase) -> bool {
+    left.generation == GenerationStrategy::SharedElaboration
+        && right.generation == GenerationStrategy::SharedElaboration
+        && left.fixture_dir == right.fixture_dir
+        && left.source == right.source
+        && left.fixtures == right.fixtures
+        && left.top == right.top
+        && left.generated_modules == right.generated_modules
+        && left.compile_options == right.compile_options
+        && left.timeout == right.timeout
+        && left.resource == right.resource
+}
+
+fn build_work_items(cases: Vec<UpstreamCase>) -> Vec<WorkItem> {
+    let mut work = Vec::new();
+    for case in cases {
+        let UpstreamCase::Simulation(simulation) = case else {
+            work.push(WorkItem::Independent(case));
+            continue;
+        };
+        if simulation.generation == GenerationStrategy::BackendSpecific {
+            work.push(WorkItem::Independent(case));
+            continue;
+        }
+
+        let mut grouped = false;
+        for item in &mut work {
+            if let WorkItem::SharedSimulation(cases) = item {
+                if shared_generation_compatible(&cases[0], &simulation) {
+                    cases.push(simulation);
+                    grouped = true;
+                    break;
+                }
+            }
+        }
+        if !grouped {
+            work.push(WorkItem::SharedSimulation(vec![simulation]));
+        }
+    }
+    work
+}
+
+fn prepare_shared_generation(
+    toolchain: &Toolchain,
+    run_paths: &RunPaths,
+    generation_cache: &GenerationCache,
+    cases: &[SimulationCase],
+) -> Result<(), String> {
+    let first = cases
+        .first()
+        .ok_or_else(|| "shared simulation scenario has no contracts".to_owned())?;
+    for case in cases {
+        validate_simulation_case(case)?;
+        if !shared_generation_compatible(first, case) {
+            return Err(format!(
+                "simulation contract {} is incompatible with shared scenario {}",
+                case.name, first.name
+            ));
+        }
+    }
+
+    let scenario_name = format!("{}::shared-generation", first.name);
+    let (work_dir, artifact_dir) = run_paths.for_name(&scenario_name);
+    reset_directory(&work_dir)?;
+    reset_directory(&artifact_dir)?;
+    stage_fixture_paths(toolchain, first.fixture_dir, first.fixtures, &work_dir)?;
+    let mut backends = Vec::new();
+    for case in cases {
+        if !backends.contains(&case.backend) {
+            backends.push(case.backend);
+        }
+    }
+    ensure_simulation_generation(
+        toolchain,
+        generation_cache,
+        first,
+        &backends,
+        &work_dir,
+        &artifact_dir,
+    )
+}
+
+fn run_work_item(
+    toolchain: &Toolchain,
+    run_paths: &RunPaths,
+    generation_cache: &GenerationCache,
+    result_cache: &BscResultCache,
+    work: WorkItem,
+    policy: RunnerPolicy,
+) -> Vec<CaseOutcome> {
+    match work {
+        WorkItem::Independent(case) => vec![run_one_case(
+            toolchain,
+            run_paths,
+            generation_cache,
+            result_cache,
+            case,
+            policy,
+        )],
+        WorkItem::SharedSimulation(cases) => {
+            let mut outcomes = Vec::new();
+            let mut enabled = Vec::new();
+            for case in cases {
+                if let Some(reason) = policy.skip_reason(case.requirement) {
+                    outcomes.push(CaseOutcome {
+                        name: case.name,
+                        result: CaseResult::Skipped(reason),
+                    });
+                } else {
+                    enabled.push(case);
+                }
+            }
+            if enabled.is_empty() {
+                return outcomes;
+            }
+
+            let preparation = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                prepare_shared_generation(toolchain, run_paths, generation_cache, &enabled)
+            }));
+            let preparation_error = match preparation {
+                Ok(Ok(())) => None,
+                Ok(Err(error)) => Some(error),
+                Err(panic) => Some(format!(
+                    "shared generation panicked: {}",
+                    panic_message(panic)
+                )),
+            };
+            if let Some(error) = preparation_error {
+                outcomes.extend(enabled.into_iter().map(|case| CaseOutcome {
+                    name: case.name,
+                    result: CaseResult::Failed(format!(
+                        "shared generation for scenario {} failed: {error}",
+                        case.top
+                    )),
+                }));
+                return outcomes;
+            }
+
+            outcomes.extend(enabled.into_iter().map(|case| {
+                run_one_case(
+                    toolchain,
+                    run_paths,
+                    generation_cache,
+                    result_cache,
+                    UpstreamCase::Simulation(case),
+                    policy,
+                )
+            }));
+            outcomes
+        }
+    }
+}
+
 pub fn run_cases(
     toolchain: Toolchain,
     run_paths: RunPaths,
@@ -1047,6 +1436,26 @@ pub fn run_cases(
     policy: RunnerPolicy,
     test_threads: usize,
 ) -> Vec<CaseOutcome> {
+    let contract_count = cases.len();
+    let work = build_work_items(cases);
+    let shared_scenarios = work
+        .iter()
+        .filter(|item| matches!(item, WorkItem::SharedSimulation(_)))
+        .count();
+    let shared_contracts = work
+        .iter()
+        .map(|item| match item {
+            WorkItem::Independent(_) => 0,
+            WorkItem::SharedSimulation(cases) => cases.len(),
+        })
+        .sum::<usize>();
+    if shared_scenarios != 0 {
+        println!(
+            "execution plan: {shared_contracts} backend contracts in {shared_scenarios} shared generation scenarios; {} independent contracts",
+            contract_count - shared_contracts
+        );
+    }
+
     let generation_cache = Arc::new(match GenerationCache::new(&toolchain) {
         Ok(cache) => cache,
         Err(error) => {
@@ -1067,34 +1476,42 @@ pub fn run_cases(
     });
     let toolchain = Arc::new(toolchain);
     let run_paths = Arc::new(run_paths);
-    let (heavy, parallel): (Vec<_>, Vec<_>) = cases.into_iter().partition(|case| case.heavy());
+    let (heavy, parallel): (Vec<_>, Vec<_>) = work
+        .into_iter()
+        .partition(|item| item.resource_class() == ResourceClass::Heavy);
     let worker_toolchain = Arc::clone(&toolchain);
     let worker_run_paths = Arc::clone(&run_paths);
     let worker_generation_cache = Arc::clone(&generation_cache);
     let worker_result_cache = Arc::clone(&result_cache);
-    let mut outcomes = run_fixed_queue(parallel, test_threads, move |case| {
-        run_one_case(
+    let mut outcomes: Vec<CaseOutcome> = run_fixed_queue(parallel, test_threads, move |work| {
+        run_work_item(
             &worker_toolchain,
             &worker_run_paths,
             &worker_generation_cache,
             &worker_result_cache,
-            case,
+            work,
             policy,
         )
-    });
-    let heavy_threads = test_threads.min(2);
+    })
+    .into_iter()
+    .flatten()
+    .collect();
     let heavy_generation_cache = Arc::clone(&generation_cache);
     let heavy_result_cache = Arc::clone(&result_cache);
-    outcomes.extend(run_fixed_queue(heavy, heavy_threads, move |case| {
-        run_one_case(
-            &toolchain,
-            &run_paths,
-            &heavy_generation_cache,
-            &heavy_result_cache,
-            case,
-            policy,
-        )
-    }));
+    outcomes.extend(
+        run_fixed_queue(heavy, 1, move |work| {
+            run_work_item(
+                &toolchain,
+                &run_paths,
+                &heavy_generation_cache,
+                &heavy_result_cache,
+                work,
+                policy,
+            )
+        })
+        .into_iter()
+        .flatten(),
+    );
     let cache = generation_cache.summary();
     if cache.enabled {
         println!(
@@ -1347,6 +1764,46 @@ mod tests {
     }
 
     #[test]
+    fn shared_elaboration_groups_backend_contracts_and_serializes_heavy_work() {
+        let aes: Vec<_> = simulation_cases()
+            .iter()
+            .copied()
+            .filter(|case| case.name.contains("bsc.bsv_examples/AES::Aes_TB::"))
+            .map(UpstreamCase::Simulation)
+            .collect();
+        assert_eq!(aes.len(), 2);
+        let work = build_work_items(aes);
+        assert_eq!(work.len(), 1);
+        match &work[0] {
+            WorkItem::SharedSimulation(cases) => {
+                assert_eq!(cases.len(), 2);
+                assert!(cases
+                    .iter()
+                    .all(|case| case.generation == GenerationStrategy::SharedElaboration));
+                assert!(cases
+                    .iter()
+                    .all(|case| case.resource == ResourceClass::Heavy));
+                assert!(cases
+                    .iter()
+                    .all(|case| case.timeout == crate::BSC_HEAVY_TIMEOUT));
+            }
+            WorkItem::Independent(_) => panic!("dual-backend test was not grouped"),
+        }
+
+        let positive_reset: Vec<_> = simulation_cases()
+            .iter()
+            .copied()
+            .filter(|case| {
+                case.name
+                    .contains("bsc.verilog/positivereset/SyncReset::RstTest::")
+            })
+            .map(UpstreamCase::Simulation)
+            .collect();
+        assert_eq!(positive_reset.len(), 2);
+        assert_eq!(build_work_items(positive_reset).len(), 2);
+    }
+
+    #[test]
     fn ctest_and_vtest_capabilities_skip_their_simulation_backends() {
         let cases = all_cases();
         let no_bluesim = RunnerPolicy::from_environment(
@@ -1485,6 +1942,14 @@ mod tests {
         assert_eq!(
             normalize_legacy_golden(expected),
             normalize_legacy_golden(windows)
+        );
+    }
+
+    #[test]
+    fn legacy_golden_ignores_a_missing_final_newline() {
+        assert_eq!(
+            normalize_legacy_golden("same output\n"),
+            normalize_legacy_golden("same output")
         );
     }
 

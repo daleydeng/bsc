@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Remaining test scripts: **564**
-- Remaining statically declared contracts: **2903**
-- Scripts with one or more statically recognized contracts: **314**
+- Remaining test scripts: **550**
+- Remaining statically declared contracts: **2856**
+- Scripts with one or more statically recognized contracts: **300**
 - Scripts requiring fully dynamic or custom Tcl analysis: **250**
 
 A nonzero static count is an inventory fact, not an automatic migration approval. Scripts may still contain additional assertions, dynamic Tcl, custom helpers, generated artifacts, XFAIL rules, or unsupported link/simulation flows. Curated safe candidates and blockers are tracked in [`NEXT.md`](NEXT.md).
@@ -22,29 +22,29 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `bsc.bluesim` | 15 | 32 | 12 |
 | `bsc.bluetcl` | 9 | 1 | 8 |
 | `bsc.bsc_examples` | 1 | 27 | 0 |
-| `bsc.bsv_examples` | 37 | 71 | 15 |
+| `bsc.bsv_examples` | 33 | 49 | 15 |
 | `bsc.bugs` | 74 | 111 | 23 |
 | `bsc.codegen` | 10 | 113 | 0 |
 | `bsc.compile` | 2 | 23 | 0 |
 | `bsc.doc` | 1 | 2 | 0 |
 | `bsc.driver` | 8 | 74 | 1 |
 | `bsc.evaluator` | 20 | 225 | 1 |
-| `bsc.if` | 6 | 43 | 0 |
+| `bsc.if` | 4 | 39 | 0 |
 | `bsc.interra` | 206 | 77 | 166 |
-| `bsc.lib` | 39 | 209 | 10 |
-| `bsc.mcd` | 15 | 203 | 0 |
+| `bsc.lib` | 34 | 199 | 10 |
+| `bsc.mcd` | 14 | 201 | 0 |
 | `bsc.misc` | 8 | 98 | 0 |
 | `bsc.names` | 18 | 155 | 0 |
 | `bsc.options` | 3 | 27 | 0 |
 | `bsc.preprocessor` | 2 | 27 | 0 |
-| `bsc.real` | 4 | 35 | 0 |
+| `bsc.real` | 3 | 33 | 0 |
 | `bsc.scheduler` | 15 | 177 | 2 |
 | `bsc.showrules` | 1 | 6 | 0 |
 | `bsc.syntax` | 9 | 393 | 2 |
 | `bsc.synthesize` | 1 | 0 | 1 |
 | `bsc.typechecker` | 22 | 391 | 1 |
 | `bsc.vcdcheck` | 1 | 0 | 1 |
-| `bsc.verilog` | 32 | 277 | 6 |
+| `bsc.verilog` | 31 | 270 | 6 |
 
 ## Complete remaining list
 
@@ -80,16 +80,13 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.bluetcl/targeted/port_types/port_types.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bluetcl/targeted/type/type.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bsc_examples/bsc_examples.exp` | 27 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/AES/aes.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bsv_examples/AmbaLoadDemo/amba_load_demo.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bsv_examples/AmbaSynthesis/amba_syn.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bsv_examples/Amba_dmac/amba_dmac.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/AssertionsDemo/assert_demo.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/FP/FP.exp` | 10 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/FloatingPoint/floating_point.exp` | 0 | Dynamic/custom Tcl analysis required |
-| `testsuite/bsc.bsv_examples/GlibcRandom/GlibcRandom.exp` | 4 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/Life/example_life.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.bsv_examples/MacTestBench/mac_testbench.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/Maxtree/maxtree.exp` | 0 | Dynamic/custom Tcl analysis required |
@@ -111,7 +108,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.bsv_examples/mesa/course_lab/course_lab.exp` | 3 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv-cocoon/spiless-tx-bsv-cocoon.exp` | 1 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.bsv_examples/mimo/mimo.exp` | 6 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/pong/pong.exp` | 3 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/shifter/shifter.exp` | 14 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.bsv_examples/sudoku/sudoku.exp` | 0 | Dynamic/custom Tcl analysis required |
@@ -235,8 +231,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.if/if.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.if/split-execution/2x2-switch-split/switch.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.if/split-execution/2x2-switch/switch.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.if/split-execution/TurboFIFO/attribute/execute.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.if/split-execution/TurboFIFO/original/execute.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.if/split/splitIf.exp` | 33 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.interra/Library_latency/BGetPut/BGetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.interra/Library_latency/CGetPut/CGetPut.exp` | 0 | Dynamic/custom Tcl analysis required |
@@ -446,7 +440,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.interra/relax_method_urgency/prod_con/prod_con.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.lib/BRAM/BRAM.exp` | 9 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | 2 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/BRAM/Lat/Lat.exp` | 6 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.lib/BuildList/BuildList.exp` | 1 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.lib/CReg/CReg.exp` | 7 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.lib/CShow/CShow.exp` | 0 | Dynamic/custom Tcl analysis required |
@@ -459,10 +452,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` | 8 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.lib/Foldable/Foldable.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.lib/IsModule/is_module.exp` | 3 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/RadixSort/rev1/paclib_radix_rev1.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/RadixSort/rev2/paclib_radix_rev2.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/RadixSort/rev3/paclib_radix_rev3.exp` | 1 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.lib/PAClib/RadixSort/rev4/paclib_radix_rev4.exp` | 1 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.lib/PAClib/dft64/bsv/paclib_dft.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.lib/PAClib/qsort/bsv/paclib_qsort.exp` | 0 | Dynamic/custom Tcl analysis required |
 | `testsuite/bsc.lib/PAClib/unit_tests/unit_test.exp` | 2 | Static contracts present; review remaining Tcl |
@@ -491,7 +480,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.mcd/Gating/portprop/portprop.exp` | 8 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.mcd/Hierarchy/Hierarchy.exp` | 3 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.mcd/LevelFifo/LevelFifo.exp` | 12 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.mcd/MakeClock/MakeClock.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.mcd/Misc/mcd.exp` | 48 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.mcd/ModArgs/ModArgs.exp` | 31 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.mcd/MultErrors/mult_errors_mcd.exp` | 4 | Static contracts present; review remaining Tcl |
@@ -531,7 +519,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.preprocessor/misc/misc.exp` | 22 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.real/evaluator/errors/errors.exp` | 15 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.real/evaluator/evaluator.exp` | 15 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.real/evaluator/undef/undef.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.real/parser/parser.exp` | 3 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.scheduler/attribute_scope/attribute_scope.exp` | 39 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.scheduler/avmeth/avmeth.exp` | 2 | Static contracts present; review remaining Tcl |
@@ -602,7 +589,6 @@ A nonzero static count is an inventory fact, not an automatic migration approval
 | `testsuite/bsc.verilog/portprops/portprops.exp` | 25 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.verilog/positivereset/ClockDividers/ClockDividers.exp` | 12 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.verilog/positivereset/Reset/Reset.exp` | 29 | Static contracts present; review remaining Tcl |
-| `testsuite/bsc.verilog/positivereset/SyncReset/SyncReset.exp` | 7 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.verilog/positivereset/nameclash/nameclash.exp` | 6 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.verilog/positivereset/simulation/simulation.exp` | 2 | Static contracts present; review remaining Tcl |
 | `testsuite/bsc.verilog/quirks/quirks.exp` | 8 | Static contracts present; review remaining Tcl |

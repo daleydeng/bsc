@@ -50,9 +50,9 @@ inventory-check:
 inventory-update:
     {{runner}} inventory-update
 
-# Run the dynamically migrated upstream tests after checking alignment.
-test-upstream:
-    {{runner}} test-upstream
+# Run migrated upstream tests after checking alignment; optional arguments are forwarded to the Rust runner.
+test-upstream *args:
+    {{runner}} test-upstream {{args}}
 
 # Run Rust harness tests and all migrated contract tests.
 test-rust:

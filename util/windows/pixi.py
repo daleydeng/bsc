@@ -397,7 +397,7 @@ def remaining_inventory(jobs: int, mode: str) -> None:
     )
 
 
-def upstream_tests(jobs: int) -> None:
+def upstream_tests(jobs: int, arguments: Sequence[str] = ()) -> None:
     alignment_check(jobs)
     remaining_inventory(jobs, "--check")
     run(
@@ -412,6 +412,7 @@ def upstream_tests(jobs: int) -> None:
             "--jobs",
             str(jobs),
             "--",
+            *arguments,
             "--test-threads",
             str(jobs),
         ]
@@ -454,6 +455,7 @@ def dispatch(
     conda: Path,
     jobs: int,
     ccache_managed_cxx: bool,
+    arguments: Sequence[str],
 ) -> None:
     if action == "toolchain":
         initialize_toolchain(root, conda)
@@ -479,7 +481,7 @@ def dispatch(
     elif action == "inventory-update":
         remaining_inventory(jobs, "--write")
     elif action == "test-upstream":
-        upstream_tests(jobs)
+        upstream_tests(jobs, arguments)
     elif action in {"test-rust", "test"}:
         all_rust_tests(jobs)
     elif action == "test-cold":
@@ -515,13 +517,14 @@ def main() -> None:
             fail("Usage: pixi run just configure-oss-cad-suite <path>")
         save_oss_root(config, sys.argv[2])
         return
-    if len(sys.argv) != 2:
+    arguments = sys.argv[2:]
+    if action != "test-upstream" and arguments:
         fail(f"Unexpected arguments for action: {action}")
 
     jobs = configured_jobs()
     oss_root = resolve_oss_root(config, required=action in ICARUS_ACTIONS)
     ccache_managed_cxx = prepare_environment(root, conda, oss_root, jobs)
-    dispatch(action, root, conda, jobs, ccache_managed_cxx)
+    dispatch(action, root, conda, jobs, ccache_managed_cxx, arguments)
 
 
 if __name__ == "__main__":

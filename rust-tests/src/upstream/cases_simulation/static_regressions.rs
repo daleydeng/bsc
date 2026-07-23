@@ -31,15 +31,18 @@ macro_rules! simulation_case_with_fixtures {
             source: concat!($module, ".bsv"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
+            generated_modules: &[],
             expected: $expected,
             compile_options: &[],
             link_options: &[],
             simulation_options: &[],
             sort_output: false,
             backend: $backend,
+            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
+            vcd: $crate::upstream::VcdExpectation::None,
             requirement: $requirement,
             timeout: crate::BSC_TIMEOUT,
-            heavy: false,
+            resource: $crate::upstream::ResourceClass::Normal,
         }
     };
 }

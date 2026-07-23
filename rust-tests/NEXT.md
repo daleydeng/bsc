@@ -4,12 +4,12 @@
 
 ## 当前基线
 
-- 已迁移来源：296/860
-- 尚未迁移来源：564
-- 已迁移静态 contract：1258/4161
-- 尚未迁移静态 contract：2903
+- 已迁移来源：310/860
+- 尚未迁移来源：550
+- 已迁移静态 contract：1305/4161
+- 尚未迁移静态 contract：2856
 - 完全需要动态或自定义 Tcl 分析的脚本：250
-- 最近稳定提交：`7c8da213 Track test migration and replace the Windows task runner`
+- 最近稳定提交：`7af594bc Expand static compile and simulation coverage`
 
 候选进入本文件的硬条件：必须完整迁移一整份 `.exp` 的全部活动 contract 和 assertion；不得只摘取 compile/simulation 调用；不得忽略 XFAIL、bug gate、generated artifact、手工 link/sim 或额外输出比较。
 
@@ -73,7 +73,7 @@
 
 ## 已核对的静态 simulation 候选
 
-当前确认的 39 个静态 simulation 脚本中，23 个简单静态脚本已经完成，剩余 16 个。带 compile contract 的 origin 必须同步迁移 compile case，否则 alignment 会拒绝半迁移。
+当前确认的 39 个静态 simulation 脚本已完成 37 个；`FloatTest.exp` 和 `BRAM0Test.exp` 因原生 Windows 共享 elaboration 超时而整体回退为性能 blocker。带 compile contract 的 origin 已同步迁移 compile case；alignment 会拒绝半迁移。复杂 case 同时覆盖多生成模块、递归 fixture、case-local 编译/链接参数和标准 VCD 行为。
 
 ### 已完成：简单静态 23 个
 
@@ -103,31 +103,33 @@
 
 ### Options 或递归 fixture：14 个
 
-- [ ] `testsuite/bsc.mcd/MakeClock/MakeClock.exp` — compile options `-keep-fires`
-- [ ] `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` — RTS / `-no-aggressive-conditions`
-- [ ] `testsuite/bsc.lib/PAClib/RadixSort/rev1/paclib_radix_rev1.exp` — `RadixSort.bsv`、`Types.bsv`
-- [ ] `testsuite/bsc.lib/PAClib/RadixSort/rev2/paclib_radix_rev2.exp` — `RadixSort.bsv`、`Types.bsv`
-- [ ] `testsuite/bsc.lib/PAClib/RadixSort/rev3/paclib_radix_rev3.exp` — `RadixSort.bsv`、`Types.bsv`
-- [ ] `testsuite/bsc.lib/PAClib/RadixSort/rev4/paclib_radix_rev4.exp` — `RadixSort.bsv`、`Types.bsv`
-- [ ] `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` — runtime fixtures `bram1.txt`、`bram2.txt`
-- [ ] `testsuite/bsc.lib/BRAM/Lat/Lat.exp` — `Latency1Port.bsv`
-- [ ] `testsuite/bsc.if/split-execution/TurboFIFO/attribute/execute.exp` — `TurboFIFO.bsv`
-- [ ] `testsuite/bsc.if/split-execution/TurboFIFO/original/execute.exp` — `TurboFIFO.bsv`
-- [ ] `testsuite/bsc.bsv_examples/AES/aes.exp` — 6 个本地 BSV、4 个 vector runtime fixture；建议 heavy
-- [ ] `testsuite/bsc.bsv_examples/FP/FP.exp` — `FloatingPoint.bsv`
-- [ ] `testsuite/bsc.bsv_examples/GlibcRandom/GlibcRandom.exp` — `GlibcRandom.bsv`
-- [ ] `testsuite/bsc.bsv_examples/mimo/mimo.exp` — 部分 `-no-aggressive-conditions`
+- [x] `testsuite/bsc.mcd/MakeClock/MakeClock.exp` — compile options `-keep-fires`
+- [ ] `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` — 共享 `-verilog -elab` 在原生 Windows 串行运行超过 600 秒；整份脚本暂不迁移
+- [x] `testsuite/bsc.lib/PAClib/RadixSort/rev1/paclib_radix_rev1.exp` — `RadixSort.bsv`、`Types.bsv`；Bluesim VCD 输出一致性
+- [x] `testsuite/bsc.lib/PAClib/RadixSort/rev2/paclib_radix_rev2.exp` — `RadixSort.bsv`、`Types.bsv`；Bluesim VCD 输出一致性
+- [x] `testsuite/bsc.lib/PAClib/RadixSort/rev3/paclib_radix_rev3.exp` — `RadixSort.bsv`、`Types.bsv`；Bluesim VCD 输出一致性
+- [x] `testsuite/bsc.lib/PAClib/RadixSort/rev4/paclib_radix_rev4.exp` — `RadixSort.bsv`、`Types.bsv`；Bluesim VCD 输出一致性
+- [ ] `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` — 共享 `-verilog -elab` 在原生 Windows 串行运行超过 300 秒；整份脚本暂不迁移
+- [x] `testsuite/bsc.lib/BRAM/Lat/Lat.exp` — `Latency1Port.bsv`
+- [x] `testsuite/bsc.if/split-execution/TurboFIFO/attribute/execute.exp` — `TurboFIFO.bsv`；Bluesim/Icarus VCD
+- [x] `testsuite/bsc.if/split-execution/TurboFIFO/original/execute.exp` — `TurboFIFO.bsv`；Bluesim/Icarus VCD
+- [x] `testsuite/bsc.bsv_examples/AES/aes.exp` — 6 个本地 BSV、4 个 vector runtime fixture、4 个额外生成模块；heavy
+- [x] `testsuite/bsc.bsv_examples/FP/FP.exp` — `FloatingPoint.bsv`
+- [x] `testsuite/bsc.bsv_examples/GlibcRandom/GlibcRandom.exp` — `GlibcRandom.bsv`
+- [x] `testsuite/bsc.bsv_examples/mimo/mimo.exp` — 部分 `-no-aggressive-conditions`
 
 ### 可静态归一化的简单 Tcl 包装：2 个
 
-- [ ] `testsuite/bsc.verilog/positivereset/SyncReset/SyncReset.exp` — 将临时 `BSC_OPTIONS` 展开为 case-local `-reset-prefix RESET_P -D BSV_POSITIVE_RESET`
-- [ ] `testsuite/bsc.real/evaluator/undef/undef.exp` — `$vtest` 条件直接映射为 `Requirement::VerilogEnabled`
+- [x] `testsuite/bsc.verilog/positivereset/SyncReset/SyncReset.exp` — 将临时 `BSC_OPTIONS` 展开为 case-local 生成与链接参数 `-reset-prefix RESET_P -D BSV_POSITIVE_RESET`
+- [x] `testsuite/bsc.real/evaluator/undef/undef.exp` — `$vtest` 条件直接映射为 `Requirement::VerilogEnabled`
 
 ## 明确阻塞，不得机械迁移
 
 | Origin | 阻塞原因 |
 | --- | --- |
 | `testsuite/bsc.evaluator/performance/performance.exp` | `BNotShared.bsv` 在原生 Windows codegen 超过 300 秒；注释预期数秒完成，需先确认编译器性能回归，不应简单放宽超时 |
+| `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` | `FloatTest.bsv` 的共享 `-verilog -elab` 在原生 Windows 串行运行超过 600 秒；不能只保留同一 `.exp` 中其余 7 个通过的 contract |
+| `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | `BRAM0Test.bsv` 的共享 `-verilog -elab` 在原生 Windows 串行运行超过 300 秒；不能用 backend-specific 生成绕开 upstream 的共享 elaboration 语义 |
 | `testsuite/bsc.bugs/bluespec_inc/b925/b925.exp` | Bluesim XFAIL / bug gate，当前 Requirement 无法表达 |
 | `testsuite/bsc.bluesim/operators/operators.exp` | 同时存在 Bluesim 和 Verilog bug gate |
 | `testsuite/bsc.misc/fwrite/fwrite.exp` | 需要比较 simulation 生成的 `*.dat.out` 副产物 |

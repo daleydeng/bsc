@@ -12,15 +12,18 @@ macro_rules! bluesim_case {
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
+            generated_modules: &[],
             expected: $expected,
             compile_options: $compile_options,
             link_options: &[],
             simulation_options: &[],
             sort_output: false,
             backend: $crate::upstream::SimulationBackend::Bluesim,
+            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
+            vcd: $crate::upstream::VcdExpectation::None,
             requirement: $crate::upstream::Requirement::BluesimEnabled,
             timeout: $crate::BSC_TIMEOUT,
-            heavy: false,
+            resource: $crate::upstream::ResourceClass::Normal,
         }
     };
 }
@@ -46,15 +49,18 @@ macro_rules! icarus_case {
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
+            generated_modules: &[],
             expected: $expected,
             compile_options: $compile_options,
             link_options: &[],
             simulation_options: &[],
             sort_output: false,
             backend: $crate::upstream::SimulationBackend::Icarus,
+            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
+            vcd: $crate::upstream::VcdExpectation::None,
             requirement: $requirement,
             timeout: $crate::BSC_TIMEOUT,
-            heavy: false,
+            resource: $crate::upstream::ResourceClass::Normal,
         }
     };
 }
@@ -79,6 +85,8 @@ case_modules!(
     case_syntax,
     conflict_free,
     cross_suite_direct,
+    cross_suite_examples_wrappers,
+    cross_suite_options_memory,
     cross_suite_static_examples,
     cross_suite_static_language,
     cross_suite_static_library,
@@ -88,6 +96,7 @@ case_modules!(
     read_desugaring,
     small_regressions,
     static_regressions,
+    vcd_smoke,
 );
 
 pub(super) fn cases() -> &'static [SimulationCase] {

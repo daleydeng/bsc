@@ -28,15 +28,22 @@ macro_rules! simulation_case {
             source: concat!($module, ".bsv"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
+            generated_modules: &[],
             expected: $expected,
             compile_options: &[],
             link_options: &[],
             simulation_options: &[],
             sort_output: false,
             backend: $backend,
+            generation: $crate::upstream::GenerationStrategy::BackendSpecific,
+            vcd: $crate::upstream::VcdExpectation::None,
             requirement: $requirement,
             timeout: $timeout,
-            heavy: $heavy,
+            resource: if $heavy {
+                $crate::upstream::ResourceClass::Heavy
+            } else {
+                $crate::upstream::ResourceClass::Normal
+            },
         }
     };
 }
