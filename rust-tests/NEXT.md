@@ -9,7 +9,7 @@
 - 已迁移静态 contract：1637/4672
 - 尚未迁移静态 contract：3035
 - 完全需要动态或自定义 Tcl 分析的脚本：221
-- 最近稳定提交：`453f001a Add cargo xtask orchestration for Windows tests`
+- 最近稳定提交：`d8c281c8 Expand Rust tests and replace Windows runner`
 
 候选进入本文件的硬条件：必须完整迁移一整份 `.exp` 的全部活动 contract 和 assertion；不得只摘取 compile/simulation 调用；不得忽略 XFAIL、bug gate、generated artifact、手工 link/sim 或额外输出比较。
 

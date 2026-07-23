@@ -6,7 +6,7 @@ use anyhow::{Context, Result};
 use xshell::{cmd, Shell};
 
 use crate::environment::{save_oss_root, PreparedEnvironment};
-use crate::{msys, toolchain};
+use crate::{msys, test_temp, toolchain};
 
 pub struct Tasks<'a> {
     shell: &'a Shell,
@@ -126,6 +126,10 @@ impl<'a> Tasks<'a> {
             env::set_var("CXX", "c++");
         }
         self.test_rust()
+    }
+
+    pub fn test_prune(&self) -> Result<()> {
+        test_temp::prune(self.environment)
     }
 
     pub fn ccache_stats(&self) -> Result<()> {

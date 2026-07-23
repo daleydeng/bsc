@@ -11,6 +11,7 @@ use super::{
 use crate::cache::{BscResultCache, GenerationCache};
 use crate::Toolchain;
 use std::collections::VecDeque;
+use std::fs;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
@@ -45,6 +46,11 @@ impl RunPaths {
             self.work_root.join(&directory),
             self.artifact_root.join(directory),
         )
+    }
+
+    fn remove_empty_roots(&self) {
+        let _ = fs::remove_dir(&self.work_root);
+        let _ = fs::remove_dir(&self.artifact_root);
     }
 }
 
@@ -104,6 +110,13 @@ impl WorkItem {
         match self {
             Self::Compile(case) => case.name,
             Self::Simulation { scenario, .. } => scenario.name,
+        }
+    }
+
+    fn scenario_name(&self) -> Option<&'static str> {
+        match self {
+            Self::Compile(_) => None,
+            Self::Simulation { scenario, .. } => Some(scenario.name),
         }
     }
 }
@@ -422,6 +435,44 @@ fn run_work_item(
     }
 }
 
+fn cleanup_completed_outcomes(
+    run_paths: &RunPaths,
+    scenario_name: Option<&str>,
+    outcomes: &[CaseOutcome],
+) {
+    let has_failure = outcomes
+        .iter()
+        .any(|outcome| matches!(outcome.result, CaseResult::Failed(_)));
+
+    for outcome in outcomes {
+        if matches!(outcome.result, CaseResult::Failed(_))
+            || has_failure && scenario_name == Some(outcome.name)
+        {
+            continue;
+        }
+        remove_case_directories(run_paths, outcome.name);
+    }
+    if !has_failure {
+        if let Some(scenario_name) = scenario_name {
+            remove_case_directories(run_paths, scenario_name);
+        }
+    }
+}
+
+fn remove_case_directories(run_paths: &RunPaths, name: &str) {
+    let (work_dir, artifact_dir) = run_paths.for_name(name);
+    for directory in [work_dir, artifact_dir] {
+        match fs::remove_dir_all(&directory) {
+            Ok(()) => {}
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+            Err(error) => eprintln!(
+                "warning: could not remove successful test directory {}: {error}",
+                directory.display()
+            ),
+        }
+    }
+}
+
 pub fn run_plan(
     toolchain: Toolchain,
     run_paths: RunPaths,
@@ -499,6 +550,7 @@ pub fn run_plan(
     let worker_result_cache = Arc::clone(&result_cache);
     let parallel_progress = progress.state();
     let mut outcomes: Vec<CaseOutcome> = run_fixed_queue(parallel, test_threads, move |work| {
+        let scenario_name = work.scenario_name();
         let outcomes = run_work_item(
             &worker_toolchain,
             &worker_run_paths,
@@ -507,6 +559,7 @@ pub fn run_plan(
             work,
             policy,
         );
+        cleanup_completed_outcomes(&worker_run_paths, scenario_name, &outcomes);
         parallel_progress.advance(outcomes.len());
         outcomes
     })
@@ -519,9 +572,11 @@ pub fn run_plan(
         progress.enter_heavy_phase(heavy.len());
     }
     let heavy_progress = progress.state();
+    let cleanup_run_paths = Arc::clone(&run_paths);
     outcomes.extend(
         run_fixed_queue(heavy, 1, move |work| {
             heavy_progress.report(Some(&format!("scenario={}", work.label())));
+            let scenario_name = work.scenario_name();
             let outcomes = run_work_item(
                 &toolchain,
                 &run_paths,
@@ -530,12 +585,14 @@ pub fn run_plan(
                 work,
                 policy,
             );
+            cleanup_completed_outcomes(&run_paths, scenario_name, &outcomes);
             heavy_progress.advance(outcomes.len());
             outcomes
         })
         .into_iter()
         .flatten(),
     );
+    cleanup_run_paths.remove_empty_roots();
     progress.finish();
     let cache = generation_cache.summary();
     if cache.enabled {
@@ -610,12 +667,69 @@ fn panic_message(panic: Box<dyn std::any::Any + Send>) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::format_elapsed;
-    use std::time::Duration;
+    use super::{cleanup_completed_outcomes, format_elapsed, CaseOutcome, CaseResult, RunPaths};
+    use std::fs;
+    use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
     #[test]
     fn progress_elapsed_time_is_compact() {
         assert_eq!(format_elapsed(Duration::from_secs(9)), "9s");
         assert_eq!(format_elapsed(Duration::from_secs(125)), "2m 05s");
+    }
+
+    #[test]
+    fn cleanup_preserves_only_failed_outcomes_and_their_scenario() {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root = std::env::current_dir()
+            .unwrap()
+            .join(".pixi/tmp/runner-tests")
+            .join(format!("cleanup-{}-{nonce}", std::process::id()));
+        let paths = RunPaths {
+            work_root: root.join("work"),
+            artifact_root: root.join("artifacts"),
+        };
+        for name in ["scenario", "passed", "failed"] {
+            let (work, artifacts) = paths.for_name(name);
+            fs::create_dir_all(work).unwrap();
+            fs::create_dir_all(artifacts).unwrap();
+        }
+
+        let outcomes = [
+            CaseOutcome {
+                name: "passed",
+                result: CaseResult::Passed,
+            },
+            CaseOutcome {
+                name: "failed",
+                result: CaseResult::Failed("expected test failure".to_owned()),
+            },
+        ];
+        cleanup_completed_outcomes(&paths, Some("scenario"), &outcomes);
+        let (passed_work, passed_artifacts) = paths.for_name("passed");
+        let (failed_work, failed_artifacts) = paths.for_name("failed");
+        let (scenario_work, scenario_artifacts) = paths.for_name("scenario");
+        assert!(!passed_work.exists());
+        assert!(!passed_artifacts.exists());
+        assert!(failed_work.is_dir());
+        assert!(failed_artifacts.is_dir());
+        assert!(scenario_work.is_dir());
+        assert!(scenario_artifacts.is_dir());
+
+        cleanup_completed_outcomes(
+            &paths,
+            Some("scenario"),
+            &[CaseOutcome {
+                name: "failed",
+                result: CaseResult::Passed,
+            }],
+        );
+        assert!(!failed_work.exists());
+        assert!(!failed_artifacts.exists());
+        assert!(!scenario_work.exists());
+        assert!(!scenario_artifacts.exists());
+        fs::remove_dir_all(root).unwrap();
     }
 }

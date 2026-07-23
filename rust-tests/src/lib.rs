@@ -343,6 +343,7 @@ pub fn run_scheduler_sat_case(case: &str) -> Result<(), String> {
         }
     }
 
+    cleanup_successful_test_case(&work_dir, &artifact_dir);
     Ok(())
 }
 
@@ -482,6 +483,22 @@ fn reset_directory(path: &Path) -> Result<(), String> {
         Err(error) => return Err(io_error("remove old test directory", path, error)),
     }
     fs::create_dir_all(path).map_err(|error| io_error("create test directory", path, error))
+}
+
+fn cleanup_successful_test_case(work_dir: &Path, artifact_dir: &Path) {
+    for directory in [work_dir, artifact_dir] {
+        match fs::remove_dir_all(directory) {
+            Ok(()) => {}
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+            Err(error) => eprintln!(
+                "warning: could not remove successful test directory {}: {error}",
+                directory.display()
+            ),
+        }
+        if let Some(run_root) = directory.parent() {
+            let _ = fs::remove_dir(run_root);
+        }
+    }
 }
 
 fn wait_with_timeout(child: &mut Child, timeout: Duration) -> Result<(ExitStatus, bool), String> {

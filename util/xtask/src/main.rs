@@ -1,6 +1,7 @@
 mod environment;
 mod msys;
 mod tasks;
+mod test_temp;
 mod toolchain;
 
 use anyhow::Result;
@@ -66,6 +67,8 @@ enum Task {
     Test,
     /// Run the complete suite with BSC and C++ caches disabled.
     TestCold,
+    /// Remove disposable Rust test workspaces and diagnostics from previous runs.
+    TestPrune,
     /// Show Bluesim C++ compiler-cache statistics.
     CcacheStats,
     /// Clear the Bluesim C++ compiler cache.
@@ -111,6 +114,7 @@ fn run() -> Result<()> {
         Task::TestUpstream { arguments } => tasks.test_upstream(&arguments),
         Task::TestRust | Task::Test => tasks.test_rust(),
         Task::TestCold => tasks.test_cold(),
+        Task::TestPrune => tasks.test_prune(),
         Task::CcacheStats => tasks.ccache_stats(),
         Task::CcacheClear => tasks.ccache_clear(),
     }

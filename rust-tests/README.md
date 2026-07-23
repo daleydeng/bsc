@@ -20,6 +20,7 @@ pixi run just test-cold       # 禁用全部缓存，执行带实时进度的完
 pixi run just test-alignment  # 只检查 Rust 声明是否仍与 testsuite 对齐
 pixi run just inventory-check # 检查完整剩余清单是否与当前迁移状态一致
 pixi run just inventory-update # 迁移后重建 rust-tests/REMAINING.md
+pixi run just test-prune      # 清理中断或失败运行留下的 disposable work/artifact
 pixi run just test-z3         # 只运行 24 个 Z3 scheduler tests
 pixi run just test-upstream   # 对齐检查后运行全部已迁移 upstream contracts
 pixi run just test-upstream b1493 # 只运行名称包含 b1493 的 contract
@@ -113,7 +114,7 @@ pixi run just test-alignment
 - upstream 工作目录：`.pixi/tmp/rust-test-work/upstream/<run-id>/<case>`
 - upstream 日志与 diff：`.pixi/tmp/rust-test-artifacts/upstream/<run-id>/<case>`
 
-每个 case/scenario 只清理自己当前 run-id 下的目录。Scheduler 的 `bsc-schedule.log` 和 compile case 的 `bsc.log` 均包含命令、工作目录、BSC stdout/stderr、退出状态和耗时；simulation scenario 的 generation artifact 写 `compile.log`，各 contract 的隔离 artifact 分别写 `link.log`、`simulation.log` 和 VCD 产物。Compile 与 simulation contract 都通过共享 `artifact` 模块执行声明式断言；文件比较支持精确字节、golden 输出归一化和 Verilog banner/generated-ID 归一化，不一致写入独立 `artifact-N.diff`。Compile case 另将原始编译输出写为 `<source>.bsc-out`，primary golden mismatch 写入 `golden.diff`。
+成功的 case/contract 会立即删除自己的 work 和 artifact 目录；simulation scenario 仅在全部所属 contract 非失败时删除共享 generation 现场。失败 case 会保留对应 workspace、日志和 diff，中断运行可能留下当前 run-id，均可用 `pixi run just test-prune` 清理。该命令只删除 `rust-test-work` 与 `rust-test-artifacts`，不会触碰 Cargo target、BSC result cache、generation cache 或 ccache。Scheduler 的 `bsc-schedule.log` 和 compile case 的 `bsc.log` 均包含命令、工作目录、BSC stdout/stderr、退出状态和耗时；simulation scenario 的 generation artifact 写 `compile.log`，各 contract 的隔离 artifact 分别写 `link.log`、`simulation.log` 和 VCD 产物。Compile 与 simulation contract 都通过共享 `artifact` 模块执行声明式断言；文件比较支持精确字节、golden 输出归一化和 Verilog banner/generated-ID 归一化，不一致写入独立 `artifact-N.diff`。Compile case 另将原始编译输出写为 `<source>.bsc-out`，primary golden mismatch 写入 `golden.diff`。
 
 BSC 运行时设置：
 

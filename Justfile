@@ -67,6 +67,10 @@ test:
 test-cold:
     "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test-cold
 
+# Remove disposable Rust test workspaces and diagnostics left by interrupted or failed runs.
+test-prune:
+    "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test-prune
+
 # Show Bluesim C++ compiler-cache statistics.
 ccache-stats:
     "{{pixi_rtk}}" summary "{{pixi_cargo}}" xtask ccache-stats
