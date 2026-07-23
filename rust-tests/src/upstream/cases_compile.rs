@@ -95,7 +95,7 @@ macro_rules! compile_fail_error_golden_case {
 }
 
 macro_rules! compile_verilog_pass_case {
-    ($name:literal, $fixture_dir:literal, $source:literal) => {
+    ($name:expr, $fixture_dir:expr, $source:expr) => {
         $crate::upstream::CompileCase {
             name: $name,
             fixture_dir: $fixture_dir,
@@ -134,6 +134,9 @@ macro_rules! compile_verilog_pass_warning_case {
 
 macro_rules! compile_verilog_fail_error_case {
     ($name:expr, $fixture_dir:expr, $source:expr, $tag:expr) => {
+        compile_verilog_fail_error_case!($name, $fixture_dir, $source, $tag, 1)
+    };
+    ($name:expr, $fixture_dir:expr, $source:expr, $tag:expr, $count:expr) => {
         $crate::upstream::CompileCase {
             name: $name,
             fixture_dir: $fixture_dir,
@@ -142,7 +145,7 @@ macro_rules! compile_verilog_fail_error_case {
             expectation: $crate::upstream::CompileExpectation::FailWithDiagnostic {
                 kind: $crate::upstream::DiagnosticKind::Error,
                 tag: $tag,
-                count: 1,
+                count: $count,
             },
             golden: None,
             options: &[],
@@ -201,9 +204,17 @@ case_modules!(
     cross_suite_basic,
     cross_suite_direct,
     cross_suite_errors,
+    cross_suite_frontend_options,
+    cross_suite_frontend_static,
     cross_suite_golden,
+    cross_suite_golden_static,
     cross_suite_mixed,
     cross_suite_multi,
+    cross_suite_simulation_examples,
+    cross_suite_simulation_language,
+    cross_suite_simulation_library,
+    cross_suite_verilog_options,
+    cross_suite_verilog_static,
     dynamic,
     enot_field,
     infer_kinds,

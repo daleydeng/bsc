@@ -1,11 +1,12 @@
 use crate::cache::{BscResultCache, CacheLookup, GenerationCache, ResultCacheLookup};
 use crate::{normalize_diff_b_text, readable_diff, run_bsc, run_command, Toolchain, BSC_TIMEOUT};
+use regex::Regex;
 use std::collections::VecDeque;
 use std::ffi::OsString;
 use std::fs;
 use std::path::{Component, Path, PathBuf};
 use std::process::Command;
-use std::sync::{mpsc, Arc, Mutex};
+use std::sync::{mpsc, Arc, Mutex, OnceLock};
 use std::thread;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -673,11 +674,26 @@ pub fn count_diagnostics(output: &str, kind: DiagnosticKind, tag: &str) -> usize
         .count()
 }
 
+fn normalize_windows_scientific_exponents(text: &str) -> String {
+    static WINDOWS_EXPONENT: OnceLock<Regex> = OnceLock::new();
+    let pattern = WINDOWS_EXPONENT.get_or_init(|| {
+        Regex::new(r"([0-9][eE][+-])0([0-9]{2})([^0-9]|$)")
+            .expect("Windows scientific exponent regex is valid")
+    });
+    pattern.replace_all(text, "${1}${2}${3}").into_owned()
+}
+
 pub fn normalize_legacy_golden(text: &str) -> String {
     let normalized_newlines = text.replace("\r\n", "\n").replace('\r', "\n");
+    let normalized_newlines = normalize_windows_scientific_exponents(&normalized_newlines);
     let mut filtered = String::with_capacity(normalized_newlines.len());
     for line in normalized_newlines.split_inclusive('\n') {
-        if !line.contains("SystemC") && !line.contains("dumpfile parameter") {
+        let trimmed = line.trim_start();
+        let isolated_dependency_progress = trimmed.starts_with("compiling ./");
+        if !line.contains("SystemC")
+            && !line.contains("dumpfile parameter")
+            && !isolated_dependency_progress
+        {
             filtered.push_str(line);
         }
     }
@@ -1455,10 +1471,20 @@ mod tests {
     #[test]
     fn legacy_golden_uses_diff_b_and_line_filters() {
         let expected = "alpha  beta\nSystemC banner\ndumpfile parameter ignored\nlast\tvalue\n";
-        let actual = "alpha\tbeta\nlast value   \r\n";
+        let actual = "alpha\tbeta\ncompiling ./Dependency.bs\nlast value   \r\n";
         assert_eq!(
             normalize_legacy_golden(expected),
             normalize_legacy_golden(actual)
+        );
+    }
+
+    #[test]
+    fn legacy_golden_normalizes_windows_scientific_exponents() {
+        let expected = "9.70e+01 -9.400000e+01 2.00204E-08\n";
+        let windows = "9.70e+001 -9.400000e+001 2.00204E-008\n";
+        assert_eq!(
+            normalize_legacy_golden(expected),
+            normalize_legacy_golden(windows)
         );
     }
 
