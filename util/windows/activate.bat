@@ -7,7 +7,7 @@ set "MSYSTEM=MINGW64"
 set "CHERE_INVOKING=1"
 
 rem Prefer the MinGW tools and MSYS2 shell supplied by this Pixi environment.
-rem Include both possible GHCup bin layouts; `pixi.ps1` also asks GHCup for the
+rem Include both possible GHCup bin layouts; `pixi.py` also asks GHCup for the
 rem authoritative path before invoking any compiler command.
 set "PATH=%PIXI_PROJECT_ROOT%\.pixi\ghcup\bin;%PIXI_PROJECT_ROOT%\.pixi\.ghcup\bin;%CONDA_PREFIX%\Library\mingw-w64\bin;%CONDA_PREFIX%\Library\usr\bin;%CONDA_PREFIX%\Library\bin;%PATH%"
 set "PKG_CONFIG_PATH=%CONDA_PREFIX%\Library\mingw-w64\lib\pkgconfig;%CONDA_PREFIX%\Library\mingw-w64\share\pkgconfig"

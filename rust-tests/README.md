@@ -18,6 +18,8 @@ pixi run just configure-oss-cad-suite D:\software\oss-cad-suite
 pixi run just test            # 使用 BSC 内容缓存和 C++ compiler cache 运行全部 contract tests
 pixi run just test-cold       # 禁用全部缓存，执行完整冷验证
 pixi run just test-alignment  # 只检查 Rust 声明是否仍与 testsuite 对齐
+pixi run just inventory-check # 检查完整剩余清单是否与当前迁移状态一致
+pixi run just inventory-update # 迁移后重建 rust-tests/REMAINING.md
 pixi run just test-z3         # 只运行 24 个 Z3 scheduler tests
 pixi run just test-upstream   # 对齐检查后运行动态迁移的 upstream cases
 ```
@@ -98,7 +100,7 @@ pixi run just test-alignment
 - 全局 Rust case name 必须唯一。
 - 递归统计整个 `testsuite` 的 `.exp` 测试来源，排除 `config/unix.exp`、`lib/bsc.exp` 和 `site.exp` 三个 harness 文件，并报告已迁移与剩余脚本数。迁移完成前，剩余项只报告覆盖率，不导致失败。
 
-`test-upstream` 和默认 `test` 已自动先运行该检查，因此 upstream 新增、删除或改名受支持的 Tcl 调用时，会在执行较慢的 BSC tests 前快速失败。
+`test-upstream` 和默认 `test` 已自动先运行 alignment 与 `inventory-check`，因此 upstream 新增、删除或改名受支持的 Tcl 调用、Rust 完成新迁移但忘记更新剩余清单时，都会在执行较慢的 BSC tests 前快速失败。
 
 ## 工作目录与产物
 
@@ -142,7 +144,7 @@ Upstream runner 当前完整覆盖 238 个普通 `.exp` 脚本、594 个动态 c
 
 Simulation case 分别执行 generate、link、simulate：Bluesim 使用 `-sim`，Verilog 使用 `-verilog -vsim iverilog`。原生 Windows 上 BSC 生成的 Bluesim launcher 是 `sh` 脚本，Icarus 产物是 `vvp` 字节码，runner 会选择正确启动器并将 `inst/bin/core` 前置到子进程 `PATH`。Icarus 输出应用 legacy 噪声过滤；runner 还会读取 `iverilog -V`，按 upstream exclusion 显式跳过版本能力不足的 case。所有 golden 均按 Tcl `compare_file` 的 `diff -b` 语义比较，并忽略包含 `SystemC` 或 `dumpfile parameter` 的行。
 
-完整迁移盘点和路线见 [`MIGRATION.md`](MIGRATION.md)。
+迁移历史见 [`MIGRATION.md`](MIGRATION.md)，已经人工核对的下一批候选与阻塞原因见 [`NEXT.md`](NEXT.md)，由 alignment 同源生成的全部剩余 621 个脚本见 [`REMAINING.md`](REMAINING.md)。
 
 ## 边界与后续方向
 

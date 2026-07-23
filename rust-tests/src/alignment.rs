@@ -59,6 +59,42 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
     })
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RemainingTestScript {
+    pub origin: String,
+    pub statically_declared_contracts: usize,
+}
+
+pub fn remaining_inventory() -> Result<Vec<RemainingTestScript>, String> {
+    let summary = check_alignment()?;
+    let project_root = locate_project_root()?;
+    let migrated = collect_migrated_origins(&project_root)?;
+    let remaining = collect_testsuite_scripts(&project_root, summary.scheduler_cases)?
+        .into_iter()
+        .filter(|script| !migrated.contains(&script.origin))
+        .map(|script| RemainingTestScript {
+            origin: script.origin,
+            statically_declared_contracts: script.statically_declared_contracts,
+        })
+        .collect::<Vec<_>>();
+
+    let remaining_contracts = remaining
+        .iter()
+        .map(|script| script.statically_declared_contracts)
+        .sum::<usize>();
+    if remaining.len() != summary.remaining_test_scripts
+        || remaining_contracts != summary.remaining_statically_declared_contracts
+    {
+        return Err(format!(
+            "remaining inventory does not match alignment summary: {} scripts/{remaining_contracts} contracts, expected {}/{}",
+            remaining.len(),
+            summary.remaining_test_scripts,
+            summary.remaining_statically_declared_contracts
+        ));
+    }
+    Ok(remaining)
+}
+
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 struct TestsuiteInventory {
     total_test_scripts: usize,
@@ -66,10 +102,31 @@ struct TestsuiteInventory {
     unclassified_test_scripts: usize,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct TestsuiteScript {
+    origin: String,
+    statically_declared_contracts: usize,
+}
+
 fn inventory_testsuite(
     project_root: &Path,
     scheduler_cases: usize,
 ) -> Result<TestsuiteInventory, String> {
+    let mut inventory = TestsuiteInventory::default();
+    for script in collect_testsuite_scripts(project_root, scheduler_cases)? {
+        inventory.total_test_scripts += 1;
+        inventory.total_statically_declared_contracts += script.statically_declared_contracts;
+        if script.statically_declared_contracts == 0 {
+            inventory.unclassified_test_scripts += 1;
+        }
+    }
+    Ok(inventory)
+}
+
+fn collect_testsuite_scripts(
+    project_root: &Path,
+    scheduler_cases: usize,
+) -> Result<Vec<TestsuiteScript>, String> {
     let testsuite = project_root.join("testsuite");
     let infrastructure = [
         project_root.join("testsuite/config/unix.exp"),
@@ -80,7 +137,7 @@ fn inventory_testsuite(
     .collect::<BTreeSet<_>>();
     let scheduler_origin = project_root.join(SCHEDULER_ORIGINS[0]);
     let mut directories = vec![testsuite];
-    let mut inventory = TestsuiteInventory::default();
+    let mut scripts = Vec::new();
 
     while let Some(directory) = directories.pop() {
         let entries = fs::read_dir(&directory).map_err(|error| {
@@ -99,23 +156,38 @@ fn inventory_testsuite(
                 && path.extension().is_some_and(|extension| extension == "exp")
                 && !infrastructure.contains(&path)
             {
-                inventory.total_test_scripts += 1;
-                let contracts = if path == scheduler_origin {
+                let statically_declared_contracts = if path == scheduler_origin {
                     scheduler_cases
                 } else {
                     let source = fs::read(&path)
                         .map_err(|error| format!("read test script {}: {error}", path.display()))?;
                     count_statically_declared_contracts(&String::from_utf8_lossy(&source))
                 };
-                inventory.total_statically_declared_contracts += contracts;
-                if contracts == 0 {
-                    inventory.unclassified_test_scripts += 1;
-                }
+                scripts.push(TestsuiteScript {
+                    origin: project_relative_unix_path(project_root, &path)?,
+                    statically_declared_contracts,
+                });
             }
         }
     }
+    scripts.sort_by(|left, right| left.origin.cmp(&right.origin));
+    Ok(scripts)
+}
 
-    Ok(inventory)
+fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, String> {
+    let mut origins = SCHEDULER_ORIGINS
+        .iter()
+        .map(|origin| (*origin).to_owned())
+        .collect::<BTreeSet<_>>();
+    for fixture_dir in compile_cases()
+        .iter()
+        .map(|case| case.fixture_dir)
+        .chain(simulation_cases().iter().map(|case| case.fixture_dir))
+    {
+        let origin = find_sole_exp(project_root, fixture_dir)?;
+        origins.insert(project_relative_unix_path(project_root, &origin)?);
+    }
+    Ok(origins)
 }
 
 fn count_statically_declared_contracts(source: &str) -> usize {

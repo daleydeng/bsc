@@ -197,6 +197,8 @@ Rust case 模块采用稳定的“来源范围 + contract 形态”命名，例�
 
 `alignment` 对模块架构执行闭环检查：磁盘 `.rs` 文件必须与宏注册集合一致，模块不得为空或使用迁移过程命名；文件头必须显式列出完整 `Origin(s)`，且与模块 `CASES` 根据 `fixture_dir` 推导出的 `.exp` 集合完全一致。原有 contract multiplicity、golden、fixture 和 scheduler 对齐检查继续保留，因此遗漏整个模块、遗漏模块内 case、写错来源或留下孤立文件都会在运行 BSC 前失败。重构后的完整 `pixi run just test` 验证为 30 个 helper、24 个 scheduler 和 594 个 upstream case 全部通过，422/422 BSC result 与 172/172 generation cache 命中。
 
+剩余工作也已固化为可检查产物：`remaining` Rust binary 复用 alignment 的来源注册与静态 contract 解析，生成 [`REMAINING.md`](REMAINING.md) 中全部未迁移 `.exp`，并验证脚本数与 contract 总和严格等于 alignment summary；[`NEXT.md`](NEXT.md) 保存人工核对过的安全候选、迁移顺序和阻塞原因。`inventory-update` 用于迁移后重建清单，`inventory-check` 已进入默认测试前置守门，避免文档再次过期。
+
 ### Generation cache 与性能基线
 
 默认 `test` 对成功的 simulation generation workspace 使用 SHA-256 内容寻址缓存；cache hit 仍重新执行 link、simulation 与 golden compare。完整 cache-fill 冷运行的 upstream artifact wall time 为 **435.5 秒**，128 个 simulation generation 全部 miss 并写入；随后完整热运行 128/128 hit，artifact wall time 为 **17.4 秒**，293 个 upstream case 均通过。
