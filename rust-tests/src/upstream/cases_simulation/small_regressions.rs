@@ -31,3 +31,10 @@ pub(super) const B1045_ICARUS: SimulationCase = icarus_case!(
     "Design",
     "sysDesign.out.expected"
 );
+
+pub(super) const CASES: &[SimulationCase] = &[
+    B1037_BLUESIM,
+    B1037_ICARUS,
+    B1045_BLUESIM,
+    B1045_ICARUS,
+];

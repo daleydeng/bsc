@@ -25,3 +25,16 @@ out_of_bounds_case!(LIST_N_OUT_OF_BOUNDS_1, "ListNOutOfBounds1.bsv");
 out_of_bounds_case!(LIST_N_OUT_OF_BOUNDS_2, "ListNOutOfBounds2.bsv");
 out_of_bounds_case!(BIT_OUT_OF_BOUNDS_1, "BitOutOfBounds1.bsv");
 out_of_bounds_case!(BIT_OUT_OF_BOUNDS_2, "BitOutOfBounds2.bsv");
+
+pub(super) const CASES: &[CompileCase] = &[
+    ARRAY_OUT_OF_BOUNDS_1,
+    ARRAY_OUT_OF_BOUNDS_2,
+    LIST_OUT_OF_BOUNDS_1,
+    LIST_OUT_OF_BOUNDS_2,
+    VECTOR_OUT_OF_BOUNDS_1,
+    VECTOR_OUT_OF_BOUNDS_2,
+    LIST_N_OUT_OF_BOUNDS_1,
+    LIST_N_OUT_OF_BOUNDS_2,
+    BIT_OUT_OF_BOUNDS_1,
+    BIT_OUT_OF_BOUNDS_2,
+];

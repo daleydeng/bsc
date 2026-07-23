@@ -28,3 +28,12 @@ read_desugaring_cases!(
     TWO_D_UPDATE_TEST_ICARUS,
     "TwoDUpdateTest"
 );
+
+pub(super) const CASES: &[SimulationCase] = &[
+    LIST_DESUGAR_BLUESIM,
+    LIST_DESUGAR_ICARUS,
+    STRUCT_REG_BLUESIM,
+    STRUCT_REG_ICARUS,
+    TWO_D_UPDATE_TEST_BLUESIM,
+    TWO_D_UPDATE_TEST_ICARUS,
+];

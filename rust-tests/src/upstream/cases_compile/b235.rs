@@ -31,3 +31,12 @@ b235_pass!(BUG_235_3, "Bug235-3.bsv");
 b235_pass!(BUG_235_4, "Bug235-4.bsv");
 b235_fail_golden!(BUG_235_5, "Bug235-5.bsv");
 b235_fail_golden!(BUG_235_6, "Bug235-6.bsv");
+
+pub(super) const CASES: &[CompileCase] = &[
+    BUG_235_1,
+    BUG_235_2,
+    BUG_235_3,
+    BUG_235_4,
+    BUG_235_5,
+    BUG_235_6,
+];

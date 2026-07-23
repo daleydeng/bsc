@@ -49,3 +49,15 @@ pub(super) const TYPE_ALIAS_SHADOW: CompileCase = compile_pass_case!(
     "testsuite/bsc.typechecker/kind/inferkinds",
     "TypeAliasShadow.bsv"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    INTERFACE_GROUNDED_INCORRECTLY,
+    INTERFACE_INFERED_FROM_TYPEDEF,
+    INTERFACE_PARTIAL_KIND,
+    INTERFACE_WRONG_PARTIAL_KIND,
+    INTERFACE_PARTIAL_KIND_MANY_PARAMS,
+    TYPEDEF_NUMERIC_RESULT,
+    SUB_UNION_SUB_STRUCT_PARTIAL_KIND,
+    CLASS_PARTIAL_KIND,
+    TYPE_ALIAS_SHADOW,
+];

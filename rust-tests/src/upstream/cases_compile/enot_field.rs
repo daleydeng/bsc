@@ -26,3 +26,10 @@ pub(super) const ENOT_FIELD_4: CompileCase = compile_fail_golden_case!(
     "ENotField4.bs",
     "ENotField4.bs.bsc-out.expected"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    ENOT_FIELD_1,
+    ENOT_FIELD_2,
+    ENOT_FIELD_3,
+    ENOT_FIELD_4,
+];

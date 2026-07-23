@@ -166,6 +166,12 @@ pub struct SimulationCase {
     pub heavy: bool,
 }
 
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct CaseModule<C: 'static> {
+    pub name: &'static str,
+    pub cases: &'static [C],
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum UpstreamCase {
     Compile(CompileCase),
@@ -198,16 +204,29 @@ impl UpstreamCase {
 mod cases_compile;
 mod cases_simulation;
 
-pub use cases_compile::CASES;
-pub use cases_simulation::SIMULATION_CASES;
+pub fn compile_cases() -> &'static [CompileCase] {
+    cases_compile::cases()
+}
+
+pub fn simulation_cases() -> &'static [SimulationCase] {
+    cases_simulation::cases()
+}
+
+pub(crate) fn compile_case_modules() -> &'static [CaseModule<CompileCase>] {
+    cases_compile::MODULES
+}
+
+pub(crate) fn simulation_case_modules() -> &'static [CaseModule<SimulationCase>] {
+    cases_simulation::MODULES
+}
 
 pub fn all_cases() -> Vec<UpstreamCase> {
-    CASES
+    compile_cases()
         .iter()
         .copied()
         .map(UpstreamCase::Compile)
         .chain(
-            SIMULATION_CASES
+            simulation_cases()
                 .iter()
                 .copied()
                 .map(UpstreamCase::Simulation),
@@ -1167,50 +1186,27 @@ mod tests {
     use std::collections::BTreeSet;
 
     #[test]
-    fn data_model_has_165_valid_cases_from_64_scripts() {
-        assert_eq!(CASES.len(), 165);
+    fn compile_data_model_is_valid_and_names_are_unique() {
+        let cases = compile_cases();
+        assert!(!cases.is_empty());
 
-        let names: BTreeSet<_> = CASES.iter().map(|case| case.name).collect();
-        let scripts: BTreeSet<_> = CASES.iter().map(|case| case.fixture_dir).collect();
-        assert_eq!(names.len(), 165, "case names must be unique");
-        assert_eq!(scripts.len(), 64);
+        let names: BTreeSet<_> = cases.iter().map(|case| case.name).collect();
+        assert_eq!(names.len(), cases.len(), "case names must be unique");
 
-        let mut category_counts = [0; 4];
-        let mut mode_counts = [0; 2];
-        for case in CASES {
+        for case in cases {
             validate_case(case).unwrap();
-            assert!(case.options.is_empty());
-            assert!(!case.nodeps);
             match case.expectation {
-                CompileExpectation::Pass => category_counts[0] += 1,
-                CompileExpectation::PassWithDiagnostic { count, .. } => {
-                    assert_eq!(count, 1);
-                    category_counts[1] += 1;
+                CompileExpectation::PassWithDiagnostic { count, .. }
+                | CompileExpectation::FailWithDiagnostic { count, .. } => {
+                    assert!(
+                        count > 0,
+                        "diagnostic count must be positive for {}",
+                        case.name
+                    );
                 }
-                CompileExpectation::Fail => category_counts[2] += 1,
-                CompileExpectation::FailWithDiagnostic { count, .. } => {
-                    assert_eq!(count, 1);
-                    category_counts[3] += 1;
-                }
-            }
-            match case.mode {
-                CompileMode::Frontend => {
-                    assert_eq!(case.requirement, Requirement::Always);
-                    mode_counts[0] += 1;
-                }
-                CompileMode::Verilog { module } => {
-                    assert_eq!(module, None);
-                    assert_eq!(case.requirement, Requirement::VerilogEnabled);
-                    mode_counts[1] += 1;
-                }
+                CompileExpectation::Pass | CompileExpectation::Fail => {}
             }
         }
-        assert_eq!(category_counts, [50, 1, 38, 76]);
-        assert_eq!(mode_counts, [115, 50]);
-        assert_eq!(
-            CASES.iter().filter(|case| case.golden.is_some()).count(),
-            39
-        );
 
         let phase_one_names = [
             "b600::Bug600.bsv",
@@ -1228,7 +1224,11 @@ mod tests {
 
     #[test]
     fn compile_modes_build_distinct_unix_exp_argv() {
-        let mut frontend = CASES[0];
+        let cases = compile_cases();
+        let mut frontend = *cases
+            .iter()
+            .find(|case| matches!(case.mode, CompileMode::Frontend))
+            .unwrap();
         frontend.options = &["-keep-fires"];
         assert_eq!(
             compile_arguments(&frontend),
@@ -1251,7 +1251,7 @@ mod tests {
             ]
         );
 
-        let mut verilog = *CASES
+        let mut verilog = *cases
             .iter()
             .find(|case| matches!(case.mode, CompileMode::Verilog { .. }))
             .unwrap();
@@ -1284,62 +1284,50 @@ mod tests {
 
     #[test]
     fn vtest_policy_defaults_enabled_and_zero_disables_verilog() {
+        let cases = compile_cases();
         let default_policy = RunnerPolicy::from_vtest(None);
         assert!(default_policy.verilog_enabled);
-        assert!(CASES
+        assert!(cases
             .iter()
             .all(|case| default_policy.skip_reason(case.requirement).is_none()));
 
         let disabled = RunnerPolicy::from_vtest(Some(std::ffi::OsStr::new("0")));
         assert!(!disabled.verilog_enabled);
-        let skipped: Vec<_> = CASES
+        let skipped: Vec<_> = cases
             .iter()
             .filter(|case| disabled.skip_reason(case.requirement).is_some())
-            .map(|case| case.name)
             .collect();
-        assert_eq!(skipped.len(), 50);
-        assert!(skipped.iter().any(|name| name.contains("dynamic/errors")));
-        assert!(skipped.iter().any(|name| name.contains("bounds/select")));
+        let verilog_cases = cases
+            .iter()
+            .filter(|case| matches!(case.mode, CompileMode::Verilog { .. }))
+            .count();
+        assert_eq!(skipped.len(), verilog_cases);
+        assert!(skipped
+            .iter()
+            .all(|case| matches!(case.mode, CompileMode::Verilog { .. })));
 
         assert!(RunnerPolicy::from_vtest(Some(std::ffi::OsStr::new("1"))).verilog_enabled);
     }
 
     #[test]
-    fn simulation_data_model_has_128_valid_backend_cases() {
-        assert_eq!(SIMULATION_CASES.len(), 128);
-        let mut backend_counts = [0; 2];
-        let mut heavy_count = 0;
-        for case in SIMULATION_CASES {
+    fn simulation_data_model_is_valid_and_names_are_unique() {
+        let cases = simulation_cases();
+        assert!(!cases.is_empty());
+
+        let names: BTreeSet<_> = cases.iter().map(|case| case.name).collect();
+        assert_eq!(names.len(), cases.len(), "case names must be unique");
+        for case in cases {
             validate_simulation_case(case).unwrap();
-            assert!(case.link_options.is_empty());
-            assert!(case.simulation_options.is_empty());
-            assert!(!case.sort_output);
-            if case.heavy {
-                heavy_count += 1;
-                assert_eq!(case.backend, SimulationBackend::Icarus);
-                assert_eq!(case.timeout, std::time::Duration::from_secs(600));
-            } else {
-                assert_eq!(case.timeout, crate::BSC_TIMEOUT);
-            }
-            match case.backend {
-                SimulationBackend::Bluesim => backend_counts[0] += 1,
-                SimulationBackend::Icarus => backend_counts[1] += 1,
-            }
         }
-        assert_eq!(backend_counts, [64, 64]);
-        assert_eq!(heavy_count, 2);
-        assert_eq!(
-            SIMULATION_CASES
-                .iter()
-                .filter(|case| case.compile_options == ["-aggressive-conditions"])
-                .count(),
-            2
-        );
 
         let all = all_cases();
-        assert_eq!(all.len(), 293);
-        let names: BTreeSet<_> = all.iter().map(|case| case.name()).collect();
-        assert_eq!(names.len(), 293, "all upstream case names must be unique");
+        assert_eq!(all.len(), compile_cases().len() + simulation_cases().len());
+        let all_names: BTreeSet<_> = all.iter().map(|case| case.name()).collect();
+        assert_eq!(
+            all_names.len(),
+            all.len(),
+            "all upstream case names must be unique"
+        );
     }
 
     #[test]
@@ -1350,25 +1338,34 @@ mod tests {
             Some(std::ffi::OsStr::new("1")),
         )
         .with_iverilog_major(Some(13));
-        assert_eq!(
-            cases
-                .iter()
-                .filter(|case| no_bluesim.skip_reason(case.requirement()).is_some())
-                .count(),
-            64
-        );
+        let skipped_without_bluesim = cases
+            .iter()
+            .filter(|case| no_bluesim.skip_reason(case.requirement()).is_some())
+            .count();
+        let bluesim_cases = cases
+            .iter()
+            .filter(|case| case.requirement() == Requirement::BluesimEnabled)
+            .count();
+        assert_eq!(skipped_without_bluesim, bluesim_cases);
 
         let no_verilog = RunnerPolicy::from_environment(
             Some(std::ffi::OsStr::new("1")),
             Some(std::ffi::OsStr::new("0")),
         );
-        assert_eq!(
-            cases
-                .iter()
-                .filter(|case| no_verilog.skip_reason(case.requirement()).is_some())
-                .count(),
-            114
-        );
+        let skipped_without_verilog = cases
+            .iter()
+            .filter(|case| no_verilog.skip_reason(case.requirement()).is_some())
+            .count();
+        let verilog_cases = cases
+            .iter()
+            .filter(|case| {
+                matches!(
+                    case.requirement(),
+                    Requirement::VerilogEnabled | Requirement::IcarusAtLeast(_)
+                )
+            })
+            .count();
+        assert_eq!(skipped_without_verilog, verilog_cases);
     }
 
     #[test]

@@ -41,3 +41,14 @@ pub(super) const ADJUST_SIZE: CompileCase = compile_pass_case!(
     FIXTURE_DIR,
     "AdjustSize.bsv"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    C_HAS_TYPE,
+    C_DEFL,
+    C_DEFL_BSV,
+    C_BIND_T,
+    KIND_MISMATCH_MISSING_ARG,
+    KIND_MISMATCH_ARG_TO_BOUND_VAR,
+    WIDENING_PLUS,
+    ADJUST_SIZE,
+];

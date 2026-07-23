@@ -45,3 +45,12 @@ pub(super) const GH894: CompileCase = compile_fail_golden_case!(
     "Test.bs",
     "Test.bs.bsc-out.expected"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    B1048,
+    B1163,
+    B1198,
+    B1229,
+    B1318,
+    GH894,
+];

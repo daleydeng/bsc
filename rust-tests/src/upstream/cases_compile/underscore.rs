@@ -97,3 +97,23 @@ pub(super) const IFC_DEF_METH_ARG_QMARK: CompileCase = compile_fail_error_case!(
     "IfcDef_MethArg_Qmark.bsv",
     "P0005"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    TOP_DEF_VAR_TYPE,
+    TOP_DEF_VAR_TYPE_BAD,
+    TOP_DEF_VAR_NO_TYPE,
+    TOP_DEF_FUNC_TYPE,
+    TOP_DEF_FUNC_TYPE_BAD,
+    TOP_DEF_FUNC_ARG,
+    TOP_DEF_FUNC_ARG_BAD,
+    MOD_DEF_PORT_ARG,
+    MOD_DEF_PORT_ARG_BAD,
+    IFC_DECL_METH_ARG,
+    IFC_DEF_METH_ARG,
+    IFC_DEF_METH_ARG_BAD,
+    METH_ARG_SYNTH,
+    TOP_DEF_FUNC_ARG_QMARK,
+    MOD_DEF_PORT_ARG_QMARK,
+    IFC_DECL_METH_ARG_QMARK,
+    IFC_DEF_METH_ARG_QMARK,
+];

@@ -32,3 +32,20 @@ dynamic_cases!(NEG_BLUESIM, NEG_ICARUS, "DynamicNeg");
 dynamic_cases!(NEG_2_BLUESIM, NEG_2_ICARUS, "DynamicNeg2");
 dynamic_cases!(LT_BLUESIM, LT_ICARUS, "DynamicLT");
 dynamic_cases!(ADD_BLUESIM, ADD_ICARUS, "DynamicAdd");
+
+pub(super) const CASES: &[SimulationCase] = &[
+    INTEGER_BLUESIM,
+    INTEGER_ICARUS,
+    INTEGER_NESTED_BLUESIM,
+    INTEGER_NESTED_ICARUS,
+    DIV_BLUESIM,
+    DIV_ICARUS,
+    NEG_BLUESIM,
+    NEG_ICARUS,
+    NEG_2_BLUESIM,
+    NEG_2_ICARUS,
+    LT_BLUESIM,
+    LT_ICARUS,
+    ADD_BLUESIM,
+    ADD_ICARUS,
+];

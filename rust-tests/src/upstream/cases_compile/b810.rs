@@ -8,3 +8,7 @@ pub(super) const BUG_810_2: CompileCase = compile_fail_error_case!(
     "Bug810_2.bsv",
     "T0031"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    BUG_810_2,
+];

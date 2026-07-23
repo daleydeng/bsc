@@ -48,3 +48,20 @@ string_cases!(
 string_cases!(EQ_BLUESIM, EQ_ICARUS, "StringEQ");
 string_cases!(LT_BLUESIM, LT_ICARUS, "StringLT");
 string_cases!(FORMAT_BLUESIM, FORMAT_ICARUS, "DynamicFormatString");
+
+pub(super) const CASES: &[SimulationCase] = &[
+    MUX_BLUESIM,
+    MUX_ICARUS,
+    CONCAT_BLUESIM,
+    CONCAT_ICARUS,
+    INTEGER_BLUESIM,
+    INTEGER_ICARUS,
+    INTEGER_WITH_NULL_BLUESIM,
+    INTEGER_WITH_NULL_ICARUS,
+    EQ_BLUESIM,
+    EQ_ICARUS,
+    LT_BLUESIM,
+    LT_ICARUS,
+    FORMAT_BLUESIM,
+    FORMAT_ICARUS,
+];

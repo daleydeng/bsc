@@ -31,3 +31,26 @@ bounds_cases!(LIST_N_1_BLUESIM, LIST_N_1_ICARUS, "ListNInBounds1");
 bounds_cases!(LIST_N_2_BLUESIM, LIST_N_2_ICARUS, "ListNInBounds2");
 bounds_cases!(BIT_1_BLUESIM, BIT_1_ICARUS, "BitInBounds1");
 bounds_cases!(BIT_2_BLUESIM, BIT_2_ICARUS, "BitInBounds2");
+
+pub(super) const CASES: &[SimulationCase] = &[
+    ARRAY_1_BLUESIM,
+    ARRAY_1_ICARUS,
+    ARRAY_2_BLUESIM,
+    ARRAY_2_ICARUS,
+    LIST_1_BLUESIM,
+    LIST_1_ICARUS,
+    LIST_2_BLUESIM,
+    LIST_2_ICARUS,
+    VECTOR_1_BLUESIM,
+    VECTOR_1_ICARUS,
+    VECTOR_2_BLUESIM,
+    VECTOR_2_ICARUS,
+    LIST_N_1_BLUESIM,
+    LIST_N_1_ICARUS,
+    LIST_N_2_BLUESIM,
+    LIST_N_2_ICARUS,
+    BIT_1_BLUESIM,
+    BIT_1_ICARUS,
+    BIT_2_BLUESIM,
+    BIT_2_ICARUS,
+];

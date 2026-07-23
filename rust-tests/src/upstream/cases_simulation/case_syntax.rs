@@ -28,3 +28,12 @@ case_simulation_cases!(
 );
 case_simulation_cases!(MIXED_HEX_BLUESIM, MIXED_HEX_ICARUS, "CaseMixedHex");
 case_simulation_cases!(MIXED_OCT_BLUESIM, MIXED_OCT_ICARUS, "CaseMixedOct");
+
+pub(super) const CASES: &[SimulationCase] = &[
+    MATCHES_MIXED_LIT_BLUESIM,
+    MATCHES_MIXED_LIT_ICARUS,
+    MIXED_HEX_BLUESIM,
+    MIXED_HEX_ICARUS,
+    MIXED_OCT_BLUESIM,
+    MIXED_OCT_ICARUS,
+];

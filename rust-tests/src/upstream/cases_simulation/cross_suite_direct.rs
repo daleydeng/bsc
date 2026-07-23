@@ -172,3 +172,18 @@ pub(super) const BRAM_PIPELINED_ICARUS: SimulationCase = bram_case!(
     SimulationBackend::Icarus,
     Requirement::VerilogEnabled
 );
+
+pub(super) const CASES: &[SimulationCase] = &[
+    FIR_BLUESIM,
+    FIR_ICARUS,
+    PROPERTIES_BLUESIM,
+    PROPERTIES_ICARUS,
+    HAMMING_BLUESIM,
+    HAMMING_ICARUS,
+    BRAM_BLUESIM,
+    BRAM_ICARUS,
+    BRAM_1_BLUESIM,
+    BRAM_1_ICARUS,
+    BRAM_PIPELINED_BLUESIM,
+    BRAM_PIPELINED_ICARUS,
+];

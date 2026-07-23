@@ -24,3 +24,12 @@ macro_rules! b810_cases {
 b810_cases!(BUG_810_1_BLUESIM, BUG_810_1_ICARUS, "Bug810_1");
 b810_cases!(BUG_810_3_BLUESIM, BUG_810_3_ICARUS, "Bug810_3");
 b810_cases!(OPT_BUG_BLUESIM, OPT_BUG_ICARUS, "Opt_bug");
+
+pub(super) const CASES: &[SimulationCase] = &[
+    BUG_810_1_BLUESIM,
+    BUG_810_1_ICARUS,
+    BUG_810_3_BLUESIM,
+    BUG_810_3_ICARUS,
+    OPT_BUG_BLUESIM,
+    OPT_BUG_ICARUS,
+];

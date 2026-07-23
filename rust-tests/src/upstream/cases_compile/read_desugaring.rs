@@ -24,3 +24,9 @@ pub(super) const STRUCT_REG_FAIL: CompileCase = compile_fail_error_case!(
     "StructRegFail.bsv",
     "T0020"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    LIST_DESUGAR_FAIL,
+    LIST_DESUGAR_FAIL_2,
+    STRUCT_REG_FAIL,
+];

@@ -17,3 +17,8 @@ pub(super) const SINGLETON_WARNING: CompileCase = compile_verilog_pass_warning_c
     "CFSingleton.bsv",
     "G0010"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    NOT_RESOURCE,
+    SINGLETON_WARNING,
+];

@@ -102,3 +102,24 @@ conflict_free_cases!(
     "sysCFSwitch.v.out.expected",
     &[]
 );
+
+pub(super) const CASES: &[SimulationCase] = &[
+    OK_BLUESIM,
+    OK_ICARUS,
+    OK_2_BLUESIM,
+    OK_2_ICARUS,
+    OK_3_BLUESIM,
+    OK_3_ICARUS,
+    NOT_OK_BLUESIM,
+    NOT_OK_ICARUS,
+    RESOURCE_BLUESIM,
+    RESOURCE_ICARUS,
+    EXEC_ORDER_1_BLUESIM,
+    EXEC_ORDER_1_ICARUS,
+    EXEC_ORDER_2_BLUESIM,
+    EXEC_ORDER_2_ICARUS,
+    EXEC_ORDER_3_BLUESIM,
+    EXEC_ORDER_3_ICARUS,
+    SWITCH_BLUESIM,
+    SWITCH_ICARUS,
+];

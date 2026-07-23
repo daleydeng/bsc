@@ -46,3 +46,28 @@ dynamic_error_case!(IFC_INOUT_CASE, "Ifc_Inout_Case.bsv");
 dynamic_error_case!(IFC_CLOCK_ARR_SEL, "Ifc_Clock_ArrSel.bsv");
 dynamic_error_case!(IFC_RESET_ARR_SEL, "Ifc_Reset_ArrSel.bsv");
 dynamic_error_case!(IFC_INOUT_ARR_SEL, "Ifc_Inout_ArrSel.bsv");
+
+pub(super) const CASES: &[CompileCase] = &[
+    DYNAMIC_INTEGER_FAIL,
+    E_RULES_MUX_1,
+    E_RULES_MUX_2,
+    E_RULES_MUX_2A,
+    E_RULES_MUX_3,
+    E_RULES_MUX_2A_CASE,
+    E_RULES_MUX_3_CASE,
+    E_RULES_MUX_2A_ARR_SEL,
+    E_RULES_MUX_3_ARR_SEL,
+    MOD_ARG_CLOCK,
+    MOD_ARG_RESET,
+    MOD_ARG_INOUT,
+    MOD_ARG_PARAM,
+    IFC_CLOCK_IF,
+    IFC_RESET_IF,
+    IFC_INOUT_IF,
+    IFC_CLOCK_CASE,
+    IFC_RESET_CASE,
+    IFC_INOUT_CASE,
+    IFC_CLOCK_ARR_SEL,
+    IFC_RESET_ARR_SEL,
+    IFC_INOUT_ARR_SEL,
+];

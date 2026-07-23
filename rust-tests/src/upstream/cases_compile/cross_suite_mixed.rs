@@ -1,6 +1,13 @@
-//! Origins are the sole `.exp` scripts in the fixture directories declared by
-//! each case (`gh309`, `gh435`, three `bugID*`, three message directories, and
-//! `bsc.syntax/bsv05/moduletype`).
+//! Origins:
+//! - `testsuite/bsc.bugs/github/gh309/gh309.exp`
+//! - `testsuite/bsc.bugs/github/gh435/gh435.exp`
+//! - `testsuite/bsc.interra/bugs/bugID149/bugID149.exp`
+//! - `testsuite/bsc.interra/bugs/bugID169/bugID169.exp`
+//! - `testsuite/bsc.interra/bugs/bugID313/bugID313.exp`
+//! - `testsuite/bsc.interra/messages/EFieldAmb/EFieldAmb.exp`
+//! - `testsuite/bsc.interra/messages/EMissingNL/EMissingNL.exp`
+//! - `testsuite/bsc.interra/messages/EUnboundClCon/EUnboundClCon.exp`
+//! - `testsuite/bsc.syntax/bsv05/moduletype/moduletype.exp`
 
 use super::CompileCase;
 
@@ -61,3 +68,16 @@ pub(super) const MODULE_TYPE_MISSING_ARG: CompileCase = compile_fail_error_case!
     "ModuleTypeInFunction_MissingArg.bsv",
     "T0025"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    GH435,
+    GH309,
+    BUG_ID_313,
+    BUG_ID_149,
+    BUG_ID_169,
+    E_MISSING_NL,
+    E_UNBOUND_CL_CON,
+    E_FIELD_AMB,
+    MODULE_TYPE_GOOD,
+    MODULE_TYPE_MISSING_ARG,
+];

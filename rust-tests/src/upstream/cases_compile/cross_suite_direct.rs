@@ -45,3 +45,12 @@ pub(super) const HAMMING_QUESTION: CompileCase = compile_pass_case!(
     "testsuite/bsc.bsv_examples/Hamming",
     "HammingQ.bsv"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    BUG_120_1,
+    BUG_120_2,
+    BUG_120_3,
+    E_AMB_OPER,
+    ASSERTION_SYNTAX,
+    HAMMING_QUESTION,
+];

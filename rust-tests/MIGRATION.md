@@ -157,7 +157,45 @@ Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，
 
 完整迁移 6 个无需扩展 runner 的脚本：`b120`、`EAmbOper`、`properties`、`FIRFilter`、`Hamming` 和 `BRAMTest`。新增 6 个 compile contract 与 12 个 simulation contract；FIR 显式 stage 其本地 package source，BRAM 显式 stage 运行时初始化文件 `bram2.txt`。
 
-当前累计完整覆盖 **70 个普通 `.exp` 脚本、317 个独立 contract case**：293 个 upstream 动态 case（165 compile + 128 simulation），加上 24 个 Z3 scheduler case。计入 `sat.exp` 后，迁移覆盖为 testsuite 的 **71/860 个测试来源脚本**，剩余 789 个；`alignment` 会持续报告该全仓库覆盖率。
+当前累计完整覆盖 **70 个普通 `.exp` 脚本、317 个独立 contract case**：293 个 upstream 动态 case（165 compile + 128 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第八批：简单 compile regressions
+
+完整迁移 12 个单调用 compile 脚本：`b1043`、`b1213`、`b1235`、`b1265`、`b1267`、`b1332`、`b1356`、`b1389`、`b1396`、`b265`、`b290` 和 `b308`。新增 5 个 frontend pass、6 个 Verilog pass 和 1 个带 `G0124` 诊断的 Verilog fail；有本地 package 依赖的 case 显式 stage 全部源文件。
+
+当前累计完整覆盖 **82 个普通 `.exp` 脚本、329 个独立 contract case**：305 个 upstream 动态 case（177 compile + 128 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第九批：跨目录简单 compile regressions
+
+完整迁移 15 个单调用 compile 脚本，覆盖 `bluespec_inc`、GitHub regressions、BSV examples 和 evaluator static-eval。新增 7 个 frontend pass、7 个 Verilog pass 和 1 个带 `S0015` 诊断的 Verilog fail；`b373` 显式 stage 本地依赖 `Wallace.bs`，其余 case 均为单 source fixture。
+
+当前累计完整覆盖 **97 个普通 `.exp` 脚本、344 个独立 contract case**：320 个 upstream 动态 case（192 compile + 128 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第十批：大批量静态 compile scripts
+
+完整迁移 60 个无需扩展 runner 的静态 compile 脚本：30 个来自 `bluespec_inc`，30 个来自 messages、interra、port renaming、GitHub regressions、BSV examples 和 typechecker。新增 93 个 compile contract，包括 47 个 pass、18 个普通 fail 和 28 个 tagged fail；其中 66 个 frontend、27 个 Verilog、25 个 golden、8 个非空 options、4 个显式 module。本地 package 的递归依赖均显式 stage，静态多调用 `.exp` 的每个 contract 均独立注册。
+
+当前累计完整覆盖 **157 个普通 `.exp` 脚本、437 个独立 contract case**：413 个 upstream 动态 case（285 compile + 128 simulation），加上 24 个 Z3 scheduler case。
+
+### Phase 3 第十一批：多调用 compile 与 contract inventory
+
+完整迁移 31 个静态 compile 脚本：6 个来自 `bluespec_inc`，25 个来自 interra bugs/messages 和 BSV examples。新增 64 个 compile contract，包括 26 个 pass、25 个普通 fail、12 个 tagged fail 和 1 个 tagged warning；其中 39 个新增 golden、4 个非空 options、3 个显式 module，并覆盖诊断 count=2 和大型递归 fixture 闭包。
+
+`alignment` 同时新增全仓库 contract inventory：除脚本覆盖率外，统计当前模型可静态识别的 compile、Bluesim、Icarus 和 scheduler contract，并明确报告仍需动态或自定义 Tcl 分析的脚本数。该 contract 分母是可重复验证的静态声明数，不假装展开 Tcl 循环或自定义流程。
+
+当前累计完整覆盖 **188 个普通 `.exp` 脚本、501 个独立 contract case**：477 个 upstream 动态 case（349 compile + 128 simulation），加上 24 个 Z3 scheduler case。计入 `sat.exp` 后，脚本覆盖为 **189/860**，剩余 671 个；静态 contract 覆盖为 **501/4161**，剩余 3660 个；另有 250 个脚本需要动态或自定义 Tcl 分析。
+
+### Phase 3 第十二批：静态多调用 compile 与 simulation regressions
+
+完整迁移 50 个静态脚本、117 个 contract：30 个 compile 脚本展开为 73 个 case，20 个 simulation 脚本展开为 44 个 backend case。Compile 新增 17 个普通 pass、4 个 tagged warning pass、19 个普通 fail 和 33 个 tagged fail，其中 55 个 frontend、18 个 Verilog、25 个 golden、17 个非空 options；simulation 新增 22 个 Bluesim 和 22 个 Icarus contract，并递归 stage `b1302`、`stepcounter`、`xbar` 的本地依赖。
+
+当前累计完整覆盖 **238 个普通 `.exp` 脚本、618 个独立 contract case**：594 个 upstream 动态 case（422 compile + 172 simulation），加上 24 个 Z3 scheduler case。计入 `sat.exp` 后，脚本覆盖为 **239/860**，剩余 621 个；静态 contract 覆盖为 **618/4161**，剩余 3543 个；另有 250 个脚本需要动态或自定义 Tcl 分析。
+
+Rust case 模块采用稳定的“来源范围 + contract 形态”命名，例如 `bluespec_inc_single`、`bluespec_inc_multi`、`bluespec_inc_golden`、`cross_suite_basic`、`cross_suite_direct`、`cross_suite_errors`、`cross_suite_golden`、`cross_suite_mixed`、`cross_suite_multi` 和 `static_regressions`。迁移批次编号只保留在本文件的时间线中，不进入 Rust module 名；case 模块文件名不使用 `batch`、`large`、`other` 或批次序号，避免后续迁移改变代码结构语义。
+
+注册架构随后完成去中心化：每个来源模块维护自己的 `CASES` slice，compile/simulation 中央文件分别只保留一个按稳定名称排序的模块宏列表，由同一列表同时生成 `mod` 声明和模块描述，再使用标准库 `OnceLock` 一次展平。原先中央 422 项和 172 项手工数组已删除，数据模型单测也不再保存会随迁移频繁变化的总数、类别和 backend 快照，而是验证逐 case 语义关系、非空集合和全局名称唯一性。
+
+`alignment` 对模块架构执行闭环检查：磁盘 `.rs` 文件必须与宏注册集合一致，模块不得为空或使用迁移过程命名；文件头必须显式列出完整 `Origin(s)`，且与模块 `CASES` 根据 `fixture_dir` 推导出的 `.exp` 集合完全一致。原有 contract multiplicity、golden、fixture 和 scheduler 对齐检查继续保留，因此遗漏整个模块、遗漏模块内 case、写错来源或留下孤立文件都会在运行 BSC 前失败。重构后的完整 `pixi run just test` 验证为 30 个 helper、24 个 scheduler 和 594 个 upstream case 全部通过，422/422 BSC result 与 172/172 generation cache 命中。
 
 ### Generation cache 与性能基线
 
@@ -165,7 +203,7 @@ Windows 下 BSC 生成的 Bluesim 产物是依赖 `sh`/`bluetcl` 的 launcher，
 
 Bluesim link 的生成 C++ 编译进一步使用 Pixi 管理的 `ccache`。在相同 128/128 generation hit 条件下，A/B 实测 `ccache 4.13.6` 和 `sccache 0.16.0` 的 cacheable warm hit 均为 128/128；`ccache` 的完整 upstream wall time 为 **15.35 秒**、Bluesim link 累计 **44.8 秒**，优于 `sccache` 的 **17.69 秒**和 **67.0 秒**，因此 Windows 默认选用 `ccache`。
 
-165 个 compile contract 与 24 个 scheduler contract 使用统一 BSC result cache。缓存 key 包含 toolchain、fixture、argv、关键环境及一次性计算的 Z3 内容指纹；只有已通过对应 Rust contract 和 golden 的原始 BSC workspace、输出和 exit status 才会原子发布，cache hit 后仍重新执行全部 Rust 检查。最终 warm 全量 `pixi run just test` 实测 **13.59 秒**：24/24 scheduler result hit、165/165 compile result hit、128/128 generation hit，27 个 helper、24 个 scheduler 和 293 个 upstream case 全部通过。
+当前 422 个 compile contract 与 24 个 scheduler contract 使用统一 BSC result cache。缓存 key 包含 toolchain、fixture、argv、关键环境及一次性计算的 Z3 内容指纹；只有已通过对应 Rust contract 和 golden 的原始 BSC workspace、输出和 exit status 才会原子发布，cache hit 后仍重新执行全部 Rust 检查。第七批完成时 warm 全量 `pixi run just test` 实测 **13.59 秒**：24/24 scheduler result hit、165/165 compile result hit、128/128 generation hit，27 个 helper、24 个 scheduler 和 293 个 upstream case 全部通过；第十一批迁移后再次 warm 验证 349/349 compile、128/128 generation cache hit，28 个 helper 和 477 个 upstream case 全部通过；第十二批首次全量验证得到 349 个 compile hit、73 个 miss/store、128 个 generation hit 和 44 个 miss/store，随后 warm 验证为 422/422 compile 与 172/172 generation hit，28 个 helper、24 个 scheduler 和 594 个 upstream case 全部通过。
 
 `pixi run just test-cold` 会同时禁用 generation cache、BSC result cache 和 compiler cache，保留完整无缓存验证入口。
 

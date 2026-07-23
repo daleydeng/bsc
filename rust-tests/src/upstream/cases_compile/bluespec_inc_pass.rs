@@ -1,5 +1,20 @@
-//! Origins: `testsuite/bsc.bugs/bluespec_inc/<bug>/<bug>.exp` for each case's
-//! fixture directory.
+//! Origins:
+//! - `testsuite/bsc.bugs/bluespec_inc/b600/b600.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b532/b532.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1470/b1470.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b271/b271.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1599/b1599.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b198/b198.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b289/b289.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1294/b1294.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b267/b267.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b547/b547.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b41/b41.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b542/b542.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b384/b384.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b436/b436.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b394/b394.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b927/b927.exp`
 
 use super::CompileCase;
 
@@ -83,3 +98,22 @@ pub(super) const B927: CompileCase = compile_pass_case!(
     "testsuite/bsc.bugs/bluespec_inc/b927",
     "Bug927.bsv"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    B600,
+    B532,
+    B1470,
+    B271,
+    B1599,
+    B198,
+    B289,
+    B1294,
+    B267,
+    B547,
+    B41,
+    B542,
+    B384,
+    B436,
+    B394,
+    B927,
+];

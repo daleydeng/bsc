@@ -1,5 +1,9 @@
-//! Origins: `testsuite/bsc.bugs/bluespec_inc/<bug>/<bug>.exp` for each case's
-//! fixture directory.
+//! Origins:
+//! - `testsuite/bsc.bugs/bluespec_inc/b1586/b1586.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b269/b269.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b880/b880.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b1493/b1493.exp`
+//! - `testsuite/bsc.bugs/bluespec_inc/b557/b557.exp`
 
 use super::CompileCase;
 
@@ -45,3 +49,13 @@ pub(super) const B557_BAD: CompileCase = compile_fail_error_case!(
     "Bug557_2.bsv",
     "P0109"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    B1586,
+    B269,
+    B880,
+    B1493_GOOD,
+    B1493_BAD,
+    B557_GOOD,
+    B557_BAD,
+];

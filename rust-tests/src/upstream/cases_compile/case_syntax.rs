@@ -38,3 +38,13 @@ macro_rules! case_pass {
 case_pass!(LITERAL_SIGNED, "CaseLiteralSigned.bsv");
 case_pass!(STRING_LITERAL, "CaseStringLiteral.bsv");
 case_pass!(MATCHES_STRING_LITERAL, "CaseMatchesStringLiteral.bsv");
+
+pub(super) const CASES: &[CompileCase] = &[
+    MIXED_DEC,
+    MIXED_LITERAL,
+    IF_DUMMY_1,
+    IF_DUMMY_2,
+    LITERAL_SIGNED,
+    STRING_LITERAL,
+    MATCHES_STRING_LITERAL,
+];

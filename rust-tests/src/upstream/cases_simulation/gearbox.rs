@@ -52,3 +52,14 @@ pub(super) const SAME_CLOCK_ICARUS: SimulationCase = icarus_case!(
     "GearboxSameClockTest",
     "sysGearboxSameClockTest.v.out.expected"
 );
+
+pub(super) const CASES: &[SimulationCase] = &[
+    FULL_SPEED_BLUESIM,
+    FULL_SPEED_ICARUS,
+    BUBBLE_BLUESIM,
+    BUBBLE_ICARUS,
+    ONE_TO_ONE_BLUESIM,
+    ONE_TO_ONE_ICARUS,
+    SAME_CLOCK_BLUESIM,
+    SAME_CLOCK_ICARUS,
+];

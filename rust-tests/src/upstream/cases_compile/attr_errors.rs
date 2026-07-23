@@ -61,3 +61,16 @@ pub(super) const MULTIPLE_SAME_ATTRIB_MODULE: CompileCase = compile_pass_case!(
     "testsuite/bsc.misc/attrErrors",
     "MultipleSameAttribModule.bsv"
 );
+
+pub(super) const CASES: &[CompileCase] = &[
+    T1,
+    T2,
+    T3,
+    T4,
+    T5,
+    T6,
+    MULTIPLE_ATTRIB_MODULE,
+    MULTIPLE_ATTRIB_FUNC,
+    MULTIPLE_ATTRIB_RULE,
+    MULTIPLE_SAME_ATTRIB_MODULE,
+];
