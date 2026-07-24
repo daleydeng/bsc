@@ -41,7 +41,7 @@ macro_rules! pragma_scenario {
                 MEMORY_FIXTURES[3],
             ],
             top: $top,
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: $compile_options,
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

@@ -185,10 +185,22 @@ pub(super) fn compare_golden_output(
     actual_path: &Path,
     diff_path: &Path,
 ) -> Result<(), String> {
+    compare_golden_output_with(actual, expected_path, actual_path, diff_path, str::to_owned)
+}
+
+pub(super) fn compare_golden_output_with(
+    actual: &str,
+    expected_path: &Path,
+    actual_path: &Path,
+    diff_path: &Path,
+    normalize: impl Fn(&str) -> String,
+) -> Result<(), String> {
     let expected = fs::read_to_string(expected_path)
         .map_err(|error| format!("read golden {}: {error}", expected_path.display()))?;
+    let actual = normalize(actual);
+    let expected = normalize(&expected);
     compare_normalized_text(
-        actual,
+        &actual,
         &expected,
         ArtifactNormalization::GoldenOutput,
         actual_path,

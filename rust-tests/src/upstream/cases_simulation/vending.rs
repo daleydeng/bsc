@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.bsv_examples/vending";
@@ -32,7 +32,7 @@ macro_rules! vending_backend_scenario {
                 $expected,
             ],
             top: "sysTestVending",
-            generated_modules: &["mkVending"],
+            link_inputs: &[SimulationLinkInput::GeneratedModule("mkVending")],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

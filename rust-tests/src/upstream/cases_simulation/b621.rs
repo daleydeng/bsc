@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.bugs/bluespec_inc/b621";
@@ -19,7 +19,7 @@ macro_rules! vector_interface_scenario {
                 concat!("sys", $module, ".out.expected"),
             ],
             top: concat!("sys", $module),
-            generated_modules: &["mkVectored"],
+            link_inputs: &[SimulationLinkInput::GeneratedModule("mkVectored")],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

@@ -8,8 +8,8 @@
 
 use super::SimulationScenario;
 use crate::upstream::{
-    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
+    ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 macro_rules! shared_scenario {
@@ -21,7 +21,7 @@ macro_rules! shared_scenario {
         $expected:expr,
         $fixtures:expr,
         $compile_options:expr,
-        $generated_modules:expr,
+        $link_inputs:expr,
         $timeout:expr,
         $resource:expr
     ) => {
@@ -31,7 +31,7 @@ macro_rules! shared_scenario {
             source: concat!($module, ".bsv"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
-            generated_modules: $generated_modules,
+            link_inputs: $link_inputs,
             compile_options: $compile_options,
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform($timeout),
@@ -73,7 +73,7 @@ macro_rules! backend_scenario {
         $expected:expr,
         $fixtures:expr,
         $compile_options:expr,
-        $generated_modules:expr,
+        $link_inputs:expr,
         $link_options:expr,
         $backend_name:literal,
         $backend:ident,
@@ -86,7 +86,7 @@ macro_rules! backend_scenario {
             source: concat!($module, ".bsv"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
-            generated_modules: $generated_modules,
+            link_inputs: $link_inputs,
             compile_options: $compile_options,
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
             timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
@@ -122,7 +122,12 @@ const AES_FIXTURES: &[&str] = &[
     "key192.vectors",
     "key256.vectors",
 ];
-const AES_GENERATED_MODULES: &[&str] = &["mkRconRom", "mkSboxRom", "mkInvSboxRom", "mkAes"];
+const AES_LINK_INPUTS: &[SimulationLinkInput] = &[
+    SimulationLinkInput::GeneratedModule("mkRconRom"),
+    SimulationLinkInput::GeneratedModule("mkSboxRom"),
+    SimulationLinkInput::GeneratedModule("mkInvSboxRom"),
+    SimulationLinkInput::GeneratedModule("mkAes"),
+];
 shared_scenario!(
     AES,
     "bsc.bsv_examples/AES",
@@ -131,7 +136,7 @@ shared_scenario!(
     AES_EXPECTED,
     AES_FIXTURES,
     &["-steps", "500000"],
-    AES_GENERATED_MODULES,
+    AES_LINK_INPUTS,
     crate::BSC_HEAVY_TIMEOUT,
     ResourceClass::Heavy
 );

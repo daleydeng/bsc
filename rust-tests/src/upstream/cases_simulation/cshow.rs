@@ -12,7 +12,7 @@ pub(super) const CLASSIC_SHOW: SimulationScenario = SimulationScenario {
     source: "TestCShow.bs",
     fixtures: &["TestCShow.bs", "sysTestCShow.out.expected"],
     top: "sysTestCShow",
-    generated_modules: &[],
+    link_inputs: &[],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

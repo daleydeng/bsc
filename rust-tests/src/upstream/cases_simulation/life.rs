@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 pub(super) const LIFE_5_BY_5: SimulationScenario = SimulationScenario {
@@ -12,7 +12,7 @@ pub(super) const LIFE_5_BY_5: SimulationScenario = SimulationScenario {
     source: "Life.bsv",
     fixtures: &["Life.bsv", "sysLife.out.expected"],
     top: "sysLife",
-    generated_modules: &["mkLife55"],
+    link_inputs: &[SimulationLinkInput::GeneratedModule("mkLife55")],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

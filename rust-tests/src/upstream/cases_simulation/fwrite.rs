@@ -32,7 +32,7 @@ macro_rules! scenario {
             source: concat!($module, ".bsv"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

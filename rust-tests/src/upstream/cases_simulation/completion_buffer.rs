@@ -15,7 +15,7 @@ pub(super) const TEST_COMPLETION_BUFFER: SimulationScenario = SimulationScenario
     source: "TestCompletionBuffer.bsv",
     fixtures: &["TestCompletionBuffer.bsv", EXPECTED],
     top: "sysTestCompletionBuffer",
-    generated_modules: &[],
+    link_inputs: &[],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

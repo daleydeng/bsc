@@ -243,6 +243,8 @@ case_modules!(
     infer_kinds,
     mismatch,
     module_args,
+    multi_mcd_library,
+    multi_misc,
     paths,
     read_desugaring,
     small_regressions,

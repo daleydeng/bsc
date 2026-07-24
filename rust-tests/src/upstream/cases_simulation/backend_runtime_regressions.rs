@@ -7,7 +7,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 pub(super) const RULE_SORT: SimulationScenario = SimulationScenario {
@@ -16,7 +16,7 @@ pub(super) const RULE_SORT: SimulationScenario = SimulationScenario {
     source: "RuleSort.bs",
     fixtures: &["RuleSort.bs", "sysRuleSort.out.expected"],
     top: "sysRuleSort",
-    generated_modules: &[],
+    link_inputs: &[],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),
@@ -57,7 +57,7 @@ pub(super) const NOINLINE_DIVIDE: SimulationScenario = SimulationScenario {
     source: "DivTest.bsv",
     fixtures: &["DivTest.bsv", "Div.bsv", "sysDivTest.out.expected"],
     top: "sysDivTest",
-    generated_modules: &["module_divide"],
+    link_inputs: &[SimulationLinkInput::GeneratedModule("module_divide")],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),
@@ -98,7 +98,7 @@ pub(super) const REMOVE_DOLLAR_RENAMING: SimulationScenario = SimulationScenario
     source: "TbGCD.bsv",
     fixtures: &["TbGCD.bsv", "GCD.bsv", "mkTbGCD.out.expected"],
     top: "sysTbGCD",
-    generated_modules: &[],
+    link_inputs: &[],
     compile_options: &["-remove-dollar"],
     generation: GenerationStrategy::BackendSpecific(SimulationBackend::Icarus),
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),
@@ -124,7 +124,7 @@ pub(super) const REMOVE_DOLLAR_RENAMING_2: SimulationScenario = SimulationScenar
     source: "TbGCD.bsv",
     fixtures: &["TbGCD.bsv", "GCD.bsv", "mkTbGCD.out.expected"],
     top: "sysTbGCD",
-    generated_modules: &[],
+    link_inputs: &[],
     compile_options: &["-remove-dollar"],
     generation: GenerationStrategy::BackendSpecific(SimulationBackend::Icarus),
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

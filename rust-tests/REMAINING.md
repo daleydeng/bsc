@@ -5,12 +5,12 @@
 
 ## Summary
 
-- Remaining test scripts: **505**
-- Remaining statically declared contracts: **2914**
+- Remaining test scripts: **453**
+- Remaining statically declared contracts: **3335**
 - Lexically clean migration candidates: **0 scripts / 0 contracts**
-- Static scripts requiring Tcl review or new helpers: **263 scripts / 2651 contracts**
-- Curated known blockers: **21 scripts / 263 contracts**
-- Fully dynamic/custom scripts: **221 scripts / 0 currently recognized contracts**
+- Static scripts requiring Tcl review or new helpers: **269 scripts / 3070 contracts**
+- Curated known blockers: **21 scripts / 265 contracts**
+- Fully dynamic/custom scripts: **163 scripts / 0 currently recognized contracts**
 
 `candidate` means that the active command vocabulary is already modeled and the script is not in the curated blocker registry. It is a high-confidence review queue, not permission to skip fixture, option, golden, bug-gate, or runtime validation. `review` rows list the exact unsupported Tcl vocabulary; `blocked` reasons are maintained alongside the migration plan and checked against this inventory.
 
@@ -25,36 +25,31 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 
 | Command | Category | Calls | Scripts | Static contracts in affected scripts |
 | --- | --- | ---: | ---: | ---: |
-| `if` | control/state | 602 | 244 | 2207 |
-| `set` | control/state | 224 | 129 | 728 |
-| `compile_object_pass` | unsupported contract | 229 | 91 | 698 |
+| `if` | control/state | 602 | 244 | 2571 |
+| `set` | control/state | 224 | 129 | 803 |
+| `compile_object_pass` | unsupported contract | 229 | 91 | 702 |
 | `source` | manual toolchain | 75 | 75 | 0 |
 | `test_ovl` | manual toolchain | 75 | 75 | 0 |
-| `link_objects_pass` | manual toolchain | 145 | 62 | 602 |
-| `copy` | filesystem | 218 | 40 | 308 |
+| `link_objects_pass` | manual toolchain | 145 | 62 | 604 |
+| `copy` | filesystem | 218 | 40 | 373 |
 | `sim_output` | manual toolchain | 102 | 38 | 424 |
-| `test_c_veri_bsv_multi` | unsupported contract | 231 | 35 | 111 |
 | `link_verilog_pass` | manual toolchain | 64 | 31 | 202 |
-| `erase` | filesystem | 104 | 30 | 318 |
+| `erase` | filesystem | 104 | 30 | 324 |
 | `test_c_veri_worker` | manual toolchain | 89 | 29 | 1 |
 | `proc` | control/state | 38 | 27 | 323 |
 | `sim_verilog` | manual toolchain | 43 | 23 | 148 |
-| `compile_object_fail_error` | unsupported contract | 51 | 22 | 331 |
-| `move` | filesystem | 64 | 21 | 216 |
+| `compile_object_fail_error` | unsupported contract | 51 | 22 | 348 |
+| `move` | filesystem | 64 | 21 | 217 |
 | `global` | control/state | 26 | 17 | 159 |
-| `compare_file_filter_ids` | unsupported assertion | 109 | 15 | 235 |
-| `test_veri_only_bsv_multi` | unsupported contract | 28 | 15 | 5 |
+| `compare_file_filter_ids` | unsupported assertion | 109 | 15 | 237 |
 | `compile_pass_warning` | unsupported contract | 36 | 13 | 301 |
 | `find_n_error` | unsupported assertion | 25 | 13 | 111 |
-| `test_c_only_bsv_multi` | unsupported contract | 24 | 13 | 4 |
-| `test_c_veri_bsv_multi_options` | unsupported contract | 28 | 12 | 20 |
-| `mkdir` | filesystem | 31 | 11 | 64 |
-| `test_c_veri_bsv_multi_options_separately` | unsupported contract | 14 | 11 | 20 |
-| `compile_object_fail` | unsupported contract | 17 | 10 | 58 |
+| `mkdir` | filesystem | 31 | 11 | 65 |
+| `compile_object_fail` | unsupported contract | 17 | 10 | 384 |
 | `compile_verilog_pass_no_warning` | unsupported contract | 22 | 9 | 168 |
 | `find_n_warning` | unsupported assertion | 27 | 9 | 140 |
 | `link_verilog_no_main_pass` | manual toolchain | 59 | 9 | 81 |
-| `no_warnings` | custom helper | 44 | 8 | 132 |
+| `no_warnings` | custom helper | 44 | 8 | 136 |
 | `create_systemc_objects_pass` | custom helper | 9 | 8 | 0 |
 | `bluetcl_run_compare_pass` | custom helper | 25 | 7 | 1 |
 | `build_systemc_executable_pass` | custom helper | 7 | 7 | 0 |
@@ -62,9 +57,14 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `compile_fail_bug` | unsupported contract | 22 | 6 | 336 |
 | `compile_pass_no_warning` | unsupported contract | 39 | 6 | 128 |
 | `touch` | filesystem | 13 | 6 | 94 |
+| `make_pass` | custom helper | 6 | 6 | 72 |
 | `foreach` | control/state | 8 | 6 | 60 |
-| `make_pass` | custom helper | 6 | 6 | 28 |
 | `bsc_compile` | custom helper | 13 | 6 | 1 |
+| `compile_pass_bug` | unsupported contract | 17 | 5 | 414 |
+| `dumpbi` | custom helper | 10 | 5 | 365 |
+| `[regexp` | custom helper | 5 | 5 | 150 |
+| `compare_file_bug` | unsupported assertion | 12 | 5 | 74 |
+| `find_n_strings_bug` | unsupported assertion | 8 | 5 | 51 |
 
 ## By testsuite area
 
@@ -73,31 +73,31 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `bsc.arrays` | 3 | 106 | 0 | 0 | 0 | 1 |
 | `bsc.assertions` | 1 | 0 | 0 | 0 | 1 | 0 |
 | `bsc.binary` | 1 | 1 | 0 | 0 | 0 | 0 |
-| `bsc.bluesim` | 15 | 33 | 0 | 0 | 12 | 1 |
+| `bsc.bluesim` | 15 | 35 | 0 | 0 | 11 | 1 |
 | `bsc.bluetcl` | 9 | 1 | 0 | 0 | 8 | 0 |
 | `bsc.bsc_examples` | 1 | 27 | 0 | 0 | 0 | 0 |
-| `bsc.bsv_examples` | 29 | 75 | 0 | 0 | 11 | 1 |
-| `bsc.bugs` | 64 | 115 | 0 | 0 | 15 | 3 |
-| `bsc.codegen` | 10 | 113 | 0 | 0 | 0 | 0 |
+| `bsc.bsv_examples` | 22 | 86 | 0 | 0 | 0 | 1 |
+| `bsc.bugs` | 62 | 115 | 0 | 0 | 13 | 3 |
+| `bsc.codegen` | 10 | 165 | 0 | 0 | 0 | 0 |
 | `bsc.compile` | 2 | 31 | 0 | 0 | 0 | 1 |
 | `bsc.driver` | 8 | 74 | 0 | 0 | 1 | 1 |
 | `bsc.evaluator` | 20 | 241 | 0 | 0 | 1 | 1 |
 | `bsc.if` | 4 | 51 | 0 | 0 | 0 | 2 |
-| `bsc.interra` | 204 | 77 | 0 | 0 | 164 | 0 |
-| `bsc.lib` | 24 | 212 | 0 | 0 | 3 | 6 |
-| `bsc.mcd` | 13 | 258 | 0 | 0 | 0 | 2 |
+| `bsc.interra` | 164 | 425 | 0 | 0 | 122 | 0 |
+| `bsc.lib` | 21 | 212 | 0 | 0 | 1 | 6 |
+| `bsc.mcd` | 13 | 260 | 0 | 0 | 0 | 2 |
 | `bsc.misc` | 7 | 68 | 0 | 0 | 0 | 0 |
 | `bsc.names` | 15 | 108 | 0 | 0 | 0 | 1 |
 | `bsc.options` | 3 | 29 | 0 | 0 | 0 | 0 |
 | `bsc.preprocessor` | 2 | 27 | 0 | 0 | 0 | 0 |
 | `bsc.real` | 3 | 33 | 0 | 0 | 0 | 0 |
-| `bsc.scheduler` | 13 | 179 | 0 | 0 | 0 | 0 |
+| `bsc.scheduler` | 13 | 181 | 0 | 0 | 0 | 0 |
 | `bsc.showrules` | 1 | 6 | 0 | 0 | 0 | 0 |
 | `bsc.syntax` | 7 | 314 | 0 | 0 | 2 | 0 |
 | `bsc.synthesize` | 1 | 0 | 0 | 0 | 1 | 0 |
 | `bsc.typechecker` | 16 | 331 | 0 | 0 | 1 | 0 |
 | `bsc.vcdcheck` | 1 | 0 | 0 | 0 | 1 | 0 |
-| `bsc.verilog` | 28 | 404 | 0 | 0 | 0 | 1 |
+| `bsc.verilog` | 28 | 408 | 0 | 0 | 0 | 1 |
 
 ## Complete remaining list
 
@@ -110,9 +110,9 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.binary/binary.exp` | 1 | review | `if`×2 (control/state), `set`×3 (control/state), `unset`×1 (control/state) |
 | `testsuite/bsc.bluesim/debugging/debugging.exp` | 0 | dynamic/custom | `compile_object_pass`×3 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×3 (manual toolchain) |
 | `testsuite/bsc.bluesim/interactive/interactive.exp` | 0 | dynamic/custom | `compare_file_filter_ids`×2 (unsupported assertion), `compile_object_pass`×8 (unsupported contract), `copy`×22 (filesystem), `if`×2 (control/state), `link_objects_pass`×8 (manual toolchain), `sim_output`×19 (manual toolchain), `sim_output_status`×3 (manual toolchain) |
-| `testsuite/bsc.bluesim/misc/misc.exp` | 19 | review | `compile_object_pass`×8 (unsupported contract), `copy`×1 (filesystem), `if`×8 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_objects_pass`×6 (manual toolchain), `set`×1 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bluesim/misc/misc.exp` | 20 | review | `compile_object_pass`×8 (unsupported contract), `copy`×1 (filesystem), `if`×8 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_objects_pass`×6 (manual toolchain), `set`×1 (control/state) |
 | `testsuite/bsc.bluesim/operators/operators.exp` | 10 | blocked | known blocker: Bluesim and Verilog bug gates are not modeled |
-| `testsuite/bsc.bluesim/parallel/parallel.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×3 (manual toolchain), `mkdir`×1 (filesystem), `move`×2 (filesystem), `set`×1 (control/state), `test_c_only_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bluesim/parallel/parallel.exp` | 1 | review | `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×3 (manual toolchain), `mkdir`×1 (filesystem), `move`×2 (filesystem), `set`×1 (control/state) |
 | `testsuite/bsc.bluesim/schedule/schedule.exp` | 0 | dynamic/custom | `compile_object_pass`×4 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×4 (manual toolchain) |
 | `testsuite/bsc.bluesim/to_systemc/gcd/gcd.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
 | `testsuite/bsc.bluesim/to_systemc/gcd2/gcd2.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
@@ -133,18 +133,14 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bluetcl/targeted/port_types/port_types.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×4 (custom helper), `bsc_compile`×4 (custom helper) |
 | `testsuite/bsc.bluetcl/targeted/type/type.exp` | 0 | dynamic/custom | `bluetcl_run_compare_pass`×1 (custom helper), `bsc_compile`×1 (custom helper) |
 | `testsuite/bsc.bsc_examples/bsc_examples.exp` | 27 | review | `compile_object_pass`×6 (unsupported contract), `if`×5 (control/state), `link_objects_pass`×4 (manual toolchain), `sim_output`×2 (manual toolchain) |
-| `testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract), `test_c_veri_bsv_multi_options`×2 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/AmbaLoadDemo/amba_load_demo.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/AmbaSynthesis/amba_syn.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp` | 4 | review | `set`×2 (control/state) |
+| `testsuite/bsc.bsv_examples/AmbaSynthesis/amba_syn.exp` | 1 | review | `set`×2 (control/state) |
 | `testsuite/bsc.bsv_examples/Amba_dmac/amba_dmac.exp` | 2 | review | `compare_file_bug`×1 (unsupported assertion), `if`×1 (control/state), `link_verilog_no_main_pass`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/AssertionsDemo/assert_demo.exp` | 11 | review | `if`×1 (control/state), `make_pass`×1 (custom helper) |
 | `testsuite/bsc.bsv_examples/FloatingPoint/floating_point.exp` | 12 | review | `make_pass`×1 (custom helper) |
 | `testsuite/bsc.bsv_examples/MacTestBench/mac_testbench.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_fail_error`×2 (manual toolchain), `link_verilog_pass`×2 (manual toolchain), `mkCrcCalculator.ba`×1 (custom helper), `mkMiiPhyLayer.ba`×1 (custom helper), `mkMiiPhyLayerRx.ba`×1 (custom helper), `mkMiiPhyLayerTx.ba`×1 (custom helper), `module_calculateCrcNext.ba`×1 (custom helper), `set`×1 (control/state), `sim_verilog`×2 (manual toolchain) |
-| `testsuite/bsc.bsv_examples/Maxtree/maxtree.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_c_only_bsv_multi_options`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi_options`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/RAMS/RAMS.exp` | 0 | dynamic/custom | `test_veri_only_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/SimpleIfcArgInvert/simple_ifc_arg_invert.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×2 (unsupported contract), `test_veri_only_bsv_multi`×2 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/bsvfifo/bsvfifo.exp` | 4 | blocked | known blocker: manual copy, erase, link, and simulation flow |
-| `testsuite/bsc.bsv_examples/cache-controller/cache-controller.exp` | 0 | dynamic/custom | `set`×2 (control/state), `test_c_veri_bsv_multi_options`×2 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/cache-controller/cache-controller.exp` | 4 | review | `set`×2 (control/state) |
 | `testsuite/bsc.bsv_examples/configbus/configbus.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bsv_examples/cpu/cpu.exp` | 7 | review | `compile_object_pass`×4 (unsupported contract), `copy`×8 (filesystem), `if`×8 (control/state), `link_objects_pass`×4 (manual toolchain), `link_verilog_pass`×4 (manual toolchain), `sim_output`×4 (manual toolchain), `sim_verilog`×4 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/fifo/fifo_FixedPtrSize/fifo_FixedPtrSize.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
@@ -152,20 +148,15 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bsv_examples/fifo/fifo_UBit1/fifo_UBit1.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/fifo/fifo_UBit2/fifo_UBit2.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/fifo_arb/fifo_arb.exp` | 4 | review | `compile_object_pass`×4 (unsupported contract), `copy`×8 (filesystem), `if`×8 (control/state), `link_objects_pass`×4 (manual toolchain), `link_verilog_pass`×4 (manual toolchain), `sim_output`×4 (manual toolchain), `sim_verilog`×4 (manual toolchain) |
-| `testsuite/bsc.bsv_examples/gcd/gcd.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×3 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/h264/h264.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain) |
-| `testsuite/bsc.bsv_examples/mcd_Rand/rand.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi_options`×1 (unsupported contract), `test_veri_only_bsv_multi_options`×1 (unsupported contract) |
 | `testsuite/bsc.bsv_examples/mesa/course_lab/course_lab.exp` | 7 | review | `cd`×2 (filesystem), `check_verilog_output`×1 (custom helper), `copy`×9 (filesystem), `erase`×7 (filesystem), `foreach`×1 (control/state), `global`×3 (control/state), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `mesa_cleanup`×3 (custom helper), `mesa_save_outputs`×4 (custom helper), `mesa_test_veri_and_sanitize_warnings`×4 (custom helper), `move`×3 (filesystem), `proc`×3 (control/state), `set`×2 (control/state), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv-cocoon/spiless-tx-bsv-cocoon.exp` | 1 | review | `check_verilog_output`×1 (custom helper), `erase`×2 (filesystem), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `move`×3 (filesystem), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv.exp` | 2 | review | `check_verilog_output`×1 (custom helper), `erase`×2 (filesystem), `if`×1 (control/state), `link_verilog_pass`×1 (manual toolchain), `move`×3 (filesystem), `sim_verilog`×2 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/pong/pong.exp` | 3 | review | `copy`×15 (filesystem), `erase`×7 (filesystem), `link_verilog_no_main_pass`×3 (manual toolchain) |
 | `testsuite/bsc.bsv_examples/shifter/shifter.exp` | 14 | review | `compile_object_pass`×8 (unsupported contract), `copy`×16 (filesystem), `if`×16 (control/state), `link_objects_pass`×8 (manual toolchain), `link_verilog_pass`×8 (manual toolchain), `sim_output`×8 (manual toolchain), `sim_verilog`×8 (manual toolchain) |
-| `testsuite/bsc.bsv_examples/sudoku/sudoku.exp` | 0 | dynamic/custom | `set`×1 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.bsv_examples/wallace/wallace.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×4 (unsupported contract) |
+| `testsuite/bsc.bsv_examples/sudoku/sudoku.exp` | 2 | review | `set`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b1018/b1018.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b1066/b1066.exp` | 2 | review | `if`×1 (control/state) |
-| `testsuite/bsc.bugs/bluespec_inc/b1118/b1118.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.bugs/bluespec_inc/b1121/b1121.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b1197/b1197.exp` | 1 | review | `dumpbi`×1 (custom helper), `if`×1 (control/state) |
 | `testsuite/bsc.bugs/bluespec_inc/b1240/b1240.exp` | 0 | dynamic/custom | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
 | `testsuite/bsc.bugs/bluespec_inc/b1243/b1243.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain) |
@@ -228,8 +219,8 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.bugs/pre_bluespec_inc/pre_bluespec_inc.exp` | 18 | review | `compile_object_pass`×6 (unsupported contract), `erase`×1 (filesystem) |
 | `testsuite/bsc.codegen/case/case.exp` | 19 | review | `find_n_strings_bug`×4 (unsupported assertion), `if`×9 (control/state) |
 | `testsuite/bsc.codegen/codegen.exp` | 4 | review | `compile_object_pass`×3 (unsupported contract), `copy`×2 (filesystem), `if`×2 (control/state), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
-| `testsuite/bsc.codegen/foreign/battery/battery.exp` | 1 | review | `[regexp`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `copy`×5 (filesystem), `if`×2 (control/state), `set`×5 (control/state), `test_c_veri_bsv_multi_options`×7 (unsupported contract) |
-| `testsuite/bsc.codegen/foreign/foreign.exp` | 5 | review | `copy`×8 (filesystem), `make_pass`×1 (custom helper), `set`×5 (control/state), `test_c_veri_bsv_multi`×19 (unsupported contract) |
+| `testsuite/bsc.codegen/foreign/battery/battery.exp` | 15 | review | `[regexp`×1 (custom helper), `compile_object_fail_error`×1 (unsupported contract), `copy`×5 (filesystem), `if`×2 (control/state), `set`×5 (control/state), `test_c_veri_bsv_multi_options`×7 (unsupported contract) |
+| `testsuite/bsc.codegen/foreign/foreign.exp` | 43 | review | `copy`×8 (filesystem), `make_pass`×1 (custom helper), `set`×5 (control/state) |
 | `testsuite/bsc.codegen/rdy_en_pragmas/rdy_en_pragmas.exp` | 22 | review | `compile_object_pass`×1 (unsupported contract), `if`×8 (control/state), `link_objects_pass`×1 (manual toolchain) |
 | `testsuite/bsc.codegen/signature/signature.exp` | 14 | review | `compile_verilog_fail_error_bug`×7 (unsupported contract) |
 | `testsuite/bsc.codegen/strings/strings.exp` | 14 | review | `compare_file_filter_prelude`×1 (unsupported assertion), `if`×1 (control/state) |
@@ -277,15 +268,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/Library_latency/RAM/RAM.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain) |
 | `testsuite/bsc.interra/Library_latency/SRAM/SRAM.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain) |
 | `testsuite/bsc.interra/Library_latency/SyncRAM/SyncRAM.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
-| `testsuite/bsc.interra/MCD_library/AsyncRAM/asyncRAM.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/BitSync/bitsync.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/BitSync1/bitsync1.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/FIFOSync/SyncFIFO.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/NullCrossing/Nullcross.exp` | 1 | review | `compile_object_fail_error`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/PulseHandShakeSync/PulseHandShake.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/RegSync/SyncReg.exp` | 1 | review | `test_c_only_bsv_multi`×3 (unsupported contract), `test_veri_only_bsv_multi`×3 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/SpecialSyncFIFO/SpecialSyncFIFO.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/MCD_library/SpecialSyncReg/SpecialSyncReg.exp` | 1 | review | `test_c_veri_bsv_multi_options_separately`×2 (unsupported contract) |
+| `testsuite/bsc.interra/MCD_library/NullCrossing/Nullcross.exp` | 4 | review | `compile_object_fail_error`×3 (unsupported contract) |
 | `testsuite/bsc.interra/OVL/assertAlways1/assertAlways1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
 | `testsuite/bsc.interra/OVL/assertAlways2/assertAlways2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
 | `testsuite/bsc.interra/OVL/assertAlwaysOnEdge1/assertAlwaysOnEdge1.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
@@ -363,30 +346,6 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/OVL/assertZeroOneHot2/assertZeroOneHot2.exp` | 0 | dynamic/custom | `set`×1 (control/state), `source`×1 (manual toolchain), `test_ovl`×1 (manual toolchain) |
 | `testsuite/bsc.interra/Path_Analysis/Imported_Modules/Imported_Modules.exp` | 14 | review | `compare_file_bug`×2 (unsupported assertion), `if`×1 (control/state) |
 | `testsuite/bsc.interra/Path_Analysis/Input_Output_Path/Input_Output_Path.exp` | 16 | review | `if`×1 (control/state) |
-| `testsuite/bsc.interra/StmtFSM/Square1/square1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/Square2/square2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/Square3/square3.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/Square4/square4.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/Square5/square5.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/Square6/square6.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/clearOfOnce/clearOfOnce.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/cycleUsage1/cycleUsage1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/cycleUsage2/cycleUsage2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/fifoTest/fifoTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/forInRepeat/forInRepeat.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/forInWhile/forInWhile.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/nestedForLoop1/nestedForLoop1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/nestedRepeatLoop1/nestedRepeatLoop1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/nestedWhileLoop1/nestedWhileLoop1.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/nestedWhileLoop2/nestedWhileLoop2.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/parAuto/parAuto.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/repeatInFor/repeatInFor.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/repeatInWhile/repeatInWhile.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/repeatTest/repeatTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/whileInFor/whileInFor.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/whileInRepeat/whileInRepeat.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/whilePar/whilePar.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/StmtFSM/whileWithinForLoop/whileWithinForLoop.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
 | `testsuite/bsc.interra/Urgency_Annotation/Negative_Testing/Negative_Testing.exp` | 0 | dynamic/custom | `compile_object_fail`×6 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.interra/Urgency_Annotation/Semantics/Semantics.exp` | 0 | dynamic/custom | `compile_object_pass`×17 (unsupported contract), `find_n_warning`×3 (unsupported assertion), `if`×1 (control/state), `no_warnings`×10 (custom helper) |
 | `testsuite/bsc.interra/Urgency_Annotation/Syntax/Syntax.exp` | 0 | dynamic/custom | `compile_object_pass`×7 (unsupported contract), `compile_object_pass_bug`×1 (unsupported contract), `if`×1 (control/state), `no_warnings`×7 (custom helper) |
@@ -418,7 +377,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/libraries/CGetPut/CGetPut.exp` | 0 | dynamic/custom | `compile_object_pass`×3 (unsupported contract), `if`×3 (control/state), `link_objects_pass`×3 (manual toolchain), `sim_output`×3 (manual toolchain), `test_c_veri_worker`×3 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/ClientServer/ClientServer.exp` | 0 | dynamic/custom | `test_c_veri_worker`×8 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/CompletionBuffer/CompletionBuffer.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
-| `testsuite/bsc.interra/libraries/ConfigReg/ConfigReg.exp` | 0 | dynamic/custom | `copy`×24 (filesystem), `erase`×4 (filesystem), `test_c_veri_bsv_multi_options`×4 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/ConfigReg/ConfigReg.exp` | 6 | review | `copy`×24 (filesystem), `erase`×4 (filesystem) |
 | `testsuite/bsc.interra/libraries/Connectable/Connectable.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/Enum/Enum.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/Environment/Environment.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `test_c_veri_worker`×3 (manual toolchain) |
@@ -427,14 +386,13 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/libraries/FiFoF/FiFoF.exp` | 0 | dynamic/custom | `test_c_veri_worker`×4 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/GetPut/GetPut.exp` | 0 | dynamic/custom | `test_c_veri_worker`×7 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/LFSR/LFSR.exp` | 0 | dynamic/custom | `test_c_veri_worker`×6 (manual toolchain) |
-| `testsuite/bsc.interra/libraries/List/List.exp` | 1 | review | `compile_object_fail`×3 (unsupported contract), `if`×3 (control/state), `test_c_veri_bsv_multi`×52 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/List/List.exp` | 105 | review | `compile_object_fail`×3 (unsupported contract), `if`×3 (control/state) |
 | `testsuite/bsc.interra/libraries/ListFIFO/ListFIFO.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
-| `testsuite/bsc.interra/libraries/ListN/ListN.exp` | 0 | dynamic/custom | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi`×55 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/ListN/ListN.exp` | 110 | review | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.interra/libraries/ListReg/ListReg.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/Oint/Oint.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
-| `testsuite/bsc.interra/libraries/PopCount/PopCount.exp` | 0 | dynamic/custom | `if`×1 (control/state), `test_c_veri_bsv_multi_options`×6 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/PopCount/PopCount.exp` | 12 | review | `if`×1 (control/state) |
 | `testsuite/bsc.interra/libraries/Pull/Pull.exp` | 0 | dynamic/custom | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain), `test_c_veri_worker`×7 (manual toolchain) |
-| `testsuite/bsc.interra/libraries/Push/Push.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×13 (unsupported contract) |
 | `testsuite/bsc.interra/libraries/RAM/RAM.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/RPush/RPush.exp` | 0 | dynamic/custom | `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `sim_output`×2 (manual toolchain), `test_c_veri_worker`×8 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/Reserved/Reserved.exp` | 0 | dynamic/custom | `test_c_veri_worker`×1 (manual toolchain) |
@@ -443,7 +401,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/libraries/SyncRAM/SyncRAM.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/Tabulate/Tabulate.exp` | 0 | dynamic/custom | `test_c_veri_worker`×3 (manual toolchain) |
 | `testsuite/bsc.interra/libraries/UIntRange/UIntRange.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
-| `testsuite/bsc.interra/libraries/Vector/Vector.exp` | 0 | dynamic/custom | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi`×56 (unsupported contract) |
+| `testsuite/bsc.interra/libraries/Vector/Vector.exp` | 112 | review | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.interra/libraries/Wallace/Wallace.exp` | 0 | dynamic/custom | `test_c_veri_worker`×2 (manual toolchain) |
 | `testsuite/bsc.interra/messages/EArbitrate/EArbitrate.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.interra/messages/EBadVeriType/EBadVeriType.exp` | 1 | review | `if`×1 (control/state) |
@@ -464,16 +422,9 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.interra/messages/WCycleDrop/WCycleDrop.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.interra/messages/WMissingRule/WMissingRule.exp` | 1 | review | `if`×1 (control/state) |
 | `testsuite/bsc.interra/messages/WUrgencyChoice/WUrgencyChoice.exp` | 2 | review | `if`×1 (control/state) |
-| `testsuite/bsc.interra/operators/Arith/arith.exp` | 0 | dynamic/custom | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract), `verbose`×1 (custom helper) |
-| `testsuite/bsc.interra/operators/BitSel/bitsel.exp` | 0 | dynamic/custom | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract), `verbose`×1 (custom helper) |
-| `testsuite/bsc.interra/operators/Logic/logic.exp` | 0 | dynamic/custom | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract), `verbose`×1 (custom helper) |
-| `testsuite/bsc.interra/relax_method_urgency/BypassFIFO/BypassFIFO.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/relax_method_urgency/LoopyFIFO/LoopyFIFO.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
-| `testsuite/bsc.interra/relax_method_urgency/RWire_mult/RWire_mult.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/relax_method_urgency/RegFile/RegFile.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/relax_method_urgency/byte_en/byte_en.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
-| `testsuite/bsc.interra/relax_method_urgency/demux/demux.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.interra/relax_method_urgency/prod_con/prod_con.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.interra/operators/Arith/arith.exp` | 2 | review | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `verbose`×1 (custom helper) |
+| `testsuite/bsc.interra/operators/BitSel/bitsel.exp` | 2 | review | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `verbose`×1 (custom helper) |
+| `testsuite/bsc.interra/operators/Logic/logic.exp` | 2 | review | `copy`×1 (filesystem), `make_pass`×1 (custom helper), `note`×1 (custom helper), `set`×2 (control/state), `verbose`×1 (custom helper) |
 | `testsuite/bsc.lib/BRAM/BRAM.exp` | 9 | review | `compile_object_fail_error`×2 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `compile_object_pass_warning`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass_bug`×1 (manual toolchain) |
 | `testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp` | 2 | blocked | known blocker: shared native Windows elaboration exceeds 300 seconds |
 | `testsuite/bsc.lib/BuildList/BuildList.exp` | 1 | review | `test_veri_only`×1 (unsupported contract) |
@@ -488,11 +439,8 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.lib/PAClib/unit_tests/unit_test.exp` | 2 | review | `foreach`×1 (control/state), `set`×1 (control/state) |
 | `testsuite/bsc.lib/Prelude/Prelude.exp` | 14 | review | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
 | `testsuite/bsc.lib/SquareRoot/squareroot.exp` | 2 | review | `do_test`×2 (custom helper), `proc`×1 (control/state) |
-| `testsuite/bsc.lib/Stmt/FacTest/FacTest.exp` | 0 | dynamic/custom | `test_c_veri_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.lib/Stmt/RepeatTest/RepeatTest.exp` | 0 | dynamic/custom | `test_c_only_bsv_multi`×1 (unsupported contract), `test_veri_only_bsv_multi`×1 (unsupported contract) |
-| `testsuite/bsc.lib/Stmt/Server/Server.exp` | 2 | review | `test_c_veri_bsv_multi`×2 (unsupported contract) |
 | `testsuite/bsc.lib/fifo/depth_param/depth_param.exp` | 13 | review | `compile_object_fail_error`×1 (unsupported contract) |
-| `testsuite/bsc.lib/fifo/fifo.exp` | 14 | review | `awk`×1 (custom helper), `if`×4 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.lib/fifo/fifo.exp` | 16 | review | `awk`×1 (custom helper), `if`×4 (control/state) |
 | `testsuite/bsc.lib/getput/getput.exp` | 44 | blocked | known blocker: dynamic Icarus probing and additional assertions |
 | `testsuite/bsc.lib/oint/oint.exp` | 6 | blocked | known blocker: compile_verilog_pass_no_warning_bug is not modeled |
 | `testsuite/bsc.lib/regfile/lib.exp` | 16 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `if`×2 (control/state) |
@@ -510,7 +458,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.mcd/MultErrors/mult_errors_mcd.exp` | 4 | review | `compile_object_fail_error`×3 (unsupported contract), `find_n_error`×6 (unsupported assertion), `if`×2 (control/state) |
 | `testsuite/bsc.mcd/NoClock/NoClock.exp` | 14 | review | `compile_object_pass`×1 (unsupported contract), `compile_object_pass_warning`×2 (unsupported contract), `if`×2 (control/state), `link_objects_pass`×3 (manual toolchain), `no_warnings`×2 (custom helper) |
 | `testsuite/bsc.mcd/NullCrossing/nullcrossing.exp` | 21 | review | `compile_object_fail_error`×2 (unsupported contract), `erase`×3 (filesystem), `if`×2 (control/state), `set`×3 (control/state) |
-| `testsuite/bsc.mcd/Reset/Reset.exp` | 41 | blocked | known blocker: dynamic branches, regular expressions, and simulation flow |
+| `testsuite/bsc.mcd/Reset/Reset.exp` | 43 | blocked | known blocker: dynamic branches, regular expressions, and simulation flow |
 | `testsuite/bsc.misc/deprecate/deprecate.exp` | 3 | review | `compile_pass_no_warning`×1 (unsupported contract), `compile_pass_warning`×2 (unsupported contract), `find_n_warning`×1 (unsupported assertion) |
 | `testsuite/bsc.misc/divmod/divmod.exp` | 8 | review | `compile_object_fail_error`×1 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×2 (manual toolchain), `set`×1 (control/state), `sim_output_status`×3 (manual toolchain) |
 | `testsuite/bsc.misc/eq3/eq3.exp` | 1 | review | `compile_object_pass`×1 (unsupported contract), `if`×1 (control/state), `link_objects_pass`×1 (manual toolchain) |
@@ -551,7 +499,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.scheduler/resource/resource.exp` | 11 | review | `compare_file_filter_ids`×11 (unsupported assertion), `compile_verilog_schedule_fail`×8 (unsupported contract), `compile_verilog_schedule_pass_bug`×1 (unsupported contract), `find_n_error`×1 (unsupported assertion), `find_n_strings_bug`×1 (unsupported assertion), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/sbr/sbr.exp` | 3 | review | `compare_file_filter_ids`×1 (unsupported assertion), `compile_object_fail_error`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/sched-conditions/sched-conditions.exp` | 4 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `copy`×3 (filesystem), `erase`×3 (filesystem), `find_n_warning`×2 (unsupported assertion), `if`×1 (control/state) |
-| `testsuite/bsc.scheduler/scheduler.exp` | 19 | review | `compare_file_filter_ids`×18 (unsupported assertion), `compile_verilog_schedule_fail`×1 (unsupported contract), `if`×1 (control/state), `test_c_veri_bsv_multi_options_separately`×1 (unsupported contract) |
+| `testsuite/bsc.scheduler/scheduler.exp` | 21 | review | `compare_file_filter_ids`×18 (unsupported assertion), `compile_verilog_schedule_fail`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/urgency/urgency.exp` | 25 | review | `compare_file_filter_ids`×13 (unsupported assertion), `compile_verilog_pass_no_warning_bug`×1 (unsupported contract), `compile_verilog_pass_warning_bug`×2 (unsupported contract), `compile_verilog_schedule_fail_bug`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.scheduler/use_cond/use_cond.exp` | 20 | review | `compile_object_pass`×3 (unsupported contract), `link_objects_pass`×3 (manual toolchain) |
 | `testsuite/bsc.showrules/showrules.exp` | 6 | review | `bsc_initialize`×1 (custom helper), `compile_object_pass`×6 (unsupported contract), `if`×13 (control/state), `link_objects_pass`×6 (manual toolchain), `link_verilog_pass`×6 (manual toolchain), `move`×6 (filesystem), `note`×1 (custom helper), `showrules`×12 (custom helper), `sim_output`×6 (manual toolchain), `sim_verilog_vcd`×6 (manual toolchain), `vcdcheck_pass`×12 (custom helper) |
@@ -580,7 +528,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.typechecker/typeclasses/coherence/coherence.exp` | 14 | review | `erase`×1 (filesystem), `find_n_warning`×6 (unsupported assertion) |
 | `testsuite/bsc.typechecker/typeclasses/typeclasses.exp` | 73 | review | `compile_backend_pass`×2 (unsupported contract) |
 | `testsuite/bsc.vcdcheck/vcdcheck.exp` | 0 | dynamic/custom | `vcdcheck_fail`×5 (custom helper), `vcdcheck_pass`×6 (custom helper) |
-| `testsuite/bsc.verilog/astate/astate.exp` | 13 | review | `compile_object_pass`×1 (unsupported contract), `if`×2 (control/state), `set`×1 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.verilog/astate/astate.exp` | 15 | review | `compile_object_pass`×1 (unsupported contract), `if`×2 (control/state), `set`×1 (control/state) |
 | `testsuite/bsc.verilog/comments/comments.exp` | 29 | review | `if`×25 (control/state), `move`×2 (filesystem), `touch`×1 (filesystem) |
 | `testsuite/bsc.verilog/derived_bits/derived_bits.exp` | 8 | review | `do_tests`×10 (custom helper), `proc`×1 (control/state) |
 | `testsuite/bsc.verilog/dollar/dollar.exp` | 1 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `link_objects_fail`×1 (manual toolchain) |
@@ -596,7 +544,7 @@ The table is sorted by affected scripts, then affected static contracts. Contrac
 | `testsuite/bsc.verilog/parameters/string/string_param.exp` | 10 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_fail_error`×1 (unsupported contract) |
 | `testsuite/bsc.verilog/portprops/portprops.exp` | 25 | review | `if`×1 (control/state) |
 | `testsuite/bsc.verilog/positivereset/ClockDividers/ClockDividers.exp` | 14 | review | `copy`×16 (filesystem), `erase`×4 (filesystem), `proc`×1 (control/state), `set`×3 (control/state), `test_veri`×6 (unsupported contract) |
-| `testsuite/bsc.verilog/positivereset/Reset/Reset.exp` | 35 | review | `if`×12 (control/state), `no_warnings`×10 (custom helper), `set`×3 (control/state), `test_c_veri_bsv_multi`×1 (unsupported contract) |
+| `testsuite/bsc.verilog/positivereset/Reset/Reset.exp` | 37 | review | `if`×12 (control/state), `no_warnings`×10 (custom helper), `set`×3 (control/state) |
 | `testsuite/bsc.verilog/positivereset/nameclash/nameclash.exp` | 6 | review | `if`×2 (control/state) |
 | `testsuite/bsc.verilog/positivereset/simulation/simulation.exp` | 2 | review | `if`×2 (control/state), `move`×2 (filesystem), `set`×1 (control/state), `sim_output`×1 (manual toolchain), `sim_verilog_vcd`×1 (manual toolchain), `vcdcheck_pass`×2 (custom helper) |
 | `testsuite/bsc.verilog/quirks/quirks.exp` | 14 | review | `link_verilog_pass`×2 (manual toolchain) |

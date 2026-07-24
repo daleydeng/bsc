@@ -363,10 +363,23 @@ fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, Str
 }
 
 fn count_statically_declared_contracts(source: &str) -> usize {
-    source
-        .lines()
-        .filter_map(|line| tcl_command_name(line).and_then(statically_declared_contract_weight))
+    logical_tcl_commands(source)
+        .iter()
+        .filter_map(|command| statically_declared_contract_count(command))
         .sum()
+}
+
+fn statically_declared_contract_count(command: &str) -> Option<usize> {
+    let name = tcl_command_name(command)?;
+    if matches!(
+        name,
+        "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately"
+    ) {
+        let words = tcl_words(command).ok()?;
+        let (bluesim, icarus) = multi_backend_flags(&words)?;
+        return Some(usize::from(bluesim) + usize::from(icarus));
+    }
+    statically_declared_contract_weight(name)
 }
 
 fn statically_declared_contract_weight(command: &str) -> Option<usize> {
@@ -384,7 +397,11 @@ fn statically_declared_contract_weight(command: &str) -> Option<usize> {
         | "test_c_only_bsv_modules_options"
         | "test_veri_only_bsv"
         | "test_veri_only_bsv_modules"
-        | "test_veri_only_bsv_modules_options" => Some(1),
+        | "test_veri_only_bsv_modules_options"
+        | "test_c_only_bsv_multi"
+        | "test_veri_only_bsv_multi"
+        | "test_c_only_bsv_multi_options"
+        | "test_veri_only_bsv_multi_options" => Some(1),
         "test_c_veri"
         | "test_c_veri_bs_modules"
         | "test_c_veri_bs_modules_options"
@@ -392,7 +409,9 @@ fn statically_declared_contract_weight(command: &str) -> Option<usize> {
         | "test_c_veri_bsv_modules"
         | "test_c_veri_bsv_modules_options"
         | "test_c_veri_bsv_separately"
-        | "test_c_veri_bsv_modules_options_separately" => Some(2),
+        | "test_c_veri_bsv_modules_options_separately"
+        | "test_c_veri_bsv_multi"
+        | "test_c_veri_bsv_multi_options_separately" => Some(2),
         _ => None,
     }
 }
@@ -403,7 +422,7 @@ fn unsupported_tcl_commands(source: &str) -> Vec<UnsupportedTclCommand> {
         let Some(name) = tcl_command_name(&command) else {
             continue;
         };
-        if !is_supported_inventory_command(name) {
+        if !is_supported_inventory_command(&command) {
             *counts.entry(name.to_owned()).or_default() += 1;
         }
     }
@@ -434,9 +453,69 @@ fn tcl_command_name(command: &str) -> Option<&str> {
 }
 
 fn is_supported_inventory_command(command: &str) -> bool {
-    statically_declared_contract_weight(command).is_some()
-        || is_supported_tcl_assertion(command)
-        || matches!(command, "compare_file" | "compare_verilog")
+    let Some(name) = tcl_command_name(command) else {
+        return true;
+    };
+    if is_multi_simulation_command(name) {
+        return multi_command_is_statically_migratable(command);
+    }
+    statically_declared_contract_weight(name).is_some()
+        || is_supported_tcl_assertion(name)
+        || matches!(name, "compare_file" | "compare_verilog")
+}
+
+fn is_multi_simulation_command(command: &str) -> bool {
+    matches!(
+        command,
+        "test_c_veri_bsv_multi"
+            | "test_c_veri_bsv_multi_options"
+            | "test_c_veri_bsv_multi_options_separately"
+            | "test_c_only_bsv_multi"
+            | "test_veri_only_bsv_multi"
+            | "test_c_only_bsv_multi_options"
+            | "test_veri_only_bsv_multi_options"
+    )
+}
+
+fn multi_command_is_statically_migratable(command: &str) -> bool {
+    let Ok(words) = tcl_words(command) else {
+        return false;
+    };
+    let Some(name) = words.first().map(String::as_str) else {
+        return false;
+    };
+    let bug_indexes: &[usize] = match name {
+        "test_c_veri_bsv_multi" => &[5, 6],
+        "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately" => &[6, 7],
+        "test_c_only_bsv_multi" | "test_veri_only_bsv_multi" => &[5],
+        "test_c_only_bsv_multi_options" | "test_veri_only_bsv_multi_options" => &[6],
+        _ => return false,
+    };
+    let has_bug_gate = bug_indexes
+        .iter()
+        .filter_map(|index| words.get(*index))
+        .any(|value| !value.is_empty());
+    if has_bug_gate {
+        return false;
+    }
+    if matches!(
+        name,
+        "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately"
+    ) {
+        return multi_backend_flags(&words).is_some();
+    }
+    true
+}
+
+fn multi_backend_flags(words: &[String]) -> Option<(bool, bool)> {
+    let parse = |index: usize| match words.get(index).map(String::as_str) {
+        None | Some("") | Some("1") => Some(true),
+        Some("0") => Some(false),
+        Some(_) => None,
+    };
+    let bluesim = parse(8)?;
+    let icarus = parse(9)?;
+    (bluesim || icarus).then_some((bluesim, icarus))
 }
 
 fn unsupported_tcl_command_category(command: &str) -> TclCommandCategory {
@@ -936,8 +1015,8 @@ fn find_sole_exp(project_root: &Path, fixture_dir: &str) -> Result<PathBuf, Stri
 
 fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
     let mut counts = Counts::default();
-    for (line_index, raw_line) in source.lines().enumerate() {
-        let line = raw_line.trim();
+    for (line_index, logical_command) in logical_tcl_commands(source).iter().enumerate() {
+        let line = logical_command.trim();
         if line.is_empty() || line.starts_with('#') {
             continue;
         }
@@ -960,11 +1039,33 @@ fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
             "test_c_veri_bsv" | "test_c_veri_bsv_modules" | "test_c_veri_bsv_modules_options" => {
                 let module = required_word(&words, 1, origin, line_index)?;
                 let source = format!("{module}.bsv");
-                add_count(&mut counts.contracts, contract_key("bluesim", &source));
-                add_count(&mut counts.contracts, contract_key("icarus", &source));
-                add_count(
-                    &mut counts.generations,
-                    generation_key_name("shared", &source),
+                add_simulation_counts(&mut counts, &source, true, true, false);
+            }
+            "test_c_veri_bsv_multi" => {
+                let module = required_word(&words, 1, origin, line_index)?;
+                let source = format!("{module}.bsv");
+                add_simulation_counts(&mut counts, &source, true, true, false);
+            }
+            "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately" => {
+                let parsed = tcl_words(line).map_err(|error| {
+                    format!("parse multi helper in {}: {error}", origin.display())
+                })?;
+                let module = parsed.get(1).ok_or_else(|| {
+                    format!("missing multi helper source in {}", origin.display())
+                })?;
+                let (bluesim, icarus) = multi_backend_flags(&parsed).ok_or_else(|| {
+                    format!(
+                        "dynamic or disabled multi helper backends in {}",
+                        origin.display()
+                    )
+                })?;
+                let source = format!("{module}.bsv");
+                add_simulation_counts(
+                    &mut counts,
+                    &source,
+                    bluesim,
+                    icarus,
+                    command == "test_c_veri_bsv_multi_options_separately",
                 );
             }
             "test_c_veri" | "test_c_veri_bs_modules" | "test_c_veri_bs_modules_options" => {
@@ -991,25 +1092,23 @@ fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
                     generation_key_name("icarus", &source),
                 );
             }
-            "test_c_only_bsv" | "test_c_only_bsv_modules" | "test_c_only_bsv_modules_options" => {
+            "test_c_only_bsv"
+            | "test_c_only_bsv_modules"
+            | "test_c_only_bsv_modules_options"
+            | "test_c_only_bsv_multi"
+            | "test_c_only_bsv_multi_options" => {
                 let module = required_word(&words, 1, origin, line_index)?;
                 let source = format!("{module}.bsv");
-                add_count(&mut counts.contracts, contract_key("bluesim", &source));
-                add_count(
-                    &mut counts.generations,
-                    generation_key_name("bluesim", &source),
-                );
+                add_simulation_counts(&mut counts, &source, true, false, true);
             }
             "test_veri_only_bsv"
             | "test_veri_only_bsv_modules"
-            | "test_veri_only_bsv_modules_options" => {
+            | "test_veri_only_bsv_modules_options"
+            | "test_veri_only_bsv_multi"
+            | "test_veri_only_bsv_multi_options" => {
                 let module = required_word(&words, 1, origin, line_index)?;
                 let source = format!("{module}.bsv");
-                add_count(&mut counts.contracts, contract_key("icarus", &source));
-                add_count(
-                    &mut counts.generations,
-                    generation_key_name("icarus", &source),
-                );
+                add_simulation_counts(&mut counts, &source, false, true, true);
             }
             "compare_file" => {
                 let output = required_word(&words, 1, origin, line_index)?;
@@ -1056,6 +1155,40 @@ fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
     }
     parse_exp_assertions(source, origin, &mut counts)?;
     Ok(counts)
+}
+
+fn add_simulation_counts(
+    counts: &mut Counts,
+    source: &str,
+    bluesim: bool,
+    icarus: bool,
+    separate_generation: bool,
+) {
+    if bluesim {
+        add_count(&mut counts.contracts, contract_key("bluesim", source));
+    }
+    if icarus {
+        add_count(&mut counts.contracts, contract_key("icarus", source));
+    }
+    if bluesim && icarus && !separate_generation {
+        add_count(
+            &mut counts.generations,
+            generation_key_name("shared", source),
+        );
+    } else {
+        if bluesim {
+            add_count(
+                &mut counts.generations,
+                generation_key_name("bluesim", source),
+            );
+        }
+        if icarus {
+            add_count(
+                &mut counts.generations,
+                generation_key_name("icarus", source),
+            );
+        }
+    }
 }
 
 fn parse_exp_assertions(source: &str, origin: &Path, counts: &mut Counts) -> Result<(), String> {
@@ -1739,6 +1872,57 @@ mod tests {
     }
 
     #[test]
+    fn counts_multi_simulation_helpers_by_enabled_backend() {
+        let source = concat!(
+            "test_c_veri_bsv_multi Dual mkDual {mkChild}\n",
+            "test_c_veri_bsv_multi_options Bluesim mkBluesim {} {} {} {} {} 1 0\n",
+            "test_c_veri_bsv_multi_options Icarus mkIcarus {} {} {} {} {} 0 1\n",
+            "test_c_veri_bsv_multi_options_separately Separate mkSeparate {}\n",
+            "test_c_only_bsv_multi COnly mkCOnly {}\n",
+            "test_veri_only_bsv_multi VOnly mkVOnly {}\n",
+        );
+        assert_eq!(count_statically_declared_contracts(source), 8);
+
+        let parsed = parse_exp_contracts(source, Path::new("multi.exp")).unwrap();
+        assert_eq!(
+            parsed.generations,
+            BTreeMap::from([
+                ("bluesim:Bluesim.bsv".to_owned(), 1),
+                ("bluesim:COnly.bsv".to_owned(), 1),
+                ("bluesim:Separate.bsv".to_owned(), 1),
+                ("icarus:Icarus.bsv".to_owned(), 1),
+                ("icarus:Separate.bsv".to_owned(), 1),
+                ("icarus:VOnly.bsv".to_owned(), 1),
+                ("shared:Dual.bsv".to_owned(), 1),
+            ])
+        );
+    }
+
+    #[test]
+    fn multi_inventory_rejects_bug_gates_and_dynamic_backend_flags() {
+        let source = concat!(
+            "test_c_veri_bsv_multi Clean mkClean {}\n",
+            "test_c_veri_bsv_multi Bugged mkBugged {} {} 123\n",
+            "test_c_veri_bsv_multi_options Dynamic mkDynamic {} {} {} {} {} $doC 1\n",
+        );
+        assert_eq!(
+            unsupported_tcl_commands(source),
+            vec![
+                UnsupportedTclCommand {
+                    name: "test_c_veri_bsv_multi".to_owned(),
+                    count: 1,
+                    category: TclCommandCategory::UnsupportedContract,
+                },
+                UnsupportedTclCommand {
+                    name: "test_c_veri_bsv_multi_options".to_owned(),
+                    count: 1,
+                    category: TclCommandCategory::UnsupportedContract,
+                },
+            ]
+        );
+    }
+
+    #[test]
     fn treats_supported_inventory_vocabulary_as_migration_ready() {
         let source = concat!(
             "compile_pass Good.bsv\n",
@@ -1804,12 +1988,12 @@ mod tests {
     }
 
     #[test]
-    fn preserves_upstream_static_contract_denominator() {
+    fn preserves_upstream_static_contract_denominator_with_multi_helpers() {
         assert_eq!(
             check_alignment()
                 .expect("alignment should remain valid")
                 .total_statically_declared_contracts,
-            4_672
+            5_269
         );
     }
 

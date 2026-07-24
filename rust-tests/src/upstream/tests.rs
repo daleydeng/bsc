@@ -196,6 +196,72 @@ fn simulation_data_model_is_valid_and_names_are_unique() {
 }
 
 #[test]
+fn simulation_link_inputs_preserve_backend_resolution_and_exact_files() {
+    let mut scenario = simulation_scenarios()[0];
+    scenario.top = "mkTop";
+    scenario.link_inputs = &[
+        SimulationLinkInput::GeneratedModule("mkChild"),
+        SimulationLinkInput::ExactFile("support.ba"),
+        SimulationLinkInput::ExactFile("model.v"),
+        SimulationLinkInput::ExactFile("native.c"),
+        SimulationLinkInput::ExactFile("native.o"),
+    ];
+
+    assert_eq!(
+        expected_generated_files(&scenario, SimulationBackend::Bluesim),
+        ["mkTop.ba", "mkChild.ba"]
+    );
+    assert_eq!(
+        expected_generated_files(&scenario, SimulationBackend::Icarus),
+        ["mkTop.v", "mkChild.v"]
+    );
+    assert_eq!(
+        simulation_link_files(&scenario, SimulationBackend::Bluesim),
+        [
+            "mkTop.ba",
+            "mkChild.ba",
+            "support.ba",
+            "model.v",
+            "native.c",
+            "native.o",
+        ]
+    );
+    assert_eq!(
+        simulation_link_files(&scenario, SimulationBackend::Icarus),
+        [
+            "mkTop.v",
+            "mkChild.v",
+            "support.ba",
+            "model.v",
+            "native.c",
+            "native.o",
+        ]
+    );
+    validate_simulation_scenario(&scenario).unwrap();
+}
+
+#[test]
+fn simulation_link_input_validation_rejects_ambiguous_inputs() {
+    let mut scenario = simulation_scenarios()[0];
+    scenario.top = "mkTop";
+
+    scenario.link_inputs = &[SimulationLinkInput::GeneratedModule("mkTop")];
+    assert!(validate_simulation_scenario(&scenario).is_err());
+
+    scenario.link_inputs = &[SimulationLinkInput::GeneratedModule("child.ba")];
+    assert!(validate_simulation_scenario(&scenario).is_err());
+
+    scenario.link_inputs = &[SimulationLinkInput::ExactFile("../native.c")];
+    assert!(validate_simulation_scenario(&scenario).is_err());
+
+    scenario.link_inputs = &[
+        SimulationLinkInput::GeneratedModule("child"),
+        SimulationLinkInput::ExactFile("child.ba"),
+    ];
+    assert!(validate_simulation_scenario(&scenario).is_err());
+}
+
+#[test]
 fn execution_plan_preserves_declared_generation_scenarios() {
     let options = parse_cli(["bsc.bsv_examples/AES::Aes_TB::"]).unwrap();
     let plan = select_plan(&options);
@@ -381,6 +447,32 @@ fn output_normalization_sorts_lines_declaratively() {
         normalize_contract_output(OutputNormalization::SortedLines, "second\nfirst\n"),
         "first\nsecond\n"
     );
+}
+
+#[test]
+fn sorted_simulation_output_normalizes_actual_and_golden() {
+    let root = std::env::temp_dir().join(format!(
+        "bsc-rust-sorted-golden-{}",
+        crate::current_run_id()
+    ));
+    std::fs::create_dir_all(&root).unwrap();
+    let expected_path = root.join("expected.out");
+    let actual_path = root.join("actual.out");
+    let diff_path = root.join("golden.diff");
+    std::fs::write(&expected_path, "second\nfirst\n").unwrap();
+    std::fs::write(&actual_path, "first\nsecond\n").unwrap();
+
+    super::artifact::compare_golden_output_with(
+        "first\nsecond\n",
+        &expected_path,
+        &actual_path,
+        &diff_path,
+        |text| normalize_contract_output(OutputNormalization::SortedLines, text),
+    )
+    .unwrap();
+
+    assert!(!diff_path.exists());
+    let _ = std::fs::remove_dir_all(root);
 }
 
 #[test]

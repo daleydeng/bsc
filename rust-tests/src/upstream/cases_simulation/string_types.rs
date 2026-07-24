@@ -19,7 +19,7 @@ macro_rules! string_scenario {
                 concat!("sys", $module, ".out.expected"),
             ],
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

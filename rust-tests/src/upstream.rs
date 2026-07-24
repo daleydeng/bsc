@@ -353,13 +353,19 @@ pub enum ResourceClass {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SimulationLinkInput {
+    GeneratedModule(&'static str),
+    ExactFile(&'static str),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct SimulationScenario {
     pub name: &'static str,
     pub fixture_dir: &'static str,
     pub source: &'static str,
     pub fixtures: &'static [&'static str],
     pub top: &'static str,
-    pub generated_modules: &'static [&'static str],
+    pub link_inputs: &'static [SimulationLinkInput],
     pub compile_options: &'static [&'static str],
     pub generation: GenerationStrategy,
     pub timeouts: SimulationTimeouts,
@@ -434,8 +440,9 @@ pub use runner::{run_plan, summarize_outcomes, CaseOutcome, CaseResult, RunPaths
 pub(crate) use simulation::validate_simulation_scenario;
 #[cfg(test)]
 use simulation::{
-    clean_iverilog_output, evaluate_contract_outcome, normalize_contract_output, validate_vcd,
-    ContractRunOutcome, PhaseFailure,
+    clean_iverilog_output, evaluate_contract_outcome, expected_generated_files,
+    normalize_contract_output, simulation_link_files, validate_vcd, ContractRunOutcome,
+    PhaseFailure,
 };
 
 pub fn compile_cases() -> &'static [CompileCase] {

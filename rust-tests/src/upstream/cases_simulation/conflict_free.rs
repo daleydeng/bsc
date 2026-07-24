@@ -2,8 +2,8 @@
 
 use super::SimulationScenario;
 use crate::upstream::{
-    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
+    ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
+    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.scheduler/conflict_free";
@@ -16,7 +16,7 @@ macro_rules! shared_scenario {
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: $compile_options,
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
@@ -71,7 +71,7 @@ macro_rules! backend_scenario {
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
             timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),

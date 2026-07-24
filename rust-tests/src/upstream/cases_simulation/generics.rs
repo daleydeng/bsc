@@ -16,7 +16,7 @@ macro_rules! generic_scenario {
             source: concat!($module, ".bs"),
             fixtures: $fixtures,
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

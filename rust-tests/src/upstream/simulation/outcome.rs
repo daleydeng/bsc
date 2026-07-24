@@ -1,4 +1,4 @@
-use super::super::artifact::{check_artifact_assertions, compare_golden_output};
+use super::super::artifact::{check_artifact_assertions, compare_golden_output_with};
 use super::super::{
     describe_exit, ExpectedOutcome, OutputNormalization, SimulationBackend, SimulationContract,
     SimulationPhase,
@@ -72,12 +72,9 @@ pub(crate) fn evaluate_contract_outcome(
                         failure.message
                     )
                 })?;
-                let actual = normalize_phase_output(
-                    failure.phase,
-                    contract.backend,
-                    contract.output,
-                    actual,
-                );
+                let phase_output =
+                    normalize_phase_backend_output(failure.phase, contract.backend, actual);
+                let actual = normalize_contract_output(contract.output, &phase_output);
                 let actual_path = artifact_dir.join("expected-failure.out");
                 fs::write(&actual_path, &actual).map_err(|error| {
                     format!(
@@ -85,11 +82,12 @@ pub(crate) fn evaluate_contract_outcome(
                         actual_path.display()
                     )
                 })?;
-                compare_golden_output(
-                    &actual,
+                compare_golden_output_with(
+                    &phase_output,
                     &work_dir.join(expected_output),
                     &actual_path,
                     &artifact_dir.join("expected-failure.diff"),
+                    |text| normalize_contract_output(contract.output, text),
                 )?;
             }
             check_artifact_assertions(contract.assertions, work_dir, artifact_dir, contract.name)?;
@@ -126,18 +124,16 @@ pub(crate) fn evaluate_contract_outcome(
     }
 }
 
-fn normalize_phase_output(
+fn normalize_phase_backend_output(
     phase: SimulationPhase,
     backend: SimulationBackend,
-    normalization: OutputNormalization,
     output: &str,
 ) -> String {
-    let output = if matches!(phase, SimulationPhase::Simulation | SimulationPhase::Vcd) {
+    if matches!(phase, SimulationPhase::Simulation | SimulationPhase::Vcd) {
         normalize_backend_output(backend, output)
     } else {
         output.to_owned()
-    };
-    normalize_contract_output(normalization, &output)
+    }
 }
 
 pub(crate) fn normalize_backend_output(backend: SimulationBackend, output: &str) -> String {

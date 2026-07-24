@@ -28,7 +28,7 @@ macro_rules! stmt_fsm_backend_scenario {
                 concat!("sys", $module, ".out.expected"),
             ],
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 pub(super) const BIT_SWAP_DESIGN: SimulationScenario = SimulationScenario {
@@ -12,7 +12,7 @@ pub(super) const BIT_SWAP_DESIGN: SimulationScenario = SimulationScenario {
     source: "Test.bsv",
     fixtures: &["Test.bsv", "Design.bsv", "sysTest.out.expected"],
     top: "sysTest",
-    generated_modules: &["mkDesign"],
+    link_inputs: &[SimulationLinkInput::GeneratedModule("mkDesign")],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

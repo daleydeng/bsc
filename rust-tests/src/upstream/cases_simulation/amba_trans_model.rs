@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 pub(super) const TB_1_MASTER_2_SLAVES: SimulationScenario = SimulationScenario {
@@ -19,12 +19,12 @@ pub(super) const TB_1_MASTER_2_SLAVES: SimulationScenario = SimulationScenario {
         "sysTB1m2s.out.expected",
     ],
     top: "sysTB1m2s",
-    generated_modules: &[
-        "defaultSlave",
-        "mkSlave1",
-        "mkSlave2",
-        "bus_1m_2s",
-        "mkMaster",
+    link_inputs: &[
+        SimulationLinkInput::GeneratedModule("defaultSlave"),
+        SimulationLinkInput::GeneratedModule("mkSlave1"),
+        SimulationLinkInput::GeneratedModule("mkSlave2"),
+        SimulationLinkInput::GeneratedModule("bus_1m_2s"),
+        SimulationLinkInput::GeneratedModule("mkMaster"),
     ],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,

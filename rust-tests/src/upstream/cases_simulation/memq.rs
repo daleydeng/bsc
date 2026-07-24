@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 pub(super) const DYNAMIC_PRIORITY_QUEUE: SimulationScenario = SimulationScenario {
@@ -20,7 +20,7 @@ pub(super) const DYNAMIC_PRIORITY_QUEUE: SimulationScenario = SimulationScenario
         "sysDQueueTb.out.expected",
     ],
     top: "sysDQueueTb",
-    generated_modules: &["mkQueue"],
+    link_inputs: &[SimulationLinkInput::GeneratedModule("mkQueue")],
     compile_options: &[],
     generation: GenerationStrategy::SharedElaboration,
     timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

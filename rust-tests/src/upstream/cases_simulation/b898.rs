@@ -3,7 +3,7 @@
 use super::SimulationScenario;
 use crate::upstream::{
     ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
-    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.bugs/bluespec_inc/b898";
@@ -30,7 +30,7 @@ macro_rules! backend_scenario {
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
-            generated_modules: &[concat!("mk", $module)],
+            link_inputs: &[SimulationLinkInput::GeneratedModule(concat!("mk", $module))],
             compile_options: &[],
             generation: GenerationStrategy::BackendSpecific(SimulationBackend::$backend),
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

@@ -2,8 +2,8 @@
 
 use super::SimulationScenario;
 use crate::upstream::{
-    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
+    ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
+    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.typechecker/constructors";
@@ -16,7 +16,7 @@ macro_rules! classic_shared_scenario {
             source: $source,
             fixtures: &[$source, $expected],
             top: concat!("sys", $name),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

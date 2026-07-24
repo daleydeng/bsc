@@ -11,11 +11,12 @@ use self::vcd::run_vcd_contract;
 #[cfg(test)]
 pub(super) use self::vcd::validate_vcd;
 use super::artifact::{
-    check_artifact_assertions, compare_golden_output, validate_artifact_assertions,
+    check_artifact_assertions, compare_golden_output_with, validate_artifact_assertions,
 };
 use super::{
     is_safe_relative, reset_directory, ExpectedOutcome, GenerationStrategy, Requirement, RunPaths,
-    SimulationBackend, SimulationContract, SimulationPhase, SimulationScenario,
+    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationPhase,
+    SimulationScenario,
 };
 use crate::cache::{hard_link_or_copy_directory_contents, CacheLookup, GenerationCache};
 use crate::{run_bsc, run_command, Toolchain};
@@ -42,14 +43,37 @@ fn simulation_compile_arguments(scenario: &SimulationScenario) -> Vec<&str> {
     arguments
 }
 
-fn generated_model_files(scenario: &SimulationScenario, backend: SimulationBackend) -> Vec<String> {
-    let extension = match backend {
+fn backend_model_extension(backend: SimulationBackend) -> &'static str {
+    match backend {
         SimulationBackend::Bluesim => "ba",
         SimulationBackend::Icarus => "v",
-    };
+    }
+}
+
+pub(crate) fn expected_generated_files(
+    scenario: &SimulationScenario,
+    backend: SimulationBackend,
+) -> Vec<String> {
+    let extension = backend_model_extension(backend);
     std::iter::once(scenario.top)
-        .chain(scenario.generated_modules.iter().copied())
+        .chain(scenario.link_inputs.iter().filter_map(|input| match input {
+            SimulationLinkInput::GeneratedModule(module) => Some(*module),
+            SimulationLinkInput::ExactFile(_) => None,
+        }))
         .map(|module| format!("{module}.{extension}"))
+        .collect()
+}
+
+pub(crate) fn simulation_link_files(
+    scenario: &SimulationScenario,
+    backend: SimulationBackend,
+) -> Vec<String> {
+    let extension = backend_model_extension(backend);
+    std::iter::once(format!("{}.{extension}", scenario.top))
+        .chain(scenario.link_inputs.iter().map(|input| match input {
+            SimulationLinkInput::GeneratedModule(module) => format!("{module}.{extension}"),
+            SimulationLinkInput::ExactFile(path) => (*path).to_owned(),
+        }))
         .collect()
 }
 
@@ -109,7 +133,7 @@ pub(super) fn ensure_simulation_generation(
     }
 
     for backend in backends {
-        for generated_file in generated_model_files(scenario, *backend) {
+        for generated_file in expected_generated_files(scenario, *backend) {
             if !work_dir.join(&generated_file).is_file() {
                 return Err(PhaseFailure::new(
                     SimulationPhase::Generation,
@@ -168,8 +192,19 @@ fn execute_simulation_contract(
     work_dir: &Path,
     artifact_dir: &Path,
 ) -> Result<(), PhaseFailure> {
-    let generated = generated_model_files(scenario, contract.backend);
-    let mut link_arguments = Vec::with_capacity(contract.link_options.len() + 10);
+    let link_files = simulation_link_files(scenario, contract.backend);
+    for link_file in &link_files {
+        if !work_dir.join(link_file).is_file() {
+            return Err(PhaseFailure::new(
+                SimulationPhase::Link,
+                format!(
+                    "required simulation link input {link_file} is missing for {}",
+                    contract.name
+                ),
+            ));
+        }
+    }
+    let mut link_arguments = Vec::with_capacity(contract.link_options.len() + link_files.len() + 9);
     link_arguments.extend_from_slice(&["-no-show-timestamps", "-no-show-version"]);
     match contract.backend {
         SimulationBackend::Bluesim => link_arguments.push("-sim"),
@@ -179,7 +214,7 @@ fn execute_simulation_contract(
     }
     link_arguments.extend_from_slice(&["-e", scenario.top, "-o", scenario.top]);
     link_arguments.extend_from_slice(contract.link_options);
-    link_arguments.extend(generated.iter().map(String::as_str));
+    link_arguments.extend(link_files.iter().map(String::as_str));
     let link_log = artifact_dir.join("link.log");
     let result = run_bsc(
         toolchain,
@@ -269,11 +304,12 @@ fn execute_simulation_contract(
         )
     })?;
     if let ExpectedOutcome::Pass { output: expected } = contract.expectation {
-        compare_golden_output(
-            &output,
+        compare_golden_output_with(
+            &normal_output,
             &work_dir.join(expected),
             &output_path,
             &artifact_dir.join("golden.diff"),
+            |text| normalize_contract_output(contract.output, text),
         )
         .map_err(|message| PhaseFailure {
             phase: SimulationPhase::Simulation,
@@ -307,15 +343,24 @@ fn execute_simulation_contract(
     )
 }
 
+fn is_module_name(value: &str) -> bool {
+    !value.is_empty()
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'$'))
+}
+
 pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Result<(), String> {
     if scenario.name.is_empty()
         || !is_safe_relative(scenario.fixture_dir)
         || !is_safe_relative(scenario.source)
-        || scenario.top.is_empty()
-        || scenario
-            .generated_modules
-            .iter()
-            .any(|module| module.is_empty())
+        || !is_module_name(scenario.top)
+        || scenario.link_inputs.iter().any(|input| match input {
+            SimulationLinkInput::GeneratedModule(module) => !is_module_name(module),
+            SimulationLinkInput::ExactFile(path) => {
+                !is_safe_relative(path) || Path::new(path).extension().is_none()
+            }
+        })
     {
         return Err(format!(
             "simulation scenario {} contains an empty name or unsafe path",
@@ -338,18 +383,16 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
             scenario.name
         ));
     }
-    if scenario
-        .generated_modules
-        .iter()
-        .enumerate()
-        .any(|(index, module)| {
-            *module == scenario.top || scenario.generated_modules[..index].contains(module)
-        })
-    {
-        return Err(format!(
-            "simulation scenario {} contains duplicate generated modules",
-            scenario.name
-        ));
+    for backend in [SimulationBackend::Bluesim, SimulationBackend::Icarus] {
+        let link_files = simulation_link_files(scenario, backend);
+        let unique = link_files.iter().collect::<std::collections::BTreeSet<_>>();
+        if unique.len() != link_files.len() {
+            return Err(format!(
+                "simulation scenario {} contains duplicate {} link inputs",
+                scenario.name,
+                backend_model_extension(backend)
+            ));
+        }
     }
     if [
         scenario.timeouts.generation,

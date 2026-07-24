@@ -2,8 +2,8 @@
 
 use super::SimulationScenario;
 use crate::upstream::{
-    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
+    ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
+    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.lib/Cntrs";
@@ -16,7 +16,7 @@ macro_rules! scenario {
             source: concat!($module, ".bsv"),
             fixtures: &[concat!($module, ".bsv"), $expected],
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform(crate::BSC_TIMEOUT),

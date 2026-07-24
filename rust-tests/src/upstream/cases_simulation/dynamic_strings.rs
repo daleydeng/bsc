@@ -2,8 +2,8 @@
 
 use super::SimulationScenario;
 use crate::upstream::{
-    GenerationStrategy, Requirement, ResourceClass, SimulationBackend, SimulationContract,
-    ExpectedOutcome, OutputNormalization, SimulationTimeouts, VcdContract,
+    ExpectedOutcome, GenerationStrategy, OutputNormalization, Requirement, ResourceClass,
+    SimulationBackend, SimulationContract, SimulationTimeouts, VcdContract,
 };
 
 const FIXTURE_DIR: &str = "testsuite/bsc.evaluator/dynamic/strings";
@@ -22,7 +22,7 @@ macro_rules! string_scenario {
                 concat!("sys", $module, ".out.expected"),
             ],
             top: concat!("sys", $module),
-            generated_modules: &[],
+            link_inputs: &[],
             compile_options: &[],
             generation: GenerationStrategy::SharedElaboration,
             timeouts: SimulationTimeouts::uniform($crate::BSC_TIMEOUT),
@@ -33,7 +33,9 @@ macro_rules! string_scenario {
                     assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    expectation: ExpectedOutcome::Pass { output: concat!("sys", $module, ".out.expected") },
+                    expectation: ExpectedOutcome::Pass {
+                        output: concat!("sys", $module, ".out.expected"),
+                    },
                     output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Bluesim,
                     vcd: Some(VcdContract::output_matches_normal()),
@@ -44,7 +46,9 @@ macro_rules! string_scenario {
                     assertions: &[],
                     link_options: &[],
                     simulation_options: &[],
-                    expectation: ExpectedOutcome::Pass { output: concat!("sys", $module, ".out.expected") },
+                    expectation: ExpectedOutcome::Pass {
+                        output: concat!("sys", $module, ".out.expected"),
+                    },
                     output: OutputNormalization::Preserve,
                     backend: SimulationBackend::Icarus,
                     vcd: Some(VcdContract::parse()),
