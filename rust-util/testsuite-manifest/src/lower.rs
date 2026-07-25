@@ -379,10 +379,22 @@ impl<'a> Lowerer<'a> {
     }
 
     fn static_arguments(&self, arguments: Node<'a>) -> Option<Vec<String>> {
-        let mut values = Vec::new();
+        let mut values = Vec::<String>::new();
+        let mut previous_end = None;
         let mut cursor = arguments.walk();
-        for word in arguments.named_children(&mut cursor) {
-            values.push(self.static_word(word)?);
+        for fragment in arguments.named_children(&mut cursor) {
+            let value = self.static_word(fragment)?;
+            let starts_new_word = previous_end.is_none_or(|end| {
+                self.source[end..fragment.start_byte()]
+                    .iter()
+                    .any(u8::is_ascii_whitespace)
+            });
+            if starts_new_word {
+                values.push(value);
+            } else {
+                values.last_mut()?.push_str(&value);
+            }
+            previous_end = Some(fragment.end_byte());
         }
         Some(values)
     }
@@ -791,6 +803,24 @@ compile_one Second
             Contract::Compile(contract)
                 if contract.source == "Second.bsv" && contract.expansion.len() == 1
         ));
+    }
+
+    #[test]
+    fn concatenates_adjacent_unquoted_word_fragments() {
+        let manifest = lower(
+            r#"
+proc compile_one {name} {
+    compile_verilog_pass ${name}.bs
+    compare_verilog mk${name}Reg.v
+}
+compile_one Orig
+"#,
+        );
+        assert!(matches!(
+            &manifest.contracts[0],
+            Contract::Compile(contract) if contract.source == "Orig.bs"
+        ));
+        assert_eq!(manifest.comparisons[0].arguments, ["mkOrigReg.v"]);
     }
 
     #[test]

@@ -166,6 +166,26 @@ pub(crate) fn normalize_contract_output(
             }
             output
         }
+        OutputNormalization::MaskedLines { prefix } => {
+            let final_newline = output.ends_with('\n');
+            let mut normalized = output
+                .lines()
+                .map(|line| {
+                    let trimmed = line.trim_start();
+                    if trimmed.starts_with(prefix) {
+                        let indentation = &line[..line.len() - trimmed.len()];
+                        format!("{indentation}{prefix}<masked>")
+                    } else {
+                        line.to_owned()
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            if final_newline {
+                normalized.push('\n');
+            }
+            normalized
+        }
     }
 }
 

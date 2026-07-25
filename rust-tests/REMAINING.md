@@ -5,9 +5,9 @@
 
 ## Summary
 
-- Remaining test scripts: **372**
-- Remaining typed contracts: **3080**
-- Typed migration candidates: **6 scripts / 39 contracts**
+- Remaining test scripts: **366**
+- Remaining typed contracts: **3041**
+- Typed migration candidates: **0 scripts / 0 contracts**
 - Typed scripts requiring unsupported-construct review or new helpers: **180 scripts / 2776 contracts**
 - Curated known blockers: **21 scripts / 265 contracts**
 - Scripts without typed contracts: **165 scripts / 0 currently recognized contracts**
@@ -18,12 +18,6 @@
 
 | Origin | Typed contracts |
 | --- | ---: |
-| `testsuite/bsc.verilog/derived_bits/derived_bits.exp` | 17 |
-| `testsuite/bsc.bugs/github/gh276/gh276.exp` | 6 |
-| `testsuite/bsc.mcd/Gating/attributes/attributes.exp` | 6 |
-| `testsuite/bsc.lib/Divide/divide.exp` | 4 |
-| `testsuite/bsc.lib/SquareRoot/squareroot.exp` | 4 |
-| `testsuite/bsc.bugs/bluespec_inc/b752/b752.exp` | 2 |
 
 ## Highest-leverage unsupported Tcl commands
 
@@ -83,15 +77,15 @@ The table is sorted by affected scripts, then affected typed contracts. Contract
 | `bsc.bluetcl` | 9 | 1 | 0 | 0 | 8 | 0 |
 | `bsc.bsc_examples` | 1 | 27 | 0 | 0 | 0 | 0 |
 | `bsc.bsv_examples` | 17 | 77 | 0 | 0 | 0 | 1 |
-| `bsc.bugs` | 35 | 70 | 2 | 8 | 13 | 3 |
+| `bsc.bugs` | 33 | 62 | 0 | 0 | 13 | 3 |
 | `bsc.codegen` | 9 | 140 | 0 | 0 | 0 | 0 |
 | `bsc.compile` | 2 | 31 | 0 | 0 | 0 | 1 |
 | `bsc.driver` | 8 | 76 | 0 | 0 | 1 | 1 |
 | `bsc.evaluator` | 16 | 228 | 0 | 0 | 2 | 1 |
 | `bsc.if` | 4 | 50 | 0 | 0 | 0 | 2 |
 | `bsc.interra` | 139 | 370 | 0 | 0 | 122 | 0 |
-| `bsc.lib` | 19 | 244 | 2 | 8 | 2 | 6 |
-| `bsc.mcd` | 12 | 246 | 1 | 6 | 0 | 2 |
+| `bsc.lib` | 17 | 236 | 0 | 0 | 2 | 6 |
+| `bsc.mcd` | 11 | 240 | 0 | 0 | 0 | 2 |
 | `bsc.misc` | 6 | 61 | 0 | 0 | 0 | 0 |
 | `bsc.names` | 11 | 95 | 0 | 0 | 0 | 1 |
 | `bsc.options` | 3 | 28 | 0 | 0 | 0 | 0 |
@@ -102,7 +96,7 @@ The table is sorted by affected scripts, then affected typed contracts. Contract
 | `bsc.synthesize` | 1 | 0 | 0 | 0 | 1 | 0 |
 | `bsc.typechecker` | 15 | 313 | 0 | 0 | 1 | 0 |
 | `bsc.vcdcheck` | 1 | 0 | 0 | 0 | 1 | 0 |
-| `bsc.verilog` | 22 | 357 | 1 | 17 | 0 | 1 |
+| `bsc.verilog` | 21 | 340 | 0 | 0 | 0 | 1 |
 
 ## Complete remaining list
 
@@ -183,12 +177,10 @@ The table is sorted by affected scripts, then affected typed contracts. Contract
 | `testsuite/bsc.bugs/bluespec_inc/b530/negativeshift.exp` | 5 | review | `compile_object_fail_error`×4 (unsupported contract), `compile_object_pass`×2 (unsupported contract), `erase`×5 (filesystem), `link_objects_pass`×1 (manual toolchain), `sim_final_state`×1 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b535/b535.exp` | 3 | blocked | known blocker: manual copy, erase, link, and simulation flow |
 | `testsuite/bsc.bugs/bluespec_inc/b611/b611.exp` | 0 | dynamic/custom | `run_bsc2bsv`×1 (manual toolchain) |
-| `testsuite/bsc.bugs/bluespec_inc/b752/b752.exp` | 2 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/bluespec_inc/b791/b791.exp` | 3 | review | `link_verilog_pass`×1 (manual toolchain) |
 | `testsuite/bsc.bugs/bluespec_inc/b834/b834.exp` | 1 | review | `compare_verilog_bug`×1 (unsupported assertion) |
 | `testsuite/bsc.bugs/bluespec_inc/b848/b848.exp` | 1 | review | `compare_verilog_bug`×1 (unsupported assertion) |
 | `testsuite/bsc.bugs/bluespec_inc/b925/b925.exp` | 8 | blocked | known blocker: backend-specific XFAIL and bug gate are not modeled |
-| `testsuite/bsc.bugs/github/gh276/gh276.exp` | 6 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.bugs/pre_bluespec_inc/pre_bluespec_inc.exp` | 18 | review | `compile_object_pass`×6 (unsupported contract), `erase`×1 (filesystem) |
 | `testsuite/bsc.codegen/case/case.exp` | 19 | review | `find_n_strings_bug`×4 (unsupported assertion) |
 | `testsuite/bsc.codegen/codegen.exp` | 4 | review | `compile_object_pass`×3 (unsupported contract), `copy`×2 (filesystem), `link_objects_pass`×1 (manual toolchain), `link_verilog_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
@@ -373,13 +365,11 @@ The table is sorted by affected scripts, then affected typed contracts. Contract
 | `testsuite/bsc.lib/BuildList/BuildList.exp` | 1 | review | `test_veri_only`×1 (unsupported contract) |
 | `testsuite/bsc.lib/CReg/CReg.exp` | 47 | review | `compare_file_filtered`×2 (unsupported assertion), `move`×90 (filesystem) |
 | `testsuite/bsc.lib/DefaultValue/DefaultValue.exp` | 3 | blocked | known blocker: compile_pass_warning is not modeled |
-| `testsuite/bsc.lib/Divide/divide.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/FShow/FShow.exp` | 2 | blocked | known blocker: compile_pass_warning is not modeled |
 | `testsuite/bsc.lib/FixedPoint/FixedPoint.exp` | 24 | review | `find_n_warning`×7 (unsupported assertion) |
 | `testsuite/bsc.lib/FloatingPoint/FloatTest.exp` | 8 | blocked | known blocker: shared native Windows elaboration exceeds 600 seconds |
 | `testsuite/bsc.lib/PAClib/unit_tests/unit_test.exp` | 0 | dynamic/custom | `foreach`×1 (control/state) |
 | `testsuite/bsc.lib/Prelude/Prelude.exp` | 14 | review | `compile_verilog_fail_no_internal_error`×1 (unsupported contract) |
-| `testsuite/bsc.lib/SquareRoot/squareroot.exp` | 4 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.lib/fifo/depth_param/depth_param.exp` | 13 | review | `compile_object_fail_error`×1 (unsupported contract) |
 | `testsuite/bsc.lib/fifo/fifo.exp` | 16 | review | `awk`×1 (custom helper) |
 | `testsuite/bsc.lib/getput/getput.exp` | 44 | blocked | known blocker: dynamic Icarus probing and additional assertions |
@@ -389,7 +379,6 @@ The table is sorted by affected scripts, then affected typed contracts. Contract
 | `testsuite/bsc.lib/sram/sram.exp` | 0 | dynamic/custom | `compile_object_pass`×1 (unsupported contract), `link_objects_pass`×1 (manual toolchain), `sim_output`×1 (manual toolchain) |
 | `testsuite/bsc.mcd/ClockDividers/ClockDividers.exp` | 24 | review | `copy`×96 (filesystem), `erase`×24 (filesystem) |
 | `testsuite/bsc.mcd/Examples/Example.exp` | 2 | review | `compile_object_pass`×2 (unsupported contract) |
-| `testsuite/bsc.mcd/Gating/attributes/attributes.exp` | 6 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.mcd/Gating/portprop/portprop.exp` | 8 | review | `no_warnings`×1 (custom helper) |
 | `testsuite/bsc.mcd/Hierarchy/Hierarchy.exp` | 29 | review | `compile_object_fail`×1 (unsupported contract), `if`×1 (control/state) |
 | `testsuite/bsc.mcd/LevelFifo/LevelFifo.exp` | 14 | review | `compile_object_fail_error`×5 (unsupported contract), `if`×1 (control/state), `set`×1 (control/state) |
@@ -460,7 +449,6 @@ The table is sorted by affected scripts, then affected typed contracts. Contract
 | `testsuite/bsc.vcdcheck/vcdcheck.exp` | 0 | dynamic/custom | `vcdcheck_fail`×5 (custom helper), `vcdcheck_pass`×6 (custom helper) |
 | `testsuite/bsc.verilog/astate/astate.exp` | 15 | review | `compile_object_pass`×1 (unsupported contract) |
 | `testsuite/bsc.verilog/comments/comments.exp` | 29 | review | `move`×2 (filesystem), `touch`×1 (filesystem) |
-| `testsuite/bsc.verilog/derived_bits/derived_bits.exp` | 17 | candidate | supported API vocabulary only; review fixtures, options, goldens, and runtime |
 | `testsuite/bsc.verilog/dollar/dollar.exp` | 1 | review | `compile_object_fail`×1 (unsupported contract), `compile_object_pass`×1 (unsupported contract), `link_objects_fail`×1 (manual toolchain) |
 | `testsuite/bsc.verilog/dollar/renaming4/rename.exp` | 2 | review | `erase`×2 (filesystem), `link_verilog_pass`×1 (manual toolchain), `link_verilog_pass_bug`×1 (manual toolchain) |
 | `testsuite/bsc.verilog/filter/filter.exp` | 2 | review | `compile_verilog_fail`×1 (unsupported contract), `compile_verilog_pass`×2 (unsupported contract), `erase`×4 (filesystem), `set`×3 (control/state) |

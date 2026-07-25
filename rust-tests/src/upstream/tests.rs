@@ -481,6 +481,18 @@ fn output_normalization_sorts_lines_declaratively() {
 }
 
 #[test]
+fn masked_line_normalization_preserves_structure_and_sample_count() {
+    let output = "fixed\n  sqrt (deadbeef) = result\n  sqrt (cafebabe) = result\nDone\n";
+    assert_eq!(
+        normalize_contract_output(
+            OutputNormalization::MaskedLines { prefix: "sqrt (" },
+            output,
+        ),
+        "fixed\n  sqrt (<masked>\n  sqrt (<masked>\nDone\n"
+    );
+}
+
+#[test]
 fn sorted_simulation_output_normalizes_actual_and_golden() {
     let root = std::env::temp_dir().join(format!(
         "bsc-rust-sorted-golden-{}",

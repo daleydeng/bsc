@@ -285,6 +285,7 @@ impl ExpectedOutcome {
 pub enum OutputNormalization {
     Preserve,
     SortedLines,
+    MaskedLines { prefix: &'static str },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

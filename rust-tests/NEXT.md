@@ -4,10 +4,10 @@
 
 ## 当前基线
 
-- 已迁移来源：488/860
-- 尚未迁移来源：372
-- 已迁移 typed contract：2301/5381
-- 尚未迁移 typed contract：3080
+- 已迁移来源：494/860
+- 尚未迁移来源：366
+- 已迁移 typed contract：2340/5381
+- 尚未迁移 typed contract：3041
 - 没有 typed contract 的脚本：165
 - 当前 inventory 完全由 typed manifest 生成，不再保留手写 Tcl parser 或词法计数分母
 
@@ -15,9 +15,17 @@
 
 ## 自动候选队列
 
-[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列为 **6 个脚本、39 个 contract**；下一批应优先迁移这些完整脚本，并继续扩展高杠杆 helper 或拆解 `review`/`dynamic` 脚本。
+[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列已经清空；下一批应扩展高杠杆 typed workflow helper，再从 `review` 脚本中生成新的完整迁移候选。
 
 `candidate` 表示该 `.exp` 的活动 Tcl command vocabulary 已被现有 Rust contract/assertion 模型覆盖，且不在已知 blocker registry 中；它仍不是自动批准。批量迁移时必须逐份完整 review fixture、options、golden、条件分支、bug gate 与运行结果。`inventory-check` 会守护生成文档、candidate 分类以及 blocker registry 是否与当前未迁移集合一致。
+
+## 已完成：第二轮 typed candidate 队列
+
+完整迁移 6 个来源、39 个 typed contract：`derived_bits` 17 个 generated-Verilog compile contract，`gh276` 6 个 compiler golden，Gating `attributes` 6 个 Verilog port/diagnostic contract，`b752` 2 个 diagnostic artifact contract，以及 Divide、SquareRoot 各 4 个 backend-specific simulation contract。所有模块均保留精确 `Origin`，并通过 typed alignment、fixture/options/golden/assertion review 和实际运行。
+
+Tree-sitter frontend 同时修正未加引号 Tcl composite word 的静态降低：`${name}.bs` 和 `mk${name}Reg.v` 现在按相邻 CST fragment 合并为单个 Tcl word，并有独立回归测试。SquareRoot 的 Bluesim 随机样本来自平台 RNG：Windows `rand32` 使用 C `rand()` 组合，无法与 POSIX `random()` 生成的 upstream golden 逐值一致；`OutputNormalization::MaskedLines` 因此只遮蔽 `sqrt (` 随机样本行内容，仍严格核对固定测试向量、章节顺序和样本数量。Icarus 继续使用完整 golden 比较。
+
+本批实际运行结果为 39/39 通过；SquareRoot 首次 generation 后再次运行得到 4/4 generation cache hit。
 
 ## 已完成：首轮自动候选队列
 

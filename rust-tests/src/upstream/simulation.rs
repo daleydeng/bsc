@@ -14,9 +14,9 @@ use super::artifact::{
     check_artifact_assertions, compare_golden_output_with, validate_artifact_assertions,
 };
 use super::{
-    is_safe_relative, reset_directory, ExpectedOutcome, GenerationStrategy, Requirement, RunPaths,
-    SimulationBackend, SimulationContract, SimulationLinkInput, SimulationPhase,
-    SimulationScenario,
+    is_safe_relative, reset_directory, ExpectedOutcome, GenerationStrategy, OutputNormalization,
+    Requirement, RunPaths, SimulationBackend, SimulationContract, SimulationLinkInput,
+    SimulationPhase, SimulationScenario,
 };
 use crate::cache::{hard_link_or_copy_directory_contents, CacheLookup, GenerationCache};
 use crate::{run_bsc, run_command, Toolchain};
@@ -490,6 +490,14 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
                 "simulation contract {} has an empty XFAIL reason",
                 contract.name
             ));
+        }
+        if let OutputNormalization::MaskedLines { prefix } = contract.output {
+            if prefix.is_empty() || prefix.contains('\r') || prefix.contains('\n') {
+                return Err(format!(
+                    "simulation contract {} has an invalid masked-line prefix",
+                    contract.name
+                ));
+            }
         }
         let expected_failure_phase = contract.expectation.expected_failure_phase();
         if expected_failure_phase == Some(SimulationPhase::Generation) {
