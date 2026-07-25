@@ -9,7 +9,7 @@ use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 const FINGERPRINT_SCHEMA: &[u8] = b"bsc-rust-tests-generation-cache-toolchain-v1";
-const CASE_SCHEMA: &[u8] = b"bsc-rust-tests-generation-cache-case-v1";
+const CASE_SCHEMA: &[u8] = b"bsc-rust-tests-generation-cache-case-v2";
 const RESULT_CASE_SCHEMA: &[u8] = b"bsc-rust-tests-result-cache-case-v2";
 const COPY_BUFFER_SIZE: usize = 64 * 1024;
 
@@ -72,7 +72,7 @@ impl GenerationCache {
             .join("cache")
             .join("rust-tests")
             .join("simulation-generation")
-            .join("v1");
+            .join("v2");
 
         if !cache_enabled_from(env::var_os("BSC_TEST_CACHE").as_deref()) {
             return Ok(Self::disabled_at(root));
@@ -189,7 +189,7 @@ impl GenerationCache {
             .join("cache")
             .join("rust-tests")
             .join("simulation-generation")
-            .join("v1");
+            .join("v2");
         Self::disabled_at(root)
     }
 

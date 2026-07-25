@@ -77,6 +77,10 @@ pub enum ArtifactNormalization {
     Exact,
     GoldenOutput,
     Verilog,
+    DecimalTolerance {
+        fractional_digits: u8,
+        max_units: u64,
+    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -224,6 +228,7 @@ pub enum SimulationPhase {
     Generation,
     Link,
     Simulation,
+    OutputComparison,
     Vcd,
 }
 
@@ -233,6 +238,7 @@ impl SimulationPhase {
             Self::Generation => "generation",
             Self::Link => "link",
             Self::Simulation => "simulation",
+            Self::OutputComparison => "output comparison",
             Self::Vcd => "VCD simulation",
         }
     }
@@ -251,6 +257,10 @@ pub enum ExpectedOutcome {
         phase: SimulationPhase,
         reason: &'static str,
     },
+    XFailOutput {
+        output: &'static str,
+        reason: &'static str,
+    },
 }
 
 impl ExpectedOutcome {
@@ -258,12 +268,13 @@ impl ExpectedOutcome {
         match self {
             Self::Pass { .. } => None,
             Self::Fail { phase, .. } | Self::XFail { phase, .. } => Some(phase),
+            Self::XFailOutput { .. } => Some(SimulationPhase::OutputComparison),
         }
     }
 
     pub const fn expected_output(self) -> Option<&'static str> {
         match self {
-            Self::Pass { output } => Some(output),
+            Self::Pass { output } | Self::XFailOutput { output, .. } => Some(output),
             Self::Fail { output, .. } => output,
             Self::XFail { .. } => None,
         }

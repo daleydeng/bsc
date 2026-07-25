@@ -4,22 +4,22 @@
 
 ## 当前基线
 
-- 已迁移来源：355/860
-- 尚未迁移来源：505
-- 已迁移静态 contract：1758/4672
-- 尚未迁移静态 contract：2914
-- 完全需要动态或自定义 Tcl 分析的脚本：221
-- 本批迁移前基线：`03d4c9ee Add migration readiness analysis`
+- 已迁移来源：488/860
+- 尚未迁移来源：372
+- 已迁移 typed contract：2301/5381
+- 尚未迁移 typed contract：3080
+- 没有 typed contract 的脚本：165
+- 当前 inventory 完全由 typed manifest 生成，不再保留手写 Tcl parser 或词法计数分母
 
 候选进入本文件的硬条件：必须完整迁移一整份 `.exp` 的全部活动 contract 和 assertion；不得只摘取 compile/simulation 调用；不得忽略 XFAIL、bug gate、generated artifact、手工 link/sim 或额外输出比较。
 
 ## 自动候选队列
 
-[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 testsuite、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 lexical candidate 队列为 **0 个脚本、0 个静态 contract**；下一批需要优先扩展高杠杆 helper 或人工拆解 `review`/`dynamic` 脚本，而不是继续机械挑选。
+[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列为 **6 个脚本、39 个 contract**；下一批应优先迁移这些完整脚本，并继续扩展高杠杆 helper 或拆解 `review`/`dynamic` 脚本。
 
 `candidate` 表示该 `.exp` 的活动 Tcl command vocabulary 已被现有 Rust contract/assertion 模型覆盖，且不在已知 blocker registry 中；它仍不是自动批准。批量迁移时必须逐份完整 review fixture、options、golden、条件分支、bug gate 与运行结果。`inventory-check` 会守护生成文档、candidate 分类以及 blocker registry 是否与当前未迁移集合一致。
 
-## 已完成：首轮自动 lexical candidate 队列
+## 已完成：首轮自动候选队列
 
 首轮 analyzer 识别出的 33 个候选已全部逐份 review 并整份迁移，共新增 121 个 contract：32 个 compile contract，以及 51 个 simulation scenario 展开的 89 个 backend contract。覆盖 vector/string/generics/BH pragma、library runtime、Verilog golden、backend-specific simulation、VCD、额外 fixture、warning count 和 artifact comparison；首次完整运行 `1734/1734` 通过，并写入 32 个 BSC result cache 与 51 个 generation cache。
 

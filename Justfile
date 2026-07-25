@@ -39,6 +39,28 @@ smoke: build
 test-z3:
     "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask test-z3
 
+# Parse every upstream .exp file with Tree-sitter Tcl without executing Tcl.
+contracts-parse-check:
+    "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask contracts-parse-check
+
+# Lower every upstream .exp file into the typed contract IR.
+contracts-ir-check:
+    "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask contracts-ir-check
+
+# Verify that the committed typed contract manifest matches upstream .exp files.
+contracts-check:
+    "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask contracts-check
+
+# Regenerate the committed typed contract manifest.
+contracts-update:
+    "{{pixi_rtk}}" err "{{pixi_cargo}}" xtask contracts-update
+
+
+
+# Print the Tree-sitter concrete syntax tree for one upstream .exp file.
+contracts-cst script:
+    "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask contracts-cst "{{script}}"
+
 # Check that Rust case declarations still match their upstream .exp origins.
 test-alignment:
     "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask test-alignment

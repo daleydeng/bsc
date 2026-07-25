@@ -6,6 +6,7 @@ use crate::{normalize_generated_ids, readable_diff};
 use regex::Regex;
 use std::fs;
 use std::path::Path;
+use std::sync::OnceLock;
 
 pub(super) fn validate_artifact_assertions(
     assertions: &[ArtifactAssertion],
@@ -28,6 +29,20 @@ pub(super) fn validate_artifact_assertions(
             if assertion.actual_path() == expected {
                 return Err(format!(
                     "{context} compares artifact {expected} with itself"
+                ));
+            }
+        }
+        if let ArtifactAssertion::Matches {
+            normalization:
+                ArtifactNormalization::DecimalTolerance {
+                    fractional_digits, ..
+                },
+            ..
+        } = *assertion
+        {
+            if !(1..=18).contains(&fractional_digits) {
+                return Err(format!(
+                    "{context} uses unsupported decimal precision {fractional_digits}; expected 1..=18"
                 ));
             }
         }
@@ -274,6 +289,25 @@ fn compare_normalized_text(
     expected_path: &Path,
     diff_path: &Path,
 ) -> Result<(), String> {
+    if let ArtifactNormalization::DecimalTolerance {
+        fractional_digits,
+        max_units,
+    } = normalization
+    {
+        let actual = normalize_golden_output(actual);
+        let expected = normalize_golden_output(expected);
+        if decimal_text_within_tolerance(&actual, &expected, fractional_digits, max_units)? {
+            return Ok(());
+        }
+        let diff = readable_diff(
+            &expected,
+            &actual,
+            &expected_path.display().to_string(),
+            &actual_path.display().to_string(),
+        );
+        return write_mismatch(actual_path, expected_path, diff_path, &diff);
+    }
+
     let normalize = |text: &str| match normalization {
         ArtifactNormalization::Exact => text.to_owned(),
         ArtifactNormalization::GoldenOutput => normalize_golden_output(text),
@@ -285,6 +319,7 @@ fn compare_normalized_text(
                 .join("\n");
             normalize_golden_output(&normalize_generated_ids(&without_banner))
         }
+        ArtifactNormalization::DecimalTolerance { .. } => unreachable!(),
     };
     let actual = normalize(actual);
     let expected = normalize(expected);
@@ -298,6 +333,87 @@ fn compare_normalized_text(
         &actual_path.display().to_string(),
     );
     write_mismatch(actual_path, expected_path, diff_path, &diff)
+}
+
+fn decimal_text_within_tolerance(
+    actual: &str,
+    expected: &str,
+    fractional_digits: u8,
+    max_units: u64,
+) -> Result<bool, String> {
+    static DECIMAL: OnceLock<Regex> = OnceLock::new();
+    let decimal = DECIMAL.get_or_init(|| {
+        Regex::new(r"(?P<sign>[+-]?)(?P<whole>[0-9]+)\.(?P<fraction>[0-9]+)")
+            .expect("decimal token regex is valid")
+    });
+    let mut actual_tokens = decimal.captures_iter(actual);
+    let mut expected_tokens = decimal.captures_iter(expected);
+    let mut actual_end = 0;
+    let mut expected_end = 0;
+
+    loop {
+        match (actual_tokens.next(), expected_tokens.next()) {
+            (None, None) => return Ok(actual[actual_end..] == expected[expected_end..]),
+            (Some(actual_token), Some(expected_token)) => {
+                let actual_match = actual_token.get(0).expect("decimal capture has a match");
+                let expected_match = expected_token.get(0).expect("decimal capture has a match");
+                if actual[actual_end..actual_match.start()]
+                    != expected[expected_end..expected_match.start()]
+                {
+                    return Ok(false);
+                }
+                let Some(actual_value) = scaled_decimal(&actual_token, fractional_digits)? else {
+                    return Ok(false);
+                };
+                let Some(expected_value) = scaled_decimal(&expected_token, fractional_digits)?
+                else {
+                    return Ok(false);
+                };
+                if actual_value.abs_diff(expected_value) > u128::from(max_units) {
+                    return Ok(false);
+                }
+                actual_end = actual_match.end();
+                expected_end = expected_match.end();
+            }
+            _ => return Ok(false),
+        }
+    }
+}
+
+fn scaled_decimal(
+    token: &regex::Captures<'_>,
+    fractional_digits: u8,
+) -> Result<Option<i128>, String> {
+    let fraction = token
+        .name("fraction")
+        .expect("decimal capture has a fraction")
+        .as_str();
+    if fraction.len() != usize::from(fractional_digits) {
+        return Ok(None);
+    }
+    let whole = token
+        .name("whole")
+        .expect("decimal capture has a whole part")
+        .as_str()
+        .parse::<i128>()
+        .map_err(|error| format!("parse decimal whole part: {error}"))?;
+    let fraction = fraction
+        .parse::<i128>()
+        .map_err(|error| format!("parse decimal fractional part: {error}"))?;
+    let scale = 10_i128
+        .checked_pow(u32::from(fractional_digits))
+        .ok_or_else(|| "decimal scale overflow".to_owned())?;
+    let magnitude = whole
+        .checked_mul(scale)
+        .and_then(|value| value.checked_add(fraction))
+        .ok_or_else(|| "decimal value overflow".to_owned())?;
+    Ok(Some(
+        if token.name("sign").is_some_and(|sign| sign.as_str() == "-") {
+            -magnitude
+        } else {
+            magnitude
+        },
+    ))
 }
 
 fn write_mismatch(

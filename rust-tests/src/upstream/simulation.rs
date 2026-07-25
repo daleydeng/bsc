@@ -122,6 +122,24 @@ pub(super) fn ensure_simulation_generation(
             scenario.timeouts.generation,
         )
         .map_err(|error| PhaseFailure::new(SimulationPhase::Generation, error))?;
+        let output_path = work_dir.join(format!("{}.bsc-out", scenario.source));
+        if let Some(parent) = output_path.parent() {
+            fs::create_dir_all(parent).map_err(|error| {
+                PhaseFailure::new(
+                    SimulationPhase::Generation,
+                    format!(
+                        "create generation output directory {}: {error}",
+                        parent.display()
+                    ),
+                )
+            })?;
+        }
+        fs::write(&output_path, &result.output).map_err(|error| {
+            PhaseFailure::new(
+                SimulationPhase::Generation,
+                format!("write generation output {}: {error}", output_path.display()),
+            )
+        })?;
         if !result.success {
             return Err(PhaseFailure::command(
                 SimulationPhase::Generation,
@@ -303,19 +321,31 @@ fn execute_simulation_contract(
             format!("write simulation output {}: {error}", output_path.display()),
         )
     })?;
-    if let ExpectedOutcome::Pass { output: expected } = contract.expectation {
-        compare_golden_output_with(
+    let expected_output = match contract.expectation {
+        ExpectedOutcome::Pass { output } | ExpectedOutcome::XFailOutput { output, .. } => {
+            Some(output)
+        }
+        ExpectedOutcome::Fail { .. } | ExpectedOutcome::XFail { .. } => None,
+    };
+    let mut output_mismatch = None;
+    if let Some(expected) = expected_output {
+        if let Err(message) = compare_golden_output_with(
             &normal_output,
             &work_dir.join(expected),
             &output_path,
             &artifact_dir.join("golden.diff"),
             |text| normalize_contract_output(contract.output, text),
-        )
-        .map_err(|message| PhaseFailure {
-            phase: SimulationPhase::Simulation,
-            message,
-            output: Some(output.clone()),
-        })?;
+        ) {
+            if matches!(contract.expectation, ExpectedOutcome::XFailOutput { .. }) {
+                output_mismatch = Some(message);
+            } else {
+                return Err(PhaseFailure {
+                    phase: SimulationPhase::OutputComparison,
+                    message,
+                    output: Some(output.clone()),
+                });
+            }
+        }
     }
 
     if contract.vcd.is_some() {
@@ -338,9 +368,18 @@ fn execute_simulation_contract(
         |message| PhaseFailure {
             phase: SimulationPhase::Simulation,
             message,
-            output: Some(output),
+            output: Some(output.clone()),
         },
-    )
+    )?;
+
+    match output_mismatch {
+        Some(message) => Err(PhaseFailure {
+            phase: SimulationPhase::OutputComparison,
+            message,
+            output: Some(output),
+        }),
+        None => Ok(()),
+    }
 }
 
 fn is_module_name(value: &str) -> bool {
@@ -445,6 +484,7 @@ pub(crate) fn validate_simulation_scenario(scenario: &SimulationScenario) -> Res
         if matches!(
             contract.expectation,
             ExpectedOutcome::XFail { reason: "", .. }
+                | ExpectedOutcome::XFailOutput { reason: "", .. }
         ) {
             return Err(format!(
                 "simulation contract {} has an empty XFAIL reason",

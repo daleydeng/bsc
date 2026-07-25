@@ -4,6 +4,12 @@ use crate::upstream::{
     validate_simulation_scenario, ArtifactAssertion, ArtifactNormalization, CaseModule,
     DiagnosticKind, GenerationStrategy, SimulationBackend, TextAssertion,
 };
+use bsc_testsuite_manifest::model::{
+    AssertionContract as ManifestAssertion, ComparisonContract as ManifestComparison,
+    Contract as ManifestContract, ExternalContractKind,
+    GenerationStrategy as ManifestGenerationStrategy, ScriptManifest,
+    SimulationBackend as ManifestBackend, TestsuiteManifest, UnsupportedReason,
+};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -107,35 +113,35 @@ pub struct AlignmentSummary {
     pub total_test_scripts: usize,
     pub migrated_test_scripts: usize,
     pub remaining_test_scripts: usize,
-    pub total_statically_declared_contracts: usize,
+    pub total_contracts: usize,
     pub migrated_contracts: usize,
-    pub remaining_statically_declared_contracts: usize,
-    pub unclassified_test_scripts: usize,
+    pub remaining_contracts: usize,
+    pub scripts_without_contracts: usize,
 }
 
 pub fn check_alignment() -> Result<AlignmentSummary, String> {
     let project_root = locate_project_root()?;
+    let manifest = load_manifest(&project_root)?;
     let compile_cases = compile_cases();
     let simulation_scenarios = simulation_scenarios();
     let simulation_contracts = simulation_scenarios
         .iter()
         .map(|scenario| scenario.contracts.len())
         .sum::<usize>();
-    let scripts = check_upstream_cases(&project_root)?;
-    let scheduler_cases = check_scheduler_sat(&project_root)?;
-    let inventory = inventory_testsuite(&project_root, scheduler_cases)?;
+    let scripts = check_upstream_cases(&project_root, &manifest)?;
+    let scheduler_cases = check_scheduler_sat(&project_root, &manifest)?;
+    let inventory = inventory_testsuite(&manifest);
     let migrated_test_scripts = scripts + SCHEDULER_ORIGINS.len();
     let remaining_test_scripts = inventory
         .total_test_scripts
         .checked_sub(migrated_test_scripts)
         .ok_or_else(|| "migrated test script count exceeds testsuite script count".to_owned())?;
     let migrated_contracts = compile_cases.len() + simulation_contracts + scheduler_cases;
-    let remaining_statically_declared_contracts = inventory
-        .total_statically_declared_contracts
+    let remaining_contracts = inventory
+        .total_contracts
         .checked_sub(migrated_contracts)
         .ok_or_else(|| {
-            "migrated contract count exceeds statically declared testsuite contract count"
-                .to_owned()
+            "migrated contract count exceeds typed testsuite contract count".to_owned()
         })?;
     Ok(AlignmentSummary {
         scripts,
@@ -146,10 +152,10 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
         total_test_scripts: inventory.total_test_scripts,
         migrated_test_scripts,
         remaining_test_scripts,
-        total_statically_declared_contracts: inventory.total_statically_declared_contracts,
+        total_contracts: inventory.total_contracts,
         migrated_contracts,
-        remaining_statically_declared_contracts,
-        unclassified_test_scripts: inventory.unclassified_test_scripts,
+        remaining_contracts,
+        scripts_without_contracts: inventory.scripts_without_contracts,
     })
 }
 
@@ -205,7 +211,7 @@ pub struct UnsupportedTclCommand {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RemainingTestScript {
     pub origin: String,
-    pub statically_declared_contracts: usize,
+    pub contract_count: usize,
     pub readiness: MigrationReadiness,
     pub unsupported_commands: Vec<UnsupportedTclCommand>,
     pub known_blocker: Option<String>,
@@ -214,20 +220,21 @@ pub struct RemainingTestScript {
 pub fn remaining_inventory() -> Result<Vec<RemainingTestScript>, String> {
     let summary = check_alignment()?;
     let project_root = locate_project_root()?;
+    let manifest = load_manifest(&project_root)?;
     let migrated = collect_migrated_origins(&project_root)?;
-    let remaining = collect_testsuite_scripts(&project_root, summary.scheduler_cases)?
+    let remaining = collect_testsuite_scripts(&manifest)
         .into_iter()
         .filter(|script| !migrated.contains(&script.origin))
         .map(|script| {
             let known_blocker = known_migration_blocker(&script.origin).map(str::to_owned);
             let readiness = migration_readiness(
                 &script.origin,
-                script.statically_declared_contracts,
+                script.contract_count,
                 &script.unsupported_commands,
             );
             RemainingTestScript {
                 origin: script.origin,
-                statically_declared_contracts: script.statically_declared_contracts,
+                contract_count: script.contract_count,
                 readiness,
                 unsupported_commands: script.unsupported_commands,
                 known_blocker,
@@ -249,16 +256,14 @@ pub fn remaining_inventory() -> Result<Vec<RemainingTestScript>, String> {
 
     let remaining_contracts = remaining
         .iter()
-        .map(|script| script.statically_declared_contracts)
+        .map(|script| script.contract_count)
         .sum::<usize>();
     if remaining.len() != summary.remaining_test_scripts
-        || remaining_contracts != summary.remaining_statically_declared_contracts
+        || remaining_contracts != summary.remaining_contracts
     {
         return Err(format!(
             "remaining inventory does not match alignment summary: {} scripts/{remaining_contracts} contracts, expected {}/{}",
-            remaining.len(),
-            summary.remaining_test_scripts,
-            summary.remaining_statically_declared_contracts
+            remaining.len(), summary.remaining_test_scripts, summary.remaining_contracts
         ));
     }
     Ok(remaining)
@@ -267,83 +272,75 @@ pub fn remaining_inventory() -> Result<Vec<RemainingTestScript>, String> {
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 struct TestsuiteInventory {
     total_test_scripts: usize,
-    total_statically_declared_contracts: usize,
-    unclassified_test_scripts: usize,
+    total_contracts: usize,
+    scripts_without_contracts: usize,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct TestsuiteScript {
     origin: String,
-    statically_declared_contracts: usize,
+    contract_count: usize,
     unsupported_commands: Vec<UnsupportedTclCommand>,
 }
 
-fn inventory_testsuite(
-    project_root: &Path,
-    scheduler_cases: usize,
-) -> Result<TestsuiteInventory, String> {
-    let mut inventory = TestsuiteInventory::default();
-    for script in collect_testsuite_scripts(project_root, scheduler_cases)? {
-        inventory.total_test_scripts += 1;
-        inventory.total_statically_declared_contracts += script.statically_declared_contracts;
-        if script.statically_declared_contracts == 0 {
-            inventory.unclassified_test_scripts += 1;
-        }
-    }
-    Ok(inventory)
+fn load_manifest(project_root: &Path) -> Result<TestsuiteManifest, String> {
+    bsc_testsuite_manifest::build_manifest(project_root)
+        .map_err(|error| format!("build typed contract manifest: {error}"))
 }
 
-fn collect_testsuite_scripts(
-    project_root: &Path,
-    scheduler_cases: usize,
-) -> Result<Vec<TestsuiteScript>, String> {
-    let testsuite = project_root.join("testsuite");
-    let infrastructure = [
-        project_root.join("testsuite/config/unix.exp"),
-        project_root.join("testsuite/lib/bsc.exp"),
-        project_root.join("testsuite/site.exp"),
-    ]
-    .into_iter()
-    .collect::<BTreeSet<_>>();
-    let scheduler_origin = project_root.join(SCHEDULER_ORIGINS[0]);
-    let mut directories = vec![testsuite];
-    let mut scripts = Vec::new();
-
-    while let Some(directory) = directories.pop() {
-        let entries = fs::read_dir(&directory).map_err(|error| {
-            format!("read testsuite directory {}: {error}", directory.display())
-        })?;
-        for entry in entries {
-            let entry =
-                entry.map_err(|error| format!("read entry in {}: {error}", directory.display()))?;
-            let file_type = entry.file_type().map_err(|error| {
-                format!("read file type for {}: {error}", entry.path().display())
-            })?;
-            let path = entry.path();
-            if file_type.is_dir() {
-                directories.push(path);
-            } else if file_type.is_file()
-                && path.extension().is_some_and(|extension| extension == "exp")
-                && !infrastructure.contains(&path)
-            {
-                let source = fs::read(&path)
-                    .map_err(|error| format!("read test script {}: {error}", path.display()))?;
-                let source = String::from_utf8_lossy(&source);
-                let statically_declared_contracts = if path == scheduler_origin {
-                    scheduler_cases
-                } else {
-                    count_statically_declared_contracts(&source)
-                };
-                scripts.push(TestsuiteScript {
-                    origin: project_relative_unix_path(project_root, &path)?,
-                    statically_declared_contracts,
-                    unsupported_commands: unsupported_tcl_commands(&source),
-                });
-            }
-        }
+fn inventory_testsuite(manifest: &TestsuiteManifest) -> TestsuiteInventory {
+    let mut inventory = TestsuiteInventory::default();
+    for script in collect_testsuite_scripts(manifest) {
+        inventory.total_test_scripts += 1;
+        inventory.total_contracts += script.contract_count;
+        inventory.scripts_without_contracts += usize::from(script.contract_count == 0);
     }
-    scripts.sort_by(|left, right| left.origin.cmp(&right.origin));
-    Ok(scripts)
+    inventory
+}
+
+fn collect_testsuite_scripts(manifest: &TestsuiteManifest) -> Vec<TestsuiteScript> {
+    manifest
+        .scripts
+        .iter()
+        .map(|script| TestsuiteScript {
+            origin: script.origin.clone(),
+            contract_count: script
+                .contracts
+                .iter()
+                .map(ManifestContract::effective_count)
+                .sum(),
+            unsupported_commands: unsupported_manifest_commands(script),
+        })
+        .collect()
+}
+
+fn unsupported_manifest_commands(script: &ScriptManifest) -> Vec<UnsupportedTclCommand> {
+    let mut counts = BTreeMap::<String, usize>::new();
+    for unsupported in &script.unsupported {
+        let name = unsupported
+            .command
+            .clone()
+            .unwrap_or_else(|| unsupported_reason_label(unsupported.reason).to_owned());
+        *counts.entry(name).or_default() += 1;
+    }
+    counts
+        .into_iter()
+        .map(|(name, count)| UnsupportedTclCommand {
+            category: unsupported_tcl_command_category(&name),
+            name,
+            count,
+        })
+        .collect()
+}
+
+fn unsupported_reason_label(reason: UnsupportedReason) -> &'static str {
+    match reason {
+        UnsupportedReason::DynamicAssignment => "dynamic_assignment",
+        UnsupportedReason::DynamicArguments => "dynamic_arguments",
+        UnsupportedReason::UnsupportedCommand => "unsupported_command",
+        UnsupportedReason::UnsupportedControlFlow => "unsupported_control_flow",
+        UnsupportedReason::UnsupportedSyntax => "unsupported_syntax",
+    }
 }
 
 fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, String> {
@@ -360,162 +357,6 @@ fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, Str
         origins.insert(project_relative_unix_path(project_root, &origin)?);
     }
     Ok(origins)
-}
-
-fn count_statically_declared_contracts(source: &str) -> usize {
-    logical_tcl_commands(source)
-        .iter()
-        .filter_map(|command| statically_declared_contract_count(command))
-        .sum()
-}
-
-fn statically_declared_contract_count(command: &str) -> Option<usize> {
-    let name = tcl_command_name(command)?;
-    if matches!(
-        name,
-        "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately"
-    ) {
-        let words = tcl_words(command).ok()?;
-        let (bluesim, icarus) = multi_backend_flags(&words)?;
-        return Some(usize::from(bluesim) + usize::from(icarus));
-    }
-    statically_declared_contract_weight(name)
-}
-
-fn statically_declared_contract_weight(command: &str) -> Option<usize> {
-    match command {
-        "compile_pass"
-        | "compile_fail"
-        | "compile_fail_error"
-        | "compile_verilog_pass"
-        | "compile_verilog_fail"
-        | "compile_verilog_fail_error"
-        | "compile_verilog_pass_warning"
-        | "compile_verilog_schedule_pass"
-        | "test_c_only_bsv"
-        | "test_c_only_bsv_modules"
-        | "test_c_only_bsv_modules_options"
-        | "test_veri_only_bsv"
-        | "test_veri_only_bsv_modules"
-        | "test_veri_only_bsv_modules_options"
-        | "test_c_only_bsv_multi"
-        | "test_veri_only_bsv_multi"
-        | "test_c_only_bsv_multi_options"
-        | "test_veri_only_bsv_multi_options" => Some(1),
-        "test_c_veri"
-        | "test_c_veri_bs_modules"
-        | "test_c_veri_bs_modules_options"
-        | "test_c_veri_bsv"
-        | "test_c_veri_bsv_modules"
-        | "test_c_veri_bsv_modules_options"
-        | "test_c_veri_bsv_separately"
-        | "test_c_veri_bsv_modules_options_separately"
-        | "test_c_veri_bsv_multi"
-        | "test_c_veri_bsv_multi_options_separately" => Some(2),
-        _ => None,
-    }
-}
-
-fn unsupported_tcl_commands(source: &str) -> Vec<UnsupportedTclCommand> {
-    let mut counts = BTreeMap::<String, usize>::new();
-    for command in logical_tcl_commands(source) {
-        let Some(name) = tcl_command_name(&command) else {
-            continue;
-        };
-        if !is_supported_inventory_command(&command) {
-            *counts.entry(name.to_owned()).or_default() += 1;
-        }
-    }
-    counts
-        .into_iter()
-        .map(|(name, count)| UnsupportedTclCommand {
-            category: unsupported_tcl_command_category(&name),
-            name,
-            count,
-        })
-        .collect()
-}
-
-fn tcl_command_name(command: &str) -> Option<&str> {
-    let mut command = command.trim();
-    if command.is_empty() || command.starts_with('#') {
-        return None;
-    }
-    while let Some(rest) = command.strip_prefix('}') {
-        command = rest.trim_start();
-    }
-    let name = command.split_whitespace().next()?;
-    if matches!(name, "" | "{" | "}" | "else" | "elseif") || name.starts_with('#') {
-        None
-    } else {
-        Some(name.trim_end_matches(';'))
-    }
-}
-
-fn is_supported_inventory_command(command: &str) -> bool {
-    let Some(name) = tcl_command_name(command) else {
-        return true;
-    };
-    if is_multi_simulation_command(name) {
-        return multi_command_is_statically_migratable(command);
-    }
-    statically_declared_contract_weight(name).is_some()
-        || is_supported_tcl_assertion(name)
-        || matches!(name, "compare_file" | "compare_verilog")
-}
-
-fn is_multi_simulation_command(command: &str) -> bool {
-    matches!(
-        command,
-        "test_c_veri_bsv_multi"
-            | "test_c_veri_bsv_multi_options"
-            | "test_c_veri_bsv_multi_options_separately"
-            | "test_c_only_bsv_multi"
-            | "test_veri_only_bsv_multi"
-            | "test_c_only_bsv_multi_options"
-            | "test_veri_only_bsv_multi_options"
-    )
-}
-
-fn multi_command_is_statically_migratable(command: &str) -> bool {
-    let Ok(words) = tcl_words(command) else {
-        return false;
-    };
-    let Some(name) = words.first().map(String::as_str) else {
-        return false;
-    };
-    let bug_indexes: &[usize] = match name {
-        "test_c_veri_bsv_multi" => &[5, 6],
-        "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately" => &[6, 7],
-        "test_c_only_bsv_multi" | "test_veri_only_bsv_multi" => &[5],
-        "test_c_only_bsv_multi_options" | "test_veri_only_bsv_multi_options" => &[6],
-        _ => return false,
-    };
-    let has_bug_gate = bug_indexes
-        .iter()
-        .filter_map(|index| words.get(*index))
-        .any(|value| !value.is_empty());
-    if has_bug_gate {
-        return false;
-    }
-    if matches!(
-        name,
-        "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately"
-    ) {
-        return multi_backend_flags(&words).is_some();
-    }
-    true
-}
-
-fn multi_backend_flags(words: &[String]) -> Option<(bool, bool)> {
-    let parse = |index: usize| match words.get(index).map(String::as_str) {
-        None | Some("") | Some("1") => Some(true),
-        Some("0") => Some(false),
-        Some(_) => None,
-    };
-    let bluesim = parse(8)?;
-    let icarus = parse(9)?;
-    (bluesim || icarus).then_some((bluesim, icarus))
 }
 
 fn unsupported_tcl_command_category(command: &str) -> TclCommandCategory {
@@ -545,6 +386,10 @@ fn unsupported_tcl_command_category(command: &str) -> TclCommandCategory {
             | "namespace"
             | "upvar"
             | "uplevel"
+            | "dynamic_assignment"
+            | "dynamic_arguments"
+            | "unsupported_control_flow"
+            | "unsupported_syntax"
     ) {
         TclCommandCategory::ControlState
     } else if matches!(
@@ -592,12 +437,12 @@ fn known_migration_blocker(origin: &str) -> Option<&'static str> {
 
 fn migration_readiness(
     origin: &str,
-    statically_declared_contracts: usize,
+    contract_count: usize,
     unsupported_commands: &[UnsupportedTclCommand],
 ) -> MigrationReadiness {
     if known_migration_blocker(origin).is_some() {
         MigrationReadiness::Blocked
-    } else if statically_declared_contracts == 0 {
+    } else if contract_count == 0 {
         MigrationReadiness::Dynamic
     } else if unsupported_commands.is_empty() {
         MigrationReadiness::Candidate
@@ -822,7 +667,10 @@ fn render_set(values: &BTreeSet<String>) -> String {
     }
 }
 
-fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
+fn check_upstream_cases(
+    project_root: &Path,
+    manifest: &TestsuiteManifest,
+) -> Result<usize, String> {
     check_case_modules(
         project_root,
         "rust-tests/src/upstream/cases_compile",
@@ -921,9 +769,13 @@ fn check_upstream_cases(project_root: &Path) -> Result<usize, String> {
 
     for (fixture_dir, actual) in &registered {
         let origin = find_sole_exp(project_root, fixture_dir)?;
-        let source = fs::read_to_string(&origin)
-            .map_err(|error| format!("read origin {}: {error}", origin.display()))?;
-        let expected = parse_exp_contracts(&source, &origin)?;
+        let origin_key = project_relative_unix_path(project_root, &origin)?;
+        let script = manifest
+            .scripts
+            .iter()
+            .find(|script| script.origin == origin_key)
+            .ok_or_else(|| format!("typed manifest is missing {origin_key}"))?;
+        let expected = manifest_counts(script, &origin)?;
         compare_counts(&origin, "contracts", &expected.contracts, &actual.contracts)?;
         compare_counts(
             &origin,
@@ -1013,390 +865,165 @@ fn find_sole_exp(project_root: &Path, fixture_dir: &str) -> Result<PathBuf, Stri
     }
 }
 
-fn parse_exp_contracts(source: &str, origin: &Path) -> Result<Counts, String> {
+fn manifest_counts(script: &ScriptManifest, origin: &Path) -> Result<Counts, String> {
     let mut counts = Counts::default();
-    for (line_index, logical_command) in logical_tcl_commands(source).iter().enumerate() {
-        let line = logical_command.trim();
-        if line.is_empty() || line.starts_with('#') {
-            continue;
-        }
-        let words = line.split_whitespace().collect::<Vec<_>>();
-        let Some(command) = words.first().copied() else {
-            continue;
-        };
-        match command {
-            "compile_pass"
-            | "compile_fail"
-            | "compile_fail_error"
-            | "compile_verilog_pass"
-            | "compile_verilog_fail"
-            | "compile_verilog_fail_error"
-            | "compile_verilog_pass_warning"
-            | "compile_verilog_schedule_pass" => {
-                let source = required_word(&words, 1, origin, line_index)?;
-                add_count(&mut counts.contracts, contract_key("compile", source));
-            }
-            "test_c_veri_bsv" | "test_c_veri_bsv_modules" | "test_c_veri_bsv_modules_options" => {
-                let module = required_word(&words, 1, origin, line_index)?;
-                let source = format!("{module}.bsv");
-                add_simulation_counts(&mut counts, &source, true, true, false);
-            }
-            "test_c_veri_bsv_multi" => {
-                let module = required_word(&words, 1, origin, line_index)?;
-                let source = format!("{module}.bsv");
-                add_simulation_counts(&mut counts, &source, true, true, false);
-            }
-            "test_c_veri_bsv_multi_options" | "test_c_veri_bsv_multi_options_separately" => {
-                let parsed = tcl_words(line).map_err(|error| {
-                    format!("parse multi helper in {}: {error}", origin.display())
-                })?;
-                let module = parsed.get(1).ok_or_else(|| {
-                    format!("missing multi helper source in {}", origin.display())
-                })?;
-                let (bluesim, icarus) = multi_backend_flags(&parsed).ok_or_else(|| {
-                    format!(
-                        "dynamic or disabled multi helper backends in {}",
-                        origin.display()
-                    )
-                })?;
-                let source = format!("{module}.bsv");
-                add_simulation_counts(
-                    &mut counts,
-                    &source,
-                    bluesim,
-                    icarus,
-                    command == "test_c_veri_bsv_multi_options_separately",
-                );
-            }
-            "test_c_veri" | "test_c_veri_bs_modules" | "test_c_veri_bs_modules_options" => {
-                let module = required_word(&words, 1, origin, line_index)?;
-                let source = format!("{module}.bs");
-                add_count(&mut counts.contracts, contract_key("bluesim", &source));
-                add_count(&mut counts.contracts, contract_key("icarus", &source));
+    let mut generations = BTreeSet::new();
+
+    for contract in &script.contracts {
+        match contract {
+            ManifestContract::Compile(contract) => {
                 add_count(
-                    &mut counts.generations,
-                    generation_key_name("shared", &source),
+                    &mut counts.contracts,
+                    contract_key("compile", &contract.source),
                 );
             }
-            "test_c_veri_bsv_separately" | "test_c_veri_bsv_modules_options_separately" => {
-                let module = required_word(&words, 1, origin, line_index)?;
-                let source = format!("{module}.bsv");
-                add_count(&mut counts.contracts, contract_key("bluesim", &source));
-                add_count(&mut counts.contracts, contract_key("icarus", &source));
+            ManifestContract::Simulation(contract) => {
+                let backend = match contract.backend {
+                    ManifestBackend::Bluesim => "bluesim",
+                    ManifestBackend::Icarus => "icarus",
+                };
                 add_count(
-                    &mut counts.generations,
-                    generation_key_name("bluesim", &source),
+                    &mut counts.contracts,
+                    contract_key(backend, &contract.source),
                 );
-                add_count(
-                    &mut counts.generations,
-                    generation_key_name("icarus", &source),
+                let strategy = match contract.generation {
+                    ManifestGenerationStrategy::Shared => "shared",
+                    ManifestGenerationStrategy::Bluesim => "bluesim",
+                    ManifestGenerationStrategy::Icarus => "icarus",
+                };
+                let key = generation_key_name(strategy, &contract.source);
+                let instance = format!(
+                    "{}:{}:{:?}:{key}",
+                    contract.span.start_byte, contract.span.end_byte, contract.expansion
                 );
-            }
-            "test_c_only_bsv"
-            | "test_c_only_bsv_modules"
-            | "test_c_only_bsv_modules_options"
-            | "test_c_only_bsv_multi"
-            | "test_c_only_bsv_multi_options" => {
-                let module = required_word(&words, 1, origin, line_index)?;
-                let source = format!("{module}.bsv");
-                add_simulation_counts(&mut counts, &source, true, false, true);
-            }
-            "test_veri_only_bsv"
-            | "test_veri_only_bsv_modules"
-            | "test_veri_only_bsv_modules_options"
-            | "test_veri_only_bsv_multi"
-            | "test_veri_only_bsv_multi_options" => {
-                let module = required_word(&words, 1, origin, line_index)?;
-                let source = format!("{module}.bsv");
-                add_simulation_counts(&mut counts, &source, false, true, true);
-            }
-            "compare_file" => {
-                let output = required_word(&words, 1, origin, line_index)?;
-                if output == "[make_bsc_output_name" {
-                    let source = required_word(&words, 2, origin, line_index)?;
-                    add_count(&mut counts.goldens, source.to_owned());
-                } else if let Some(source) = output
-                    .strip_suffix(".bsc-vcomp-out")
-                    .or_else(|| output.strip_suffix(".bsc-out"))
-                {
-                    add_count(&mut counts.goldens, source.to_owned());
-                } else {
-                    let expected = words
-                        .get(2)
-                        .map(|value| value.trim_matches(['"', '{', '}']))
-                        .filter(|value| !value.is_empty())
-                        .map(str::to_owned)
-                        .unwrap_or_else(|| format!("{output}.expected"));
-                    add_count(
-                        &mut counts.assertions,
-                        matches_assertion_key(
-                            output,
-                            &expected,
-                            ArtifactNormalization::GoldenOutput,
-                        ),
-                    );
+                if generations.insert(instance) {
+                    add_count(&mut counts.generations, key);
                 }
             }
-            "compare_verilog" => {
-                let output = required_word(&words, 1, origin, line_index)?;
-                let expected = words
-                    .get(2)
-                    .map(|value| value.trim_matches(['"', '{', '}']))
-                    .filter(|value| !value.is_empty())
-                    .map(str::to_owned)
-                    .unwrap_or_else(|| format!("{output}.expected"));
-                add_count(
-                    &mut counts.assertions,
-                    matches_assertion_key(output, &expected, ArtifactNormalization::Verilog),
-                );
-            }
-            _ => {}
+            ManifestContract::ExternalSet(_) => {}
         }
     }
-    parse_exp_assertions(source, origin, &mut counts)?;
+
+    for comparison in &script.comparisons {
+        add_manifest_comparison(&mut counts, comparison, origin)?;
+    }
+    for assertion in &script.assertions {
+        add_count(
+            &mut counts.assertions,
+            manifest_assertion_key(assertion, origin)?,
+        );
+    }
     Ok(counts)
 }
 
-fn add_simulation_counts(
+fn add_manifest_comparison(
     counts: &mut Counts,
-    source: &str,
-    bluesim: bool,
-    icarus: bool,
-    separate_generation: bool,
-) {
-    if bluesim {
-        add_count(&mut counts.contracts, contract_key("bluesim", source));
-    }
-    if icarus {
-        add_count(&mut counts.contracts, contract_key("icarus", source));
-    }
-    if bluesim && icarus && !separate_generation {
-        add_count(
-            &mut counts.generations,
-            generation_key_name("shared", source),
-        );
-    } else {
-        if bluesim {
+    comparison: &ManifestComparison,
+    origin: &Path,
+) -> Result<(), String> {
+    let output = comparison.arguments.first().ok_or_else(|| {
+        format!(
+            "{} comparison at line {} has no output path",
+            comparison.helper, comparison.span.start_line
+        )
+    })?;
+    match comparison.helper.as_str() {
+        "compare_file" => {
+            if let Some(source) = output
+                .strip_suffix(".bsc-vcomp-out")
+                .or_else(|| output.strip_suffix(".bsc-sched-out"))
+                .or_else(|| output.strip_suffix(".bsc-out"))
+            {
+                add_count(&mut counts.goldens, source.to_owned());
+            } else {
+                let expected = comparison
+                    .arguments
+                    .get(1)
+                    .filter(|value| !value.is_empty())
+                    .cloned()
+                    .unwrap_or_else(|| format!("{output}.expected"));
+                add_count(
+                    &mut counts.assertions,
+                    matches_assertion_key(output, &expected, ArtifactNormalization::GoldenOutput),
+                );
+            }
+        }
+        "compare_verilog" => {
+            let expected = comparison
+                .arguments
+                .get(1)
+                .filter(|value| !value.is_empty())
+                .cloned()
+                .unwrap_or_else(|| format!("{output}.expected"));
             add_count(
-                &mut counts.generations,
-                generation_key_name("bluesim", source),
+                &mut counts.assertions,
+                matches_assertion_key(output, &expected, ArtifactNormalization::Verilog),
             );
         }
-        if icarus {
-            add_count(
-                &mut counts.generations,
-                generation_key_name("icarus", source),
-            );
+        helper => {
+            return Err(format!(
+                "unsupported typed comparison {helper:?} in {}",
+                origin.display()
+            ));
         }
-    }
-}
-
-fn parse_exp_assertions(source: &str, origin: &Path, counts: &mut Counts) -> Result<(), String> {
-    for command in logical_tcl_commands(source) {
-        let name = command.split_whitespace().next().unwrap_or_default();
-        if !is_supported_tcl_assertion(name) {
-            continue;
-        }
-        let words = tcl_words(&command)
-            .map_err(|error| format!("parse assertion in {}: {error}", origin.display()))?;
-        let argument = |index: usize| {
-            words.get(index).map(String::as_str).ok_or_else(|| {
-                format!(
-                    "missing argument {index} for assertion in {}: {command}",
-                    origin.display()
-                )
-            })
-        };
-        let path = normalize_assertion_path(argument(1)?)?;
-        let key = match name {
-            "find_n_strings" => line_count_assertion_key(
-                &path,
-                argument(2)?,
-                parse_assertion_count(argument(3)?, origin)?,
-            ),
-            "string_occurs" => contains_assertion_key(&path, argument(2)?),
-            "string_does_not_occur" => does_not_contain_assertion_key(&path, argument(2)?),
-            "find_regexp" => regex_assertion_key(&path, argument(2)?),
-            "find_regexp_fail" => regex_does_not_match_assertion_key(&path, argument(2)?),
-            "find_n_regexp" => regex_count_assertion_key(
-                &path,
-                argument(2)?,
-                parse_assertion_count(argument(3)?, origin)?,
-            ),
-            "find_n_emsg" => diagnostic_assertion_key(
-                &path,
-                parse_diagnostic_kind(argument(2)?, origin)?,
-                argument(3)?,
-                parse_assertion_count(argument(4)?, origin)?,
-            ),
-            _ => unreachable!(),
-        };
-        add_count(&mut counts.assertions, key);
     }
     Ok(())
 }
 
-fn is_supported_tcl_assertion(name: &str) -> bool {
-    matches!(
-        name,
-        "find_n_strings"
-            | "string_occurs"
-            | "string_does_not_occur"
-            | "find_regexp"
-            | "find_regexp_fail"
-            | "find_n_regexp"
-            | "find_n_emsg"
-    )
-}
-
-fn logical_tcl_commands(source: &str) -> Vec<String> {
-    let mut commands = Vec::new();
-    let mut current = String::new();
-    let mut separator = None;
-    for raw_line in source.lines() {
-        if current.is_empty()
-            && (raw_line.trim().is_empty() || raw_line.trim_start().starts_with('#'))
-        {
-            continue;
-        }
-        let preserve_multiline_pattern = separator == Some('\n');
-        let line = if preserve_multiline_pattern {
-            raw_line
-        } else {
-            raw_line.trim_start()
-        };
-        let (part, continued) = match line.trim_end().strip_suffix('\\') {
-            Some(part) => (part.trim_end(), true),
-            None => (line, false),
-        };
-        if let Some(separator) = separator.take() {
-            current.push(separator);
-        }
-        current.push_str(part);
-
-        let name = current.split_whitespace().next().unwrap_or_default();
-        let grouped_assertion =
-            is_supported_tcl_assertion(name) && !tcl_groups_are_balanced(&current);
-        if continued || grouped_assertion {
-            separator = Some(if continued { ' ' } else { '\n' });
-        } else if !current.is_empty() && !current.starts_with('#') {
-            commands.push(std::mem::take(&mut current));
-        } else {
-            current.clear();
-        }
+fn manifest_assertion_key(assertion: &ManifestAssertion, origin: &Path) -> Result<String, String> {
+    let argument = |index: usize| {
+        assertion
+            .arguments
+            .get(index)
+            .map(String::as_str)
+            .ok_or_else(|| {
+                format!(
+                    "missing argument {index} for {} at {}:{}",
+                    assertion.helper,
+                    origin.display(),
+                    assertion.span.start_line,
+                )
+            })
+    };
+    let path = normalize_assertion_path(argument(0)?)?;
+    match assertion.helper.as_str() {
+        "find_n_strings" => Ok(line_count_assertion_key(
+            &path,
+            argument(1)?,
+            parse_assertion_count(argument(2)?, origin)?,
+        )),
+        "string_occurs" => Ok(contains_assertion_key(&path, argument(1)?)),
+        "string_does_not_occur" => Ok(does_not_contain_assertion_key(&path, argument(1)?)),
+        "find_regexp" => Ok(regex_assertion_key(&path, argument(1)?)),
+        "find_regexp_fail" => Ok(regex_does_not_match_assertion_key(&path, argument(1)?)),
+        "find_n_regexp" => Ok(regex_count_assertion_key(
+            &path,
+            argument(1)?,
+            parse_assertion_count(argument(2)?, origin)?,
+        )),
+        "find_n_emsg" => Ok(diagnostic_assertion_key(
+            &path,
+            parse_diagnostic_kind(argument(1)?, origin)?,
+            argument(2)?,
+            parse_assertion_count(argument(3)?, origin)?,
+        )),
+        helper => Err(format!(
+            "unsupported typed assertion {helper:?} in {}",
+            origin.display()
+        )),
     }
-    if !current.is_empty() {
-        commands.push(current);
-    }
-    commands
-}
-
-fn tcl_groups_are_balanced(command: &str) -> bool {
-    let mut closing = Vec::new();
-    let mut escaped = false;
-    for character in command.chars() {
-        if escaped {
-            escaped = false;
-            continue;
-        }
-        if character == '\\' {
-            escaped = true;
-            continue;
-        }
-        match closing.last().copied() {
-            Some('}') => match character {
-                '{' => closing.push('}'),
-                '}' => {
-                    closing.pop();
-                }
-                _ => {}
-            },
-            Some('"') => match character {
-                '"' => {
-                    closing.pop();
-                }
-                '[' => closing.push(']'),
-                _ => {}
-            },
-            Some(']') => match character {
-                '{' => closing.push('}'),
-                '"' => closing.push('"'),
-                '[' => closing.push(']'),
-                ']' => {
-                    closing.pop();
-                }
-                _ => {}
-            },
-            None => match character {
-                '{' => closing.push('}'),
-                '"' => closing.push('"'),
-                '[' => closing.push(']'),
-                _ => {}
-            },
-            Some(_) => unreachable!(),
-        }
-    }
-    closing.is_empty()
-}
-
-fn tcl_words(command: &str) -> Result<Vec<String>, String> {
-    let chars = command.chars().collect::<Vec<_>>();
-    let mut words = Vec::new();
-    let mut index = 0;
-    while index < chars.len() {
-        while index < chars.len() && chars[index].is_whitespace() {
-            index += 1;
-        }
-        if index == chars.len() {
-            break;
-        }
-        let opening = chars[index];
-        if matches!(opening, '{' | '[' | '"') {
-            let closing = match opening {
-                '{' => '}',
-                '[' => ']',
-                '"' => '"',
-                _ => unreachable!(),
-            };
-            let preserve_delimiters = opening == '[';
-            let start = index;
-            index += 1;
-            let content_start = index;
-            let mut depth = 1;
-            while index < chars.len() {
-                if opening != '"' && chars[index] == opening {
-                    depth += 1;
-                } else if chars[index] == closing {
-                    depth -= 1;
-                    if depth == 0 {
-                        break;
-                    }
-                }
-                index += 1;
-            }
-            if index == chars.len() {
-                return Err(format!("unterminated {opening} group: {command}"));
-            }
-            let word = if preserve_delimiters {
-                chars[start..=index].iter().collect()
-            } else {
-                chars[content_start..index].iter().collect()
-            };
-            words.push(word);
-            index += 1;
-        } else {
-            let start = index;
-            while index < chars.len() && !chars[index].is_whitespace() {
-                index += 1;
-            }
-            words.push(chars[start..index].iter().collect());
-        }
-    }
-    Ok(words)
 }
 
 fn normalize_assertion_path(path: &str) -> Result<String, String> {
     if let Some(source) = path
+        .strip_prefix("[make_bsc_vcomp_output_name ")
+        .and_then(|value| value.strip_suffix(']'))
+    {
+        if source.is_empty() {
+            return Err("make_bsc_vcomp_output_name assertion has no source".to_owned());
+        }
+        Ok(format!("{source}.bsc-out"))
+    } else if let Some(source) = path
         .strip_prefix("[make_bsc_output_name ")
         .and_then(|value| value.strip_suffix(']'))
     {
@@ -1465,9 +1092,10 @@ fn matches_assertion_key(
     normalization: ArtifactNormalization,
 ) -> String {
     let normalization = match normalization {
-        ArtifactNormalization::Exact => "exact",
-        ArtifactNormalization::GoldenOutput => "golden-output",
-        ArtifactNormalization::Verilog => "verilog",
+        ArtifactNormalization::Exact => "exact".to_owned(),
+        ArtifactNormalization::GoldenOutput => "golden-output".to_owned(),
+        ArtifactNormalization::Verilog => "verilog".to_owned(),
+        ArtifactNormalization::DecimalTolerance { .. } => "golden-output".to_owned(),
     };
     format!("matches:{actual:?}:{expected:?}:{normalization}")
 }
@@ -1485,15 +1113,60 @@ fn line_count_assertion_key(path: &str, text: &str, count: usize) -> String {
 }
 
 fn regex_assertion_key(path: &str, pattern: &str) -> String {
-    format!("regex:{path:?}:{pattern:?}")
+    format!("regex:{path:?}:{:?}", canonical_regex_pattern(pattern))
 }
 
 fn regex_does_not_match_assertion_key(path: &str, pattern: &str) -> String {
-    format!("regex-does-not-match:{path:?}:{pattern:?}")
+    format!(
+        "regex-does-not-match:{path:?}:{:?}",
+        canonical_regex_pattern(pattern)
+    )
 }
 
 fn regex_count_assertion_key(path: &str, pattern: &str, count: usize) -> String {
-    format!("regex-count:{path:?}:{pattern:?}:{count}")
+    format!(
+        "regex-count:{path:?}:{:?}:{count}",
+        canonical_regex_pattern(pattern)
+    )
+}
+
+fn canonical_regex_pattern(pattern: &str) -> String {
+    let mut canonical = String::with_capacity(pattern.len());
+    let mut characters = pattern.chars().peekable();
+    while let Some(character) = characters.next() {
+        if character == '\\'
+            && characters
+                .peek()
+                .copied()
+                .is_some_and(is_redundantly_escaped_regex_punctuation)
+        {
+            canonical.push(characters.next().expect("peeked regex character"));
+        } else {
+            canonical.push(character);
+        }
+    }
+    canonical
+}
+
+fn is_redundantly_escaped_regex_punctuation(character: char) -> bool {
+    character.is_ascii_punctuation()
+        && !matches!(
+            character,
+            '\\' | '.'
+                | '+'
+                | '*'
+                | '?'
+                | '('
+                | ')'
+                | '|'
+                | '['
+                | ']'
+                | '{'
+                | '}'
+                | '^'
+                | '$'
+                | '-'
+        )
 }
 
 fn diagnostic_assertion_key(path: &str, kind: DiagnosticKind, tag: &str, count: usize) -> String {
@@ -1502,25 +1175,6 @@ fn diagnostic_assertion_key(path: &str, kind: DiagnosticKind, tag: &str, count: 
         DiagnosticKind::Warning => "Warning",
     };
     format!("diagnostic-count:{path:?}:{kind}:{tag:?}:{count}")
-}
-
-fn required_word<'a>(
-    words: &'a [&str],
-    index: usize,
-    origin: &Path,
-    line_index: usize,
-) -> Result<&'a str, String> {
-    words
-        .get(index)
-        .map(|word| word.trim_matches(['"', '{', '}', ']']))
-        .filter(|word| !word.is_empty())
-        .ok_or_else(|| {
-            format!(
-                "missing argument for migrated command at {}:{}",
-                origin.display(),
-                line_index + 1
-            )
-        })
 }
 
 fn contract_key(kind: &str, source: &str) -> String {
@@ -1592,17 +1246,36 @@ fn render_counts(counts: &BTreeMap<String, usize>) -> String {
         .join(", ")
 }
 
-fn check_scheduler_sat(project_root: &Path) -> Result<usize, String> {
+fn check_scheduler_sat(project_root: &Path, manifest: &TestsuiteManifest) -> Result<usize, String> {
     let origin = project_root.join(SCHEDULER_ORIGINS[0]);
-    let origin_source = fs::read_to_string(&origin)
-        .map_err(|error| format!("read scheduler origin {}: {error}", origin.display()))?;
-    let expected = parse_scheduler_sources(&origin_source)?;
+    let script = manifest
+        .scripts
+        .iter()
+        .find(|script| script.origin == SCHEDULER_ORIGINS[0])
+        .ok_or_else(|| format!("typed manifest is missing {}", SCHEDULER_ORIGINS[0]))?;
+    let mut external_sets = script
+        .contracts
+        .iter()
+        .filter_map(|contract| match contract {
+            ManifestContract::ExternalSet(contract)
+                if contract.kind == ExternalContractKind::SchedulerSat =>
+            {
+                Some(&contract.cases)
+            }
+            _ => None,
+        });
+    let expected = external_sets
+        .next()
+        .ok_or_else(|| "typed manifest has no scheduler SAT contract set".to_owned())?;
+    if external_sets.next().is_some() {
+        return Err("typed manifest has multiple scheduler SAT contract sets".to_owned());
+    }
 
     let rust_path = project_root.join("rust-tests/tests/scheduler_sat.rs");
     let rust_source = fs::read_to_string(&rust_path)
         .map_err(|error| format!("read scheduler Rust tests {}: {error}", rust_path.display()))?;
     let actual = parse_rust_scheduler_cases(&rust_source);
-    if expected != actual {
+    if expected.as_slice() != actual.as_slice() {
         return Err(format!(
             "scheduler Rust cases are not aligned with {}\n  expected: {}\n  actual: {}",
             origin.display(),
@@ -1629,32 +1302,6 @@ fn check_scheduler_sat(project_root: &Path) -> Result<usize, String> {
     Ok(actual.len())
 }
 
-fn parse_scheduler_sources(source: &str) -> Result<Vec<String>, String> {
-    let mut cases = Vec::new();
-    let mut in_sources = false;
-    for raw_line in source.lines() {
-        let mut line = raw_line.trim();
-        if !in_sources {
-            let Some((_, remainder)) = line.split_once("set sources [list") else {
-                continue;
-            };
-            in_sources = true;
-            line = remainder.trim();
-        }
-        let finished = line.contains(']');
-        let content = line
-            .split('#')
-            .next()
-            .unwrap_or_default()
-            .replace(['\\', ']'], " ");
-        cases.extend(content.split_whitespace().map(str::to_owned));
-        if finished {
-            return Ok(cases);
-        }
-    }
-    Err("could not parse `set sources [list ...]` from scheduler sat.exp".to_owned())
-}
-
 fn parse_rust_scheduler_cases(source: &str) -> Vec<String> {
     source
         .lines()
@@ -1673,162 +1320,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parses_supported_tcl_contracts() {
-        let source = concat!(
-            "compile_pass Good.bsv\n",
-            "compile_fail_error Bad.bsv T0001\n",
-            "compare_file Bad.bsv.bsc-out\n",
-            "test_c_veri_bsv Both\n",
-            "test_c_veri_bsv_separately Separate\n",
-            "test_c_only_bsv_modules_options COnly {} {} expected\n",
-            "test_veri_only_bsv_modules VOnly {} expected\n",
-        );
-        let actual = parse_exp_contracts(source, Path::new("sample.exp")).unwrap();
-        let expected_contracts = [
-            ("compile:Good.bsv", 1),
-            ("compile:Bad.bsv", 1),
-            ("bluesim:Both.bsv", 1),
-            ("icarus:Both.bsv", 1),
-            ("bluesim:Separate.bsv", 1),
-            ("icarus:Separate.bsv", 1),
-            ("bluesim:COnly.bsv", 1),
-            ("icarus:VOnly.bsv", 1),
-        ]
-        .into_iter()
-        .map(|(key, count)| (key.to_owned(), count))
-        .collect();
-        assert_eq!(actual.contracts, expected_contracts);
-        assert_eq!(actual.goldens, BTreeMap::from([("Bad.bsv".to_owned(), 1)]));
+    fn canonicalizes_redundant_regex_punctuation_escapes() {
         assert_eq!(
-            actual.generations,
-            BTreeMap::from([
-                ("shared:Both.bsv".to_owned(), 1),
-                ("bluesim:Separate.bsv".to_owned(), 1),
-                ("icarus:Separate.bsv".to_owned(), 1),
-                ("bluesim:COnly.bsv".to_owned(), 1),
-                ("icarus:VOnly.bsv".to_owned(), 1),
-            ])
+            regex_assertion_key("Generated.v", r"input  \[7 \: 0\] VAL\;"),
+            regex_assertion_key("Generated.v", r"input  \[7 : 0\] VAL;")
         );
-    }
-
-    #[test]
-    fn parses_supported_tcl_artifact_assertions() {
-        let source = concat!(
-            "find_n_strings Output.bsc-out {argument 2} 1\n",
-            "string_occurs Generated.v {input  CLK;}\n",
-            "string_does_not_occur Generated.v {input  GATE;}\n",
-            "find_regexp [make_bsc_output_name Source.bsv] \\\n",
-            "    {Source\\.bsv\", line 2, column 8:}\n",
-            "find_n_regexp Output.bsc-out {Error:} 2\n",
-            "find_n_emsg Output.bsc-out \"Error\" G0055 1\n",
-            "compare_file Generated.dat\n",
-            "compare_file Other.dat Custom.expected\n",
-            "compare_verilog Generated.v\n",
-            "# string_occurs Ignored.v {ignored}\n",
-        );
-        let actual = parse_exp_contracts(source, Path::new("sample.exp")).unwrap();
-        assert_eq!(
-            actual.assertions,
-            BTreeMap::from([
-                (
-                    line_count_assertion_key("Output.bsc-out", "argument 2", 1),
-                    1
-                ),
-                (contains_assertion_key("Generated.v", "input  CLK;"), 1),
-                (
-                    does_not_contain_assertion_key("Generated.v", "input  GATE;"),
-                    1,
-                ),
-                (
-                    regex_assertion_key("Source.bsv.bsc-out", r#"Source\.bsv", line 2, column 8:"#,),
-                    1,
-                ),
-                (regex_count_assertion_key("Output.bsc-out", "Error:", 2), 1),
-                (
-                    diagnostic_assertion_key("Output.bsc-out", DiagnosticKind::Error, "G0055", 1,),
-                    1,
-                ),
-                (
-                    matches_assertion_key(
-                        "Generated.dat",
-                        "Generated.dat.expected",
-                        ArtifactNormalization::GoldenOutput,
-                    ),
-                    1,
-                ),
-                (
-                    matches_assertion_key(
-                        "Other.dat",
-                        "Custom.expected",
-                        ArtifactNormalization::GoldenOutput,
-                    ),
-                    1,
-                ),
-                (
-                    matches_assertion_key(
-                        "Generated.v",
-                        "Generated.v.expected",
-                        ArtifactNormalization::Verilog,
-                    ),
-                    1,
-                ),
-            ])
-        );
-    }
-
-    #[test]
-    fn parses_negative_regex_assertions_with_tcl_word_forms_and_multiplicity() {
-        let source = concat!(
-            "find_regexp_fail Generated.bsv.bsc-vcomp-out {forbidden.*port}\n",
-            "find_regexp_fail \"Quoted Output.log\" \"^Internal Error$\"\n",
-            "find_regexp_fail [make_bsc_output_name Source.bsv] \\\n",
-            "    {Internal.*Error}\n",
-            "find_regexp_fail BracedMultiline.log {^first$\n",
-            "    second$}\n",
-            "find_regexp_fail QuotedMultiline.log \"^alpha$\n",
-            "  omega$\"\n",
-            "find_regexp_fail Generated.bsv.bsc-vcomp-out {forbidden.*port}\n",
-        );
-        let actual = parse_exp_contracts(source, Path::new("sample.exp")).unwrap();
-        assert_eq!(
-            actual.assertions,
-            BTreeMap::from([
-                (
-                    regex_does_not_match_assertion_key("Generated.bsv.bsc-out", "forbidden.*port",),
-                    2,
-                ),
-                (
-                    regex_does_not_match_assertion_key("Quoted Output.log", "^Internal Error$",),
-                    1,
-                ),
-                (
-                    regex_does_not_match_assertion_key("Source.bsv.bsc-out", "Internal.*Error",),
-                    1,
-                ),
-                (
-                    regex_does_not_match_assertion_key(
-                        "BracedMultiline.log",
-                        "^first$\n    second$",
-                    ),
-                    1,
-                ),
-                (
-                    regex_does_not_match_assertion_key("QuotedMultiline.log", "^alpha$\n  omega$",),
-                    1,
-                ),
-            ])
-        );
-        assert_eq!(
-            artifact_assertion_key(ArtifactAssertion::Text {
-                path: "Generated.bsv.bsc-out",
-                assertion: TextAssertion::RegexDoesNotMatch {
-                    pattern: "forbidden.*port",
-                },
-            }),
-            Some(regex_does_not_match_assertion_key(
-                "Generated.bsv.bsc-out",
-                "forbidden.*port"
-            ))
+        assert_ne!(
+            regex_assertion_key("Generated.v", r"literal\.dot"),
+            regex_assertion_key("Generated.v", r"literal.dot")
         );
     }
 
@@ -1855,124 +1354,7 @@ mod tests {
     }
 
     #[test]
-    fn counts_statically_declared_contract_multiplicity() {
-        let source = concat!(
-            "compile_pass Good.bsv\n",
-            "test_c_veri_bsv Both\n",
-            "test_c_veri ClassicBoth\n",
-            "test_c_only_bsv COnly expected\n",
-            "test_veri_only_bsv VOnly expected\n",
-            "test_c_veri_bsv_separately Separate\n",
-            "test_c_only_bsv_modules CModules {}\n",
-            "# compile_fail Ignored.bsv\n",
-            "compare_file Good.bsv.bsc-out\n",
-            "foreach item $items {\n",
-        );
-        assert_eq!(count_statically_declared_contracts(source), 10);
-    }
-
-    #[test]
-    fn counts_multi_simulation_helpers_by_enabled_backend() {
-        let source = concat!(
-            "test_c_veri_bsv_multi Dual mkDual {mkChild}\n",
-            "test_c_veri_bsv_multi_options Bluesim mkBluesim {} {} {} {} {} 1 0\n",
-            "test_c_veri_bsv_multi_options Icarus mkIcarus {} {} {} {} {} 0 1\n",
-            "test_c_veri_bsv_multi_options_separately Separate mkSeparate {}\n",
-            "test_c_only_bsv_multi COnly mkCOnly {}\n",
-            "test_veri_only_bsv_multi VOnly mkVOnly {}\n",
-        );
-        assert_eq!(count_statically_declared_contracts(source), 8);
-
-        let parsed = parse_exp_contracts(source, Path::new("multi.exp")).unwrap();
-        assert_eq!(
-            parsed.generations,
-            BTreeMap::from([
-                ("bluesim:Bluesim.bsv".to_owned(), 1),
-                ("bluesim:COnly.bsv".to_owned(), 1),
-                ("bluesim:Separate.bsv".to_owned(), 1),
-                ("icarus:Icarus.bsv".to_owned(), 1),
-                ("icarus:Separate.bsv".to_owned(), 1),
-                ("icarus:VOnly.bsv".to_owned(), 1),
-                ("shared:Dual.bsv".to_owned(), 1),
-            ])
-        );
-    }
-
-    #[test]
-    fn multi_inventory_rejects_bug_gates_and_dynamic_backend_flags() {
-        let source = concat!(
-            "test_c_veri_bsv_multi Clean mkClean {}\n",
-            "test_c_veri_bsv_multi Bugged mkBugged {} {} 123\n",
-            "test_c_veri_bsv_multi_options Dynamic mkDynamic {} {} {} {} {} $doC 1\n",
-        );
-        assert_eq!(
-            unsupported_tcl_commands(source),
-            vec![
-                UnsupportedTclCommand {
-                    name: "test_c_veri_bsv_multi".to_owned(),
-                    count: 1,
-                    category: TclCommandCategory::UnsupportedContract,
-                },
-                UnsupportedTclCommand {
-                    name: "test_c_veri_bsv_multi_options".to_owned(),
-                    count: 1,
-                    category: TclCommandCategory::UnsupportedContract,
-                },
-            ]
-        );
-    }
-
-    #[test]
-    fn treats_supported_inventory_vocabulary_as_migration_ready() {
-        let source = concat!(
-            "compile_pass Good.bsv\n",
-            "test_c_veri_bsv Both\n",
-            "find_n_strings Both.bsc-out {success} 1\n",
-            "compare_file Both.out\n",
-            "compare_verilog Both.v\n",
-        );
-        assert!(unsupported_tcl_commands(source).is_empty());
-    }
-
-    #[test]
-    fn classifies_unsupported_inventory_commands() {
-        let source = concat!(
-            "compile_pass Good.bsv\n",
-            "if {$vtest} {\n",
-            "copy A B\n",
-            "link_verilog_no_main_pass Top\n",
-            "find_n_error out 1\n",
-            "}\n",
-        );
-        assert_eq!(
-            unsupported_tcl_commands(source),
-            vec![
-                UnsupportedTclCommand {
-                    name: "copy".to_owned(),
-                    count: 1,
-                    category: TclCommandCategory::FileSystem,
-                },
-                UnsupportedTclCommand {
-                    name: "find_n_error".to_owned(),
-                    count: 1,
-                    category: TclCommandCategory::UnsupportedAssertion,
-                },
-                UnsupportedTclCommand {
-                    name: "if".to_owned(),
-                    count: 1,
-                    category: TclCommandCategory::ControlState,
-                },
-                UnsupportedTclCommand {
-                    name: "link_verilog_no_main_pass".to_owned(),
-                    count: 1,
-                    category: TclCommandCategory::ManualToolchain,
-                },
-            ]
-        );
-    }
-
-    #[test]
-    fn known_blocker_overrides_lexical_candidate_status() {
+    fn known_blocker_overrides_typed_candidate_status() {
         assert_eq!(
             migration_readiness(
                 "testsuite/bsc.evaluator/performance/performance.exp",
@@ -1988,21 +1370,20 @@ mod tests {
     }
 
     #[test]
-    fn preserves_upstream_static_contract_denominator_with_multi_helpers() {
+    fn alignment_uses_the_typed_manifest_contract_total() {
+        let project_root = locate_project_root().expect("locate project root");
+        let manifest = load_manifest(&project_root).expect("build typed manifest");
+        let expected = manifest
+            .scripts
+            .iter()
+            .flat_map(|script| &script.contracts)
+            .map(ManifestContract::effective_count)
+            .sum::<usize>();
         assert_eq!(
             check_alignment()
                 .expect("alignment should remain valid")
-                .total_statically_declared_contracts,
-            5_269
-        );
-    }
-
-    #[test]
-    fn parses_scheduler_source_list() {
-        let source = "set sources [list \\\n  One Two \\\n  Three]\n";
-        assert_eq!(
-            parse_scheduler_sources(source).unwrap(),
-            ["One", "Two", "Three"]
+                .total_contracts,
+            expected
         );
     }
 

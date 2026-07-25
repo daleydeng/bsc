@@ -211,7 +211,7 @@ Alignment 同步解析 `find_n_strings`、`string_occurs`、`string_does_not_occ
 
 删除早期按单 contract 打平的 `UpstreamCase`、`all_cases`、`select_cases` 和 `build_work_items` 兼容层。CLI 现在直接从 compile registry 与 scenario registry 构造 `ExecutionPlan`；simulation contract 在选择阶段始终保留所属 `SimulationScenario`，runner 不再通过指针扫描猜测并重建分组。早期 `bluespec_inc` 短 case ID 也全部替换为与其他模块一致的来源路径式稳定 ID，不提供旧名称别名。
 
-Backend policy 同步脱离 Tcl harness 的 `CTEST`/`VTEST` 环境变量，改用原生 `--no-bluesim` / `--no-verilog` CLI。代码中的 `legacy_*` golden 命名已收敛为实现语义命名；golden 归一化和 Icarus 噪声过滤本身仍作为 upstream contract 的必要行为保留。
+Backend policy 同步脱离 Tcl harness 的 `CTEST`/`VTEST` 环境变量，改用原生 `--no-bluesim` / `--no-verilog` CLI。golden 命名已收敛为实现语义命名；golden 归一化和 Icarus 噪声过滤本身仍作为 upstream contract 的必要行为保留。
 
 ### 统一 artifact comparison 与 schedule contract
 
@@ -229,7 +229,7 @@ Artifact actual 必须是 workspace 内的安全相对路径；expected 必须�
 
 剩余 inventory 进一步分析每份未迁移 `.exp` 的活动 Tcl command vocabulary，按 `candidate`、`review`、`blocked`、`dynamic/custom` 分类，并汇总 unsupported command 的类别、调用次数、影响脚本与静态 contract。Curated blocker registry 与未迁移来源集合双向守门；blocker 已迁移、删除或路径漂移时 `inventory-check` 会立即失败。静态 contract 分母由单元测试固定为 4672，避免 readiness 分析改变覆盖口径。
 
-首轮 analyzer 得到 33 个 lexical candidate、121 个静态 contract。全部候选经逐份 fixture/options/golden/bug-gate review 后整份迁移：新增 32 个 compile contract，以及 51 个 simulation scenario 展开的 89 个 backend contract，覆盖 vector、string/generics、BH pragma、library runtime、Verilog golden、warning count、额外 generated module、backend-specific generation、空 golden、VCD 和 artifact comparison。迁移后 lexical candidate 队列归零，累计覆盖 **355/860** 个来源和 **1758/4672** 个静态 contract；剩余 **505** 个来源、**2914** 个静态 contract，仍有 221 个脚本需要动态或自定义 Tcl 分析。
+首轮 analyzer 得到 33 个自动候选、121 个 contract。全部候选经逐份 fixture/options/golden/bug-gate review 后整份迁移：新增 32 个 compile contract，以及 51 个 simulation scenario 展开的 89 个 backend contract，覆盖 vector、string/generics、BH pragma、library runtime、Verilog golden、warning count、额外 generated module、backend-specific generation、空 golden、VCD 和 artifact comparison。该阶段完成后自动候选队列归零；当前覆盖率与剩余范围以 typed manifest 生成的 `REMAINING.md` 为准。
 
 首次完整运行通过 52 个 helper tests、24 个 scheduler tests 和 1734 个 upstream dynamic contracts；新增批次产生 32 个 BSC result cache miss/store 与 51 个 generation cache miss/store，全部 contract 通过。
 

@@ -2,7 +2,7 @@ use super::super::{
     normalize_golden_output, SimulationBackend, SimulationContract, SimulationPhase,
     SimulationScenario, VcdOutputExpectation,
 };
-use super::outcome::{normalize_backend_output, PhaseFailure};
+use super::outcome::{normalize_backend_output, normalize_contract_output, PhaseFailure};
 use crate::{readable_diff, run_command, Toolchain};
 use std::fs;
 use std::io::BufReader;
@@ -83,8 +83,10 @@ pub(super) fn run_vcd_contract(
     })?;
 
     if vcd_contract.output == VcdOutputExpectation::MatchesNormal {
-        let expected = normalize_golden_output(normal_output);
-        let actual = normalize_golden_output(&vcd_output);
+        let expected =
+            normalize_golden_output(&normalize_contract_output(contract.output, normal_output));
+        let actual =
+            normalize_golden_output(&normalize_contract_output(contract.output, &vcd_output));
         if expected != actual {
             let diff_path = artifact_dir.join("vcd-output.diff");
             let diff = readable_diff(

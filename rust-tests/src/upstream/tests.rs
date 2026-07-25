@@ -439,6 +439,37 @@ fn phase_expectations_distinguish_expected_failure_xfail_and_xpass() {
             .unwrap_err()
             .contains("XPASS")
     );
+
+    let output_xfail = SimulationContract {
+        expectation: ExpectedOutcome::XFailOutput {
+            output: "expected.out",
+            reason: "known output mismatch",
+        },
+        ..contract
+    };
+    let mismatch = PhaseFailure::new(
+        SimulationPhase::OutputComparison,
+        "output differs".to_owned(),
+    );
+    assert!(matches!(
+        evaluate_contract_outcome(&output_xfail, Err(mismatch), work_dir, artifact_dir),
+        Ok(ContractRunOutcome::XFailed(reason)) if reason.contains("known output mismatch")
+    ));
+    let simulation_failure =
+        PhaseFailure::new(SimulationPhase::Simulation, "simulator failed".to_owned());
+    assert!(evaluate_contract_outcome(
+        &output_xfail,
+        Err(simulation_failure),
+        work_dir,
+        artifact_dir,
+    )
+    .unwrap_err()
+    .contains("expected to fail during output comparison"));
+    assert!(
+        evaluate_contract_outcome(&output_xfail, Ok(()), work_dir, artifact_dir)
+            .unwrap_err()
+            .contains("XPASS")
+    );
 }
 
 #[test]
@@ -691,6 +722,12 @@ fn artifact_assertions_compare_exact_golden_and_verilog_outputs() {
         "// Bluespec Compiler build B\nwire __h456;\n",
     )
     .unwrap();
+    std::fs::write(work.join("actual.decimal"), "value=(-0.007813, 1.000000)\n").unwrap();
+    std::fs::write(
+        work.join("expected.decimal"),
+        "value=(-0.007812, 1.000000)\n",
+    )
+    .unwrap();
 
     let assertions = [
         ArtifactAssertion::Matches {
@@ -708,10 +745,28 @@ fn artifact_assertions_compare_exact_golden_and_verilog_outputs() {
             expected: "expected.v",
             normalization: ArtifactNormalization::Verilog,
         },
+        ArtifactAssertion::Matches {
+            actual: "actual.decimal",
+            expected: "expected.decimal",
+            normalization: ArtifactNormalization::DecimalTolerance {
+                fractional_digits: 6,
+                max_units: 1,
+            },
+        },
     ];
-    let fixtures = ["expected.bin", "expected.txt", "expected.v"];
+    let fixtures = [
+        "expected.bin",
+        "expected.txt",
+        "expected.v",
+        "expected.decimal",
+    ];
     validate_artifact_assertions(&assertions, &fixtures, "test").unwrap();
     check_artifact_assertions(&assertions, &work, &artifacts, "test").unwrap();
+
+    std::fs::write(work.join("actual.decimal"), "value=(-0.007814, 1.000000)\n").unwrap();
+    assert!(check_artifact_assertions(&assertions, &work, &artifacts, "test").is_err());
+    assert!(artifacts.join("artifact-3.diff").is_file());
+    std::fs::write(work.join("actual.decimal"), "value=(-0.007813, 1.000000)\n").unwrap();
 
     std::fs::write(work.join("actual.bin"), [3, 4]).unwrap();
     assert!(check_artifact_assertions(&assertions, &work, &artifacts, "test").is_err());

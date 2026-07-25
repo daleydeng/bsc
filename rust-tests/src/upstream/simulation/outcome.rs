@@ -103,6 +103,14 @@ pub(crate) fn evaluate_contract_outcome(
             "{reason}: {}",
             failure.message
         ))),
+        (ExpectedOutcome::XFailOutput { reason, .. }, Err(failure))
+            if failure.phase == SimulationPhase::OutputComparison =>
+        {
+            Ok(ContractRunOutcome::XFailed(format!(
+                "{reason}: {}",
+                failure.message
+            )))
+        }
         (expectation, Ok(())) => Err(format!(
             "XPASS: {} was expected to fail during {}",
             contract.name,

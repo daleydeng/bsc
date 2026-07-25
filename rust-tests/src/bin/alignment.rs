@@ -19,14 +19,12 @@ fn main() -> ExitCode {
                 summary.remaining_test_scripts
             );
             println!(
-                "contract coverage: {}/{} statically declared contracts migrated, {} remaining",
-                summary.migrated_contracts,
-                summary.total_statically_declared_contracts,
-                summary.remaining_statically_declared_contracts
+                "contract coverage: {}/{} typed contracts migrated, {} remaining",
+                summary.migrated_contracts, summary.total_contracts, summary.remaining_contracts
             );
             println!(
-                "contract inventory: {} scripts require dynamic or custom Tcl analysis",
-                summary.unclassified_test_scripts
+                "contract inventory: {} scripts contain no typed contracts",
+                summary.scripts_without_contracts
             );
             ExitCode::SUCCESS
         }
