@@ -262,6 +262,7 @@ case_modules!(
     sshow,
     string_types,
     underscore,
+    use_cond,
     vending,
     verilog_golden_regressions,
 );

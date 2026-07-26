@@ -5,10 +5,10 @@
 
 ## Summary
 
-- Remaining test scripts: **348**
-- Remaining typed contracts: **3122**
+- Remaining test scripts: **347**
+- Remaining typed contracts: **3099**
 - Typed migration candidates: **0 scripts / 0 contracts**
-- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **190 scripts / 2857 contracts**
+- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **189 scripts / 2834 contracts**
 - Curated known blockers: **21 scripts / 265 contracts**
 - Scripts without typed contracts: **137 scripts / 0 currently recognized contracts**
 
@@ -28,7 +28,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `set` | control/state | 146 | 100 | 474 |
 | `source` | manual toolchain | 75 | 75 | 0 |
 | `test_ovl` | manual toolchain | 75 | 75 | 0 |
-| `bluesim_workflow` | manual toolchain | 111 | 44 | 684 |
+| `bluesim_workflow` | manual toolchain | 108 | 43 | 661 |
 | `copy` | filesystem | 347 | 37 | 417 |
 | `compile_object_pass` | unsupported contract | 91 | 34 | 165 |
 | `link_verilog_pass` | manual toolchain | 67 | 31 | 248 |
@@ -90,7 +90,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `bsc.names` | 11 | 95 | 0 | 0 | 0 | 1 |
 | `bsc.options` | 3 | 29 | 0 | 0 | 0 | 0 |
 | `bsc.preprocessor` | 2 | 27 | 0 | 0 | 0 | 0 |
-| `bsc.scheduler` | 13 | 188 | 0 | 0 | 0 | 0 |
+| `bsc.scheduler` | 12 | 165 | 0 | 0 | 0 | 0 |
 | `bsc.showrules` | 1 | 12 | 0 | 0 | 0 | 0 |
 | `bsc.syntax` | 5 | 304 | 0 | 0 | 2 | 0 |
 | `bsc.synthesize` | 1 | 0 | 0 | 0 | 1 | 0 |
@@ -405,7 +405,6 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `testsuite/bsc.scheduler/sched-conditions/sched-conditions.exp` | 4 | review | `compile_verilog_pass_no_warning`×2 (unsupported contract), `copy`×3 (filesystem), `erase`×3 (filesystem), `find_n_warning`×2 (unsupported assertion) |
 | `testsuite/bsc.scheduler/scheduler.exp` | 21 | review | `compare_file_filter_ids`×18 (unsupported assertion), `compile_verilog_schedule_fail`×1 (unsupported contract) |
 | `testsuite/bsc.scheduler/urgency/urgency.exp` | 25 | review | `compare_file_filter_ids`×13 (unsupported assertion), `compile_verilog_pass_no_warning_bug`×1 (unsupported contract), `compile_verilog_pass_warning_bug`×2 (unsupported contract), `compile_verilog_schedule_fail_bug`×1 (unsupported contract) |
-| `testsuite/bsc.scheduler/use_cond/use_cond.exp` | 23 | review | `bluesim_workflow`×3 (manual toolchain) |
 | `testsuite/bsc.showrules/showrules.exp` | 12 | review | `bluesim_workflow`×6 (manual toolchain), `bsc_initialize`×1 (custom helper), `if`×1 (control/state), `link_verilog_pass`×6 (manual toolchain), `move`×6 (filesystem), `note`×1 (custom helper), `showrules`×12 (custom helper), `sim_verilog_vcd`×6 (manual toolchain), `vcdcheck_pass`×12 (custom helper) |
 | `testsuite/bsc.syntax/bh/bh.exp` | 73 | review | `check_lex_pos`×4 (custom helper), `compare_file`×1 (unsupported assertion), `compile_pass_bug`×2 (unsupported contract), `dumpbi`×1 (custom helper), `if`×1 (control/state), `proc`×1 (control/state) |
 | `testsuite/bsc.syntax/bh_parse_pretty/bh-parse-pretty.exp` | 0 | dynamic/custom | `compile_ppp_pass`×3 (unsupported contract), `compile_ppp_pass_bug`×1 (unsupported contract), `proc`×3 (control/state) |

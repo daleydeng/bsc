@@ -26,6 +26,7 @@ case_modules!(
     parse_strings,
     rdy_en_pragmas,
     traffic_light_controller_separate,
+    use_cond,
 );
 
 pub(super) fn scenarios() -> &'static [BluesimWorkflowScenario] {
