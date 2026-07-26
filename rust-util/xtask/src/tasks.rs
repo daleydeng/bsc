@@ -155,7 +155,7 @@ impl<'a> Tasks<'a> {
             .context("could not lower upstream Tcl testsuite into contract IR")?;
         let summary = manifest.summary();
         println!(
-            "contract IR: {} scripts, {} compile contracts, {} simulation contracts, {} external contracts in {} sets ({} unresolved), {} assertions, {} comparisons, {} unsupported constructs in {} scripts",
+            "contract IR: {} scripts, {} compile contracts, {} simulation contracts, {} external contracts in {} sets ({} unresolved), {} assertions, {} comparisons, {} typed workflow actions in {} scripts, {} unsupported constructs in {} scripts",
             summary.scripts,
             summary.compile_contracts,
             summary.simulation_contracts,
@@ -164,6 +164,8 @@ impl<'a> Tasks<'a> {
             summary.unresolved_contracts,
             summary.assertions,
             summary.comparisons,
+            summary.workflow_actions,
+            summary.scripts_with_workflow_actions,
             summary.unsupported_constructs,
             summary.scripts_with_unsupported,
         );
@@ -189,12 +191,13 @@ impl<'a> Tasks<'a> {
         }
         let summary = manifest.summary();
         println!(
-            "contract manifest ok: {} scripts, {} compile + {} simulation + {} external contracts ({} unresolved), {} unsupported constructs",
+            "contract manifest ok: {} scripts, {} compile + {} simulation + {} external contracts ({} unresolved), {} typed workflow actions, {} unsupported constructs",
             summary.scripts,
             summary.compile_contracts,
             summary.simulation_contracts,
             summary.external_contracts,
             summary.unresolved_contracts,
+            summary.workflow_actions,
             summary.unsupported_constructs,
         );
         Ok(())
@@ -213,13 +216,14 @@ impl<'a> Tasks<'a> {
             .with_context(|| format!("could not write {}", path.display()))?;
         let summary = manifest.summary();
         println!(
-            "updated {}: {} scripts, {} compile + {} simulation + {} external contracts ({} unresolved), {} unsupported constructs",
+            "updated {}: {} scripts, {} compile + {} simulation + {} external contracts ({} unresolved), {} typed workflow actions, {} unsupported constructs",
             path.display(),
             summary.scripts,
             summary.compile_contracts,
             summary.simulation_contracts,
             summary.external_contracts,
             summary.unresolved_contracts,
+            summary.workflow_actions,
             summary.unsupported_constructs,
         );
         Ok(())

@@ -183,7 +183,7 @@ fn render_inventory(entries: &[RemainingTestScript]) -> String {
         "- Typed migration candidates: **{candidate_scripts} scripts / {candidate_contracts} contracts**\n"
     ));
     output.push_str(&format!(
-        "- Typed scripts requiring unsupported-construct review or new helpers: **{review_scripts} scripts / {review_contracts} contracts**\n"
+        "- Typed scripts requiring workflow composition, unsupported-construct review, or new helpers: **{review_scripts} scripts / {review_contracts} contracts**\n"
     ));
     output.push_str(&format!(
         "- Curated known blockers: **{blocked_scripts} scripts / {blocked_contracts} contracts**\n"
@@ -191,7 +191,7 @@ fn render_inventory(entries: &[RemainingTestScript]) -> String {
     output.push_str(&format!(
         "- Scripts without typed contracts: **{dynamic_scripts} scripts / {dynamic_contracts} currently recognized contracts**\n\n"
     ));
-    output.push_str("`candidate` means that the contract and assertion vocabulary is represented by the typed manifest and the script is not in the curated blocker registry. It is a high-confidence review queue, not permission to skip fixture, option, golden, bug-gate, or runtime validation. `review` rows list the exact unsupported constructs; `blocked` reasons are maintained alongside the migration plan and checked against this inventory.\n\n");
+    output.push_str("`candidate` means that the contract and assertion vocabulary is represented by the typed manifest and the script is not in the curated blocker registry. It is a high-confidence review queue, not permission to skip fixture, option, golden, bug-gate, or runtime validation. `review` rows list uncomposed typed workflow actions together with remaining unsupported constructs; `blocked` reasons are maintained alongside the migration plan and checked against this inventory.\n\n");
 
     output.push_str("## Ranked typed candidates\n\n");
     output.push_str("| Origin | Typed contracts |\n");
@@ -203,8 +203,8 @@ fn render_inventory(entries: &[RemainingTestScript]) -> String {
         ));
     }
 
-    output.push_str("\n## Highest-leverage unsupported Tcl commands\n\n");
-    output.push_str("The table is sorted by affected scripts, then affected typed contracts. Contract totals overlap when one script uses multiple commands.\n\n");
+    output.push_str("\n## Highest-leverage workflow and unsupported Tcl commands\n\n");
+    output.push_str("The table combines typed workflow actions that still require conservative composition with unsupported Tcl commands. It is sorted by affected scripts, then affected typed contracts. Contract totals overlap when one script uses multiple commands.\n\n");
     output.push_str(
         "| Command | Category | Calls | Scripts | Typed contracts in affected scripts |\n",
     );

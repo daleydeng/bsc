@@ -15,7 +15,7 @@
 
 ## 自动候选队列
 
-[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列已经清空；下一批应扩展高杠杆 typed workflow helper，再从 `review` 脚本中生成新的完整迁移候选。
+[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列已经清空。Manifest schema v3 已将 `compile_object_pass`、`link_objects_pass`、`sim_output`、`copy` 和 `move` 降低为带 guard/span/expansion 的 typed workflow action；当前识别 124 个脚本中的 1027 个 action。它们在按 top-level executable、guard 和 artifact dataflow 保守组合前仍保持 `review`，不会产生假候选。下一步是完成 workflow composition，再从 `review` 脚本中生成新的完整迁移候选。
 
 `candidate` 表示该 `.exp` 的活动 Tcl command vocabulary 已被现有 Rust contract/assertion 模型覆盖，且不在已知 blocker registry 中；它仍不是自动批准。批量迁移时必须逐份完整 review fixture、options、golden、条件分支、bug gate 与运行结果。`inventory-check` 会守护生成文档、candidate 分类以及 blocker registry 是否与当前未迁移集合一致。
 

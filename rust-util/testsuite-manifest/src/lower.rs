@@ -4,9 +4,11 @@ use sha2::{Digest, Sha256};
 use tree_sitter::{Node, Tree};
 
 use crate::model::{
-    AssertionContract, Capability, ComparisonContract, CompileContract, Contract,
-    ExternalContractKind, ExternalSetContract, GenerationStrategy, Guard, ScriptManifest,
-    SimulationBackend, SimulationContract, SourceSpan, UnsupportedConstruct, UnsupportedReason,
+    ArtifactTransferAction, ArtifactTransferOperation, AssertionContract, Capability,
+    ComparisonContract, CompileContract, CompileObjectAction, Contract, ExternalContractKind,
+    ExternalSetContract, GenerationStrategy, Guard, LinkObjectsAction, RunBluesimAction,
+    ScriptManifest, SimulationBackend, SimulationContract, SourceSpan, UnsupportedConstruct,
+    UnsupportedReason, WorkflowAction,
 };
 
 const SCHEDULER_SAT_ORIGIN: &str = "testsuite/bsc.scheduler/sat/sat.exp";
@@ -22,6 +24,7 @@ pub(crate) fn lower_script<'a>(origin: String, source: &'a [u8], tree: &'a Tree)
         contracts: Vec::new(),
         assertions: Vec::new(),
         comparisons: Vec::new(),
+        workflow_actions: Vec::new(),
         unsupported: Vec::new(),
     };
     lowerer.lower_script_node(tree.root_node());
@@ -46,6 +49,7 @@ pub(crate) fn lower_script<'a>(origin: String, source: &'a [u8], tree: &'a Tree)
         contracts: lowerer.contracts,
         assertions: lowerer.assertions,
         comparisons: lowerer.comparisons,
+        workflow_actions: lowerer.workflow_actions,
         unsupported: lowerer.unsupported,
     }
 }
@@ -84,6 +88,7 @@ struct Lowerer<'a> {
     contracts: Vec<Contract>,
     assertions: Vec<AssertionContract>,
     comparisons: Vec<ComparisonContract>,
+    workflow_actions: Vec<WorkflowAction>,
     unsupported: Vec<UnsupportedConstruct>,
 }
 
@@ -298,6 +303,9 @@ impl<'a> Lowerer<'a> {
             return;
         }
 
+        if self.lower_workflow_action(node, &name, &arguments) {
+            return;
+        }
         if is_compile_helper(&name) {
             let Some(source) = arguments.first().filter(|source| !source.is_empty()) else {
                 self.push_unsupported(node, Some(&name), UnsupportedReason::DynamicArguments);
@@ -349,6 +357,98 @@ impl<'a> Lowerer<'a> {
             return;
         }
         self.push_unsupported(node, Some(&name), UnsupportedReason::UnsupportedCommand);
+    }
+
+    fn lower_workflow_action(&mut self, node: Node<'a>, name: &str, arguments: &[String]) -> bool {
+        let guard = self.guard.clone();
+        let span = self.span(node);
+        let expansion = self.invocation_stack.clone();
+        let action = match (name, arguments) {
+            ("compile_object_pass", [source]) => {
+                WorkflowAction::CompileObject(CompileObjectAction {
+                    source: source.clone(),
+                    module: None,
+                    options: String::new(),
+                    guard,
+                    span,
+                    expansion,
+                })
+            }
+            ("compile_object_pass", [source, module]) => {
+                WorkflowAction::CompileObject(CompileObjectAction {
+                    source: source.clone(),
+                    module: (!module.is_empty()).then(|| module.clone()),
+                    options: String::new(),
+                    guard,
+                    span,
+                    expansion,
+                })
+            }
+            ("compile_object_pass", [source, module, options]) => {
+                WorkflowAction::CompileObject(CompileObjectAction {
+                    source: source.clone(),
+                    module: (!module.is_empty()).then(|| module.clone()),
+                    options: options.clone(),
+                    guard,
+                    span,
+                    expansion,
+                })
+            }
+            ("link_objects_pass", [objects, top]) => {
+                WorkflowAction::LinkObjects(LinkObjectsAction {
+                    objects: objects.clone(),
+                    top: top.clone(),
+                    options: String::new(),
+                    guard,
+                    span,
+                    expansion,
+                })
+            }
+            ("link_objects_pass", [objects, top, options]) => {
+                WorkflowAction::LinkObjects(LinkObjectsAction {
+                    objects: objects.clone(),
+                    top: top.clone(),
+                    options: options.clone(),
+                    guard,
+                    span,
+                    expansion,
+                })
+            }
+            ("sim_output", [executable]) => WorkflowAction::RunBluesim(RunBluesimAction {
+                executable: executable.clone(),
+                options: String::new(),
+                stdout: format!("{executable}.out"),
+                guard,
+                span,
+                expansion,
+            }),
+            ("sim_output", [executable, options]) => WorkflowAction::RunBluesim(RunBluesimAction {
+                executable: executable.clone(),
+                options: options.clone(),
+                stdout: format!("{executable}.out"),
+                guard,
+                span,
+                expansion,
+            }),
+            ("copy", [source, destination]) | ("move", [source, destination]) => {
+                let operation = if name == "copy" {
+                    ArtifactTransferOperation::Copy
+                } else {
+                    ArtifactTransferOperation::Move
+                };
+                WorkflowAction::TransferArtifact(ArtifactTransferAction {
+                    operation,
+                    source: source.clone(),
+                    destination: destination.clone(),
+                    guard,
+                    span,
+                    expansion,
+                })
+            }
+            _ => return false,
+        };
+        self.workflow_actions.push(action);
+        true
     }
 
     fn lower_procedure_call(
@@ -821,6 +921,64 @@ compile_one Orig
             Contract::Compile(contract) if contract.source == "Orig.bs"
         ));
         assert_eq!(manifest.comparisons[0].arguments, ["mkOrigReg.v"]);
+    }
+
+    #[test]
+    fn lowers_static_bluesim_workflow_actions_without_executing_tcl() {
+        let manifest = lower(
+            r#"
+if {$ctest == 1} {
+    compile_object_pass Design.bsv mkDesign {-keep-fires}
+    link_objects_pass {mkDesign helper.c} mkDesign {-v}
+    sim_output mkDesign {-c {sim run; puts done}}
+    copy mkDesign.out saved.out
+    move dump.vcd saved.vcd
+}
+"#,
+        );
+        assert_eq!(manifest.workflow_actions.len(), 5);
+        assert!(manifest.unsupported.is_empty());
+        assert!(matches!(
+            &manifest.workflow_actions[0],
+            WorkflowAction::CompileObject(action)
+                if action.source == "Design.bsv"
+                    && action.module.as_deref() == Some("mkDesign")
+                    && action.options == "-keep-fires"
+                    && matches!(
+                        action.guard,
+                        Guard::Capability {
+                            capability: Capability::Bluesim,
+                        }
+                    )
+        ));
+        assert!(matches!(
+            &manifest.workflow_actions[1],
+            WorkflowAction::LinkObjects(action)
+                if action.objects == "mkDesign helper.c"
+                    && action.top == "mkDesign"
+                    && action.options == "-v"
+        ));
+        assert!(matches!(
+            &manifest.workflow_actions[2],
+            WorkflowAction::RunBluesim(action)
+                if action.executable == "mkDesign"
+                    && action.options == "-c {sim run; puts done}"
+                    && action.stdout == "mkDesign.out"
+        ));
+        assert!(matches!(
+            &manifest.workflow_actions[3],
+            WorkflowAction::TransferArtifact(action)
+                if action.operation == ArtifactTransferOperation::Copy
+                    && action.source == "mkDesign.out"
+                    && action.destination == "saved.out"
+        ));
+        assert!(matches!(
+            &manifest.workflow_actions[4],
+            WorkflowAction::TransferArtifact(action)
+                if action.operation == ArtifactTransferOperation::Move
+                    && action.source == "dump.vcd"
+                    && action.destination == "saved.vcd"
+        ));
     }
 
     #[test]

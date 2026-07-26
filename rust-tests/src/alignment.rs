@@ -323,6 +323,9 @@ fn unsupported_manifest_commands(script: &ScriptManifest) -> Vec<UnsupportedTclC
             .unwrap_or_else(|| unsupported_reason_label(unsupported.reason).to_owned());
         *counts.entry(name).or_default() += 1;
     }
+    for action in &script.workflow_actions {
+        *counts.entry(action.helper_name().to_owned()).or_default() += 1;
+    }
     counts
         .into_iter()
         .map(|(name, count)| UnsupportedTclCommand {

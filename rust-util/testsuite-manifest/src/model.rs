@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub const MANIFEST_SCHEMA_VERSION: u32 = 2;
+pub const MANIFEST_SCHEMA_VERSION: u32 = 3;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TestsuiteManifest {
@@ -15,6 +15,8 @@ pub struct ScriptManifest {
     pub contracts: Vec<Contract>,
     pub assertions: Vec<AssertionContract>,
     pub comparisons: Vec<ComparisonContract>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub workflow_actions: Vec<WorkflowAction>,
     pub unsupported: Vec<UnsupportedConstruct>,
 }
 
@@ -61,6 +63,85 @@ pub struct SimulationContract {
     pub guard: Guard,
     pub span: SourceSpan,
     pub expansion: Vec<SourceSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum WorkflowAction {
+    CompileObject(CompileObjectAction),
+    LinkObjects(LinkObjectsAction),
+    RunBluesim(RunBluesimAction),
+    TransferArtifact(ArtifactTransferAction),
+}
+
+impl WorkflowAction {
+    pub fn helper_name(&self) -> &'static str {
+        match self {
+            Self::CompileObject(_) => "compile_object_pass",
+            Self::LinkObjects(_) => "link_objects_pass",
+            Self::RunBluesim(_) => "sim_output",
+            Self::TransferArtifact(action) => match action.operation {
+                ArtifactTransferOperation::Copy => "copy",
+                ArtifactTransferOperation::Move => "move",
+            },
+        }
+    }
+
+    pub fn guard(&self) -> &Guard {
+        match self {
+            Self::CompileObject(action) => &action.guard,
+            Self::LinkObjects(action) => &action.guard,
+            Self::RunBluesim(action) => &action.guard,
+            Self::TransferArtifact(action) => &action.guard,
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CompileObjectAction {
+    pub source: String,
+    pub module: Option<String>,
+    pub options: String,
+    pub guard: Guard,
+    pub span: SourceSpan,
+    pub expansion: Vec<SourceSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct LinkObjectsAction {
+    pub objects: String,
+    pub top: String,
+    pub options: String,
+    pub guard: Guard,
+    pub span: SourceSpan,
+    pub expansion: Vec<SourceSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct RunBluesimAction {
+    pub executable: String,
+    pub options: String,
+    pub stdout: String,
+    pub guard: Guard,
+    pub span: SourceSpan,
+    pub expansion: Vec<SourceSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ArtifactTransferAction {
+    pub operation: ArtifactTransferOperation,
+    pub source: String,
+    pub destination: String,
+    pub guard: Guard,
+    pub span: SourceSpan,
+    pub expansion: Vec<SourceSpan>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ArtifactTransferOperation {
+    Copy,
+    Move,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -177,6 +258,8 @@ pub struct ManifestSummary {
     pub unresolved_contracts: usize,
     pub assertions: usize,
     pub comparisons: usize,
+    pub workflow_actions: usize,
+    pub scripts_with_workflow_actions: usize,
     pub unsupported_constructs: usize,
     pub scripts_with_unsupported: usize,
 }
@@ -202,6 +285,9 @@ impl TestsuiteManifest {
             }
             summary.assertions += script.assertions.len();
             summary.comparisons += script.comparisons.len();
+            summary.workflow_actions += script.workflow_actions.len();
+            summary.scripts_with_workflow_actions +=
+                usize::from(!script.workflow_actions.is_empty());
             summary.unsupported_constructs += script.unsupported.len();
             summary.scripts_with_unsupported += usize::from(!script.unsupported.is_empty());
         }

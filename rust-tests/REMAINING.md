@@ -8,20 +8,20 @@
 - Remaining test scripts: **366**
 - Remaining typed contracts: **3041**
 - Typed migration candidates: **0 scripts / 0 contracts**
-- Typed scripts requiring unsupported-construct review or new helpers: **180 scripts / 2776 contracts**
+- Typed scripts requiring workflow composition, unsupported-construct review, or new helpers: **180 scripts / 2776 contracts**
 - Curated known blockers: **21 scripts / 265 contracts**
 - Scripts without typed contracts: **165 scripts / 0 currently recognized contracts**
 
-`candidate` means that the contract and assertion vocabulary is represented by the typed manifest and the script is not in the curated blocker registry. It is a high-confidence review queue, not permission to skip fixture, option, golden, bug-gate, or runtime validation. `review` rows list the exact unsupported constructs; `blocked` reasons are maintained alongside the migration plan and checked against this inventory.
+`candidate` means that the contract and assertion vocabulary is represented by the typed manifest and the script is not in the curated blocker registry. It is a high-confidence review queue, not permission to skip fixture, option, golden, bug-gate, or runtime validation. `review` rows list uncomposed typed workflow actions together with remaining unsupported constructs; `blocked` reasons are maintained alongside the migration plan and checked against this inventory.
 
 ## Ranked typed candidates
 
 | Origin | Typed contracts |
 | --- | ---: |
 
-## Highest-leverage unsupported Tcl commands
+## Highest-leverage workflow and unsupported Tcl commands
 
-The table is sorted by affected scripts, then affected typed contracts. Contract totals overlap when one script uses multiple commands.
+The table combines typed workflow actions that still require conservative composition with unsupported Tcl commands. It is sorted by affected scripts, then affected typed contracts. Contract totals overlap when one script uses multiple commands.
 
 | Command | Category | Calls | Scripts | Typed contracts in affected scripts |
 | --- | --- | ---: | ---: | ---: |

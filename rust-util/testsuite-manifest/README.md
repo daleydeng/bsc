@@ -58,6 +58,7 @@ The current lowerer models:
 - capability and unresolved guards, including complementary `if/else` branches;
 - non-recursive local procedure calls with static arguments;
 - compile, simulation, assertion, comparison, and external contract sets;
+- typed but deliberately uncomposed Bluesim workflow actions for `compile_object_pass`, `link_objects_pass`, `sim_output`, `copy`, and `move`;
 - source spans plus procedure-call expansion spans;
 - every unsupported construct explicitly, including its expansion stack.
 
@@ -65,7 +66,8 @@ Procedure expansion counts contract instances rather than syntax occurrences. Fo
 
 The remaining migration sequence is:
 
-1. Complete the allowlisted static control/value forms needed by upstream scripts.
-2. Continue migrating the remaining typed contract inventory into executable Rust scenarios.
+1. Conservatively compose typed workflow actions by guard, top-level executable, and artifact dataflow; ambiguous actions remain review items.
+2. Complete the allowlisted static control/value forms needed by upstream scripts.
+3. Continue migrating the remaining typed contract inventory into executable Rust scenarios.
 
 Unknown commands, dynamic substitutions, unsupported control flow, and non-constant values must remain explicit unsupported constructs. They must never be evaluated to make conversion succeed.
