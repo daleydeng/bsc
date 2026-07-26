@@ -33,7 +33,7 @@ pub(crate) fn lower_script<'a>(origin: String, source: &'a [u8], tree: &'a Tree)
             lowerer
                 .contracts
                 .push(Contract::ExternalSet(ExternalSetContract {
-                    kind: ExternalContractKind::SchedulerSat,
+                    external_kind: ExternalContractKind::SchedulerSat,
                     cases: values.clone(),
                     guard: Guard::Capability {
                         capability: Capability::Verilog,
@@ -43,13 +43,16 @@ pub(crate) fn lower_script<'a>(origin: String, source: &'a [u8], tree: &'a Tree)
                 }));
         }
     }
+    let (bluesim_workflows, workflow_actions) =
+        crate::workflow::compose_bluesim_workflows(lowerer.workflow_actions);
     ScriptManifest {
         origin,
         source_sha256: format!("{:x}", Sha256::digest(source)),
         contracts: lowerer.contracts,
         assertions: lowerer.assertions,
         comparisons: lowerer.comparisons,
-        workflow_actions: lowerer.workflow_actions,
+        bluesim_workflows,
+        workflow_actions,
         unsupported: lowerer.unsupported,
     }
 }
@@ -936,44 +939,42 @@ if {$ctest == 1} {
 }
 "#,
         );
-        assert_eq!(manifest.workflow_actions.len(), 5);
+        assert_eq!(manifest.bluesim_workflows.len(), 1);
+        assert_eq!(manifest.workflow_actions.len(), 1);
         assert!(manifest.unsupported.is_empty());
+        let workflow = &manifest.bluesim_workflows[0];
+        assert_eq!(workflow.top, "mkDesign");
+        assert!(matches!(
+            &workflow.generations[0],
+            action if action.source == "Design.bsv"
+                && action.module.as_deref() == Some("mkDesign")
+                && action.options == "-keep-fires"
+                && matches!(
+                    action.guard,
+                    Guard::Capability {
+                        capability: Capability::Bluesim,
+                    }
+                )
+        ));
+        assert!(
+            workflow.link.objects == "mkDesign helper.c"
+                && workflow.link.top == "mkDesign"
+                && workflow.link.options == "-v"
+        );
+        assert_eq!(workflow.runs.len(), 1);
+        assert!(
+            workflow.runs[0].action.executable == "mkDesign"
+                && workflow.runs[0].action.options == "-c {sim run; puts done}"
+                && workflow.runs[0].action.stdout == "mkDesign.out"
+        );
+        assert!(matches!(
+            &workflow.runs[0].transfers[0],
+            action if action.operation == ArtifactTransferOperation::Copy
+                && action.source == "mkDesign.out"
+                && action.destination == "saved.out"
+        ));
         assert!(matches!(
             &manifest.workflow_actions[0],
-            WorkflowAction::CompileObject(action)
-                if action.source == "Design.bsv"
-                    && action.module.as_deref() == Some("mkDesign")
-                    && action.options == "-keep-fires"
-                    && matches!(
-                        action.guard,
-                        Guard::Capability {
-                            capability: Capability::Bluesim,
-                        }
-                    )
-        ));
-        assert!(matches!(
-            &manifest.workflow_actions[1],
-            WorkflowAction::LinkObjects(action)
-                if action.objects == "mkDesign helper.c"
-                    && action.top == "mkDesign"
-                    && action.options == "-v"
-        ));
-        assert!(matches!(
-            &manifest.workflow_actions[2],
-            WorkflowAction::RunBluesim(action)
-                if action.executable == "mkDesign"
-                    && action.options == "-c {sim run; puts done}"
-                    && action.stdout == "mkDesign.out"
-        ));
-        assert!(matches!(
-            &manifest.workflow_actions[3],
-            WorkflowAction::TransferArtifact(action)
-                if action.operation == ArtifactTransferOperation::Copy
-                    && action.source == "mkDesign.out"
-                    && action.destination == "saved.out"
-        ));
-        assert!(matches!(
-            &manifest.workflow_actions[4],
             WorkflowAction::TransferArtifact(action)
                 if action.operation == ArtifactTransferOperation::Move
                     && action.source == "dump.vcd"
@@ -1022,7 +1023,7 @@ compile_verilog_pass Filter.bsv {} [list -verilog-filter ./filter]
         assert!(matches!(
             &manifest.contracts[0],
             Contract::ExternalSet(contract)
-                if contract.kind == ExternalContractKind::SchedulerSat
+                if contract.external_kind == ExternalContractKind::SchedulerSat
                     && contract.cases == ["First", "Second", "Third"]
                     && matches!(
                         contract.guard,
@@ -1033,6 +1034,10 @@ compile_verilog_pass Filter.bsv {} [list -verilog-filter ./filter]
         ));
         assert!(manifest.unsupported.is_empty());
         assert_eq!(manifest.contracts[0].effective_count(), 3);
+
+        let serialized = serde_json::to_value(&manifest.contracts[0]).unwrap();
+        assert_eq!(serialized["kind"], "external_set");
+        assert_eq!(serialized["external_kind"], "scheduler_sat");
     }
 
     #[test]

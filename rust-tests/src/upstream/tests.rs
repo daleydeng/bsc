@@ -183,15 +183,69 @@ fn simulation_data_model_is_valid_and_names_are_unique() {
         "simulation contract names must be unique"
     );
 
+    let workflow_contract_names = bluesim_workflow_scenarios()
+        .iter()
+        .flat_map(|scenario| {
+            scenario
+                .runs
+                .iter()
+                .map(|run| run.name)
+                .chain(scenario.runs.is_empty().then_some(scenario.name))
+        })
+        .collect::<Vec<_>>();
     let all_names = compile_cases()
         .iter()
         .map(|case| case.name)
         .chain(contract_names.iter().copied())
+        .chain(workflow_contract_names.iter().copied())
         .collect::<BTreeSet<_>>();
     assert_eq!(
         all_names.len(),
-        compile_cases().len() + contract_count,
+        compile_cases().len() + contract_count + workflow_contract_names.len(),
         "all upstream contract names must be unique"
+    );
+}
+
+#[test]
+fn bluesim_workflow_model_is_valid_and_builds_upstream_equivalent_argv() {
+    let workflows = bluesim_workflow_scenarios();
+    assert!(!workflows.is_empty());
+    let names = workflows
+        .iter()
+        .map(|scenario| scenario.name)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(names.len(), workflows.len());
+    for scenario in workflows {
+        validate_bluesim_workflow(scenario).unwrap();
+    }
+
+    let scenario = workflows
+        .iter()
+        .find(|scenario| scenario.name == "bsc.bugs/bluespec_inc/b1489::workflow")
+        .expect("b1489 workflow is registered");
+    assert_eq!(
+        bluesim_generation_arguments(&scenario.generations[0]),
+        [
+            "-no-show-timestamps",
+            "-no-show-version",
+            "-u",
+            "-sim",
+            "Bug1489.bsv",
+        ]
+    );
+    assert_eq!(normalized_link_objects(scenario), ["sysBug1489.ba"]);
+    assert_eq!(
+        bluesim_link_arguments(scenario),
+        [
+            "-no-show-timestamps",
+            "-no-show-version",
+            "-sim",
+            "-e",
+            "sysBug1489",
+            "-o",
+            "sysBug1489",
+            "sysBug1489.ba",
+        ]
     );
 }
 
@@ -284,6 +338,12 @@ fn execution_plan_preserves_declared_generation_scenarios() {
     let positive_reset = select_plan(&options);
     assert_eq!(positive_reset.contract_count(), 2);
     assert_eq!(positive_reset.simulations.len(), 2);
+
+    let options = parse_cli(["bsc.bugs/bluespec_inc/b1489::sysBug1489"]).unwrap();
+    let workflow = select_plan(&options);
+    assert_eq!(workflow.contract_count(), 1);
+    assert_eq!(workflow.bluesim_workflows.len(), 1);
+    assert_eq!(workflow.bluesim_workflows[0].runs.len(), 1);
 }
 
 #[test]
@@ -296,6 +356,11 @@ fn backend_policy_skips_disabled_simulation_backends() {
                 .iter()
                 .flat_map(|scenario| scenario.contracts)
                 .map(|contract| contract.requirement),
+        )
+        .chain(
+            bluesim_workflow_scenarios()
+                .iter()
+                .map(|scenario| scenario.requirement),
         )
         .collect::<Vec<_>>();
     let no_bluesim = RunnerPolicy::new(false, true).with_iverilog_major(Some(13));
@@ -823,6 +888,10 @@ fn cli_parses_filter_exact_and_thread_count() {
     assert!(options.verilog_enabled);
     assert_eq!(options.test_threads, 3);
     assert_eq!(options.filter.as_deref(), Some(name));
+    assert_eq!(select_plan(&options).contract_count(), 1);
+
+    let windows_filter = name.replace('/', "\\");
+    let options = parse_cli([windows_filter, "--exact".to_owned()]).unwrap();
     assert_eq!(select_plan(&options).contract_count(), 1);
 }
 

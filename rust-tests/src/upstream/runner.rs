@@ -1,12 +1,13 @@
+use super::bluesim_workflow::execute_bluesim_workflow;
 use super::compile::run_compile_case;
 use super::simulation::{
     ensure_simulation_generation, evaluate_generation_outcome, run_simulation_contract,
     validate_simulation_scenario, ContractRunOutcome, PhaseFailure,
 };
 use super::{
-    reset_directory, sanitize_case_name, stage_fixture_paths, CompileCase, ExecutionPlan,
-    GenerationStrategy, ResourceClass, RunnerPolicy, SimulationContract, SimulationPhase,
-    SimulationScenario,
+    reset_directory, sanitize_case_name, stage_fixture_paths, BluesimWorkflowRun,
+    BluesimWorkflowScenario, CompileCase, ExecutionPlan, GenerationStrategy, ResourceClass,
+    RunnerPolicy, SimulationContract, SimulationPhase, SimulationScenario,
 };
 use crate::cache::{BscResultCache, GenerationCache};
 use crate::Toolchain;
@@ -96,6 +97,10 @@ pub(super) enum WorkItem {
         scenario: &'static SimulationScenario,
         contracts: Vec<&'static SimulationContract>,
     },
+    BluesimWorkflow {
+        scenario: &'static BluesimWorkflowScenario,
+        runs: Vec<&'static BluesimWorkflowRun>,
+    },
 }
 
 impl WorkItem {
@@ -103,6 +108,7 @@ impl WorkItem {
         match self {
             Self::Compile(_) => ResourceClass::Normal,
             Self::Simulation { scenario, .. } => scenario.resource,
+            Self::BluesimWorkflow { scenario, .. } => scenario.resource,
         }
     }
 
@@ -110,6 +116,7 @@ impl WorkItem {
         match self {
             Self::Compile(case) => case.name,
             Self::Simulation { scenario, .. } => scenario.name,
+            Self::BluesimWorkflow { scenario, .. } => scenario.name,
         }
     }
 
@@ -117,6 +124,7 @@ impl WorkItem {
         match self {
             Self::Compile(_) => None,
             Self::Simulation { scenario, .. } => Some(scenario.name),
+            Self::BluesimWorkflow { scenario, .. } => Some(scenario.name),
         }
     }
 }
@@ -405,6 +413,81 @@ fn run_simulation_work_item(
         .collect()
 }
 
+fn run_bluesim_workflow_item(
+    toolchain: &Toolchain,
+    run_paths: &RunPaths,
+    generation_cache: &GenerationCache,
+    scenario: &'static BluesimWorkflowScenario,
+    runs: Vec<&'static BluesimWorkflowRun>,
+    policy: RunnerPolicy,
+) -> Vec<CaseOutcome> {
+    let contract_names = if scenario.runs.is_empty() {
+        vec![scenario.name]
+    } else {
+        runs.iter().map(|run| run.name).collect()
+    };
+    if let Some(reason) = policy.skip_reason(scenario.requirement) {
+        return contract_names
+            .into_iter()
+            .map(|name| CaseOutcome {
+                name,
+                result: CaseResult::Skipped(reason.clone()),
+            })
+            .collect();
+    }
+
+    let (work_dir, artifact_dir) = run_paths.for_name(scenario.name);
+    let execution = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        execute_bluesim_workflow(
+            toolchain,
+            generation_cache,
+            scenario,
+            &runs,
+            &work_dir,
+            &artifact_dir,
+        )
+    }));
+    let execution = match execution {
+        Ok(execution) => execution,
+        Err(panic) => {
+            let message = format!("runner panicked: {}", panic_message(panic));
+            return contract_names
+                .into_iter()
+                .map(|name| CaseOutcome {
+                    name,
+                    result: CaseResult::Failed(message.clone()),
+                })
+                .collect();
+        }
+    };
+    if let Some(error) = execution.build_error {
+        return contract_names
+            .into_iter()
+            .map(|name| CaseOutcome {
+                name,
+                result: CaseResult::Failed(error.clone()),
+            })
+            .collect();
+    }
+    if scenario.runs.is_empty() {
+        return vec![CaseOutcome {
+            name: scenario.name,
+            result: CaseResult::Passed,
+        }];
+    }
+    execution
+        .run_results
+        .into_iter()
+        .map(|(name, result)| CaseOutcome {
+            name,
+            result: match result {
+                Ok(()) => CaseResult::Passed,
+                Err(error) => CaseResult::Failed(error),
+            },
+        })
+        .collect()
+}
+
 fn run_work_item(
     toolchain: &Toolchain,
     run_paths: &RunPaths,
@@ -430,6 +513,14 @@ fn run_work_item(
             generation_cache,
             scenario,
             contracts,
+            policy,
+        ),
+        WorkItem::BluesimWorkflow { scenario, runs } => run_bluesim_workflow_item(
+            toolchain,
+            run_paths,
+            generation_cache,
+            scenario,
+            runs,
             policy,
         ),
     }
@@ -494,6 +585,14 @@ pub fn run_plan(
                 contracts: simulation.contracts,
             }),
     );
+    work.extend(
+        plan.bluesim_workflows
+            .into_iter()
+            .map(|workflow| WorkItem::BluesimWorkflow {
+                scenario: workflow.scenario,
+                runs: workflow.runs,
+            }),
+    );
     let simulation_scenarios = work
         .iter()
         .filter(|item| matches!(item, WorkItem::Simulation { .. }))
@@ -511,13 +610,30 @@ pub fn run_plan(
     let simulation_contracts = work
         .iter()
         .map(|item| match item {
-            WorkItem::Compile(_) => 0,
+            WorkItem::Compile(_) | WorkItem::BluesimWorkflow { .. } => 0,
             WorkItem::Simulation { contracts, .. } => contracts.len(),
         })
         .sum::<usize>();
+    let workflow_contracts = work
+        .iter()
+        .map(|item| match item {
+            WorkItem::BluesimWorkflow { scenario, runs } => {
+                if scenario.runs.is_empty() {
+                    1
+                } else {
+                    runs.len()
+                }
+            }
+            WorkItem::Compile(_) | WorkItem::Simulation { .. } => 0,
+        })
+        .sum::<usize>();
+    let workflow_scenarios = work
+        .iter()
+        .filter(|item| matches!(item, WorkItem::BluesimWorkflow { .. }))
+        .count();
     println!(
-        "execution plan: {simulation_contracts} simulation contracts in {simulation_scenarios} generation scenarios ({shared_scenarios} shared); {} compile contracts",
-        contract_count - simulation_contracts
+        "execution plan: {simulation_contracts} simulation contracts in {simulation_scenarios} generation scenarios ({shared_scenarios} shared); {workflow_contracts} Bluesim workflow contracts in {workflow_scenarios} workflows; {} compile contracts",
+        contract_count - simulation_contracts - workflow_contracts
     );
     let progress = ProgressReporter::start(contract_count);
 

@@ -55,6 +55,7 @@ case_modules!(
     multi_mcd_library,
     multi_misc,
     multi_stmt_fsm,
+    parse_strings,
     read_desugaring,
     small_regressions,
     square_root,

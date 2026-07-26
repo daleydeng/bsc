@@ -10,6 +10,10 @@ use walkdir::WalkDir;
 
 mod lower;
 pub mod model;
+mod tcl_list;
+mod workflow;
+
+pub use tcl_list::{parse_static_tcl_list, StaticTclListError};
 
 pub use model::{ManifestSummary, TestsuiteManifest};
 

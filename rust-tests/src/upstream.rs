@@ -365,6 +365,66 @@ pub enum ResourceClass {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ArtifactTransferOperation {
+    Copy,
+    Move,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct ArtifactTransfer {
+    pub operation: ArtifactTransferOperation,
+    pub source: &'static str,
+    pub destination: &'static str,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BluesimGeneration {
+    pub source: &'static str,
+    pub module: Option<&'static str>,
+    pub options: &'static [&'static str],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BluesimLink {
+    pub objects: &'static [&'static str],
+    pub top: &'static str,
+    pub options: &'static [&'static str],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BluesimWorkflowRun {
+    pub name: &'static str,
+    pub options: &'static [&'static str],
+    pub stdout: &'static str,
+    pub transfers: &'static [ArtifactTransfer],
+    pub assertions: &'static [ArtifactAssertion],
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BluesimWorkflowScenario {
+    pub name: &'static str,
+    pub fixture_dir: &'static str,
+    pub fixtures: &'static [&'static str],
+    pub generations: &'static [BluesimGeneration],
+    pub link: BluesimLink,
+    pub link_assertions: &'static [ArtifactAssertion],
+    pub runs: &'static [BluesimWorkflowRun],
+    pub timeouts: SimulationTimeouts,
+    pub resource: ResourceClass,
+    pub requirement: Requirement,
+}
+
+impl BluesimWorkflowScenario {
+    pub const fn contract_count(&self) -> usize {
+        if self.runs.is_empty() {
+            1
+        } else {
+            self.runs.len()
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SimulationLinkInput {
     GeneratedModule(&'static str),
     ExactFile(&'static str),
@@ -408,6 +468,7 @@ pub(crate) struct CaseModule<C: 'static> {
 pub struct ExecutionPlan {
     pub(super) compile_cases: Vec<CompileCase>,
     pub(super) simulations: Vec<PlannedSimulation>,
+    pub(super) bluesim_workflows: Vec<PlannedBluesimWorkflow>,
 }
 
 impl ExecutionPlan {
@@ -418,14 +479,37 @@ impl ExecutionPlan {
                 .iter()
                 .map(|simulation| simulation.contracts.len())
                 .sum::<usize>()
+            + self
+                .bluesim_workflows
+                .iter()
+                .map(|workflow| {
+                    if workflow.scenario.runs.is_empty() {
+                        1
+                    } else {
+                        workflow.runs.len()
+                    }
+                })
+                .sum::<usize>()
     }
 
     pub fn contract_names(&self) -> impl Iterator<Item = &'static str> + '_ {
-        self.compile_cases.iter().map(|case| case.name).chain(
-            self.simulations
-                .iter()
-                .flat_map(|simulation| simulation.contracts.iter().map(|contract| contract.name)),
-        )
+        self.compile_cases
+            .iter()
+            .map(|case| case.name)
+            .chain(
+                self.simulations.iter().flat_map(|simulation| {
+                    simulation.contracts.iter().map(|contract| contract.name)
+                }),
+            )
+            .chain(self.bluesim_workflows.iter().flat_map(|workflow| {
+                workflow.runs.iter().map(|run| run.name).chain(
+                    workflow
+                        .scenario
+                        .runs
+                        .is_empty()
+                        .then_some(workflow.scenario.name),
+                )
+            }))
     }
 }
 
@@ -435,7 +519,15 @@ pub(super) struct PlannedSimulation {
     pub contracts: Vec<&'static SimulationContract>,
 }
 
+#[derive(Debug)]
+pub(super) struct PlannedBluesimWorkflow {
+    pub scenario: &'static BluesimWorkflowScenario,
+    pub runs: Vec<&'static BluesimWorkflowRun>,
+}
+
 mod artifact;
+mod bluesim_workflow;
+mod cases_bluesim_workflow;
 mod cases_compile;
 mod cases_simulation;
 mod compile;
@@ -444,6 +536,12 @@ mod simulation;
 
 #[cfg(test)]
 use artifact::{check_artifact_assertions, check_text_assertion, validate_artifact_assertions};
+pub(crate) use bluesim_workflow::validate_bluesim_workflow;
+#[cfg(test)]
+use bluesim_workflow::{
+    generation_arguments as bluesim_generation_arguments, link_arguments as bluesim_link_arguments,
+    normalized_link_objects,
+};
 #[cfg(test)]
 use compile::{compile_arguments, validate_case};
 #[cfg(test)]
@@ -463,6 +561,15 @@ pub fn compile_cases() -> &'static [CompileCase] {
 
 pub fn simulation_scenarios() -> &'static [SimulationScenario] {
     cases_simulation::scenarios()
+}
+
+pub fn bluesim_workflow_scenarios() -> &'static [BluesimWorkflowScenario] {
+    cases_bluesim_workflow::scenarios()
+}
+
+pub(crate) fn bluesim_workflow_scenario_modules() -> &'static [CaseModule<BluesimWorkflowScenario>]
+{
+    cases_bluesim_workflow::MODULES
 }
 
 pub(crate) fn compile_case_modules() -> &'static [CaseModule<CompileCase>] {
@@ -684,7 +791,11 @@ fn set_filter(options: &mut CliOptions, filter: &str) -> Result<(), String> {
 }
 
 pub fn select_plan(options: &CliOptions) -> ExecutionPlan {
-    let matches = |name: &str| match &options.filter {
+    let filter = options
+        .filter
+        .as_deref()
+        .map(|filter| filter.replace('\\', "/"));
+    let matches = |name: &str| match &filter {
         None => true,
         Some(filter) if options.exact => name == filter,
         Some(filter) => name.contains(filter),
@@ -708,9 +819,26 @@ pub fn select_plan(options: &CliOptions) -> ExecutionPlan {
             })
         })
         .collect();
+    let bluesim_workflows = bluesim_workflow_scenarios()
+        .iter()
+        .filter_map(|scenario| {
+            let runs = scenario
+                .runs
+                .iter()
+                .filter(|run| matches(run.name))
+                .collect::<Vec<_>>();
+            (if scenario.runs.is_empty() {
+                matches(scenario.name)
+            } else {
+                !runs.is_empty()
+            })
+            .then_some(PlannedBluesimWorkflow { scenario, runs })
+        })
+        .collect();
     ExecutionPlan {
         compile_cases,
         simulations,
+        bluesim_workflows,
     }
 }
 

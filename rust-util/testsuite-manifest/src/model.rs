@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub const MANIFEST_SCHEMA_VERSION: u32 = 3;
+pub const MANIFEST_SCHEMA_VERSION: u32 = 4;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TestsuiteManifest {
@@ -15,6 +15,8 @@ pub struct ScriptManifest {
     pub contracts: Vec<Contract>,
     pub assertions: Vec<AssertionContract>,
     pub comparisons: Vec<ComparisonContract>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub bluesim_workflows: Vec<BluesimWorkflow>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub workflow_actions: Vec<WorkflowAction>,
     pub unsupported: Vec<UnsupportedConstruct>,
@@ -63,6 +65,26 @@ pub struct SimulationContract {
     pub guard: Guard,
     pub span: SourceSpan,
     pub expansion: Vec<SourceSpan>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BluesimWorkflow {
+    pub top: String,
+    pub generations: Vec<CompileObjectAction>,
+    pub link: LinkObjectsAction,
+    pub runs: Vec<BluesimRun>,
+}
+
+impl BluesimWorkflow {
+    pub fn effective_count(&self) -> usize {
+        self.runs.len().max(1)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct BluesimRun {
+    pub action: RunBluesimAction,
+    pub transfers: Vec<ArtifactTransferAction>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -146,7 +168,7 @@ pub enum ArtifactTransferOperation {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ExternalSetContract {
-    pub kind: ExternalContractKind,
+    pub external_kind: ExternalContractKind,
     pub cases: Vec<String>,
     pub guard: Guard,
     pub span: SourceSpan,
@@ -258,6 +280,8 @@ pub struct ManifestSummary {
     pub unresolved_contracts: usize,
     pub assertions: usize,
     pub comparisons: usize,
+    pub bluesim_workflows: usize,
+    pub bluesim_workflow_contracts: usize,
     pub workflow_actions: usize,
     pub scripts_with_workflow_actions: usize,
     pub unsupported_constructs: usize,
@@ -285,6 +309,12 @@ impl TestsuiteManifest {
             }
             summary.assertions += script.assertions.len();
             summary.comparisons += script.comparisons.len();
+            summary.bluesim_workflows += script.bluesim_workflows.len();
+            summary.bluesim_workflow_contracts += script
+                .bluesim_workflows
+                .iter()
+                .map(BluesimWorkflow::effective_count)
+                .sum::<usize>();
             summary.workflow_actions += script.workflow_actions.len();
             summary.scripts_with_workflow_actions +=
                 usize::from(!script.workflow_actions.is_empty());

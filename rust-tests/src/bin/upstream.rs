@@ -35,12 +35,13 @@ fn run() -> Result<bool, String> {
         return Ok(true);
     }
 
-    println!("running {total} tests");
     if total == 0 {
-        println!();
-        println!("test result: ok. 0 passed; 0 xfailed; 0 skipped; 0 failed");
-        return Ok(true);
+        if let Some(filter) = &options.filter {
+            return Err(format!("test filter {filter:?} matched no contracts"));
+        }
+        return Err("the migrated upstream registry contains no contracts".to_owned());
     }
+    println!("running {total} tests");
 
     let toolchain = Toolchain::discover()?;
     let run_paths = RunPaths::new(&toolchain.project_root, current_run_id());

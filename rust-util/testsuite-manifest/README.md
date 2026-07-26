@@ -58,16 +58,22 @@ The current lowerer models:
 - capability and unresolved guards, including complementary `if/else` branches;
 - non-recursive local procedure calls with static arguments;
 - compile, simulation, assertion, comparison, and external contract sets;
-- typed but deliberately uncomposed Bluesim workflow actions for `compile_object_pass`, `link_objects_pass`, `sim_output`, `copy`, and `move`;
+- typed Bluesim workflow actions for `compile_object_pass`, `link_objects_pass`, `sim_output`, `copy`, and `move`;
+- conservative Bluesim workflow composition by producer/consumer guard coverage, top-level executable, link segment, and stdout artifact flow; ambiguous actions remain explicit review items;
 - source spans plus procedure-call expansion spans;
 - every unsupported construct explicitly, including its expansion stack.
 
 Procedure expansion counts contract instances rather than syntax occurrences. For example, a procedure body containing nine contracts and called five times lowers to 45 typed contracts. Alignment and inventory consume these expanded typed contracts directly.
 
+Manifest schema v4 currently composes 139 Bluesim workflows representing 152 effective run-or-link contracts. Of the original 1,027 workflow actions, 595 ambiguous or side-artifact actions remain uncomposed in 85 scripts. Static lowering associates 98 of 101 `sim_output` actions with a link workflow; the remaining three lack a safely composable typed link/generation chain.
+
+The Rust runner now has a dedicated `BluesimWorkflowScenario` model for multi-generation, link-only, and ordered multi-run workflows plus stdout artifact snapshots. Alignment parses static Tcl lists without evaluation and compares each registered generation, link, run, and transfer against this IR. Sixteen end-to-end Windows migrations now cover the core shapes: `b1489.exp` for a single run and text assertions, `b1243.exp` for link-only execution, and `traffic_light_controller_separate.exp` for two generations, ordered runs, artifact snapshots, and goldens, plus seven `Library_latency` origins and `bsc.lib/sram/sram.exp` for 24 single-generation/link/run/golden workflows, and `debugging.exp`/`b1439.exp`/`b1796.exp` for six build-only workflows, plus `eq3.exp` and `parse_strings.exp` as complete mixed origins containing two additional build-only workflows. Repeated runs reuse the persistent build cache.
+
 The remaining migration sequence is:
 
-1. Conservatively compose typed workflow actions by guard, top-level executable, and artifact dataflow; ambiguous actions remain review items.
-2. Complete the allowlisted static control/value forms needed by upstream scripts.
-3. Continue migrating the remaining typed contract inventory into executable Rust scenarios.
+1. Batch-migrate composed workflows that have no remaining side actions or unsupported constructs.
+2. Extend typed composition for side artifacts such as VCD and link-log snapshots.
+3. Complete the allowlisted static control/value forms needed by upstream scripts.
+4. Continue migrating the remaining typed contract inventory into executable Rust scenarios.
 
 Unknown commands, dynamic substitutions, unsupported control flow, and non-constant values must remain explicit unsupported constructs. They must never be evaluated to make conversion succeed.

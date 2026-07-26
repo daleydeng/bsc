@@ -1,15 +1,19 @@
 use crate::locate_project_root;
 use crate::upstream::{
-    compile_case_modules, compile_cases, simulation_scenario_modules, simulation_scenarios,
-    validate_simulation_scenario, ArtifactAssertion, ArtifactNormalization, CaseModule,
-    DiagnosticKind, GenerationStrategy, SimulationBackend, TextAssertion,
+    bluesim_workflow_scenario_modules, bluesim_workflow_scenarios, compile_case_modules,
+    compile_cases, simulation_scenario_modules, simulation_scenarios, validate_bluesim_workflow,
+    validate_simulation_scenario, ArtifactAssertion, ArtifactNormalization,
+    ArtifactTransferOperation, BluesimWorkflowScenario, CaseModule, DiagnosticKind,
+    GenerationStrategy, SimulationBackend, TextAssertion,
 };
 use bsc_testsuite_manifest::model::{
-    AssertionContract as ManifestAssertion, ComparisonContract as ManifestComparison,
+    ArtifactTransferOperation as ManifestTransferOperation, AssertionContract as ManifestAssertion,
+    BluesimWorkflow as ManifestBluesimWorkflow, ComparisonContract as ManifestComparison,
     Contract as ManifestContract, ExternalContractKind,
     GenerationStrategy as ManifestGenerationStrategy, ScriptManifest,
     SimulationBackend as ManifestBackend, TestsuiteManifest, UnsupportedReason,
 };
+use bsc_testsuite_manifest::parse_static_tcl_list;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -109,6 +113,8 @@ pub struct AlignmentSummary {
     pub compile_cases: usize,
     pub simulation_scenarios: usize,
     pub simulation_contracts: usize,
+    pub bluesim_workflows: usize,
+    pub bluesim_workflow_contracts: usize,
     pub scheduler_cases: usize,
     pub total_test_scripts: usize,
     pub migrated_test_scripts: usize,
@@ -128,6 +134,11 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
         .iter()
         .map(|scenario| scenario.contracts.len())
         .sum::<usize>();
+    let bluesim_workflows = bluesim_workflow_scenarios();
+    let bluesim_workflow_contracts = bluesim_workflows
+        .iter()
+        .map(BluesimWorkflowScenario::contract_count)
+        .sum::<usize>();
     let scripts = check_upstream_cases(&project_root, &manifest)?;
     let scheduler_cases = check_scheduler_sat(&project_root, &manifest)?;
     let inventory = inventory_testsuite(&manifest);
@@ -136,7 +147,8 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
         .total_test_scripts
         .checked_sub(migrated_test_scripts)
         .ok_or_else(|| "migrated test script count exceeds testsuite script count".to_owned())?;
-    let migrated_contracts = compile_cases.len() + simulation_contracts + scheduler_cases;
+    let migrated_contracts =
+        compile_cases.len() + simulation_contracts + bluesim_workflow_contracts + scheduler_cases;
     let remaining_contracts = inventory
         .total_contracts
         .checked_sub(migrated_contracts)
@@ -148,6 +160,8 @@ pub fn check_alignment() -> Result<AlignmentSummary, String> {
         compile_cases: compile_cases.len(),
         simulation_scenarios: simulation_scenarios.len(),
         simulation_contracts,
+        bluesim_workflows: bluesim_workflows.len(),
+        bluesim_workflow_contracts,
         scheduler_cases,
         total_test_scripts: inventory.total_test_scripts,
         migrated_test_scripts,
@@ -308,7 +322,12 @@ fn collect_testsuite_scripts(manifest: &TestsuiteManifest) -> Vec<TestsuiteScrip
                 .contracts
                 .iter()
                 .map(ManifestContract::effective_count)
-                .sum(),
+                .sum::<usize>()
+                + script
+                    .bluesim_workflows
+                    .iter()
+                    .map(ManifestBluesimWorkflow::effective_count)
+                    .sum::<usize>(),
             unsupported_commands: unsupported_manifest_commands(script),
         })
         .collect()
@@ -322,6 +341,9 @@ fn unsupported_manifest_commands(script: &ScriptManifest) -> Vec<UnsupportedTclC
             .clone()
             .unwrap_or_else(|| unsupported_reason_label(unsupported.reason).to_owned());
         *counts.entry(name).or_default() += 1;
+    }
+    for workflow in &script.bluesim_workflows {
+        *counts.entry("bluesim_workflow".to_owned()).or_default() += workflow.effective_count();
     }
     for action in &script.workflow_actions {
         *counts.entry(action.helper_name().to_owned()).or_default() += 1;
@@ -351,11 +373,20 @@ fn collect_migrated_origins(project_root: &Path) -> Result<BTreeSet<String>, Str
         .iter()
         .map(|origin| (*origin).to_owned())
         .collect::<BTreeSet<_>>();
-    for fixture_dir in compile_cases().iter().map(|case| case.fixture_dir).chain(
-        simulation_scenarios()
-            .iter()
-            .map(|scenario| scenario.fixture_dir),
-    ) {
+    for fixture_dir in compile_cases()
+        .iter()
+        .map(|case| case.fixture_dir)
+        .chain(
+            simulation_scenarios()
+                .iter()
+                .map(|scenario| scenario.fixture_dir),
+        )
+        .chain(
+            bluesim_workflow_scenarios()
+                .iter()
+                .map(|scenario| scenario.fixture_dir),
+        )
+    {
         let origin = find_sole_exp(project_root, fixture_dir)?;
         origins.insert(project_relative_unix_path(project_root, &origin)?);
     }
@@ -417,7 +448,10 @@ fn unsupported_tcl_command_category(command: &str) -> TclCommandCategory {
         || command.starts_with("sim_")
         || command.starts_with("run_")
         || command.contains("worker")
-        || matches!(command, "bluetcl" | "exec" | "source" | "test_ovl")
+        || matches!(
+            command,
+            "bluesim_workflow" | "bluetcl" | "exec" | "source" | "test_ovl"
+        )
     {
         TclCommandCategory::ManualToolchain
     } else if command.starts_with("compile_") || command.starts_with("test_") {
@@ -686,6 +720,12 @@ fn check_upstream_cases(
         simulation_scenario_modules(),
         |case| case.fixture_dir,
     )?;
+    check_case_modules(
+        project_root,
+        "rust-tests/src/upstream/cases_bluesim_workflow",
+        bluesim_workflow_scenario_modules(),
+        |case| case.fixture_dir,
+    )?;
 
     let mut names = BTreeSet::new();
     let mut registered = BTreeMap::<&str, Counts>::new();
@@ -770,6 +810,45 @@ fn check_upstream_cases(
         }
     }
 
+    for scenario in bluesim_workflow_scenarios() {
+        validate_bluesim_workflow(scenario)?;
+        if !scenario_names.insert(scenario.name) {
+            return Err(format!(
+                "duplicate Rust Bluesim workflow scenario name: {}",
+                scenario.name
+            ));
+        }
+        check_declared_fixtures(
+            project_root,
+            scenario.fixture_dir,
+            scenario.fixtures,
+            scenario.name,
+        )?;
+        let actual = registered.entry(scenario.fixture_dir).or_default();
+        add_count(
+            &mut actual.workflows,
+            registered_workflow_signature(scenario),
+        );
+        let contract_names = scenario
+            .runs
+            .iter()
+            .map(|run| run.name)
+            .chain(scenario.runs.is_empty().then_some(scenario.name));
+        for name in contract_names {
+            if !names.insert(name) {
+                return Err(format!("duplicate Rust contract name: {name}"));
+            }
+        }
+        for assertion in scenario
+            .link_assertions
+            .iter()
+            .chain(scenario.runs.iter().flat_map(|run| run.assertions))
+            .filter_map(|assertion| artifact_assertion_key(*assertion))
+        {
+            add_count(&mut actual.assertions, assertion);
+        }
+    }
+
     for (fixture_dir, actual) in &registered {
         let origin = find_sole_exp(project_root, fixture_dir)?;
         let origin_key = project_relative_unix_path(project_root, &origin)?;
@@ -798,6 +877,12 @@ fn check_upstream_cases(
             &expected.assertions,
             &actual.assertions,
         )?;
+        compare_counts(
+            &origin,
+            "Bluesim workflows",
+            &expected.workflows,
+            &actual.workflows,
+        )?;
     }
 
     Ok(registered.len())
@@ -809,6 +894,143 @@ struct Counts {
     goldens: BTreeMap<String, usize>,
     generations: BTreeMap<String, usize>,
     assertions: BTreeMap<String, usize>,
+    workflows: BTreeMap<String, usize>,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct WorkflowSignature {
+    top: String,
+    generations: Vec<WorkflowGenerationSignature>,
+    link_objects: Vec<String>,
+    link_options: Vec<String>,
+    runs: Vec<WorkflowRunSignature>,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct WorkflowGenerationSignature {
+    source: String,
+    module: Option<String>,
+    options: Vec<String>,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct WorkflowRunSignature {
+    options: Vec<String>,
+    stdout: String,
+    transfers: Vec<WorkflowTransferSignature>,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+struct WorkflowTransferSignature {
+    operation: &'static str,
+    source: String,
+    destination: String,
+}
+
+fn registered_workflow_signature(scenario: &BluesimWorkflowScenario) -> String {
+    let signature = WorkflowSignature {
+        top: scenario.link.top.to_owned(),
+        generations: scenario
+            .generations
+            .iter()
+            .map(|generation| WorkflowGenerationSignature {
+                source: generation.source.to_owned(),
+                module: generation.module.map(str::to_owned),
+                options: generation
+                    .options
+                    .iter()
+                    .map(|option| (*option).to_owned())
+                    .collect(),
+            })
+            .collect(),
+        link_objects: scenario
+            .link
+            .objects
+            .iter()
+            .map(|object| (*object).to_owned())
+            .collect(),
+        link_options: scenario
+            .link
+            .options
+            .iter()
+            .map(|option| (*option).to_owned())
+            .collect(),
+        runs: scenario
+            .runs
+            .iter()
+            .map(|run| WorkflowRunSignature {
+                options: run
+                    .options
+                    .iter()
+                    .map(|option| (*option).to_owned())
+                    .collect(),
+                stdout: run.stdout.to_owned(),
+                transfers: run
+                    .transfers
+                    .iter()
+                    .map(|transfer| WorkflowTransferSignature {
+                        operation: match transfer.operation {
+                            ArtifactTransferOperation::Copy => "copy",
+                            ArtifactTransferOperation::Move => "move",
+                        },
+                        source: transfer.source.to_owned(),
+                        destination: transfer.destination.to_owned(),
+                    })
+                    .collect(),
+            })
+            .collect(),
+    };
+    format!("{signature:?}")
+}
+
+fn manifest_workflow_signature(workflow: &ManifestBluesimWorkflow) -> Result<String, String> {
+    let parse = |field: &str, value: &str| {
+        parse_static_tcl_list(value).map_err(|error| {
+            format!(
+                "parse {field} for Bluesim workflow {}: {error}",
+                workflow.top
+            )
+        })
+    };
+    let signature = WorkflowSignature {
+        top: workflow.top.clone(),
+        generations: workflow
+            .generations
+            .iter()
+            .map(|generation| {
+                Ok(WorkflowGenerationSignature {
+                    source: generation.source.clone(),
+                    module: generation.module.clone(),
+                    options: parse("generation options", &generation.options)?,
+                })
+            })
+            .collect::<Result<Vec<_>, String>>()?,
+        link_objects: parse("link objects", &workflow.link.objects)?,
+        link_options: parse("link options", &workflow.link.options)?,
+        runs: workflow
+            .runs
+            .iter()
+            .map(|run| {
+                Ok(WorkflowRunSignature {
+                    options: parse("run options", &run.action.options)?,
+                    stdout: run.action.stdout.clone(),
+                    transfers: run
+                        .transfers
+                        .iter()
+                        .map(|transfer| WorkflowTransferSignature {
+                            operation: match transfer.operation {
+                                ManifestTransferOperation::Copy => "copy",
+                                ManifestTransferOperation::Move => "move",
+                            },
+                            source: transfer.source.clone(),
+                            destination: transfer.destination.clone(),
+                        })
+                        .collect(),
+                })
+            })
+            .collect::<Result<Vec<_>, String>>()?,
+    };
+    Ok(format!("{signature:?}"))
 }
 
 fn check_declared_fixtures(
@@ -905,6 +1127,13 @@ fn manifest_counts(script: &ScriptManifest, origin: &Path) -> Result<Counts, Str
             }
             ManifestContract::ExternalSet(_) => {}
         }
+    }
+
+    for workflow in &script.bluesim_workflows {
+        add_count(
+            &mut counts.workflows,
+            manifest_workflow_signature(workflow)?,
+        );
     }
 
     for comparison in &script.comparisons {
@@ -1261,7 +1490,7 @@ fn check_scheduler_sat(project_root: &Path, manifest: &TestsuiteManifest) -> Res
         .iter()
         .filter_map(|contract| match contract {
             ManifestContract::ExternalSet(contract)
-                if contract.kind == ExternalContractKind::SchedulerSat =>
+                if contract.external_kind == ExternalContractKind::SchedulerSat =>
             {
                 Some(&contract.cases)
             }
@@ -1379,8 +1608,18 @@ mod tests {
         let expected = manifest
             .scripts
             .iter()
-            .flat_map(|script| &script.contracts)
-            .map(ManifestContract::effective_count)
+            .map(|script| {
+                script
+                    .contracts
+                    .iter()
+                    .map(ManifestContract::effective_count)
+                    .sum::<usize>()
+                    + script
+                        .bluesim_workflows
+                        .iter()
+                        .map(ManifestBluesimWorkflow::effective_count)
+                        .sum::<usize>()
+            })
             .sum::<usize>();
         assert_eq!(
             check_alignment()

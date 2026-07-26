@@ -6,9 +6,9 @@
 
 Cargo 原生 test harness 继续承载 Rust helper 单测和已经迁移的 scheduler 静态 tests；数量较大、需要运行时发现/筛选的 upstream case 由 `src/bin/upstream.rs` 自定义动态 runner 承载。
 
-只读取 `testsuite/` 中的 fixture 和 golden。Compile case 使用独立 workspace；simulation 由声明式 `SimulationScenario` 生成一次，再把 generation workspace 复制到各 `SimulationContract` 的隔离 workspace。不在原 testsuite 目录中生成或修改文件。
+只读取 `testsuite/` 中的 fixture 和 golden。Compile case 使用独立 workspace；跨后端 simulation 由声明式 `SimulationScenario` 生成一次，再把 generation workspace 复制到各 `SimulationContract` 的隔离 workspace；手工 Bluesim 流程由独立 `BluesimWorkflowScenario` 在共享 workspace 中严格顺序执行多 generation、一次 link 和多个 run。不在原 testsuite 目录中生成或修改文件。
 
-每个 case 模块必须用 `//! Origin:` 注释标出原始 `.exp`。`pixi run just test-alignment` 会把来源脚本中的受支持 Tcl API 调用展开为 compile/Bluesim/Icarus contract multiset，并与 Rust 注册表、golden 声明和 scheduler case 列表逐项比较；默认 `test` 和 `test-upstream` 均将此检查作为前置守门。
+每个 case 模块必须用 `//! Origin:` 注释标出原始 `.exp`。`pixi run just test-alignment` 会把来源脚本中的受支持 Tcl API 调用展开为 compile/Bluesim/Icarus contract multiset，并将 composed Bluesim workflow 的 generation/link/run/transfer canonical signature 与 Rust registry 逐字段比较；golden、assertion 和 scheduler case 同样逐项守门。默认 `test` 和 `test-upstream` 均将此检查作为前置门禁。
 
 ## 静态盘点
 
@@ -212,6 +212,10 @@ Alignment 同步解析 `find_n_strings`、`string_occurs`、`string_does_not_occ
 删除早期按单 contract 打平的 `UpstreamCase`、`all_cases`、`select_cases` 和 `build_work_items` 兼容层。CLI 现在直接从 compile registry 与 scenario registry 构造 `ExecutionPlan`；simulation contract 在选择阶段始终保留所属 `SimulationScenario`，runner 不再通过指针扫描猜测并重建分组。早期 `bluespec_inc` 短 case ID 也全部替换为与其他模块一致的来源路径式稳定 ID，不提供旧名称别名。
 
 Backend policy 同步脱离 Tcl harness 的 `CTEST`/`VTEST` 环境变量，改用原生 `--no-bluesim` / `--no-verilog` CLI。golden 命名已收敛为实现语义命名；golden 归一化和 Icarus 噪声过滤本身仍作为 upstream contract 的必要行为保留。
+
+手工 Bluesim workflow 不再挤入单 source/单 link 的跨后端 `SimulationScenario`。独立 `BluesimWorkflowScenario` 原生表达多 generation、link-only、顺序多 run 和 stdout artifact transfer；generation+link workspace 使用完整 action argv、fixture 内容和工具链指纹进入持久化 build cache。Frontend 提供只解析、不求值的静态 Tcl-list 分词，alignment 据此对 manifest workflow 与 Rust argv 逐字段核对。首批 `b1489.exp`、`b1243.exp` 和 `traffic_light_controller_separate.exp` 已在 Windows 实际通过，分别覆盖单 run、link-only、双 generation/顺序双 run/stdout transfer，随后整体迁移 `bsc.interra/Library_latency` 下 7 个来源与 `bsc.lib/sram/sram.exp`，新增 24 个单 generation/link/run/golden workflow contract；第三批迁移 `debugging.exp`、`b1439.exp` 和 `b1796.exp` 的 6 个 build-only workflow contract。第四批完整迁移 `eq3.exp` 与 `parse_strings.exp` 的 10 个 mixed contract，覆盖 Verilog 文本/RTL golden、frontend 诊断、双后端 VCD simulation 和 build-only workflow；四批均验证重复运行 cache hit。
+
+动态 runner 会把 filter 中的 Windows 路径分隔符规范化为 `/`，使 `just → rtk proxy → cargo xtask` 转发的来源路径式 filter 保持跨平台；非 `--list` 执行若显式 filter 匹配 0 个 contract 会硬失败，避免空测试假阳性。
 
 ### 统一 artifact comparison 与 schedule contract
 
