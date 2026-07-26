@@ -23,6 +23,7 @@ case_modules!(
     library_latency,
     library_sram,
     parse_strings,
+    rdy_en_pragmas,
     traffic_light_controller_separate,
 );
 

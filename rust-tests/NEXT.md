@@ -4,10 +4,10 @@
 
 ## 当前基线
 
-- 已迁移来源：510/860
-- 尚未迁移来源：350
-- 已迁移 typed contract：2384/5533
-- 尚未迁移 typed contract：3149
+- 已迁移来源：511/860
+- 尚未迁移来源：349
+- 已迁移 typed contract：2407/5533
+- 尚未迁移 typed contract：3126
 - 没有 typed contract 的脚本：137
 - 当前 inventory 完全由 typed manifest 生成，不再保留手写 Tcl parser 或词法计数分母
 
@@ -15,7 +15,7 @@
 
 ## 自动候选队列
 
-[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列已经清空。Manifest schema v4 已将 `compile_object_pass`、`link_objects_pass`、`sim_output`、`copy` 和 `move` 降低为带 guard/span/expansion 的 typed workflow action，并按 producer/consumer guard coverage、top-level executable、link segment 和 stdout artifact flow 保守组合为 139 个 Bluesim workflow、152 个有效 run-or-link contract。原 1027 个 action 中仍有 595 个歧义 action 或 side-artifact action 留在 85 个脚本中等待 review；101 个静态 `sim_output` 中已有 98 个完成 link 关联。Rust runner 现已提供独立 `BluesimWorkflowScenario` 执行内核、持久化 build cache 和逐字段 manifest alignment，当前 16 个真实来源、36 个 workflow contract 已覆盖单 run、link-only、多 generation/多 run/transfer，以及 Library latency 的批量单 generation/link/run/golden 形态。下一步继续批量迁移已组合且无额外 side action 的 workflow。
+[`REMAINING.md`](REMAINING.md) 由 `pixi run just inventory-update` 从 typed manifest、Rust registry 和 curated blocker registry 同源生成，是当前剩余范围与迁移 readiness 的唯一事实来源。当前 typed candidate 队列已经清空。Manifest schema v4 已将 `compile_object_pass`、`link_objects_pass`、`sim_output`、`copy` 和 `move` 降低为带 guard/span/expansion 的 typed workflow action，并按 producer/consumer guard coverage、top-level executable、link segment 和 stdout artifact flow 保守组合为 139 个 Bluesim workflow、152 个有效 run-or-link contract。原 1027 个 action 中仍有 595 个歧义 action 或 side-artifact action 留在 85 个脚本中等待 review；101 个静态 `sim_output` 中已有 98 个完成 link 关联。Rust runner 现已提供独立 `BluesimWorkflowScenario` 执行内核、持久化 build cache 和逐字段 manifest alignment，当前 17 个真实来源、37 个 workflow contract 已覆盖单 run、link-only、多 generation/多 run/transfer，以及 Library latency 的批量单 generation/link/run/golden 形态。下一步继续批量迁移已组合且无额外 side action 的 workflow。
 
 `candidate` 表示该 `.exp` 的活动 Tcl command vocabulary 已被现有 Rust contract/assertion 模型覆盖，且不在已知 blocker registry 中；它仍不是自动批准。批量迁移时必须逐份完整 review fixture、options、golden、条件分支、bug gate 与运行结果。`inventory-check` 会守护生成文档、candidate 分类以及 blocker registry 是否与当前未迁移集合一致。
 
@@ -23,7 +23,7 @@
 
 新增独立于跨后端 `SimulationScenario` 的 `BluesimWorkflowScenario`，原生表达多 generation、link-only、顺序多 run、stdout artifact copy/move 与 assertions。runner 严格复刻 upstream helper 参数顺序，将 generation/link 产物作为一个持久化 build-cache snapshot；cache 命中后仍重新执行 run 与所有 assertions。Alignment 使用 frontend 的非执行静态 Tcl-list parser，把 manifest options/object list 转为 argv，并对 generation、link、run 和 transfer canonical signature 逐字段核对。
 
-首批三个真实来源、四个 workflow contract 已整体迁移并实际通过：`b1489.exp` 覆盖单 generation/run 与文本断言，`b1243.exp` 覆盖 link-only，`traffic_light_controller_separate.exp` 覆盖双 generation、顺序双 run、stdout copy 与两个 golden。第二批整体迁移 `bsc.interra/Library_latency` 下 7 个来源和 `bsc.lib/sram/sram.exp`，新增 24 个单 generation/link/run/golden workflow contract；其中 SRAM/SyncRAM 所需 `Precedence.bs` 均显式 stage。第三批迁移 `debugging.exp`、`b1439.exp` 和 `b1796.exp`，新增 6 个 build-only workflow contract，覆盖递归本地 fixture、同 top 的 `.bs`/`.bsv` 独立流程，以及无 module/空 object link。第四批完整迁移 `eq3.exp` 和 `parse_strings.exp` 的 10 个 mixed contract，其中包括 2 个 build-only workflow、6 个 frontend/Verilog compile 和 2 个双后端 simulation contract。四批均完成 Windows 实际运行和 cache-hit 复跑。Workflow contract 现正式进入 typed contract 总分母。
+首批三个真实来源、四个 workflow contract 已整体迁移并实际通过：`b1489.exp` 覆盖单 generation/run 与文本断言，`b1243.exp` 覆盖 link-only，`traffic_light_controller_separate.exp` 覆盖双 generation、顺序双 run、stdout copy 与两个 golden。第二批整体迁移 `bsc.interra/Library_latency` 下 7 个来源和 `bsc.lib/sram/sram.exp`，新增 24 个单 generation/link/run/golden workflow contract；其中 SRAM/SyncRAM 所需 `Precedence.bs` 均显式 stage。第三批迁移 `debugging.exp`、`b1439.exp` 和 `b1796.exp`，新增 6 个 build-only workflow contract，覆盖递归本地 fixture、同 top 的 `.bs`/`.bsv` 独立流程，以及无 module/空 object link。第四批完整迁移 `eq3.exp` 和 `parse_strings.exp` 的 10 个 mixed contract，其中包括 2 个 build-only workflow、6 个 frontend/Verilog compile 和 2 个双后端 simulation contract。第五批完整迁移 `rdy_en_pragmas.exp` 的 23 个 mixed contract，包括 14 个 Verilog compile、8 个双后端 simulation 和 1 个 build-only workflow，并把共享 generation warning assertion 绑定到实际生产日志的 Icarus contract。五批均完成 Windows 实际运行和 cache-hit 复跑。Workflow contract 现正式进入 typed contract 总分母。
 
 ## 已完成：第二轮 typed candidate 队列
 

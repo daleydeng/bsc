@@ -256,6 +256,7 @@ case_modules!(
     multi_misc,
     parse_strings,
     paths,
+    rdy_en_pragmas,
     read_desugaring,
     small_regressions,
     sshow,

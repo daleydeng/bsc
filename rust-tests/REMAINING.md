@@ -5,10 +5,10 @@
 
 ## Summary
 
-- Remaining test scripts: **350**
-- Remaining typed contracts: **3149**
+- Remaining test scripts: **349**
+- Remaining typed contracts: **3126**
 - Typed migration candidates: **0 scripts / 0 contracts**
-- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **192 scripts / 2884 contracts**
+- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **191 scripts / 2861 contracts**
 - Curated known blockers: **21 scripts / 265 contracts**
 - Scripts without typed contracts: **137 scripts / 0 currently recognized contracts**
 
@@ -28,7 +28,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `set` | control/state | 146 | 100 | 474 |
 | `source` | manual toolchain | 75 | 75 | 0 |
 | `test_ovl` | manual toolchain | 75 | 75 | 0 |
-| `bluesim_workflow` | manual toolchain | 116 | 46 | 711 |
+| `bluesim_workflow` | manual toolchain | 115 | 45 | 688 |
 | `copy` | filesystem | 347 | 37 | 417 |
 | `compile_object_pass` | unsupported contract | 91 | 34 | 165 |
 | `link_verilog_pass` | manual toolchain | 67 | 31 | 248 |
@@ -78,7 +78,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `bsc.bsc_examples` | 1 | 29 | 0 | 0 | 0 | 0 |
 | `bsc.bsv_examples` | 17 | 98 | 0 | 0 | 0 | 1 |
 | `bsc.bugs` | 29 | 66 | 0 | 0 | 7 | 3 |
-| `bsc.codegen` | 9 | 142 | 0 | 0 | 0 | 0 |
+| `bsc.codegen` | 8 | 119 | 0 | 0 | 0 | 0 |
 | `bsc.compile` | 2 | 31 | 0 | 0 | 0 | 1 |
 | `bsc.driver` | 8 | 80 | 0 | 0 | 0 | 1 |
 | `bsc.evaluator` | 16 | 233 | 0 | 0 | 2 | 1 |
@@ -181,7 +181,6 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `testsuite/bsc.codegen/codegen.exp` | 5 | review | `bluesim_workflow`×1 (manual toolchain), `compile_object_pass`×2 (unsupported contract), `copy`×1 (filesystem), `link_verilog_pass`×1 (manual toolchain), `sim_verilog`×1 (manual toolchain) |
 | `testsuite/bsc.codegen/foreign/battery/battery.exp` | 13 | review | `compile_object_fail_error`×1 (unsupported contract), `copy`×5 (filesystem), `if`×2 (control/state), `set`×1 (control/state), `test_c_veri_bsv_multi_options`×1 (unsupported contract) |
 | `testsuite/bsc.codegen/foreign/foreign.exp` | 43 | review | `copy`×8 (filesystem), `make_pass`×1 (custom helper) |
-| `testsuite/bsc.codegen/rdy_en_pragmas/rdy_en_pragmas.exp` | 23 | review | `bluesim_workflow`×1 (manual toolchain) |
 | `testsuite/bsc.codegen/signature/signature.exp` | 14 | review | `compile_verilog_fail_error_bug`×7 (unsupported contract) |
 | `testsuite/bsc.codegen/strings/strings.exp` | 14 | review | `compare_file_filter_prelude`×1 (unsupported assertion) |
 | `testsuite/bsc.codegen/undet/undet.exp` | 8 | review | `move`×8 (filesystem) |

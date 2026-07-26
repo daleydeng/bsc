@@ -20,6 +20,8 @@ pub const BSC_HEAVY_TIMEOUT: Duration = Duration::from_secs(600);
 pub struct Toolchain {
     pub project_root: PathBuf,
     pub bsc: PathBuf,
+    pub dumpbo: PathBuf,
+    pub dumpba: PathBuf,
     pub bluespecdir: PathBuf,
 }
 
@@ -53,6 +55,8 @@ impl Toolchain {
                     )
                 })?,
         };
+        let dumpbo = discover_companion_tool(&project_root, &bsc, "DUMPBO_UNDER_TEST", "dumpbo")?;
+        let dumpba = discover_companion_tool(&project_root, &bsc, "DUMPBA_UNDER_TEST", "dumpba")?;
         let bluespecdir = project_root.join("inst").join("lib");
         if !bluespecdir.is_dir() {
             return Err(format!(
@@ -64,9 +68,50 @@ impl Toolchain {
         Ok(Self {
             project_root,
             bsc,
+            dumpbo,
+            dumpba,
             bluespecdir,
         })
     }
+}
+
+fn discover_companion_tool(
+    project_root: &Path,
+    bsc: &Path,
+    environment: &str,
+    name: &str,
+) -> Result<PathBuf, String> {
+    if let Some(configured) = env::var_os(environment) {
+        let configured = PathBuf::from(configured);
+        let candidate = if configured.is_absolute() {
+            configured
+        } else {
+            project_root.join(configured)
+        };
+        if candidate.is_file() {
+            return Ok(candidate);
+        }
+        return Err(format!(
+            "{environment} does not point to a file: {}",
+            candidate.display()
+        ));
+    }
+
+    let directory = bsc
+        .parent()
+        .ok_or_else(|| format!("BSC path has no parent directory: {}", bsc.display()))?;
+    [
+        directory.join(format!("{name}.exe")),
+        directory.join(name),
+    ]
+    .into_iter()
+    .find(|candidate| candidate.is_file())
+    .ok_or_else(|| {
+        format!(
+            "BSC companion tool {name} is missing next to {}; run `pixi run just build` first or set {environment}",
+            bsc.display()
+        )
+    })
 }
 
 #[derive(Debug)]

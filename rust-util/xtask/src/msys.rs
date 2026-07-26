@@ -57,7 +57,10 @@ pub fn build(env: &PreparedEnvironment) -> Result<()> {
         "Building with {} parallel jobs (set BSC_JOBS to override).",
         env.jobs
     );
-    let command = format!("make -j{} GHCJOBS={} install-src", env.jobs, env.jobs);
+    let command = format!(
+        "make -j{0} GHCJOBS={0} install-src && make -C src/comp -j1 GHCJOBS={0} PREFIX=../../inst install-extra",
+        env.jobs
+    );
     invoke_msys(
         env,
         &command,

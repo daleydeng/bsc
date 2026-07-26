@@ -56,6 +56,7 @@ case_modules!(
     multi_misc,
     multi_stmt_fsm,
     parse_strings,
+    rdy_en_pragmas,
     read_desugaring,
     small_regressions,
     square_root,

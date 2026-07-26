@@ -194,7 +194,11 @@ fn prepare_build(
         work_dir,
         &cache_log,
     )? {
-        CacheLookup::Hit => return Ok(()),
+        CacheLookup::Hit => {
+            check_generation_intermediates(toolchain, scenario, work_dir, artifact_dir)?;
+            resolve_executable(work_dir, scenario.link.top)?;
+            return Ok(());
+        }
         CacheLookup::Miss(key) => Some(key),
         CacheLookup::Disabled => None,
     };
@@ -222,6 +226,14 @@ fn prepare_build(
                 log.display()
             ));
         }
+        check_generation_intermediate(
+            toolchain,
+            scenario,
+            generation,
+            index,
+            work_dir,
+            artifact_dir,
+        )?;
     }
 
     let link_arguments = link_arguments(scenario);
@@ -255,6 +267,113 @@ fn prepare_build(
         generation_cache.store(&key, work_dir)?;
     }
     Ok(())
+}
+
+fn check_generation_intermediates(
+    toolchain: &Toolchain,
+    scenario: &BluesimWorkflowScenario,
+    work_dir: &Path,
+    artifact_dir: &Path,
+) -> Result<(), String> {
+    for (index, generation) in scenario.generations.iter().enumerate() {
+        check_generation_intermediate(
+            toolchain,
+            scenario,
+            generation,
+            index,
+            work_dir,
+            artifact_dir,
+        )?;
+    }
+    Ok(())
+}
+
+fn check_generation_intermediate(
+    toolchain: &Toolchain,
+    scenario: &BluesimWorkflowScenario,
+    generation: &BluesimGeneration,
+    index: usize,
+    work_dir: &Path,
+    artifact_dir: &Path,
+) -> Result<(), String> {
+    let output_root = generation_output_root(work_dir, generation.options)?;
+    let object = output_root.join(Path::new(generation.source).with_extension("bo"));
+    check_intermediate_file(
+        toolchain,
+        &toolchain.dumpbo,
+        &object,
+        &artifact_dir.join(format!("generation-{index}.dumpbo.log")),
+        scenario.timeouts.generation,
+        "compiler object",
+    )?;
+
+    if let Some(module) = generation.module {
+        let elaborated = output_root.join(format!("{module}.ba"));
+        check_intermediate_file(
+            toolchain,
+            &toolchain.dumpba,
+            &elaborated,
+            &artifact_dir.join(format!("generation-{index}.dumpba.log")),
+            scenario.timeouts.generation,
+            "elaborated module",
+        )?;
+    }
+    Ok(())
+}
+
+fn generation_output_root(work_dir: &Path, options: &[&str]) -> Result<PathBuf, String> {
+    let Some(index) = options.iter().position(|option| *option == "-bdir") else {
+        return Ok(work_dir.to_owned());
+    };
+    let directory = options
+        .get(index + 1)
+        .ok_or_else(|| "Bluesim generation -bdir option is missing its directory".to_owned())?;
+    let directory = Path::new(directory);
+    Ok(if directory.is_absolute() {
+        directory.to_owned()
+    } else {
+        work_dir.join(directory)
+    })
+}
+
+fn check_intermediate_file(
+    toolchain: &Toolchain,
+    tool: &Path,
+    path: &Path,
+    log: &Path,
+    timeout: std::time::Duration,
+    kind: &str,
+) -> Result<(), String> {
+    if !path.is_file() {
+        return Err(format!(
+            "BSC did not produce expected {kind} {}",
+            path.display()
+        ));
+    }
+    let absolute = path
+        .canonicalize()
+        .map_err(|error| format!("resolve {kind} {}: {error}", path.display()))?;
+    let argument = absolute
+        .to_str()
+        .ok_or_else(|| format!("{kind} path is not valid UTF-8: {}", absolute.display()))?;
+    let result = run_command(
+        toolchain,
+        tool,
+        &[argument],
+        path.parent().unwrap_or(path),
+        log,
+        timeout,
+    )?;
+    if result.success {
+        Ok(())
+    } else {
+        Err(format!(
+            "BSC {kind} {} could not be loaded {}; see {}",
+            path.display(),
+            super::describe_exit(result.exit_code),
+            log.display()
+        ))
+    }
 }
 
 fn workflow_fingerprint(scenario: &BluesimWorkflowScenario) -> Vec<String> {
