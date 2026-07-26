@@ -5,10 +5,10 @@
 
 ## Summary
 
-- Remaining test scripts: **349**
-- Remaining typed contracts: **3126**
+- Remaining test scripts: **348**
+- Remaining typed contracts: **3122**
 - Typed migration candidates: **0 scripts / 0 contracts**
-- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **191 scripts / 2861 contracts**
+- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **190 scripts / 2857 contracts**
 - Curated known blockers: **21 scripts / 265 contracts**
 - Scripts without typed contracts: **137 scripts / 0 currently recognized contracts**
 
@@ -28,7 +28,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `set` | control/state | 146 | 100 | 474 |
 | `source` | manual toolchain | 75 | 75 | 0 |
 | `test_ovl` | manual toolchain | 75 | 75 | 0 |
-| `bluesim_workflow` | manual toolchain | 115 | 45 | 688 |
+| `bluesim_workflow` | manual toolchain | 111 | 44 | 684 |
 | `copy` | filesystem | 347 | 37 | 417 |
 | `compile_object_pass` | unsupported contract | 91 | 34 | 165 |
 | `link_verilog_pass` | manual toolchain | 67 | 31 | 248 |
@@ -73,7 +73,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `bsc.arrays` | 3 | 106 | 0 | 0 | 0 | 1 |
 | `bsc.assertions` | 1 | 0 | 0 | 0 | 1 | 0 |
 | `bsc.binary` | 1 | 1 | 0 | 0 | 0 | 0 |
-| `bsc.bluesim` | 14 | 69 | 0 | 0 | 8 | 1 |
+| `bsc.bluesim` | 13 | 65 | 0 | 0 | 8 | 1 |
 | `bsc.bluetcl` | 9 | 1 | 0 | 0 | 8 | 0 |
 | `bsc.bsc_examples` | 1 | 29 | 0 | 0 | 0 | 0 |
 | `bsc.bsv_examples` | 17 | 98 | 0 | 0 | 0 | 1 |
@@ -111,7 +111,6 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `testsuite/bsc.bluesim/misc/misc.exp` | 26 | review | `bluesim_workflow`×6 (manual toolchain), `compare_file`×2 (unsupported assertion), `compile_object_pass`×2 (unsupported contract), `copy`×1 (filesystem), `link_objects_fail_error`×2 (manual toolchain) |
 | `testsuite/bsc.bluesim/operators/operators.exp` | 10 | blocked | known blocker: Bluesim and Verilog bug gates are not modeled |
 | `testsuite/bsc.bluesim/parallel/parallel.exp` | 4 | review | `bluesim_workflow`×3 (manual toolchain), `mkdir`×1 (filesystem), `move`×2 (filesystem) |
-| `testsuite/bsc.bluesim/schedule/schedule.exp` | 4 | review | `bluesim_workflow`×4 (manual toolchain) |
 | `testsuite/bsc.bluesim/to_systemc/gcd/gcd.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
 | `testsuite/bsc.bluesim/to_systemc/gcd2/gcd2.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |
 | `testsuite/bsc.bluesim/to_systemc/getput/getput.exp` | 0 | dynamic/custom | `build_systemc_executable_pass`×1 (custom helper), `compile_object_pass`×1 (unsupported contract), `create_systemc_objects_pass`×1 (custom helper), `if`×1 (control/state), `run_systemc_executable`×1 (manual toolchain) |

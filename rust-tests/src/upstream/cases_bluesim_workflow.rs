@@ -18,6 +18,7 @@ case_modules!(
     b1243,
     b1489,
     bluesim_debugging,
+    bluesim_schedule,
     bluespec_inc_build_only,
     eq3,
     library_latency,
