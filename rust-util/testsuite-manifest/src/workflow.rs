@@ -3,6 +3,7 @@ use std::collections::BTreeSet;
 use crate::model::{
     BluesimRun, BluesimWorkflow, Guard, LinkObjectsAction, RunBluesimAction, WorkflowAction,
 };
+use crate::parse_static_tcl_list;
 
 pub(crate) fn compose_bluesim_workflows(
     actions: Vec<WorkflowAction>,
@@ -46,7 +47,7 @@ pub(crate) fn compose_bluesim_workflows(
                         let WorkflowAction::TransferArtifact(transfer) = candidate else {
                             return None;
                         };
-                        (transfer.source == action.stdout
+                        (run_produces_artifact(action, &transfer.source)
                             && guard_covers(&action.guard, &transfer.guard)
                             && nearest_run_index(
                                 &actions,
@@ -193,8 +194,33 @@ fn nearest_run_index(
             let WorkflowAction::RunBluesim(run) = action else {
                 return None;
             };
-            (run.stdout == artifact && guard_covers(&run.guard, consumer_guard)).then_some(index)
+            (run_produces_artifact(run, artifact) && guard_covers(&run.guard, consumer_guard))
+                .then_some(index)
         })
+}
+
+fn run_produces_artifact(run: &RunBluesimAction, artifact: &str) -> bool {
+    if run.stdout == artifact {
+        return true;
+    }
+    let Ok(options) = parse_static_tcl_list(&run.options) else {
+        return false;
+    };
+    let mut vcd_options = options
+        .iter()
+        .enumerate()
+        .filter(|(_, option)| option.as_str() == "-V");
+    let Some((index, _)) = vcd_options.next() else {
+        return false;
+    };
+    if vcd_options.next().is_some() {
+        return false;
+    }
+    let vcd = options
+        .get(index + 1)
+        .filter(|value| !value.starts_with('-'))
+        .map_or("dump.vcd", String::as_str);
+    vcd == artifact
 }
 
 fn guard_covers(producer: &Guard, consumer: &Guard) -> bool {
@@ -290,18 +316,34 @@ mod tests {
     }
 
     #[test]
-    fn leaves_compile_only_and_unmatched_side_artifacts_uncomposed() {
+    fn composes_declared_vcd_artifacts_and_leaves_compile_only_actions_uncomposed() {
         let (workflows, remaining) = compose_bluesim_workflows(vec![
             generation("SystemC.bsv", Some("mkSystemC")),
             generation("Test.bsv", Some("mkTest")),
             link("mkTest", "mkTest"),
-            run("mkTest", "-V dump.vcd"),
-            copy("dump.vcd", "saved.vcd"),
+            run("mkTest", "-V saved.vcd"),
+            copy("saved.vcd", "snapshot.vcd"),
         ]);
         assert_eq!(workflows.len(), 1);
-        assert_eq!(remaining.len(), 2);
+        assert_eq!(workflows[0].runs[0].transfers.len(), 1);
+        assert_eq!(remaining.len(), 1);
         assert!(matches!(remaining[0], WorkflowAction::CompileObject(_)));
-        assert!(matches!(remaining[1], WorkflowAction::TransferArtifact(_)));
+    }
+
+    #[test]
+    fn composes_the_default_vcd_artifact_and_rejects_undeclared_side_artifacts() {
+        let (workflows, remaining) = compose_bluesim_workflows(vec![
+            generation("Test.bsv", Some("mkTest")),
+            link("mkTest", "mkTest"),
+            run("mkTest", "-V"),
+            copy("dump.vcd", "snapshot.vcd"),
+            copy("trace.log", "snapshot.log"),
+        ]);
+        assert_eq!(workflows.len(), 1);
+        assert_eq!(workflows[0].runs[0].transfers.len(), 1);
+        assert_eq!(workflows[0].runs[0].transfers[0].source, "dump.vcd");
+        assert_eq!(remaining.len(), 1);
+        assert!(matches!(remaining[0], WorkflowAction::TransferArtifact(_)));
     }
 
     #[test]

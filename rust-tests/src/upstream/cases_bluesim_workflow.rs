@@ -20,6 +20,7 @@ case_modules!(
     bluesim_debugging,
     bluesim_schedule,
     bluespec_inc_build_only,
+    commandline_vcd,
     eq3,
     interactive_examples,
     library_latency,

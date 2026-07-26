@@ -5,10 +5,10 @@
 
 ## Summary
 
-- Remaining test scripts: **343**
-- Remaining typed contracts: **3095**
+- Remaining test scripts: **341**
+- Remaining typed contracts: **3092**
 - Typed migration candidates: **0 scripts / 0 contracts**
-- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **185 scripts / 2830 contracts**
+- Typed scripts requiring workflow execution/migration, unsupported-construct review, or new helpers: **183 scripts / 2827 contracts**
 - Curated known blockers: **21 scripts / 265 contracts**
 - Scripts without typed contracts: **137 scripts / 0 currently recognized contracts**
 
@@ -28,8 +28,8 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `set` | control/state | 146 | 100 | 474 |
 | `source` | manual toolchain | 75 | 75 | 0 |
 | `test_ovl` | manual toolchain | 75 | 75 | 0 |
-| `bluesim_workflow` | manual toolchain | 104 | 39 | 657 |
-| `copy` | filesystem | 347 | 37 | 417 |
+| `bluesim_workflow` | manual toolchain | 101 | 37 | 654 |
+| `copy` | filesystem | 344 | 35 | 414 |
 | `compile_object_pass` | unsupported contract | 91 | 34 | 165 |
 | `link_verilog_pass` | manual toolchain | 67 | 31 | 248 |
 | `erase` | filesystem | 160 | 29 | 352 |
@@ -83,7 +83,7 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `bsc.driver` | 8 | 80 | 0 | 0 | 0 | 1 |
 | `bsc.evaluator` | 16 | 233 | 0 | 0 | 2 | 1 |
 | `bsc.if` | 4 | 51 | 0 | 0 | 0 | 2 |
-| `bsc.interra` | 127 | 383 | 0 | 0 | 105 | 0 |
+| `bsc.interra` | 125 | 380 | 0 | 0 | 105 | 0 |
 | `bsc.lib` | 16 | 236 | 0 | 0 | 1 | 6 |
 | `bsc.mcd` | 11 | 242 | 0 | 0 | 0 | 2 |
 | `bsc.misc` | 5 | 62 | 0 | 0 | 0 | 0 |
@@ -294,8 +294,6 @@ The table combines composed workflows awaiting Rust execution/migration, ambiguo
 | `testsuite/bsc.interra/Urgency_Annotation/Negative_Testing/Negative_Testing.exp` | 0 | dynamic/custom | `compile_object_fail`×6 (unsupported contract), `compile_object_pass`×2 (unsupported contract) |
 | `testsuite/bsc.interra/Urgency_Annotation/Semantics/Semantics.exp` | 0 | dynamic/custom | `compile_object_pass`×17 (unsupported contract), `find_n_warning`×3 (unsupported assertion), `no_warnings`×10 (custom helper) |
 | `testsuite/bsc.interra/Urgency_Annotation/Syntax/Syntax.exp` | 0 | dynamic/custom | `compile_object_pass`×7 (unsupported contract), `compile_object_pass_bug`×1 (unsupported contract), `no_warnings`×7 (custom helper) |
-| `testsuite/bsc.interra/bluesim/commandline_options/array/array.exp` | 2 | review | `bluesim_workflow`×2 (manual toolchain), `copy`×2 (filesystem) |
-| `testsuite/bsc.interra/bluesim/commandline_options/handshake_protocol/handshake_protocol_cl.exp` | 1 | review | `bluesim_workflow`×1 (manual toolchain), `copy`×1 (filesystem) |
 | `testsuite/bsc.interra/bugs/bugID239/bugID239.exp` | 0 | dynamic/custom | no typed contract; inspect unsupported constructs |
 | `testsuite/bsc.interra/bugs/bugID403/bugID403.exp` | 0 | dynamic/custom | no typed contract; inspect unsupported constructs |
 | `testsuite/bsc.interra/libraries/Array/Array.exp` | 0 | dynamic/custom | `test_c_veri_worker`×3 (manual toolchain) |
