@@ -21,6 +21,7 @@ case_modules!(
     bluesim_schedule,
     bluespec_inc_build_only,
     eq3,
+    interactive_examples,
     library_latency,
     library_sram,
     parse_strings,
