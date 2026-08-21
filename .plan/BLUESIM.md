@@ -395,7 +395,7 @@ candidate 失败不得回退到 legacy。
 
 legacy generated model 的该 fixture 最终在 `t=163` `$finish(0)`。这会成为 Rust M2 companion scenario 的 `expectedFinish = 0` 和 `expectedTime = 163`，而非仅检查“跑了若干 cycles”。
 
-M2 使用 **SimIR schema v2**；v1 M0 文件保持原样兼容。v2 runtime 的最小 event queue 与 MCD hand-authored contract 已完成单元验证：双 clock 的正沿按 `(time, clock.order)` 执行，`InitialReset(2)` 的 reset tick 覆盖前两次 `count` write，并在 `t=163` 得到 `$finish(0)`。legacy Haskell exporter 已以严格 primitive/schedule/reset projection 实际导出 `MCDTest.bsv`，并由 Rust loader/runner 成功读取和执行；canonical Test Plan companion scenario 尚待接入，因此尚不是完整 testsuite differential gate。
+M2 使用 **SimIR schema v2**；v1 M0 文件保持原样兼容。v2 runtime 的最小 event queue 与 MCD hand-authored contract 已完成单元验证：双 clock 的正沿按 `(time, clock.order)` 执行，`InitialReset(2)` 的 reset tick 覆盖前两次 `count` write，并在 `t=163` 得到 `$finish(0)`。legacy Haskell exporter 已以严格 primitive/schedule/reset projection 实际导出 `MCDTest.bsv`，并由 Rust loader/runner 成功读取和执行；canonical Test Plan 的 `simir-m2-mkMCDTest` companion scenario 已接入，`--bluesim-engine both` 已与 legacy `bluesim-workflow-2-mkMCDTest` 共同通过。两端保持独立 workspace/artifact/cache；legacy 继续检查 `clock.cmd` Tcl interactive oracle，Rust 则严格检查 SimIR `finish = 0` 和 `time = 163`。
 
 v2 显式表示：
 
