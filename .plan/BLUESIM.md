@@ -395,7 +395,7 @@ candidate 失败不得回退到 legacy。
 
 legacy generated model 的该 fixture 最终在 `t=163` `$finish(0)`。这会成为 Rust M2 companion scenario 的 `expectedFinish = 0` 和 `expectedTime = 163`，而非仅检查“跑了若干 cycles”。
 
-M2 使用 **SimIR schema v2**；v1 M0 文件保持原样兼容。v2 runtime 的最小 event queue 与 MCD hand-authored contract 已完成单元验证：双 clock 的正沿按 `(time, clock.order)` 执行，`InitialReset(2)` 的 reset tick 覆盖前两次 `count` write，并在 `t=163` 得到 `$finish(0)`。legacy Haskell exporter 与 canonical Test Plan companion scenario 尚待接入，不能把 hand-authored fixture 当作完整 exporter coverage。
+M2 使用 **SimIR schema v2**；v1 M0 文件保持原样兼容。v2 runtime 的最小 event queue 与 MCD hand-authored contract 已完成单元验证：双 clock 的正沿按 `(time, clock.order)` 执行，`InitialReset(2)` 的 reset tick 覆盖前两次 `count` write，并在 `t=163` 得到 `$finish(0)`。legacy Haskell exporter 已以严格 primitive/schedule/reset projection 实际导出 `MCDTest.bsv`，并由 Rust loader/runner 成功读取和执行；canonical Test Plan companion scenario 尚待接入，因此尚不是完整 testsuite differential gate。
 
 v2 显式表示：
 

@@ -16,6 +16,15 @@ simIRFromSimCC :: String -> [SimCCBlock] -> [SimCCSched] -> Either String String
 simIRFromSimCC top blocks scheds = do
   top_block <- exactlyOne ("top block " ++ show top)
                [ b | b <- blocks, sb_name b == top ]
+  if any (`elem` ["ClockGen", "InitialReset"]) (primitiveNames top_block)
+    then simIRM2FromSimCC top top_block scheds
+    else simIRM0FromSimCC top top_block scheds
+
+-- Keep the established M0 projection byte-for-byte unchanged for its tiny
+-- single-clock shape.  M2 is selected only when the top instantiates one of
+-- the two primitives that define the deliberately narrow multi-clock shape.
+simIRM0FromSimCC :: String -> SimCCBlock -> [SimCCSched] -> Either String String
+simIRM0FromSimCC top top_block scheds = do
   (state_name, state_width, state_initial) <- oneState top_block
   sched <- exactlyOne "clock schedule" scheds
   clock_name <- clockName (sched_clock sched)
@@ -52,6 +61,253 @@ simIRFromSimCC top blocks scheds = do
         ]
     ]
 
+primitiveNames :: SimCCBlock -> [String]
+primitiveNames block =
+  [ name
+  | (block_id, _, _) <- sb_state block
+  , Just name <- [primitiveName block_id]
+  ]
+
+-- The primitive list is the source of truth for both identity and name.  In
+-- particular, this does not encode the unstable SBId assigned to a primitive.
+primitiveName :: SBId -> Maybe String
+primitiveName block_id =
+  case [ sb_name block | block <- primBlocks, sb_id block == block_id ] of
+    [name] -> Just name
+    _ -> Nothing
+
+data M2Reset = M2Reset String String String String String Integer
+
+simIRM2FromSimCC :: String -> SimCCBlock -> [SimCCSched] -> Either String String
+simIRM2FromSimCC top top_block scheds = do
+  primitives <- m2PrimitiveInstances top_block
+  ensure (all (\(name, _, _) -> name `elem` ["RegN", "ClockGen", "InitialReset"]) primitives)
+         "M2 supports only RegN, ClockGen, and InitialReset primitives"
+  (clockgen_id, clockgen_args) <- exactlyOne "M2 ClockGen primitive"
+                                 [ (instance_id, args)
+                                 | ("ClockGen", instance_id, args) <- primitives
+                                 ]
+  (reset_id, reset_args) <- exactlyOne "M2 InitialReset primitive"
+                            [ (instance_id, args)
+                            | ("InitialReset", instance_id, args) <- primitives
+                            ]
+  reg_states <- mapM m2RegState
+                [ (instance_id, args)
+                | ("RegN", instance_id, args) <- primitives
+                ]
+  ensure (not (null reg_states)) "M2 requires at least one RegN state"
+  ensure (length primitives == length reg_states + 2)
+         "M2 contains an unsupported primitive instance"
+  (v1, v2, delay, initial, _) <- m2ClockGenArgs clockgen_args
+  cycles <- m2InitialResetArgs reset_args
+  let default_clock = "CLK"
+      generated_clock = getIdString clockgen_id ++ "$CLK_OUT"
+  (default_sched, generated_sched) <- m2Schedules default_clock generated_clock scheds
+  reset <- m2ResetDefinition top_block reset_id generated_clock reg_states
+  let M2Reset reset_name _ _ _ _ _ = reset
+      reset_state = (m2ResetSignal reset, 1, 0)
+      states = reg_states ++ [reset_state]
+      time_locals = M.fromList
+        [ (getIdString aid, 0)
+        | aid <- concatMap (timeTaskDefs . sf_body . sched_fn) scheds ++
+                 concatMap (timeTaskDefs . sf_body) (get_rule_fns top_block)
+        ]
+      state_widths = M.fromList [ (name, width) | (name, width, _) <- states ] `M.union` time_locals
+      rule_fns = M.fromList [ (sf_name fn, fn) | fn <- get_rule_fns top_block ]
+  default_actions <- m2StmtsToJson rule_fns state_widths reset (sf_body (sched_fn default_sched))
+  generated_actions <- m2StmtsToJson rule_fns state_widths reset (sf_body (sched_fn generated_sched))
+  ensure (not (resetTickAction reset_name `elem` default_actions))
+         "M2 InitialReset tick appears on the default clock"
+  ensure (case reverse generated_actions of
+            action:_ -> action == resetTickAction reset_name
+            [] -> False)
+         "M2 InitialReset tick must be the final generated-clock action"
+  return $ object
+    [ field "schemaVersion" "2"
+    , field "producer" $ object
+        [ field "name" (jsonString "legacy-bsc-simcc-projection")
+        , field "version" (jsonString "m2")
+        ]
+    , field "top" (jsonString top)
+    , field "clocks" $ array
+        [ m2ClockToJson default_clock 10 0 "low" 0 5 5
+        , m2ClockToJson generated_clock (v1 + v2) 1
+                        (if initial == 0 then "low" else "high") delay
+                        (if initial == 0 then v1 else v2)
+                        (if initial == 0 then v2 else v1)
+        ]
+    , field "state" $ array (map stateToJson states)
+    , field "resets" $ array [m2ResetToJson reset cycles]
+    , field "schedules" $ array
+        [ m2ScheduleToJson default_clock default_actions
+        , m2ScheduleToJson generated_clock generated_actions
+        ]
+    ]
+
+m2PrimitiveInstances :: SimCCBlock -> Either String [(String, AId, [AExpr])]
+m2PrimitiveInstances block = mapM primitive (sb_state block)
+  where
+    primitive (block_id, instance_id, args) =
+      case primitiveName block_id of
+        Just name -> return (name, instance_id, args)
+        Nothing -> Left $ "M2 contains a non-primitive or unknown primitive block " ++ show block_id
+
+m2RegState :: (AId, [AExpr]) -> Either String (String, Integer, Integer)
+m2RegState (instance_id, args) =
+  case args of
+    [width_expr, initial_expr] -> do
+      width <- m2Literal "RegN width" width_expr
+      initial <- m2Literal "RegN initial value" initial_expr
+      ensure (width > 0 && width <= 64) "M2 RegN width must be in 1..=64"
+      ensure (initial < 2 ^ width) "M2 RegN initial value does not fit its width"
+      return (getIdString instance_id, width, initial)
+    _ -> Left $ "unsupported M2 RegN arguments: " ++ show args
+
+m2ClockGenArgs :: [AExpr] -> Either String (Integer, Integer, Integer, Integer, Integer)
+m2ClockGenArgs args =
+  case args of
+    [v1_expr, v2_expr, delay_expr, initial_expr, other_expr] -> do
+      v1 <- m2Literal "ClockGen v1" v1_expr
+      v2 <- m2Literal "ClockGen v2" v2_expr
+      delay <- m2Literal "ClockGen delay" delay_expr
+      initial <- m2Literal "ClockGen initial value" initial_expr
+      other <- m2Literal "ClockGen other value" other_expr
+      ensure (v1 > 0 && v2 > 0) "M2 ClockGen widths must be non-zero"
+      ensure (v1 + v2 <= m2MaxValue) "M2 ClockGen period is out of range"
+      ensure (initial == 0 || initial == 1) "M2 ClockGen initial value must be 0 or 1"
+      ensure (other == 1 - initial) "M2 ClockGen other value must complement the initial value"
+      return (v1, v2, delay, initial, other)
+    _ -> Left $ "unsupported M2 ClockGen arguments: " ++ show args
+
+m2InitialResetArgs :: [AExpr] -> Either String Integer
+m2InitialResetArgs args = do
+  cycles <- exactlyOne "InitialReset cycles" args >>= m2Literal "InitialReset cycles"
+  ensure (cycles > 0) "M2 InitialReset cycles must be non-zero"
+  return cycles
+
+m2Literal :: String -> AExpr -> Either String Integer
+m2Literal subject (ASInt _ (ATBit _) lit)
+  | value >= 0 && value <= m2MaxValue = return value
+  | otherwise = Left $ subject ++ " is out of range"
+  where value = ilValue lit
+m2Literal subject expr = Left $ subject ++ " must be an integer literal: " ++ show expr
+
+m2MaxValue :: Integer
+m2MaxValue = 2 ^ (64 :: Integer) - 1
+
+m2Schedules :: String -> String -> [SimCCSched] -> Either String (SimCCSched, SimCCSched)
+m2Schedules default_clock generated_clock scheds = do
+  ensure (length scheds == 2) "M2 requires exactly two schedules"
+  mapM_ m2PosedgeSchedule scheds
+  default_sched <- exactlyOne "M2 default-clock schedule"
+                   [ sched | sched <- scheds, clockName (sched_clock sched) == Right default_clock ]
+  generated_sched <- exactlyOne "M2 ClockGen schedule"
+                     [ sched | sched <- scheds, clockName (sched_clock sched) == Right generated_clock ]
+  return (default_sched, generated_sched)
+
+m2PosedgeSchedule :: SimCCSched -> Either String ()
+m2PosedgeSchedule sched = do
+  ensure (sched_posedge sched) "M2 supports only posedge schedules"
+  ensure (sched_after_fn sched == Nothing) "M2 does not support after-edge schedules"
+
+m2ResetDefinition :: SimCCBlock -> AId -> String -> [(String, Integer, Integer)]
+                  -> Either String M2Reset
+m2ResetDefinition block initial_reset clock reg_states = do
+  ensure (null (sb_outputResets block)) "M2 does not support top-level output resets"
+  default_reset <- exactlyOne "M2 default reset input" (sb_inputResets block)
+  (signal, (source, output)) <- exactlyOne "M2 InitialReset source" (sb_resetSources block)
+  ensure (sameId source initial_reset) "M2 reset source does not belong to InitialReset"
+  ensure (getIdBaseString output == "gen_rst") "M2 InitialReset has an unexpected reset output"
+  reset_type <- exactlyOne "M2 InitialReset signal definition"
+                [ typ | (typ, reset_id) <- sb_resetDefs block, sameId reset_id signal ]
+  case reset_type of
+    ATBit 1 -> return ()
+    _ -> Left "M2 InitialReset signal must have type Bit 1"
+  reset_fn <- exactlyOne "M2 InitialReset reset function"
+              [ fn | fn <- sb_resets block, sf_name fn == mkResetFnName signal ]
+  target <- m2ResetFunctionTarget "InitialReset" signal reset_fn
+  (_, _, target_value) <- exactlyOne "M2 InitialReset target RegN"
+                         [ state | state@(name, _, _) <- reg_states, name == target ]
+  other_reset_fn <- exactlyOne "M2 default reset function"
+                    [ fn | fn <- sb_resets block, sf_name fn /= mkResetFnName signal ]
+  default_target <- m2ResetFunctionTarget "default reset" default_reset other_reset_fn
+  ensure (default_target /= target) "M2 default reset and InitialReset target the same RegN"
+  ensure (any (\(name, _, _) -> name == default_target) reg_states)
+         "M2 default reset must target a RegN"
+  ensure (length (sb_resets block) == 2 && length (sb_resetDefs block) == 2 &&
+          length (sb_resetSources block) == 1)
+         "M2 supports only the default reset and one InitialReset"
+  ensure (target_value >= 0) "M2 InitialReset target value is invalid"
+  return (M2Reset (getIdString initial_reset) (getIdString signal) clock target
+                  (getIdBaseString initial_reset) target_value)
+
+m2ResetSignal :: M2Reset -> String
+m2ResetSignal (M2Reset _ signal _ _ _ _) = signal
+
+m2ResetFunctionTarget :: String -> AId -> SimCCFn -> Either String String
+m2ResetFunctionTarget subject signal fn = do
+  (_, argument) <- exactlyOne (subject ++ " reset function argument") (sf_args fn)
+  ensure (sf_retType fn == Nothing) (subject ++ " reset function has a return value")
+  case sf_body fn of
+    [SFSAssign _ assigned value, SFSFunctionCall target method [reset_value]] -> do
+      ensure (sameId assigned signal) (subject ++ " reset function writes the wrong signal")
+      ensure (isResetArgument argument value && isResetArgument argument reset_value)
+             (subject ++ " reset function has an unexpected reset argument")
+      ensure (method == "reset_RST")
+             (subject ++ " reset function calls an unexpected method")
+      return (getIdBaseString target)
+    _ -> Left $ "unsupported " ++ subject ++ " reset function: " ++ show fn
+
+isResetArgument :: AId -> AExpr -> Bool
+isResetArgument argument (ASDef _ value) = sameId argument value
+isResetArgument argument (ASPort _ value) = sameId argument value
+isResetArgument _ _ = False
+
+sameId :: AId -> AId -> Bool
+sameId left right = getIdString left == getIdString right
+
+m2ClockToJson :: String -> Integer -> Integer -> String -> Integer -> Integer -> Integer -> String
+m2ClockToJson name period order initial_value first_edge high_duration low_duration = object
+  [ field "id" (jsonString name)
+  , field "period" (show period)
+  , field "order" (show order)
+  , field "initialValue" (jsonString initial_value)
+  , field "firstEdge" (show first_edge)
+  , field "highDuration" (show high_duration)
+  , field "lowDuration" (show low_duration)
+  , field "activeEdge" (jsonString "posedge")
+  ]
+
+m2ResetToJson :: M2Reset -> Integer -> String
+m2ResetToJson (M2Reset reset_id signal clock target _ value) cycles = object
+  [ field "id" (jsonString reset_id)
+  , field "signal" (jsonString signal)
+  , field "clock" (jsonString clock)
+  , field "cycles" (show cycles)
+  , field "targets" $ array
+      [ object
+        [ field "state" (jsonString target)
+        , field "value" (show value)
+        ]
+      ]
+  ]
+
+m2ScheduleToJson :: String -> [String] -> String
+m2ScheduleToJson clock actions = object
+  [ field "clock" (jsonString clock)
+  , field "actions" (array actions)
+  ]
+
+resetTickAction :: String -> String
+resetTickAction reset_id = object
+  [ field "kind" (jsonString "reset_tick")
+  , field "reset" (jsonString reset_id)
+  ]
+
+ensure :: Bool -> String -> Either String ()
+ensure True _ = Right ()
+ensure False message = Left message
+
 oneState :: SimCCBlock -> Either String (String, Integer, Integer)
 oneState block = do
   (_, state_id, args) <- exactlyOne "M0 state instance" (sb_state block)
@@ -72,6 +328,34 @@ clockName expr = Left $ "unsupported M0 clock expression: " ++ show expr
 stmtsToJson :: M.Map String SimCCFn -> M.Map String Integer -> [SimCCFnStmt]
             -> Either String [String]
 stmtsToJson rule_fns state_widths = fmap concat . mapM (stmtToJson rule_fns state_widths)
+
+-- M2 differs only in the two primitive calls synthesized at schedule level:
+-- InitialReset.clk is represented by reset_tick, while the unrelated default
+-- reset tick remains outside the exported model.
+m2StmtsToJson :: M.Map String SimCCFn -> M.Map String Integer -> M2Reset -> [SimCCFnStmt]
+              -> Either String [String]
+m2StmtsToJson rule_fns state_widths reset =
+  fmap concat . mapM (m2StmtToJson rule_fns state_widths reset)
+
+m2StmtToJson :: M.Map String SimCCFn -> M.Map String Integer -> M2Reset -> SimCCFnStmt
+             -> Either String [String]
+m2StmtToJson rule_fns state_widths (M2Reset reset_id _ _ reset_target reset_instance _) stmt =
+  case stmt of
+    SFSFunctionCall object name args
+      | getIdBaseString object == reset_instance && name == "clk" -> do
+          ensure (all isOneBit args && length args == 2)
+                 "M2 InitialReset clock call has unexpected arguments"
+          return []
+      | otherwise -> stmtToJson rule_fns state_widths stmt
+    SFSResets [SFSFunctionCall object name [arg]]
+      | "rst_tick__clk__" `isInfixOf` name && isOneBit arg ->
+          if getIdBaseString object == reset_target
+            then return [resetTickAction reset_id]
+            else return []
+    _ -> stmtToJson rule_fns state_widths stmt
+isOneBit :: AExpr -> Bool
+isOneBit (ASInt _ (ATBit 1) lit) = ilValue lit == 1
+isOneBit _ = False
 
 stmtToJson :: M.Map String SimCCFn -> M.Map String Integer -> SimCCFnStmt
            -> Either String [String]
@@ -164,6 +448,21 @@ exprToJson state_widths expr =
         , field "op" (jsonString "not")
         , field "arg" arg_json
         ]
+    APrim { ae_type = ATBit width, aprim_prim = PrimULE, ae_args = [left, right] }
+      | width == 1 -> do
+          left_json <- exprToJson state_widths left
+          right_json <- exprToJson state_widths right
+          return $ object
+            [ field "kind" (jsonString "unary")
+            , field "width" "1"
+            , field "op" (jsonString "not")
+            , field "arg" $ object
+                [ field "kind" (jsonString "binary")
+                , field "width" "1"
+                , field "op" (jsonString "unsigned_less_than")
+                , field "args" (array [right_json, left_json])
+                ]
+            ]
     APrim { ae_type = ATBit width, aprim_prim = op, ae_args = args } -> do
       op_name <- case op of
         PrimAdd -> return "add"
