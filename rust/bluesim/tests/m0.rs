@@ -1,4 +1,4 @@
-use bluesim::{Engine, Model, SIMIR_SCHEMA_VERSION};
+use bluesim::{Engine, Model, SIMIR_SCHEMA_V1};
 
 const TINY: &str = include_str!("fixtures/tiny.bsim.json");
 const LOCALS: &str = include_str!("fixtures/locals.bsim.json");
@@ -236,7 +236,7 @@ fn m3_flattened_hierarchy_runs_with_bitwise_and_subtraction() {
 #[test]
 fn rejects_unknown_schema_versions() {
     let source = TINY.replacen(
-        &format!("\"schemaVersion\": {SIMIR_SCHEMA_VERSION}"),
+        &format!("\"schemaVersion\": {SIMIR_SCHEMA_V1}"),
         "\"schemaVersion\": 999",
         1,
     );

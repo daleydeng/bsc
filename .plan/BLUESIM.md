@@ -111,6 +111,8 @@ SimIR 是 BSC 与 Bluesim 的稳定边界，不是 Haskell `SimSystem` 或 C++ c
 
 首版使用 versioned JSON，方便审计和 differential debugging。性能与体积成为实测 blocker 后，再增加兼容的 binary encoding；语义 schema 不随 encoding 改变。
 
+**版本规则：** 路线图的 `M0`、`M1`… 是迁移工作阶段；`.bsim` 的 `schemaVersion` 是 artifact 格式版本，两者完全独立，不能互相推导。格式仅在新增或改变可观察语义时递增。reader 对每个已实现版本显式验证；尚未实现的未来版本（例如 v6）必须 fail-closed，不能按“看起来像旧格式”猜测执行。一个能力以“引入该能力的最低 schema 版本”表达；后续已实现且兼容的 schema 应继续支持它，而不是限制为某一个版本号。
+
 ### 5.1 必要内容
 
 - schema/version 和 producer metadata；
@@ -477,10 +479,10 @@ Rust M2 runtime 将处理一个真实的、稳定排序的 edge event queue：�
 
 最小实施顺序：
 
-1. schema v5 定义 typed primitive state（先只有 Wire），其 ID、width、初值和 reset/clock phase 明确化；不使用 legacy `SBId` 或 C++ member layout 作为 artifact identity；
+1. 定义下一版 SimIR schema 的 typed primitive state（先只有 Wire）；格式定稿后分配连续的 `schemaVersion`（当前提案为 v5），其 ID、width、初值和 reset/clock phase 明确化；不使用 legacy `SBId` 或 C++ member layout 作为 artifact identity。这里的 v5 仅指 JSON schema，不是路线阶段 M5；
 2. Rust runtime 先实现 Wire `{ value, valid, written_this_cycle }`：schedule eligibility 从 edge 前 snapshot 读取，`wset` 更新当前 edge 的 value/valid，`wget` 只在 exporter 已验证 `whas` gate 时读取，`wire_tick` 在 schedule 尾部按真实 SimCC order 过期 valid；
 3. 为 Wire 单独选择一个有 run-to-finish/stdout oracle 的 fixture，或为 `mkPrims` 加一个受限 typed primitive-snapshot action；不创建 Tcl interpreter、通用 `sim get` shell 或第二个 runner；
-4. 仅在 Wire contract 与 legacy gate 对齐后，分别加入 FIFO (`i_notEmpty/i_notFull/enq/first/deq`)、RegFile (`upd/range`) 和 Probe (`_write`)；每一族单独 schema/runtime/differential gate。
+4. 仅在 Wire contract 与 legacy gate 对齐后，分别加入 FIFO (`i_notEmpty/i_notFull/enq/first/deq`)、RegFile (`upd/range`) 和 Probe (`_write`)；每一族单独评估是否需要新的 schema、实现 runtime 与 differential gate。若下一个兼容格式成为 v6，v6 reader 仍应接受 v5 已定义的 Wire forms。
 
 现有 `prims.cmd`/`mkPrims_prims.out.expected` 是 legacy Tcl hierarchy/introspection oracle，继续保留为 black-box reference，但 Rust companion 不应通过解释 Tcl 复用它。必须先定义版本化 Rust primitive snapshot contract，或找到对应 run-to-finish stdout fixture。
 

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 5,
+  "producer": { "name": "bluesim-test", "version": "wire-schema" },
+  "top": "wire_cycle_local",
+  "clocks": [{ "id": "CLK", "period": 10, "activeEdge": "posedge" }],
+  "state": [{ "id": "phase", "width": 1, "initialValue": 0 }],
+  "primitives": [
+    {
+      "kind": "wire",
+      "id": "sample",
+      "width": 8,
+      "initialValue": 42,
+      "initialValid": false
+    }
+  ],
+  "schedules": [{
+    "clock": "CLK",
+    "actions": [
+      {
+        "kind": "if",
+        "condition": { "kind": "state", "id": "phase" },
+        "then": [
+          {
+            "kind": "display",
+            "items": [
+              { "kind": "text", "text": "next=" },
+              { "kind": "decimal", "width": 0, "value": { "kind": "wire_value", "wire": "sample" } },
+              { "kind": "text", "text": " valid=" },
+              { "kind": "decimal", "width": 0, "value": { "kind": "wire_valid", "wire": "sample" } }
+            ]
+          }
+        ],
+        "else": [
+          {
+            "kind": "wire_set",
+            "wire": "sample",
+            "value": { "kind": "const", "width": 8, "value": 7 },
+            "valid": { "kind": "const", "width": 1, "value": 1 }
+          },
+          {
+            "kind": "display",
+            "items": [
+              { "kind": "text", "text": "set=" },
+              { "kind": "decimal", "width": 0, "value": { "kind": "wire_value", "wire": "sample" } },
+              { "kind": "text", "text": " valid=" },
+              { "kind": "decimal", "width": 0, "value": { "kind": "wire_valid", "wire": "sample" } }
+            ]
+          },
+          {
+            "kind": "write",
+            "state": "phase",
+            "value": { "kind": "const", "width": 1, "value": 1 }
+          }
+        ]
+      },
+      { "kind": "wire_tick" }
+    ]
+  }]
+}

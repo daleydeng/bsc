@@ -4,6 +4,7 @@
 //! Schema version 2 adds a closed, event-ordered two-clock/initial-reset slice.
 //! Schema version 3 adds a closed, flattened hierarchy/method slice on one clock.
 //! Schema version 4 adds arbitrary-width bitvectors and signed decimal display.
+//! Schema version 5 adds typed cycle-local Wire primitives.
 //! Unsupported semantics must require a schema/runtime extension; they must never
 //! be guessed or silently delegated to legacy Bluesim.
 
@@ -16,11 +17,16 @@ use num_traits::{One, Zero};
 use serde::{Deserialize, Deserializer};
 use thiserror::Error;
 
-pub const SIMIR_SCHEMA_VERSION: u32 = 1;
-pub const SIMIR_M2_SCHEMA_VERSION: u32 = 2;
-pub const SIMIR_M3_SCHEMA_VERSION: u32 = 3;
-pub const SIMIR_M4_SCHEMA_VERSION: u32 = 4;
-pub const SIMIR_M0_SCHEMA_VERSION: u32 = SIMIR_SCHEMA_VERSION;
+pub const SIMIR_SCHEMA_V1: u32 = 1;
+pub const SIMIR_SCHEMA_V2: u32 = 2;
+pub const SIMIR_SCHEMA_V3: u32 = 3;
+pub const SIMIR_SCHEMA_V4: u32 = 4;
+pub const SIMIR_SCHEMA_V5: u32 = 5;
+pub const SIMIR_LATEST_SCHEMA_VERSION: u32 = SIMIR_SCHEMA_V5;
+
+// This is a format capability boundary, not a migration milestone. Future
+// schemas that preserve Wire semantics must continue to satisfy this bound.
+const WIRE_INTRODUCED_IN_SCHEMA: u32 = SIMIR_SCHEMA_V5;
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -49,6 +55,8 @@ pub struct Model {
     pub schedules: Vec<Schedule>,
     #[serde(default)]
     pub resets: Vec<InitialReset>,
+    #[serde(default)]
+    pub primitives: Vec<Primitive>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -117,6 +125,23 @@ pub struct StateCell {
 }
 
 #[derive(Debug, Clone, Deserialize)]
+#[serde(
+    tag = "kind",
+    rename_all = "snake_case",
+    rename_all_fields = "camelCase",
+    deny_unknown_fields
+)]
+pub enum Primitive {
+    Wire {
+        id: String,
+        width: u32,
+        #[serde(deserialize_with = "deserialize_bit_value")]
+        initial_value: BigUint,
+        initial_valid: bool,
+    },
+}
+
+#[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Schedule {
     pub clock: String,
@@ -141,6 +166,12 @@ pub enum Action {
         state: String,
         value: Expr,
     },
+    WireSet {
+        wire: String,
+        value: Expr,
+        valid: Expr,
+    },
+    WireTick,
     Display {
         items: Vec<DisplayItem>,
     },
@@ -174,6 +205,12 @@ pub enum DisplayItem {
 pub enum Expr {
     State {
         id: String,
+    },
+    WireValue {
+        wire: String,
+    },
+    WireValid {
+        wire: String,
     },
     Local {
         id: String,
@@ -275,13 +312,10 @@ impl Model {
     pub fn validate(&self) -> Result<(), Error> {
         if !matches!(
             self.schema_version,
-            SIMIR_M0_SCHEMA_VERSION
-                | SIMIR_M2_SCHEMA_VERSION
-                | SIMIR_M3_SCHEMA_VERSION
-                | SIMIR_M4_SCHEMA_VERSION
+            SIMIR_SCHEMA_V1 | SIMIR_SCHEMA_V2 | SIMIR_SCHEMA_V3 | SIMIR_SCHEMA_V4 | SIMIR_SCHEMA_V5
         ) {
             return invalid(format!(
-                "unsupported schema version {}; expected {SIMIR_M0_SCHEMA_VERSION}, {SIMIR_M2_SCHEMA_VERSION}, {SIMIR_M3_SCHEMA_VERSION}, or {SIMIR_M4_SCHEMA_VERSION}",
+                "unsupported schema version {}; latest supported version is {SIMIR_LATEST_SCHEMA_VERSION}",
                 self.schema_version
             ));
         }
@@ -322,6 +356,7 @@ impl Model {
             }
         }
 
+        let wires = validate_primitives(self.schema_version, &self.primitives, &state)?;
         let resets = validate_resets(self.schema_version, &self.resets, &clocks, &state)?;
         let mut scheduled_clocks = BTreeSet::new();
         for schedule in &self.schedules {
@@ -338,13 +373,14 @@ impl Model {
                 self.schema_version,
                 &schedule.actions,
                 &state,
+                &wires,
                 &mut BTreeMap::new(),
             )?;
             validate_reset_ticks(self.schema_version, schedule, &resets, &state)?;
+            validate_wire_ticks(self.schema_version, schedule)?;
         }
-        if self.schema_version == SIMIR_M2_SCHEMA_VERSION && scheduled_clocks.len() != clocks.len()
-        {
-            return invalid("M2 requires exactly one schedule for every clock");
+        if self.schema_version == SIMIR_SCHEMA_V2 && scheduled_clocks.len() != clocks.len() {
+            return invalid("schema version 2 requires exactly one schedule for every clock");
         }
         Ok(())
     }
@@ -358,7 +394,7 @@ fn validate_clock_version(version: u32, clock: &Clock) -> Result<(), Error> {
         clock.high_duration,
         clock.low_duration,
     );
-    if version != SIMIR_M2_SCHEMA_VERSION {
+    if version != SIMIR_SCHEMA_V2 {
         if waveform != (None, None, None, None, None) {
             return invalid("single-clock SimIR contains M2 waveform fields");
         }
@@ -379,13 +415,50 @@ fn validate_clock_version(version: u32, clock: &Clock) -> Result<(), Error> {
     Ok(())
 }
 
+fn validate_primitives(
+    version: u32,
+    primitives: &[Primitive],
+    state: &BTreeMap<String, u32>,
+) -> Result<BTreeMap<String, u32>, Error> {
+    if version < WIRE_INTRODUCED_IN_SCHEMA && !primitives.is_empty() {
+        return invalid("primitive declarations require schema version 5 or later");
+    }
+
+    let mut wires = BTreeMap::new();
+    for primitive in primitives {
+        match primitive {
+            Primitive::Wire {
+                id,
+                width,
+                initial_value,
+                initial_valid: _,
+            } => {
+                nonempty(id, "wire id")?;
+                validate_width_for_version(version, *width, "wire")?;
+                if !value_fits(initial_value, *width) {
+                    return invalid(format!(
+                        "wire {id:?} initial value does not fit its {width}-bit width"
+                    ));
+                }
+                if state.contains_key(id) {
+                    return invalid(format!("wire id {id:?} duplicates a state id"));
+                }
+                if wires.insert(id.clone(), *width).is_some() {
+                    return invalid(format!("duplicate wire id {id:?}"));
+                }
+            }
+        }
+    }
+    Ok(wires)
+}
+
 fn validate_resets<'a>(
     version: u32,
     resets: &'a [InitialReset],
     clocks: &BTreeSet<&str>,
     state: &BTreeMap<String, u32>,
 ) -> Result<BTreeMap<String, &'a InitialReset>, Error> {
-    if version != SIMIR_M2_SCHEMA_VERSION && !resets.is_empty() {
+    if version != SIMIR_SCHEMA_V2 && !resets.is_empty() {
         return invalid("single-clock SimIR model contains M2 resets");
     }
     let mut ids = BTreeMap::new();
@@ -432,6 +505,56 @@ fn validate_resets<'a>(
     Ok(ids)
 }
 
+fn validate_wire_ticks(version: u32, schedule: &Schedule) -> Result<(), Error> {
+    fn contains_wire_tick(actions: &[Action]) -> bool {
+        actions.iter().any(|action| match action {
+            Action::WireTick => true,
+            Action::If {
+                then_actions,
+                else_actions,
+                ..
+            } => contains_wire_tick(then_actions) || contains_wire_tick(else_actions),
+            _ => false,
+        })
+    }
+
+    let top_level_ticks = schedule
+        .actions
+        .iter()
+        .filter(|action| matches!(action, Action::WireTick))
+        .count();
+    if version < WIRE_INTRODUCED_IN_SCHEMA {
+        if contains_wire_tick(&schedule.actions) {
+            return invalid("wire tick requires schema version 5 or later");
+        }
+        return Ok(());
+    }
+    if top_level_ticks != 1
+        || !matches!(schedule.actions.last(), Some(Action::WireTick))
+        || schedule.actions[..schedule.actions.len().saturating_sub(1)]
+            .iter()
+            .any(contains_wire_tick_action)
+    {
+        return invalid("Wire-capable schemas require exactly one final wire tick per schedule");
+    }
+    Ok(())
+}
+
+fn contains_wire_tick_action(action: &Action) -> bool {
+    match action {
+        Action::WireTick => true,
+        Action::If {
+            then_actions,
+            else_actions,
+            ..
+        } => {
+            then_actions.iter().any(contains_wire_tick_action)
+                || else_actions.iter().any(contains_wire_tick_action)
+        }
+        _ => false,
+    }
+}
+
 fn validate_reset_ticks(
     version: u32,
     schedule: &Schedule,
@@ -446,7 +569,7 @@ fn validate_reset_ticks(
             _ => None,
         })
         .collect::<Vec<_>>();
-    if version != SIMIR_M2_SCHEMA_VERSION && !ticks.is_empty() {
+    if version != SIMIR_SCHEMA_V2 && !ticks.is_empty() {
         return invalid("single-clock SimIR schedule contains M2 reset tick");
     }
     for reset in ticks {
@@ -505,9 +628,16 @@ impl BitVector {
     }
 }
 
+#[derive(Clone)]
+struct Wire {
+    value: BitVector,
+    valid: bool,
+}
+
 pub struct Engine {
     model: Model,
     state: BTreeMap<String, BitVector>,
+    wires: BTreeMap<String, Wire>,
     next_edges: BTreeMap<String, u64>,
     reset_remaining: BTreeMap<String, u64>,
     time: u64,
@@ -529,11 +659,29 @@ impl Engine {
                     )
                 })
                 .collect(),
+            wires: model
+                .primitives
+                .iter()
+                .map(|primitive| match primitive {
+                    Primitive::Wire {
+                        id,
+                        width,
+                        initial_value,
+                        initial_valid,
+                    } => (
+                        id.clone(),
+                        Wire {
+                            value: BitVector::new(*width, initial_value.clone()),
+                            valid: *initial_valid,
+                        },
+                    ),
+                })
+                .collect(),
             next_edges: model
                 .clocks
                 .iter()
                 .filter_map(|clock| {
-                    (model.schema_version == SIMIR_M2_SCHEMA_VERSION).then(|| {
+                    (model.schema_version == SIMIR_SCHEMA_V2).then(|| {
                         (
                             clock.id.clone(),
                             initial_posedge(clock).expect("validated M2 clock"),
@@ -559,7 +707,7 @@ impl Engine {
             if self.exit_status.is_some() {
                 break;
             }
-            if self.model.schema_version != SIMIR_M2_SCHEMA_VERSION {
+            if self.model.schema_version != SIMIR_SCHEMA_V2 {
                 self.step_once_m0(&mut output)?;
             } else {
                 self.step_once_m2(&mut output)?;
@@ -592,6 +740,7 @@ impl Engine {
             execute_actions(
                 &schedule.actions,
                 &snapshot,
+                &mut self.wires,
                 &mut BTreeMap::new(),
                 self.time,
                 &mut writes,
@@ -652,6 +801,7 @@ impl Engine {
         execute_actions_m2(
             &schedule.actions,
             &snapshot,
+            &mut self.wires,
             &mut BTreeMap::new(),
             self.time,
             &mut writes,
@@ -700,6 +850,7 @@ fn initial_posedge(clock: &Clock) -> Option<u64> {
 fn append_display(
     items: &[DisplayItem],
     state: &BTreeMap<String, BitVector>,
+    wires: &BTreeMap<String, Wire>,
     locals: &BTreeMap<String, BitVector>,
     time: u64,
     output: &mut Vec<String>,
@@ -716,7 +867,7 @@ fn append_display(
                 signed,
                 value,
             } => {
-                let value = eval(value, state, locals, time);
+                let value = eval(value, state, wires, locals, time);
                 let decimal = if *signed && value.bits >= (BigUint::one() << (value.width - 1)) {
                     BigInt::from_biguint(Sign::Plus, value.bits)
                         - BigInt::from_biguint(Sign::Plus, BigUint::one() << value.width)
@@ -733,6 +884,7 @@ fn append_display(
 fn execute_actions(
     actions: &[Action],
     state: &BTreeMap<String, BitVector>,
+    wires: &mut BTreeMap<String, Wire>,
     locals: &mut BTreeMap<String, BitVector>,
     time: u64,
     writes: &mut BTreeMap<String, BitVector>,
@@ -749,7 +901,7 @@ fn execute_actions(
                 then_actions,
                 else_actions,
             } => {
-                let selected = if !eval(condition, state, locals, time).is_zero() {
+                let selected = if !eval(condition, state, wires, locals, time).is_zero() {
                     then_actions
                 } else {
                     else_actions
@@ -758,6 +910,7 @@ fn execute_actions(
                 execute_actions(
                     selected,
                     state,
+                    wires,
                     &mut branch_locals,
                     time,
                     writes,
@@ -766,12 +919,24 @@ fn execute_actions(
                 );
             }
             Action::Let { local, value } => {
-                locals.insert(local.clone(), eval(value, state, locals, time));
+                locals.insert(local.clone(), eval(value, state, wires, locals, time));
             }
             Action::Write { state: id, value } => {
-                writes.insert(id.clone(), eval(value, state, locals, time));
+                writes.insert(id.clone(), eval(value, state, wires, locals, time));
             }
-            Action::Display { items } => append_display(items, state, locals, time, output),
+            Action::WireSet { wire, value, valid } => {
+                let value = eval(value, state, wires, locals, time);
+                let valid = !eval(valid, state, wires, locals, time).is_zero();
+                let wire = wires.get_mut(wire).expect("validated wire set");
+                wire.value = value;
+                wire.valid = valid;
+            }
+            Action::WireTick => {
+                for wire in wires.values_mut() {
+                    wire.valid = false;
+                }
+            }
+            Action::Display { items } => append_display(items, state, wires, locals, time, output),
             Action::Finish { status } => *exit_status = Some(*status),
             Action::ResetTick { .. } => unreachable!("M0 validation rejects reset ticks"),
         }
@@ -782,6 +947,7 @@ fn execute_actions(
 fn execute_actions_m2(
     actions: &[Action],
     state: &BTreeMap<String, BitVector>,
+    wires: &mut BTreeMap<String, Wire>,
     locals: &mut BTreeMap<String, BitVector>,
     time: u64,
     writes: &mut BTreeMap<String, BitVector>,
@@ -801,7 +967,7 @@ fn execute_actions_m2(
                 then_actions,
                 else_actions,
             } => {
-                let selected = if !eval(condition, state, locals, time).is_zero() {
+                let selected = if !eval(condition, state, wires, locals, time).is_zero() {
                     then_actions
                 } else {
                     else_actions
@@ -810,6 +976,7 @@ fn execute_actions_m2(
                 execute_actions_m2(
                     selected,
                     state,
+                    wires,
                     &mut branch_locals,
                     time,
                     writes,
@@ -821,12 +988,15 @@ fn execute_actions_m2(
                 );
             }
             Action::Let { local, value } => {
-                locals.insert(local.clone(), eval(value, state, locals, time));
+                locals.insert(local.clone(), eval(value, state, wires, locals, time));
             }
             Action::Write { state: id, value } => {
-                writes.insert(id.clone(), eval(value, state, locals, time));
+                writes.insert(id.clone(), eval(value, state, wires, locals, time));
             }
-            Action::Display { items } => append_display(items, state, locals, time, output),
+            Action::WireSet { .. } | Action::WireTick => {
+                unreachable!("M2 validation rejects wire actions")
+            }
+            Action::Display { items } => append_display(items, state, wires, locals, time, output),
             Action::Finish { status } => *exit_status = Some(*status),
             Action::ResetTick { reset } => {
                 let definition = resets
@@ -857,16 +1027,19 @@ fn execute_actions_m2(
 fn eval(
     expr: &Expr,
     state: &BTreeMap<String, BitVector>,
+    wires: &BTreeMap<String, Wire>,
     locals: &BTreeMap<String, BitVector>,
     time: u64,
 ) -> BitVector {
     match expr {
         Expr::State { id } => state[id].clone(),
+        Expr::WireValue { wire } => wires[wire].value.clone(),
+        Expr::WireValid { wire } => BitVector::from_bool(wires[wire].valid),
         Expr::Local { id } => locals[id].clone(),
         Expr::Time => BitVector::new(64, BigUint::from(time)),
         Expr::Const { width, value } => BitVector::new(*width, value.clone()),
         Expr::Unary { width, op, arg } => {
-            let argument = eval(arg, state, locals, time);
+            let argument = eval(arg, state, wires, locals, time);
             let modulus = BigUint::one() << *width;
             let bits = match op {
                 UnaryOp::Not => value_mask(*width) ^ argument.bits,
@@ -876,8 +1049,8 @@ fn eval(
             BitVector::new(*width, bits)
         }
         Expr::Binary { width, op, args } => {
-            let left = eval(&args[0], state, locals, time);
-            let right = eval(&args[1], state, locals, time);
+            let left = eval(&args[0], state, wires, locals, time);
+            let right = eval(&args[1], state, wires, locals, time);
             let bits = match op {
                 BinaryOp::Add => left.bits + right.bits,
                 BinaryOp::And => left.bits & right.bits,
@@ -891,7 +1064,7 @@ fn eval(
             BitVector::new(*width, bits)
         }
         Expr::Extract { width, lsb, arg } => {
-            let argument = eval(arg, state, locals, time);
+            let argument = eval(arg, state, wires, locals, time);
             BitVector::new(*width, argument.bits >> *lsb)
         }
         Expr::Mux {
@@ -900,12 +1073,12 @@ fn eval(
             then_value,
             else_value,
         } => {
-            let selected = if eval(condition, state, locals, time).is_zero() {
+            let selected = if eval(condition, state, wires, locals, time).is_zero() {
                 else_value
             } else {
                 then_value
             };
-            BitVector::new(*width, eval(selected, state, locals, time).bits)
+            BitVector::new(*width, eval(selected, state, wires, locals, time).bits)
         }
     }
 }
@@ -914,6 +1087,7 @@ fn validate_actions(
     version: u32,
     actions: &[Action],
     state: &BTreeMap<String, u32>,
+    wires: &BTreeMap<String, u32>,
     locals: &mut BTreeMap<String, u32>,
 ) -> Result<(), Error> {
     for action in actions {
@@ -923,38 +1097,56 @@ fn validate_actions(
                 then_actions,
                 else_actions,
             } => {
-                if validate_expr(version, condition, state, locals)? != 1 {
+                if validate_expr(version, condition, state, wires, locals)? != 1 {
                     return invalid("if condition must have width 1");
                 }
-                validate_actions(version, then_actions, state, &mut locals.clone())?;
-                validate_actions(version, else_actions, state, &mut locals.clone())?;
+                validate_actions(version, then_actions, state, wires, &mut locals.clone())?;
+                validate_actions(version, else_actions, state, wires, &mut locals.clone())?;
             }
             Action::Let { local, value } => {
                 nonempty(local, "local id")?;
                 if locals.contains_key(local) {
                     return invalid(format!("duplicate local id {local:?}"));
                 }
-                let width = validate_expr(version, value, state, locals)?;
+                let width = validate_expr(version, value, state, wires, locals)?;
                 locals.insert(local.clone(), width);
             }
             Action::Write { state: id, value } => {
                 let expected = state.get(id).ok_or_else(|| {
                     Error::Validation(format!("write references unknown state {id:?}"))
                 })?;
-                let actual = validate_expr(version, value, state, locals)?;
+                let actual = validate_expr(version, value, state, wires, locals)?;
                 if actual != *expected {
                     return invalid(format!(
                         "write to state {id:?} has {actual}-bit value; expected {expected}-bit value"
                     ));
                 }
             }
+            Action::WireSet { wire, value, valid } => {
+                require_wire_schema(version, "wire set")?;
+                let expected = wires.get(wire).ok_or_else(|| {
+                    Error::Validation(format!("wire set references unknown wire {wire:?}"))
+                })?;
+                let actual = validate_expr(version, value, state, wires, locals)?;
+                if actual != *expected {
+                    return invalid(format!(
+                        "wire set to {wire:?} has {actual}-bit value; expected {expected}-bit value"
+                    ));
+                }
+                if validate_expr(version, valid, state, wires, locals)? != 1 {
+                    return invalid("wire set valid expression must have width 1");
+                }
+            }
+            Action::WireTick => require_wire_schema(version, "wire tick")?,
             Action::Display { items } => {
                 for item in items {
                     if let DisplayItem::Decimal { signed, value, .. } = item {
-                        if *signed && version != SIMIR_M4_SCHEMA_VERSION {
-                            return invalid("signed decimal display requires schema version 4");
+                        if *signed && version < SIMIR_SCHEMA_V4 {
+                            return invalid(
+                                "signed decimal display requires schema version 4 or later",
+                            );
                         }
-                        validate_expr(version, value, state, locals)?;
+                        validate_expr(version, value, state, wires, locals)?;
                     }
                 }
             }
@@ -968,12 +1160,30 @@ fn validate_expr(
     version: u32,
     expr: &Expr,
     state: &BTreeMap<String, u32>,
+    wires: &BTreeMap<String, u32>,
     locals: &BTreeMap<String, u32>,
 ) -> Result<u32, Error> {
     match expr {
         Expr::State { id } => state.get(id).copied().ok_or_else(|| {
             Error::Validation(format!("expression references unknown state {id:?}"))
         }),
+        Expr::WireValue { wire } => {
+            require_wire_schema(version, "wire value expression")?;
+            wires.get(wire).copied().ok_or_else(|| {
+                Error::Validation(format!(
+                    "wire value expression references unknown wire {wire:?}"
+                ))
+            })
+        }
+        Expr::WireValid { wire } => {
+            require_wire_schema(version, "wire validity expression")?;
+            wires.get(wire).ok_or_else(|| {
+                Error::Validation(format!(
+                    "wire validity expression references unknown wire {wire:?}"
+                ))
+            })?;
+            Ok(1)
+        }
         Expr::Local { id } => locals.get(id).copied().ok_or_else(|| {
             Error::Validation(format!("expression references unknown local {id:?}"))
         }),
@@ -990,7 +1200,7 @@ fn validate_expr(
             if matches!(op, UnaryOp::Neg) {
                 require_v4(version, "unary neg")?;
             }
-            let argument_width = validate_expr(version, arg, state, locals)?;
+            let argument_width = validate_expr(version, arg, state, wires, locals)?;
             if *width != argument_width {
                 return invalid("unary expression and its argument must have the same width");
             }
@@ -1004,8 +1214,8 @@ fn validate_expr(
             if matches!(op, BinaryOp::Mul | BinaryOp::Or) {
                 require_v4(version, "binary mul/or")?;
             }
-            let left = validate_expr(version, &args[0], state, locals)?;
-            let right = validate_expr(version, &args[1], state, locals)?;
+            let left = validate_expr(version, &args[0], state, wires, locals)?;
+            let right = validate_expr(version, &args[1], state, wires, locals)?;
             match op {
                 BinaryOp::Add | BinaryOp::And | BinaryOp::Or | BinaryOp::Sub
                     if left == right && *width == left =>
@@ -1028,7 +1238,7 @@ fn validate_expr(
         Expr::Extract { width, lsb, arg } => {
             require_v4(version, "extract expression")?;
             validate_width_for_version(version, *width, "extract expression")?;
-            let argument_width = validate_expr(version, arg, state, locals)?;
+            let argument_width = validate_expr(version, arg, state, wires, locals)?;
             if lsb
                 .checked_add(*width)
                 .is_none_or(|end| end > argument_width)
@@ -1045,9 +1255,9 @@ fn validate_expr(
         } => {
             require_v4(version, "mux expression")?;
             validate_width_for_version(version, *width, "mux expression")?;
-            let condition_width = validate_expr(version, condition, state, locals)?;
-            let then_width = validate_expr(version, then_value, state, locals)?;
-            let else_width = validate_expr(version, else_value, state, locals)?;
+            let condition_width = validate_expr(version, condition, state, wires, locals)?;
+            let then_width = validate_expr(version, then_value, state, wires, locals)?;
+            let else_width = validate_expr(version, else_value, state, wires, locals)?;
             if condition_width != 1 {
                 return invalid("mux condition must have width 1");
             }
@@ -1060,10 +1270,18 @@ fn validate_expr(
 }
 
 fn require_v4(version: u32, subject: &str) -> Result<(), Error> {
-    if version == SIMIR_M4_SCHEMA_VERSION {
+    if version >= SIMIR_SCHEMA_V4 {
         Ok(())
     } else {
-        invalid(format!("{subject} requires schema version 4"))
+        invalid(format!("{subject} requires schema version 4 or later"))
+    }
+}
+
+fn require_wire_schema(version: u32, subject: &str) -> Result<(), Error> {
+    if version >= WIRE_INTRODUCED_IN_SCHEMA {
+        Ok(())
+    } else {
+        invalid(format!("{subject} requires schema version 5 or later"))
     }
 }
 
@@ -1071,7 +1289,7 @@ fn validate_width_for_version(version: u32, width: u32, subject: &str) -> Result
     if width == 0 {
         return invalid(format!("{subject} has zero width"));
     }
-    if version != SIMIR_M4_SCHEMA_VERSION && width > 64 {
+    if version < SIMIR_SCHEMA_V4 && width > 64 {
         return invalid(format!(
             "{subject} has unsupported width {width}; schema versions 1-3 support 1..=64"
         ));
