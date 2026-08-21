@@ -161,6 +161,7 @@ const TBGCD_M3_SIMIR_SHA256: &str = MCD_M2_SIMIR_SHA256;
 const CLKTEST_M0_SIMIR_ORIGIN: &str = "testsuite/bsc.bluesim/misc/misc.exp";
 const CLKTEST_M0_SIMIR_SHA256: &str =
     "21fabedb180b9e0d87af131a9f14d1710834a2ae60ebbc980b06e50d241d28ce";
+const MULTEST_M4_SIMIR_SHA256: &str = CLKTEST_M0_SIMIR_SHA256;
 
 const OPTIONS_PLAN_ORIGIN: &str = "testsuite/bsc.options/options.exp";
 const OPTIONS_PLAN_SHA256: &str =
@@ -557,6 +558,11 @@ fn plan_from_script(project_root: &Path, script: &ScriptManifest) -> GeneratedTe
         Err(diagnostic) => diagnostics.push(diagnostic),
     }
     match clktest_m0_simir_scenario(&script, &fixture_root, &assembly.scenarios) {
+        Ok(Some(scenario)) => assembly.scenarios.push(scenario),
+        Ok(None) => {}
+        Err(diagnostic) => diagnostics.push(diagnostic),
+    }
+    match multest_m4_simir_scenario(&script, &fixture_root, &assembly.scenarios) {
         Ok(Some(scenario)) => assembly.scenarios.push(scenario),
         Ok(None) => {}
         Err(diagnostic) => diagnostics.push(diagnostic),
@@ -1360,6 +1366,134 @@ fn clktest_m0_simir_scenario(
                         Action::AssertGolden {
                             actual: "sysClkTest_m0_run.out".to_owned(),
                             expected: "sysClkTest.out.expected".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        golden.provenance.clone(),
+                    ),
+                ],
+            },
+        ],
+    }))
+}
+
+fn multest_m4_simir_scenario(
+    script: &ScriptManifest,
+    fixture_root: &Path,
+    scenarios: &[Scenario],
+) -> Result<Option<Scenario>, ImportDiagnostic> {
+    if script.origin != CLKTEST_M0_SIMIR_ORIGIN {
+        return Ok(None);
+    }
+    if script.source_sha256 != MULTEST_M4_SIMIR_SHA256 {
+        return Err(global_error(
+            "import.multest_m4_simir_pin",
+            "the misc Bluesim origin changed; review the MulTest SimIR workflow shape".to_owned(),
+        ));
+    }
+    if !fixture_root.join("MulTest.bsv").is_file()
+        || !fixture_root.join("sysMulTest.out.expected").is_file()
+    {
+        return Err(global_error(
+            "import.multest_m4_simir_fixture",
+            "MulTest M4 SimIR fixture or stdout golden is missing".to_owned(),
+        ));
+    }
+    let legacy = scenarios
+        .iter()
+        .filter(|scenario| scenario.id == "simulation-sysMulTest")
+        .collect::<Vec<_>>();
+    let [legacy] = legacy.as_slice() else {
+        return Err(global_error(
+            "import.multest_m4_simir_shape",
+            "expected exactly one simulation-sysMulTest scenario".to_owned(),
+        ));
+    };
+    let operations = legacy
+        .stages
+        .iter()
+        .flat_map(|stage| &stage.operations)
+        .collect::<Vec<_>>();
+    let generation = operations.iter().find(|operation| {
+        matches!(
+            &operation.action,
+            Action::BscGenerate { source, module, .. }
+                if source == "MulTest.bsv" && module.as_deref() == Some("sysMulTest")
+        )
+    });
+    let run = operations.iter().find(|operation| {
+        matches!(
+            &operation.action,
+            Action::SimulationRun {
+                backend: bsc_test_plan::SimulationBackend::Bluesim,
+                stdout,
+                ..
+            } if stdout == "sysMulTest.c.out"
+        )
+    });
+    let golden = operations.iter().find(|operation| {
+        matches!(
+            &operation.action,
+            Action::AssertGolden { actual, expected }
+                if actual == "sysMulTest.c.out" && expected == "sysMulTest.out.expected"
+        )
+    });
+    let (Some(generation), Some(run), Some(golden)) = (generation, run, golden) else {
+        return Err(global_error(
+            "import.multest_m4_simir_shape",
+            "simulation-sysMulTest no longer has the expected generate/run/golden operations"
+                .to_owned(),
+        ));
+    };
+
+    Ok(Some(Scenario {
+        id: "simir-m4-sysMulTest".to_owned(),
+        resource: ResourceClass::Normal,
+        fixtures: Vec::new(),
+        requires: vec![Requirement::Bluesim],
+        bsc_options_append: None,
+        timeouts: Timeouts::default(),
+        stages: vec![
+            Stage {
+                id: "export-m4".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::BscGenerate {
+                            source: "MulTest.bsv".to_owned(),
+                            mode: SimulationGenerationMode::Bluesim,
+                            module: Some("sysMulTest".to_owned()),
+                            args: Vec::new(),
+                        },
+                        OperationExpectation::Required,
+                        generation.provenance.clone(),
+                    ),
+                    OperationRecord::new(
+                        Action::BscSimirExport {
+                            top: "sysMulTest".to_owned(),
+                            output: "sysMulTest.m4.bsim.json".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        generation.provenance.clone(),
+                    ),
+                ],
+            },
+            Stage {
+                id: "run-m4".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::SimirM4Run {
+                            model: "sysMulTest.m4.bsim.json".to_owned(),
+                            max_events: 10,
+                            expected_finish: 0,
+                            expected_time: 30,
+                            stdout: "sysMulTest_m4_run.out".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        run.provenance.clone(),
+                    ),
+                    OperationRecord::new(
+                        Action::AssertGolden {
+                            actual: "sysMulTest_m4_run.out".to_owned(),
+                            expected: "sysMulTest.out.expected".to_owned(),
                         },
                         OperationExpectation::Required,
                         golden.provenance.clone(),

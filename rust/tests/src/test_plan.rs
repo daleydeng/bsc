@@ -233,6 +233,7 @@ fn scenario_engine(scenario: &Scenario) -> ScenarioEngine {
                     | Action::SimirM0Step { .. }
                     | Action::SimirM2Run { .. }
                     | Action::SimirM3Run { .. }
+                    | Action::SimirM4Run { .. }
             )
         })
     {
@@ -1448,6 +1449,49 @@ fn execute_operation(
             )
             .map_err(|error| format!("write SimIR M3 run log: {error}"))
         }
+        Action::SimirM4Run {
+            model,
+            max_events,
+            expected_finish,
+            expected_time,
+            stdout,
+        } => {
+            ensure_regular_artifact(work_dir, model, "SimIR M4 model")?;
+            let model_path = work_dir.join(model);
+            let model = SimirModel::read_json(&model_path)
+                .map_err(|error| format!("load SimIR {}: {error}", model_path.display()))?;
+            let mut engine = SimirEngine::new(model)
+                .map_err(|error| format!("initialize SimIR engine: {error}"))?;
+            let result = engine
+                .run(*max_events)
+                .map_err(|error| format!("execute SimIR M4 run: {error}"))?;
+            if result.exit_status != Some(*expected_finish) {
+                return Err(format!(
+                    "SimIR M4 run finish status {:?}, expected {}",
+                    result.exit_status, expected_finish
+                ));
+            }
+            if result.time != *expected_time {
+                return Err(format!(
+                    "SimIR M4 run time {}, expected {}",
+                    result.time, expected_time
+                ));
+            }
+            let mut output_text = result.output.join("\n");
+            if !output_text.is_empty() {
+                output_text.push('\n');
+            }
+            fs::write(work_dir.join(stdout), output_text)
+                .map_err(|error| format!("write SimIR M4 output {stdout}: {error}"))?;
+            fs::write(
+                artifact_dir.join(format!("operation-{operation_index}-simir-m4-run.log")),
+                format!(
+                    "events={} time={} finish={:?}\n",
+                    result.cycles, result.time, result.exit_status
+                ),
+            )
+            .map_err(|error| format!("write SimIR M4 run log: {error}"))
+        }
         Action::BscGenerate {
             source,
             mode,
@@ -2410,6 +2454,7 @@ fn action_name(action: &Action) -> &'static str {
         Action::SimirM0Step { .. } => "simir.m0_step",
         Action::SimirM2Run { .. } => "simir.m2_run",
         Action::SimirM3Run { .. } => "simir.m3_run",
+        Action::SimirM4Run { .. } => "simir.m4_run",
         Action::CObjectBuild { .. } => "c.compile_object",
         Action::BscLink { .. } => "bsc.link",
         Action::BscSystemcLink { .. } => "bsc.systemc_link",
@@ -3911,6 +3956,108 @@ mod tests {
         }
     }
 
+    fn inert_toolchain(project_root: &Path) -> Toolchain {
+        let unused = project_root.join("unused");
+        Toolchain {
+            project_root: project_root.to_owned(),
+            bsc: unused.clone(),
+            bluetcl: unused.clone(),
+            bsc2bsv: unused.clone(),
+            dumpbo: unused.clone(),
+            dumpba: unused.clone(),
+            vcdcheck: unused.clone(),
+            showrules: Some(unused.clone()),
+            make: unused.clone(),
+            iverilog: unused.clone(),
+            bluespecdir: unused.clone(),
+            systemc_include: unused.clone(),
+            systemc_lib: unused.clone(),
+            cc: unused.clone(),
+            cxx: unused,
+        }
+    }
+
+    #[test]
+    fn simir_m4_run_executes_with_closed_finish_time_and_output_checks() {
+        const MODEL: &str = r#"
+        {
+          "schemaVersion": 4,
+          "producer": { "name": "test-plan", "version": "m4" },
+          "top": "m4_executor",
+          "clocks": [{ "id": "CLK", "period": 10, "activeEdge": "posedge" }],
+          "state": [{
+            "id": "wide",
+            "width": 66,
+            "initialValue": "73786967498736795649"
+          }],
+          "schedules": [{
+            "clock": "CLK",
+            "actions": [
+              {
+                "kind": "display",
+                "items": [{
+                  "kind": "decimal",
+                  "width": 0,
+                  "signed": true,
+                  "value": { "kind": "state", "id": "wide" }
+                }]
+              },
+              { "kind": "finish", "status": 7 }
+            ]
+          }]
+        }
+        "#;
+
+        let root = test_workspace("bsc-rust-tests-simir-m4-run");
+        let _ = fs::remove_dir_all(&root);
+        let work_dir = root.join("work");
+        let artifact_dir = root.join("artifacts");
+        fs::create_dir_all(&work_dir).unwrap();
+        fs::create_dir_all(&artifact_dir).unwrap();
+        fs::write(work_dir.join("wide.m4.bsim.json"), MODEL).unwrap();
+        let toolchain = inert_toolchain(&root);
+
+        let run = |expected_finish, expected_time| {
+            let scenario = engine_test_scenario(
+                "simir-m4-run",
+                Some(Action::SimirM4Run {
+                    model: "wide.m4.bsim.json".to_owned(),
+                    max_events: 1,
+                    expected_finish,
+                    expected_time,
+                    stdout: "wide.out".to_owned(),
+                }),
+            );
+            execute_operation(
+                &toolchain,
+                &scenario,
+                &scenario.stages[0].operations[0],
+                0,
+                0,
+                &work_dir,
+                &artifact_dir,
+            )
+        };
+
+        run(7, 10).unwrap();
+        assert_eq!(
+            fs::read_to_string(work_dir.join("wide.out")).unwrap(),
+            "-8796101410815\n"
+        );
+        assert_eq!(
+            fs::read_to_string(artifact_dir.join("operation-0-simir-m4-run.log")).unwrap(),
+            "events=1 time=10 finish=Some(7)\n"
+        );
+        assert!(run(0, 10)
+            .unwrap_err()
+            .contains("SimIR M4 run finish status Some(7), expected 0"));
+        assert!(run(7, 11)
+            .unwrap_err()
+            .contains("SimIR M4 run time 10, expected 11"));
+
+        let _ = fs::remove_dir_all(root);
+    }
+
     #[test]
     fn bluesim_engine_inference_uses_typed_simir_actions() {
         let legacy = engine_test_scenario("legacy", None);
@@ -3954,9 +4101,20 @@ mod tests {
                 stdout: "run.out".to_owned(),
             }),
         );
+        let simir_m4_run = engine_test_scenario(
+            "simir-m4-run",
+            Some(Action::SimirM4Run {
+                model: "mkTop.m4.bsim.json".to_owned(),
+                max_events: 1,
+                expected_finish: 0,
+                expected_time: 0,
+                stdout: "run.out".to_owned(),
+            }),
+        );
 
         assert_eq!(scenario_engine(&simir_m2_run), ScenarioEngine::Rust);
         assert_eq!(scenario_engine(&simir_m3_run), ScenarioEngine::Rust);
+        assert_eq!(scenario_engine(&simir_m4_run), ScenarioEngine::Rust);
     }
 
     #[test]

@@ -1,6 +1,6 @@
 # Bluesim Rust 重写计划
 
-状态：M0/M1、M2a 双时钟/reset 与 M2b hierarchy/method schedule 真实闭环已验证；通用 cross-engine artifact diff 待实现
+状态：M0/M1、M2a 双时钟/reset、M2b hierarchy/method schedule 与 M3a wide/signed values 真实闭环已验证；通用 cross-engine artifact diff 待实现
 所属总体计划：[`OVERALL.md`](OVERALL.md) Phase 1
 更新时间：2026-08-21
 
@@ -467,7 +467,9 @@ Rust M2 runtime 将处理一个真实的、稳定排序的 edge event queue：�
 - raw state 不携带“signed storage”分支；signedness只属于具体操作和 display interpretation，decimal display 根据 expression width 做 two's-complement 解读；
 - 最小 opcode 仅增加 `extract`、`neg`、`mux`、`mul`、`or`（复用已有 `and/not/add/equal/unsigned_less_than`），不引入通用 expression VM；
 - `$display` 只接受已观察到的“静态 literal + 一个 `%0d`”形态，lower 为 typed text + signed-decimal items，不实现 printf parser；
-- canonical companion scenario 必须复用 `sysMulTest.out.expected` 的 8 行 golden，并与 legacy `simulation-sysMulTest` 在隔离 `both` workspace 中共同通过。
+- canonical companion scenario 复用 `sysMulTest.out.expected` 的 8 行 golden，并与 legacy `simulation-sysMulTest` 在隔离 `both` workspace 中共同通过。
+
+实现状态：Rust v4 value core 已复用 `num-bigint`，v1-v3 compatibility tests 与 v4 66-bit/two's-complement tests 通过；legacy exporter 已从真实 SimCC fail-closed 产出 v4；`simir-m4-sysMulTest` 以 `finish = 0`、`time = 30` 和 exact stdout golden 通过，和 legacy scenario 的 `both` gate 为 3 stages、0 skipped。
 
 退出条件：
 
@@ -583,4 +585,4 @@ Bluesim 重写完成需要：
 
 M0 `tiny`、M2a `MCDTest` 与 M2b `TbGCD/GCD` 均已通过 canonical Rust Test Plan 的真实 `bsc.generate → bsc.simir_export → in-process Rust bluesim` 闭环；对应 legacy/Rust scenarios 已在 `--bluesim-engine both` 下共同通过，并保持隔离 workspace/artifacts/cache。默认候选路径不启动 Tcl、不生成/编译 per-design C++、不调用 per-design `rustc`，失败也不回退 legacy。
 
-下一步优先 probe `testsuite/bsc.bluesim/misc/MulTest.bsv` 的 signed 23/43-bit operands、66-bit result 与 `%0d` 输出；只有先引入正确的 wide/signed value representation 才能接入，禁止因为该 fixture 的具体结果碰巧可放进 `u64` 就截断语义。之后再进入 `interactive/prims.bsv` 的 Wire/FIFO/RegFile/Probe 同周期交互。继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进；不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计，不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。
+下一步进入 `testsuite/bsc.bluesim/interactive/prims.bsv` 的 Wire/FIFO/RegFile/Probe 同周期交互，先把 Wire 的 cycle-local validity/value 与 schedule phase 钉定，再分族加入 FIFO、RegFile 和 Probe；不要一次把所有 primitive 塞进一个不透明对象模型。继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进；不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计，不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。

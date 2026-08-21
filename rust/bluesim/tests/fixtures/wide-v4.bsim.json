@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 4,
+  "producer": { "name": "bluesim-test", "version": "v4" },
+  "top": "wide_product",
+  "clocks": [{ "id": "CLK", "period": 10, "activeEdge": "posedge" }],
+  "state": [
+    { "id": "lhs", "width": 43, "initialValue": "8796093022207" },
+    { "id": "rhs", "width": 23, "initialValue": "8388607" },
+    { "id": "product", "width": 66, "initialValue": "0" }
+  ],
+  "schedules": [{
+    "clock": "CLK",
+    "actions": [
+      {
+        "kind": "let",
+        "local": "lhs_sign",
+        "value": {
+          "kind": "extract",
+          "width": 1,
+          "lsb": 42,
+          "arg": { "kind": "state", "id": "lhs" }
+        }
+      },
+      {
+        "kind": "let",
+        "local": "negated_lhs",
+        "value": {
+          "kind": "unary",
+          "width": 43,
+          "op": "neg",
+          "arg": { "kind": "state", "id": "lhs" }
+        }
+      },
+      {
+        "kind": "let",
+        "local": "round_trip_lhs",
+        "value": {
+          "kind": "unary",
+          "width": 43,
+          "op": "neg",
+          "arg": { "kind": "local", "id": "negated_lhs" }
+        }
+      },
+      {
+        "kind": "let",
+        "local": "selected_lhs",
+        "value": {
+          "kind": "mux",
+          "width": 43,
+          "condition": { "kind": "local", "id": "lhs_sign" },
+          "then": { "kind": "local", "id": "round_trip_lhs" },
+          "else": { "kind": "state", "id": "lhs" }
+        }
+      },
+      {
+        "kind": "let",
+        "local": "selected_rhs",
+        "value": {
+          "kind": "binary",
+          "width": 23,
+          "op": "or",
+          "args": [
+            { "kind": "state", "id": "rhs" },
+            { "kind": "const", "width": 23, "value": "0" }
+          ]
+        }
+      },
+      {
+        "kind": "let",
+        "local": "wide_product",
+        "value": {
+          "kind": "binary",
+          "width": 66,
+          "op": "mul",
+          "args": [
+            { "kind": "local", "id": "selected_lhs" },
+            { "kind": "local", "id": "selected_rhs" }
+          ]
+        }
+      },
+      {
+        "kind": "write",
+        "state": "product",
+        "value": { "kind": "local", "id": "wide_product" }
+      },
+      {
+        "kind": "display",
+        "items": [
+          { "kind": "text", "text": "unsigned=" },
+          {
+            "kind": "decimal",
+            "width": 0,
+            "value": { "kind": "local", "id": "wide_product" }
+          },
+          { "kind": "text", "text": ", signed=" },
+          {
+            "kind": "decimal",
+            "width": 0,
+            "signed": true,
+            "value": { "kind": "local", "id": "wide_product" }
+          }
+        ]
+      },
+      { "kind": "finish", "status": 0 }
+    ]
+  }]
+}

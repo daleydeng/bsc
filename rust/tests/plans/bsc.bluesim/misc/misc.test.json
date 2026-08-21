@@ -4972,6 +4972,145 @@
           ]
         }
       ]
+    },
+    {
+      "id": "simir-m4-sysMulTest",
+      "resource": "normal",
+      "fixtures": [
+        "MulTest.bsv",
+        "sysMulTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "export-m4",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MulTest.bsv",
+              "mode": "bluesim",
+              "module": "sysMulTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MulTest.bsv"
+                ],
+                "outputs": [
+                  "MulTest.bo",
+                  "MulTest.bsv.bsc-ccomp-out",
+                  "sysMulTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1347,
+                  "endByte": 1370,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.simir_export",
+              "top": "sysMulTest",
+              "output": "sysMulTest.m4.bsim.json",
+              "artifacts": {
+                "inputs": [
+                  "sysMulTest.ba"
+                ],
+                "outputs": [
+                  "sysMulTest.m4.bsim.json"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1347,
+                  "endByte": 1370,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-m4",
+          "operations": [
+            {
+              "op": "simir.m4_run",
+              "model": "sysMulTest.m4.bsim.json",
+              "maxEvents": 10,
+              "expectedFinish": 0,
+              "expectedTime": 30,
+              "stdout": "sysMulTest_m4_run.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMulTest.m4.bsim.json"
+                ],
+                "outputs": [
+                  "sysMulTest_m4_run.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1347,
+                  "endByte": 1370,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMulTest_m4_run.out",
+              "expected": "sysMulTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMulTest_m4_run.out",
+                  "sysMulTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1347,
+                  "endByte": 1370,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -310,6 +310,7 @@ fn plan_action_name(action: &PlanAction) -> &'static str {
         PlanAction::SimirM0Step { .. } => "simir.m0_step",
         PlanAction::SimirM2Run { .. } => "simir.m2_run",
         PlanAction::SimirM3Run { .. } => "simir.m3_run",
+        PlanAction::SimirM4Run { .. } => "simir.m4_run",
         PlanAction::CObjectBuild { .. } => "c.compile_object",
         PlanAction::BscLink { .. } => "bsc.link",
         PlanAction::BscSystemcLink { .. } => "bsc.systemc_link",
@@ -1504,6 +1505,18 @@ mod tests {
     #[test]
     fn native_golden_rejects_larger_decimal_differences() {
         assert!(!native_golden_text_matches("value = -0.007814", "value = -0.007812").unwrap());
+    }
+
+    #[test]
+    fn names_simir_m4_run() {
+        let action = PlanAction::SimirM4Run {
+            model: "wide.m4.bsim.json".to_owned(),
+            max_events: 1,
+            expected_finish: 7,
+            expected_time: 10,
+            stdout: "wide.out".to_owned(),
+        };
+        assert_eq!(plan_action_name(&action), "simir.m4_run");
     }
 
     #[test]

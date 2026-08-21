@@ -20,7 +20,9 @@ simIRFromSimCC top blocks scheds = do
     then simIRM2FromSimCC top top_block scheds
     else if any (maybe True (const False) . primitiveName . fst3) (sb_state top_block)
       then simIRM3FromSimCC top blocks top_block scheds
-      else simIRM0FromSimCC top top_block scheds
+      else if length (sb_state top_block) > 1
+        then simIRM4FromSimCC top blocks top_block scheds
+        else simIRM0FromSimCC top top_block scheds
 
 -- Keep the established M0 projection byte-for-byte unchanged for its tiny
 -- single-clock shape.  M2 is selected only when the top instantiates one of
@@ -71,7 +73,8 @@ fst3 (value, _, _) = value
 -- SimCC schedule, its rule calls, and side-effect-free return methods.  This
 -- is semantic SimIR, not a C++ class layout or a method-dispatch ABI.
 data M3Context = M3Context
-  { m3_blocks :: M.Map String SimCCBlock
+  { m3_schema_version :: Integer
+  , m3_blocks :: M.Map String SimCCBlock
   , m3_children :: M.Map String (M.Map String String)
   , m3_state_widths :: M.Map String Integer
   }
@@ -89,7 +92,7 @@ simIRM3FromSimCC top blocks top_block scheds = do
       child_scopes = m3ChildScopes by_id "" top_block
   states <- m3FlattenStates by_id "" top_block
   ensure (not (null states)) "M3 requires at least one RegN state"
-  let context = M3Context scoped_blocks child_scopes
+  let context = M3Context 3 scoped_blocks child_scopes
                 (M.fromList [ (name, width) | (name, width, _) <- states ])
   actions <- m3StmtsToJson context "" M.empty (sf_body (sched_fn sched))
   return $ object
@@ -114,6 +117,73 @@ simIRM3FromSimCC top blocks top_block scheds = do
           ]
         ]
     ]
+
+simIRM4FromSimCC :: String -> [SimCCBlock] -> SimCCBlock -> [SimCCSched]
+                 -> Either String String
+simIRM4FromSimCC top blocks top_block scheds = do
+  sched <- exactlyOne "M4 clock schedule" scheds
+  ensure (sched_posedge sched) "M4 supports only posedge schedules"
+  ensure (sched_after_fn sched == Nothing) "M4 does not support after-edge schedules"
+  clock <- clockName (sched_clock sched)
+  let by_id = M.fromList [ (sb_id block, block) | block <- blocks ]
+      scoped_blocks = m3ScopedBlocks by_id "" top_block
+      child_scopes = m3ChildScopes by_id "" top_block
+  states <- m4FlatStates top_block
+  ensure (not (null states)) "M4 requires at least one RegN state"
+  let context = M3Context 4 scoped_blocks child_scopes
+                (M.fromList [ (name, width) | (name, width, _) <- states ])
+  actions <- m3StmtsToJson context "" M.empty (sf_body (sched_fn sched))
+  return $ object
+    [ field "schemaVersion" "4"
+    , field "producer" $ object
+        [ field "name" (jsonString "legacy-bsc-simcc-projection")
+        , field "version" (jsonString "m4")
+        ]
+    , field "top" (jsonString top)
+    , field "clocks" $ array
+        [ object
+          [ field "id" (jsonString clock)
+          , field "period" "10"
+          , field "activeEdge" (jsonString "posedge")
+          ]
+        ]
+    , field "state" $ array (map m4StateToJson states)
+    , field "schedules" $ array
+        [ object
+          [ field "clock" (jsonString clock)
+          , field "actions" (array actions)
+          ]
+        ]
+    ]
+
+m4FlatStates :: SimCCBlock -> Either String [(String, Integer, Integer)]
+m4FlatStates block = do
+  reg_states <- mapM m4RegState (sb_state block)
+  let reset_states =
+        [ (getIdBaseString reset_id, 1, 1)
+        | reset_id <- sb_inputResets block
+        ]
+  return (reg_states ++ reset_states)
+
+m4RegState :: (SBId, AId, [AExpr]) -> Either String (String, Integer, Integer)
+m4RegState (block_id, instance_id, args) = do
+  ensure (primitiveName block_id == Just "RegN") "M4 supports only RegN primitives"
+  case args of
+    [ASInt _ (ATBit _) width_lit, ASInt _ (ATBit width) initial_lit] -> do
+      let declared_width = ilValue width_lit
+          initial = ilValue initial_lit
+      ensure (declared_width == width) "M4 RegN width argument does not match its value width"
+      ensure (width > 0 && width <= 2 ^ (32 :: Integer) - 1) "M4 RegN width is out of range"
+      ensure (initial >= 0 && initial < 2 ^ width) "M4 RegN initial value does not fit its width"
+      return (getIdBaseString instance_id, width, initial)
+    _ -> Left $ "unsupported M4 RegN arguments: " ++ show args
+
+m4StateToJson :: (String, Integer, Integer) -> String
+m4StateToJson (name, width, initial) = object
+  [ field "id" (jsonString name)
+  , field "width" (show width)
+  , field "initialValue" (jsonString (show initial))
+  ]
 
 m3ScopedBlocks :: M.Map SBId SimCCBlock -> String -> SimCCBlock -> M.Map String SimCCBlock
 m3ScopedBlocks by_id scope block =
@@ -195,6 +265,8 @@ m3StmtToJson context scope bindings stmt =
           actions <- m3InlineFunction context scope target_scope bindings (getIdBaseString meth) method_args
           m3Conditional context scope bindings condition actions
     SFSAction (AFCall _ fun _ args _)
+      | m3_schema_version context == 4 && "display" `isSuffixOf` fun ->
+          m4DisplayToJson context scope bindings args
       | fun == "$finish" || "finish_" `isSuffixOf` fun -> m3FinishToJson context scope bindings args
     SFSRuleExec rule_id -> m3InlineFunction context scope scope bindings (getIdBaseString rule_id) []
     SFSFunctionCall _ name [arg]
@@ -281,21 +353,52 @@ m3ExprToJson context scope bindings expr =
       | getIdBaseString meth == "read" -> stateExpr <$> m3StateFor context scope obj
       | otherwise -> m3MethodExpr context scope bindings obj (getIdBaseString meth)
     ASInt _ (ATBit width) lit
-      | width > 0 && width <= 64
+      | width > 0
+      , (m3_schema_version context == 4 || width <= 64)
+      , width <= 2 ^ (32 :: Integer) - 1
       , ilValue lit >= 0
       , ilValue lit < 2 ^ width -> return $ object
           [ field "kind" (jsonString "const")
           , field "width" (show width)
-          , field "value" (show (ilValue lit))
+          , field "value" $ if m3_schema_version context == 4
+                            then jsonString (show (ilValue lit))
+                            else show (ilValue lit)
           ]
-    APrim { ae_type = ATBit width, aprim_prim = PrimBNot, ae_args = [arg] } -> do
-      arg_json <- m3ExprToJson context scope bindings arg
-      return $ object
-        [ field "kind" (jsonString "unary")
-        , field "width" (show width)
-        , field "op" (jsonString "not")
-        , field "arg" arg_json
-        ]
+    APrim { ae_type = ATBit width, aprim_prim = op, ae_args = [arg] }
+      | op == PrimBNot || (m3_schema_version context == 4 && op == PrimNeg) -> do
+          arg_json <- m3ExprToJson context scope bindings arg
+          return $ object
+            [ field "kind" (jsonString "unary")
+            , field "width" (show width)
+            , field "op" (jsonString (if op == PrimNeg then "neg" else "not"))
+            , field "arg" arg_json
+            ]
+    APrim { ae_type = ATBit width, aprim_prim = PrimExtract,
+            ae_args = [arg, high_expr, low_expr] }
+      | m3_schema_version context == 4 -> do
+          high <- m4Index "extract high index" high_expr
+          low <- m4Index "extract low index" low_expr
+          ensure (high >= low && high - low + 1 == width) "M4 extract indices do not match result width"
+          arg_json <- m3ExprToJson context scope bindings arg
+          return $ object
+            [ field "kind" (jsonString "extract")
+            , field "width" (show width)
+            , field "lsb" (show low)
+            , field "arg" arg_json
+            ]
+    APrim { ae_type = ATBit width, aprim_prim = PrimIf,
+            ae_args = [condition, then_value, else_value] }
+      | m3_schema_version context == 4 -> do
+          condition_json <- m3ExprToJson context scope bindings condition
+          then_json <- m3ExprToJson context scope bindings then_value
+          else_json <- m3ExprToJson context scope bindings else_value
+          return $ object
+            [ field "kind" (jsonString "mux")
+            , field "width" (show width)
+            , field "condition" condition_json
+            , field "then" then_json
+            , field "else" else_json
+            ]
     APrim { ae_type = ATBit width, aprim_prim = PrimULE, ae_args = [left, right] }
       | width == 1 -> do
           left_json <- m3ExprToJson context scope bindings left
@@ -318,7 +421,9 @@ m3ExprToJson context scope bindings expr =
         PrimSub -> return "sub"
         PrimEQ -> return "equal"
         PrimULT -> return "unsigned_less_than"
-        _ -> Left $ "unsupported M3 primitive: " ++ show op
+        PrimMul | m3_schema_version context == 4 -> return "mul"
+        PrimBOr | m3_schema_version context == 4 -> return "or"
+        _ -> Left $ "unsupported M3/M4 primitive: " ++ show op
       args_json <- mapM (m3ExprToJson context scope bindings) args
       return $ object
         [ field "kind" (jsonString "binary")
@@ -431,6 +536,41 @@ m3FinishToJson context scope bindings args = do
   ensure (status >= 0 && status <= toInteger (maxBound :: Int)) "M3 $finish status is out of range"
   m3Conditional context scope bindings condition
     [object [field "kind" (jsonString "finish"), field "status" (show status)]]
+
+m4Index :: String -> AExpr -> Either String Integer
+m4Index subject (ASInt _ (ATBit _) lit) = do
+  let value = ilValue lit
+  ensure (value >= 0 && value <= 2 ^ (32 :: Integer) - 1) (subject ++ " is out of range")
+  return value
+m4Index subject expr = Left $ subject ++ " must be an integer literal: " ++ show expr
+
+m4DisplayToJson :: M3Context -> String -> M.Map String String -> [AExpr]
+                -> Either String [String]
+m4DisplayToJson context scope bindings args = do
+  (condition, rest) <- conditionAndArgs "M4 $display" args
+  (format, value_expr) <- case rest of
+    [ASStr _ _ text, value] -> return (text, value)
+    _ -> Left "M4 $display requires one static format and one value"
+  ensure ("%0d" `isSuffixOf` format) "M4 $display supports only a trailing %0d"
+  let prefix = take (length format - 3) format
+  ensure ('%' `notElem` prefix) "M4 $display prefix contains another format directive"
+  value <- m3ExprToJson context scope bindings value_expr
+  let display = object
+        [ field "kind" (jsonString "display")
+        , field "items" $ array
+            [ object
+              [ field "kind" (jsonString "text")
+              , field "text" (jsonString prefix)
+              ]
+            , object
+              [ field "kind" (jsonString "decimal")
+              , field "width" "0"
+              , field "signed" "true"
+              , field "value" value
+              ]
+            ]
+        ]
+  m3Conditional context scope bindings condition [display]
 
 primitiveNames :: SimCCBlock -> [String]
 primitiveNames block =

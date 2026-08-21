@@ -305,7 +305,8 @@ impl ArtifactContract {
             }
             Action::SimirM0Step { model, stdout, .. }
             | Action::SimirM2Run { model, stdout, .. }
-            | Action::SimirM3Run { model, stdout, .. } => {
+            | Action::SimirM3Run { model, stdout, .. }
+            | Action::SimirM4Run { model, stdout, .. } => {
                 inputs.push(model.clone());
                 outputs.push(stdout.clone());
             }
@@ -700,6 +701,15 @@ pub enum Action {
         expected_time: u64,
         stdout: String,
     },
+    /// Run a generated M4 SimIR model in-process until it finishes or reaches its event limit.
+    #[serde(rename = "simir.m4_run")]
+    SimirM4Run {
+        model: String,
+        max_events: u64,
+        expected_finish: i32,
+        expected_time: u64,
+        stdout: String,
+    },
     #[serde(rename = "c.compile_object")]
     CObjectBuild {
         source: String,
@@ -927,6 +937,7 @@ impl Action {
             | Self::SimirM0Step { .. }
             | Self::SimirM2Run { .. }
             | Self::SimirM3Run { .. }
+            | Self::SimirM4Run { .. }
             | Self::CObjectBuild { .. }
             | Self::BscLink { .. }
             | Self::SimulationRun { .. }
@@ -2318,6 +2329,20 @@ fn validate_action(action: &Action) -> Result<(), ValidationError> {
                 ));
             }
         }
+        Action::SimirM4Run {
+            model, max_events, ..
+        } => {
+            if !model.ends_with(".m4.bsim.json") {
+                return Err(ValidationError::new(
+                    "simir.m4_run model must end with .m4.bsim.json",
+                ));
+            }
+            if !(1..=1_000_000).contains(max_events) {
+                return Err(ValidationError::new(
+                    "simir.m4_run maxEvents must be between 1 and 1000000",
+                ));
+            }
+        }
         Action::CObjectBuild {
             source,
             makefile,
@@ -2790,7 +2815,8 @@ fn action_paths(action: &Action) -> Vec<&str> {
         Action::BscSimirExport { top, output } => vec![top, output],
         Action::SimirM0Step { model, stdout, .. }
         | Action::SimirM2Run { model, stdout, .. }
-        | Action::SimirM3Run { model, stdout, .. } => vec![model, stdout],
+        | Action::SimirM3Run { model, stdout, .. }
+        | Action::SimirM4Run { model, stdout, .. } => vec![model, stdout],
         Action::CObjectBuild {
             source,
             makefile,
@@ -3408,6 +3434,62 @@ mod tests {
                 expected_finish: 0,
                 expected_time: 163,
                 stdout: "mkMCDTest_m3_run.out".to_owned(),
+            },
+        ] {
+            assert!(validate_action(&action).is_err(), "accepted {action:?}");
+        }
+    }
+
+    #[test]
+    fn simir_m4_run_is_closed_and_has_fixed_artifacts() {
+        let action = Action::SimirM4Run {
+            model: "wide.m4.bsim.json".to_owned(),
+            max_events: 100,
+            expected_finish: 0,
+            expected_time: 10,
+            stdout: "wide_m4_run.out".to_owned(),
+        };
+        validate_action(&action).unwrap();
+        assert_eq!(
+            ArtifactContract::for_action(&action),
+            ArtifactContract {
+                inputs: vec!["wide.m4.bsim.json".to_owned()],
+                outputs: vec!["wide_m4_run.out".to_owned()],
+                output_alternatives: Vec::new(),
+                directories: Vec::new(),
+                removes: Vec::new(),
+            }
+        );
+        let encoded = serde_json::to_value(&action).unwrap();
+        assert_eq!(encoded["op"], "simir.m4_run");
+        assert_eq!(encoded["model"], "wide.m4.bsim.json");
+        assert_eq!(encoded["maxEvents"], 100);
+        assert_eq!(encoded["expectedFinish"], 0);
+        assert_eq!(encoded["expectedTime"], 10);
+        assert_eq!(encoded["stdout"], "wide_m4_run.out");
+        assert_eq!(serde_json::from_value::<Action>(encoded).unwrap(), action);
+
+        for action in [
+            Action::SimirM4Run {
+                model: "wide.bsim.json".to_owned(),
+                max_events: 100,
+                expected_finish: 0,
+                expected_time: 10,
+                stdout: "wide_m4_run.out".to_owned(),
+            },
+            Action::SimirM4Run {
+                model: "wide.m4.bsim.json".to_owned(),
+                max_events: 0,
+                expected_finish: 0,
+                expected_time: 10,
+                stdout: "wide_m4_run.out".to_owned(),
+            },
+            Action::SimirM4Run {
+                model: "wide.m4.bsim.json".to_owned(),
+                max_events: 1_000_001,
+                expected_finish: 0,
+                expected_time: 10,
+                stdout: "wide_m4_run.out".to_owned(),
             },
         ] {
             assert!(validate_action(&action).is_err(), "accepted {action:?}");
