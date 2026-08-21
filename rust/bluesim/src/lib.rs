@@ -88,6 +88,10 @@ pub enum Action {
         #[serde(rename = "else")]
         else_actions: Vec<Action>,
     },
+    Let {
+        local: String,
+        value: Expr,
+    },
     Write {
         state: String,
         value: Expr,
@@ -114,6 +118,10 @@ pub enum Expr {
     State {
         id: String,
     },
+    Local {
+        id: String,
+    },
+    Time,
     Const {
         width: u8,
         value: u64,
@@ -191,7 +199,7 @@ impl Model {
                     cell.id, cell.width
                 ));
             }
-            if state.insert(cell.id.as_str(), cell.width).is_some() {
+            if state.insert(cell.id.clone(), cell.width).is_some() {
                 return invalid(format!("duplicate state id {:?}", cell.id));
             }
         }
@@ -207,7 +215,7 @@ impl Model {
             if !scheduled_clocks.insert(schedule.clock.as_str()) {
                 return invalid(format!("multiple schedules for clock {:?}", schedule.clock));
             }
-            validate_actions(&schedule.actions, &state)?;
+            validate_actions(&schedule.actions, &state, &mut BTreeMap::new())?;
         }
         Ok(())
     }
@@ -280,6 +288,7 @@ impl Engine {
             execute_actions(
                 &schedule.actions,
                 &snapshot,
+                &mut BTreeMap::new(),
                 self.time,
                 &mut writes,
                 output,
@@ -316,6 +325,7 @@ impl Engine {
 fn execute_actions(
     actions: &[Action],
     state: &BTreeMap<String, u64>,
+    locals: &mut BTreeMap<String, u64>,
     time: u64,
     writes: &mut BTreeMap<String, u64>,
     output: &mut Vec<String>,
@@ -331,15 +341,27 @@ fn execute_actions(
                 then_actions,
                 else_actions,
             } => {
-                let selected = if eval(condition, state) != 0 {
+                let selected = if eval(condition, state, locals, time) != 0 {
                     then_actions
                 } else {
                     else_actions
                 };
-                execute_actions(selected, state, time, writes, output, exit_status);
+                let mut branch_locals = locals.clone();
+                execute_actions(
+                    selected,
+                    state,
+                    &mut branch_locals,
+                    time,
+                    writes,
+                    output,
+                    exit_status,
+                );
+            }
+            Action::Let { local, value } => {
+                locals.insert(local.clone(), eval(value, state, locals, time));
             }
             Action::Write { state: id, value } => {
-                writes.insert(id.clone(), eval(value, state));
+                writes.insert(id.clone(), eval(value, state, locals, time));
             }
             Action::Display { items } => {
                 let mut line = String::new();
@@ -352,7 +374,7 @@ fn execute_actions(
                         DisplayItem::Decimal { width, value } => {
                             line.push_str(&format!(
                                 "{:>width$}",
-                                eval(value, state),
+                                eval(value, state, locals, time),
                                 width = *width as usize
                             ));
                         }
@@ -365,13 +387,20 @@ fn execute_actions(
     }
 }
 
-fn eval(expr: &Expr, state: &BTreeMap<String, u64>) -> u64 {
+fn eval(
+    expr: &Expr,
+    state: &BTreeMap<String, u64>,
+    locals: &BTreeMap<String, u64>,
+    time: u64,
+) -> u64 {
     match expr {
         Expr::State { id } => state[id],
+        Expr::Local { id } => locals[id],
+        Expr::Time => time,
         Expr::Const { value, .. } => *value,
         Expr::Binary { width, op, args } => {
-            let left = eval(&args[0], state);
-            let right = eval(&args[1], state);
+            let left = eval(&args[0], state, locals, time);
+            let right = eval(&args[1], state, locals, time);
             let value = match op {
                 BinaryOp::Add => left.wrapping_add(right),
                 BinaryOp::Equal => u64::from(left == right),
@@ -382,7 +411,11 @@ fn eval(expr: &Expr, state: &BTreeMap<String, u64>) -> u64 {
     }
 }
 
-fn validate_actions(actions: &[Action], state: &BTreeMap<&str, u8>) -> Result<(), Error> {
+fn validate_actions(
+    actions: &[Action],
+    state: &BTreeMap<String, u8>,
+    locals: &mut BTreeMap<String, u8>,
+) -> Result<(), Error> {
     for action in actions {
         match action {
             Action::If {
@@ -390,17 +423,25 @@ fn validate_actions(actions: &[Action], state: &BTreeMap<&str, u8>) -> Result<()
                 then_actions,
                 else_actions,
             } => {
-                if validate_expr(condition, state)? != 1 {
+                if validate_expr(condition, state, locals)? != 1 {
                     return invalid("if condition must have width 1");
                 }
-                validate_actions(then_actions, state)?;
-                validate_actions(else_actions, state)?;
+                validate_actions(then_actions, state, &mut locals.clone())?;
+                validate_actions(else_actions, state, &mut locals.clone())?;
+            }
+            Action::Let { local, value } => {
+                nonempty(local, "local id")?;
+                if locals.contains_key(local) {
+                    return invalid(format!("duplicate local id {local:?}"));
+                }
+                let width = validate_expr(value, state, locals)?;
+                locals.insert(local.clone(), width);
             }
             Action::Write { state: id, value } => {
-                let expected = state.get(id.as_str()).ok_or_else(|| {
+                let expected = state.get(id).ok_or_else(|| {
                     Error::Validation(format!("write references unknown state {id:?}"))
                 })?;
-                let actual = validate_expr(value, state)?;
+                let actual = validate_expr(value, state, locals)?;
                 if actual != *expected {
                     return invalid(format!(
                         "write to state {id:?} has {actual}-bit value; expected {expected}-bit value"
@@ -410,7 +451,7 @@ fn validate_actions(actions: &[Action], state: &BTreeMap<&str, u8>) -> Result<()
             Action::Display { items } => {
                 for item in items {
                     if let DisplayItem::Decimal { value, .. } = item {
-                        validate_expr(value, state)?;
+                        validate_expr(value, state, locals)?;
                     }
                 }
             }
@@ -420,11 +461,19 @@ fn validate_actions(actions: &[Action], state: &BTreeMap<&str, u8>) -> Result<()
     Ok(())
 }
 
-fn validate_expr(expr: &Expr, state: &BTreeMap<&str, u8>) -> Result<u8, Error> {
+fn validate_expr(
+    expr: &Expr,
+    state: &BTreeMap<String, u8>,
+    locals: &BTreeMap<String, u8>,
+) -> Result<u8, Error> {
     match expr {
-        Expr::State { id } => state.get(id.as_str()).copied().ok_or_else(|| {
+        Expr::State { id } => state.get(id).copied().ok_or_else(|| {
             Error::Validation(format!("expression references unknown state {id:?}"))
         }),
+        Expr::Local { id } => locals.get(id).copied().ok_or_else(|| {
+            Error::Validation(format!("expression references unknown local {id:?}"))
+        }),
+        Expr::Time => Ok(64),
         Expr::Const { width, value } => {
             validate_width(*width, "constant")?;
             if *value > value_mask(*width) {
@@ -437,8 +486,8 @@ fn validate_expr(expr: &Expr, state: &BTreeMap<&str, u8>) -> Result<u8, Error> {
             if args.len() != 2 {
                 return invalid("binary expression must have exactly two arguments");
             }
-            let left = validate_expr(&args[0], state)?;
-            let right = validate_expr(&args[1], state)?;
+            let left = validate_expr(&args[0], state, locals)?;
+            let right = validate_expr(&args[1], state, locals)?;
             match op {
                 BinaryOp::Add if left == right && *width == left => Ok(*width),
                 BinaryOp::Equal | BinaryOp::UnsignedLessThan if left == right && *width == 1 => {

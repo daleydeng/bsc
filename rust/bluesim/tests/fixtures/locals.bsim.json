@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "producer": { "name": "bluesim-test", "version": "m0" },
+  "top": "locals",
+  "clocks": [{ "id": "CLK", "period": 10, "activeEdge": "posedge" }],
+  "state": [{ "id": "count", "width": 16, "initialValue": 7 }],
+  "schedules": [{
+    "clock": "CLK",
+    "actions": [
+      { "kind": "let", "local": "before", "value": { "kind": "state", "id": "count" } },
+      { "kind": "let", "local": "edge_time", "value": { "kind": "time" } },
+      {
+        "kind": "write",
+        "state": "count",
+        "value": {
+          "kind": "binary",
+          "width": 16,
+          "op": "add",
+          "args": [
+            { "kind": "local", "id": "before" },
+            { "kind": "const", "width": 16, "value": 1 }
+          ]
+        }
+      },
+      {
+        "kind": "display",
+        "items": [
+          { "kind": "decimal", "width": 2, "value": { "kind": "local", "id": "before" } },
+          { "kind": "text", "text": "@" },
+          { "kind": "decimal", "width": 2, "value": { "kind": "local", "id": "edge_time" } }
+        ]
+      },
+      { "kind": "finish", "status": 3 }
+    ]
+  }]
+}
