@@ -2,6 +2,29 @@ use bluesim::{Engine, Model, SIMIR_SCHEMA_VERSION};
 
 const TINY: &str = include_str!("fixtures/tiny.bsim.json");
 const LOCALS: &str = include_str!("fixtures/locals.bsim.json");
+const UNARY_NOT: &str = r#"
+{
+  "schemaVersion": 1,
+  "producer": { "name": "bluesim-test", "version": "m0" },
+  "top": "unary_not",
+  "clocks": [{ "id": "CLK", "period": 10, "activeEdge": "posedge" }],
+  "state": [{ "id": "guard", "width": 1, "initialValue": 0 }],
+  "schedules": [{
+    "clock": "CLK",
+    "actions": [{
+      "kind": "if",
+      "condition": {
+        "kind": "unary",
+        "width": 1,
+        "op": "not",
+        "arg": { "kind": "state", "id": "guard" }
+      },
+      "then": [{ "kind": "finish", "status": 0 }],
+      "else": []
+    }]
+  }]
+}
+"#;
 const UPSTREAM_STEP_GOLDEN: &str =
     include_str!("../../../testsuite/bsc.bluesim/interactive/mkTest_step.out.expected");
 
@@ -45,6 +68,15 @@ fn local_values_and_time_use_the_current_cycle_snapshot() {
     assert_eq!(result.output, [" 7@10"]);
     assert_eq!(result.exit_status, Some(3));
     assert_eq!(result.time, 10);
+}
+
+#[test]
+fn unary_not_controls_a_guard() {
+    let model = Model::from_json(UNARY_NOT).unwrap();
+    let mut engine = Engine::new(model).unwrap();
+    let result = engine.step(1).unwrap();
+
+    assert_eq!(result.exit_status, Some(0));
 }
 
 #[test]

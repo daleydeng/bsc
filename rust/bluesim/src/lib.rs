@@ -126,11 +126,22 @@ pub enum Expr {
         width: u8,
         value: u64,
     },
+    Unary {
+        width: u8,
+        op: UnaryOp,
+        arg: Box<Expr>,
+    },
     Binary {
         width: u8,
         op: BinaryOp,
         args: Vec<Expr>,
     },
+}
+
+#[derive(Debug, Clone, Copy, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UnaryOp {
+    Not,
 }
 
 #[derive(Debug, Clone, Copy, Deserialize)]
@@ -398,6 +409,12 @@ fn eval(
         Expr::Local { id } => locals[id],
         Expr::Time => time,
         Expr::Const { value, .. } => *value,
+        Expr::Unary { width, op, arg } => {
+            let value = match op {
+                UnaryOp::Not => !eval(arg, state, locals, time),
+            };
+            value & value_mask(*width)
+        }
         Expr::Binary { width, op, args } => {
             let left = eval(&args[0], state, locals, time);
             let right = eval(&args[1], state, locals, time);
@@ -478,6 +495,14 @@ fn validate_expr(
             validate_width(*width, "constant")?;
             if *value > value_mask(*width) {
                 return invalid(format!("constant value does not fit its {width}-bit width"));
+            }
+            Ok(*width)
+        }
+        Expr::Unary { width, op: _, arg } => {
+            validate_width(*width, "unary expression")?;
+            let argument_width = validate_expr(arg, state, locals)?;
+            if *width != argument_width {
+                return invalid("unary expression and its argument must have the same width");
             }
             Ok(*width)
         }

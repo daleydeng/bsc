@@ -1,6 +1,6 @@
 # Bluesim Rust 重写计划
 
-状态：M0/M1 进行中
+状态：M0/M1 最小 vertical slice 已验证；M1 differential runner 待实现
 所属总体计划：[`OVERALL.md`](OVERALL.md) Phase 1
 更新时间：2026-08-21
 
@@ -322,7 +322,10 @@ candidate 失败不得回退到 legacy。
 - exporter seam 已确认在 `src/comp/bsc.hs` 的 `simCOpt` 后、`simBlocksToC` 前；
 - legacy `-dsimCOpt` dump 的 M0 语义是：16-bit `count`、周期 10 的 `CLK` 正沿、`count == 100` 优先 `$finish(0)`、否则 `count < 100` 时写入 `count + 1` 并显示写入前值；
 - `rust/bluesim` 已实现 schema v1 的严格 loader、`bluesim step/run/inspect` 和上述受限解释器；其 `tiny` fixture 的十步输出逐字匹配 upstream `mkTest_step.out.expected`；
-- 当前 fixture 是从该 dump 作出的人工、可审计 projection。Haskell exporter 与 canonical Test Plan engine selector 尚未实现，因此 M0/M1 仍是进行中，不能宣称已完成 end-to-end dual-run。
+- hidden `bsc -simir <file>` 已在 `simCOpt` 后将该受限 `SimCC` 子集导出为 SimIR；它跳过 `simBlocksToC`、C++ 编译/链接、SystemC wrapper 和 BDPI header；
+- exporter 只接受实际观察到的一个 state、一个 clock、`read/write`、`add/equal/unsigned_less_than`、`PrimBNot`、条件、`$time`、`$display`、`$finish` 和初始化 reset tick；其他结构明确失败，不产生部分模型；
+- 从 `tiny.bsv` 实际导出的模型已由 Rust `bluesim step --cycles 10` 与 `mkTest_step.out.expected` 字节级一致；`bluesim run --max-cycles 101` 输出 100 行并以 `$finish(0)` 成功退出；过程中不生成/编译 C++、不启动 Tcl、也不按设计调用 `rustc`；
+- canonical Test Plan runner 的隔离 `legacy/rust/both` engine selector 尚未实现，因此这仍是一个受限 end-to-end slice，不是完整 testsuite differential gate。
 
 退出条件：
 
@@ -496,4 +499,4 @@ Bluesim 重写完成需要：
 
 ## 13. 当前下一步
 
-实现一个默认关闭的 legacy Haskell SimIR exporter：在 `simCOpt` 后投影出 schema v1 `.bsim`，先只接受 `tiny` 已覆盖的结构；遇到未实现的 `SimCC` 构造必须报明确错误并停止，不生成部分/猜测模型。然后将 exporter 输出与 `rust/bluesim/tests/fixtures/tiny.bsim.json` 做结构化比较，并在既有 Rust Test Plan runner 中加入隔离的 Rust-engine selector。此闭环通过前，不创建 C++ adapter、不铺完整 runtime crate graph、不设计 JIT。
+将 M0 exporter 的生成/运行/黄金比较接入既有 Rust Test Plan runner 的一个隔离 `rust` engine scenario；随后再引入显式 `legacy/rust/both` selector。`both` 必须为两端创建独立 workspace 和 artifact/cache identity，且 Rust candidate 失败不得回退 legacy。先保持 `tiny` 的受限、fail-closed exporter；每个新增 fixture 都要先从真实 SimCC shape 扩展 schema、exporter、runtime 与 differential assertion。此 gate 建立前，不创建 C++ adapter、不铺完整 runtime crate graph、不设计 JIT。

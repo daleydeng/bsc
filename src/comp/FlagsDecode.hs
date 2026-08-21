@@ -630,6 +630,7 @@ defaultFlags bluespecdir = Flags {
         showStats = False,
         showUpds = True,
         simplifyCSyntax = False,
+        simIRFile = Nothing,
         strictMethodSched = True,
         suppressWarnings = SomeMsgs [],
         synthesize = False,
@@ -1540,6 +1541,10 @@ externalFlags = [
         ("simdir",
          (Arg "dir" (\f s -> Left (f {cdir = Just s})) (Just (FRTMaybeString cdir)),
           "output directory for Bluesim intermediate files", Visible)),
+
+        ("simir",
+         (Arg "file" (\f s -> Left (f {simIRFile = Just s})) (Just (FRTMaybeString simIRFile)),
+          "export optimized Bluesim SimIR instead of generating C++", Hidden)),
 
         ("sat-stp",
          (NoArg (\f -> Left $ f { satBackend = SAT_STP })

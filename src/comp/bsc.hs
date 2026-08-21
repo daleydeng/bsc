@@ -143,6 +143,7 @@ import SimPackage(SimSystem(..))
 import SimPackageOpt(simPackageOpt)
 import SimMakeCBlocks(simMakeCBlocks)
 import SimCOpt(simCOpt)
+import SimIR(simIRFromSimCC)
 import SimBlocksToC(simBlocksToC)
 import SystemCWrapper(checkSystemCIfc, wrapSystemC)
 import SimFileUtils(analyzeBluesimDependencies)
@@ -1323,6 +1324,14 @@ genModuleC errh flags dumpnames time0 toplevel abis =
        let simBlockInfo = (simblocks_opt, simCCscheds_opt, clk_groups_opt, gate_info_opt)
        time <- dump errh flags time DFsimCOpt dumpnames simBlockInfo
 
+       let exporting_simir = isJust (simIRFile flags)
+       case simIRFile flags of
+         Nothing -> return ()
+         Just output ->
+           case simIRFromSimCC toplevel simblocks_opt simCCscheds_opt of
+             Left message -> ioError (userError ("SimIR export failed: " ++ message))
+             Right simir -> writeFileCatch errh output (simir ++ "\n")
+
        -- get the map of ForeignFunctions
        let ff_map = ssys_ffuncmap sim_system_opt
 
@@ -1346,23 +1355,25 @@ genModuleC errh flags dumpnames time0 toplevel abis =
                                      (simblocks_opt ++ primBlocks)
            creation_time = time
 
-       block_names <- simBlocksToC flags
-                                   creation_time
-                                   top_id
-                                   (ssys_default_clk sim_system_opt)
-                                   (ssys_default_rst sim_system_opt)
-                                   sb_map
-                                   ff_map
-                                   reused
-                                   simblocks_opt
-                                   simCCscheds_opt
-                                   clk_groups_opt
-                                   gate_info_opt
-                                   writeFileC
+       block_names <- if exporting_simir
+                      then return []
+                      else simBlocksToC flags
+                                        creation_time
+                                        top_id
+                                        (ssys_default_clk sim_system_opt)
+                                        (ssys_default_rst sim_system_opt)
+                                        sb_map
+                                        ff_map
+                                        reused
+                                        simblocks_opt
+                                        simCCscheds_opt
+                                        clk_groups_opt
+                                        gate_info_opt
+                                        writeFileC
 
        -- generate a header with imported function declarations
        let import_header =
-             if M.null ff_map
+             if exporting_simir || M.null ff_map
              then []
              else [("imported_BDPI_functions.h",
                     ppReadable (mkImportDeclarations ff_map))]
@@ -1378,19 +1389,24 @@ genModuleC errh flags dumpnames time0 toplevel abis =
        when (genSysC flags) $
             do bsMessage errh [(cmdPosition, MRestrictions "creating SystemC models" "the -systemc option")]
                checkSystemCIfc errh flags sim_system_opt
-       sysc_files <- if (genSysC flags)
-                     then wrapSystemC flags sim_system_opt
-                     else return []
+       sysc_files <- if exporting_simir
+                     then return []
+                     else if (genSysC flags)
+                          then wrapSystemC flags sim_system_opt
+                          else return []
        time <- dump errh flags time DFgenSystemC dumpnames sysc_files
 
        sysc_names <- mapM (uncurry writeFileC) sysc_files
 
        let names = core_names ++ sysc_names
 
-       reused_names <- mapM (\s -> do let cxx = mkObjName Nothing "" s
+       reused_names <- if exporting_simir
+                       then return []
+                       else mapM (\s -> do
+                                      let cxx = mkObjName Nothing "" s
                                       n <- mkEncodedName cxx
                                       return $ getRelativeFilePath n)
-                            reused
+                                 reused
 
        -- XXX return the headers separate from the files which need to be
        -- XXX compiled
@@ -1469,7 +1485,7 @@ simLink errh flags toplevel afilenames cfilenames = do
 
     -- if not generating a SystemC model, link to a Bluesim executable
     start flags DFbluesimlink
-    when (not (genSysC flags)) $
+    when (not (genSysC flags) && isNothing (simIRFile flags)) $
       cxxLink errh flags toplevel ofiles creation_time
     t <- dump errh flags t DFbluesimlink dumpnames toplevel
 

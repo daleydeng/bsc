@@ -126,6 +126,7 @@ data Flags = Flags {
         showStats :: Bool,
         showUpds :: Bool,
         simplifyCSyntax :: Bool,
+        simIRFile :: Maybe FilePath,
         strictMethodSched :: Bool,
         suppressWarnings :: MsgListFlag,
         synthesize :: Bool,
