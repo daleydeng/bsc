@@ -455,6 +455,20 @@ Rust M2 runtime 将处理一个真实的、稳定排序的 edge event queue：�
 
 每族独立加 SimIR opcode/schema、runtime 实现和 differential fixtures。
 
+### M3a：任意宽 bitvector 与 signed decimal 的已探测切片
+
+`testsuite/bsc.bluesim/misc/MulTest.bsv` 的真实 `-dsimCOpt` 形态已确认：43-bit/23-bit signed operands 被保留为 raw bitvectors，`signedMul` 被结构化降低为 sign-bit `extract`、conditional `neg`、66-bit `mul`、`and/or` 和 mux；两种 operand order 的结果再以 `%0d` 输出。Rust 不需要恢复 Haskell 类型系统或执行 generated C++ overload，但必须正确支持 66-bit 中间值和 two's-complement decimal。
+
+该切片采用以下合同：
+
+- 使用新的 **SimIR schema v4**，v1-v3 继续兼容；
+- Rust value core 复用 `num-bigint` 的 `BigUint`/`BigInt`，统一表示 `{ width, bits }`，每个 opcode 后按结果 width 取模；不自造 bigint，也不以 `u128` 作为临时模型；
+- v4 wide literal/state bits 使用字符串编码，避免 JSON number 的 53/64-bit 精度边界；loader 可兼容旧版本 numeric encoding，但 exporter 对 v4 始终产生 canonical string；
+- raw state 不携带“signed storage”分支；signedness只属于具体操作和 display interpretation，decimal display 根据 expression width 做 two's-complement 解读；
+- 最小 opcode 仅增加 `extract`、`neg`、`mux`、`mul`、`or`（复用已有 `and/not/add/equal/unsigned_less_than`），不引入通用 expression VM；
+- `$display` 只接受已观察到的“静态 literal + 一个 `%0d`”形态，lower 为 typed text + signed-decimal items，不实现 printf parser；
+- canonical companion scenario 必须复用 `sysMulTest.out.expected` 的 8 行 golden，并与 legacy `simulation-sysMulTest` 在隔离 `both` workspace 中共同通过。
+
 退出条件：
 
 - 不再依赖 legacy C++ primitive；
