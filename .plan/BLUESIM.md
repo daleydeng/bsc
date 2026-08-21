@@ -471,6 +471,19 @@ Rust M2 runtime 将处理一个真实的、稳定排序的 edge event queue：�
 
 实现状态：Rust v4 value core 已复用 `num-bigint`，v1-v3 compatibility tests 与 v4 66-bit/two's-complement tests 通过；legacy exporter 已从真实 SimCC fail-closed 产出 v4；`simir-m4-sysMulTest` 以 `finish = 0`、`time = 30` 和 exact stdout golden 通过，和 legacy scenario 的 `both` gate 为 3 stages、0 skipped。
 
+### M3b：Wire phase 与 primitive state 的已探测边界
+
+`testsuite/bsc.bluesim/interactive/prims.bsv` 的 `-dsimCOpt` 证明 primitive 不能继续伪装成 scalar Reg：top state 中同时有 `RegN count`、`FIFO fifo`、`Probe probe`、`RegFile rf` 和 `Wire w`；rule body 明确调用 `w.wset` / `w.wget`，scheduler 用 `w.whas` 与 `fifo.i_notFull` 计算 eligibility，并在所有 rule path 后调用 `w.clk(1, 1)`。因此 Wire value/validity 是 cycle-local state，不能使用当前“全 schedule snapshot + end-of-event deferred write”的 Reg 模型替代。
+
+最小实施顺序：
+
+1. schema v5 定义 typed primitive state（先只有 Wire），其 ID、width、初值和 reset/clock phase 明确化；不使用 legacy `SBId` 或 C++ member layout 作为 artifact identity；
+2. Rust runtime 先实现 Wire `{ value, valid, written_this_cycle }`：schedule eligibility 从 edge 前 snapshot 读取，`wset` 更新当前 edge 的 value/valid，`wget` 只在 exporter 已验证 `whas` gate 时读取，`wire_tick` 在 schedule 尾部按真实 SimCC order 过期 valid；
+3. 为 Wire 单独选择一个有 run-to-finish/stdout oracle 的 fixture，或为 `mkPrims` 加一个受限 typed primitive-snapshot action；不创建 Tcl interpreter、通用 `sim get` shell 或第二个 runner；
+4. 仅在 Wire contract 与 legacy gate 对齐后，分别加入 FIFO (`i_notEmpty/i_notFull/enq/first/deq`)、RegFile (`upd/range`) 和 Probe (`_write`)；每一族单独 schema/runtime/differential gate。
+
+现有 `prims.cmd`/`mkPrims_prims.out.expected` 是 legacy Tcl hierarchy/introspection oracle，继续保留为 black-box reference，但 Rust companion 不应通过解释 Tcl 复用它。必须先定义版本化 Rust primitive snapshot contract，或找到对应 run-to-finish stdout fixture。
+
 退出条件：
 
 - 不再依赖 legacy C++ primitive；
@@ -585,4 +598,4 @@ Bluesim 重写完成需要：
 
 M0 `tiny`、M2a `MCDTest` 与 M2b `TbGCD/GCD` 均已通过 canonical Rust Test Plan 的真实 `bsc.generate → bsc.simir_export → in-process Rust bluesim` 闭环；对应 legacy/Rust scenarios 已在 `--bluesim-engine both` 下共同通过，并保持隔离 workspace/artifacts/cache。默认候选路径不启动 Tcl、不生成/编译 per-design C++、不调用 per-design `rustc`，失败也不回退 legacy。
 
-下一步进入 `testsuite/bsc.bluesim/interactive/prims.bsv` 的 Wire/FIFO/RegFile/Probe 同周期交互，先把 Wire 的 cycle-local validity/value 与 schedule phase 钉定，再分族加入 FIFO、RegFile 和 Probe；不要一次把所有 primitive 塞进一个不透明对象模型。继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进；不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计，不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。
+下一步为 Wire 选择或抽取一个最小的 run-to-finish fixture，并确认 reset/assert、`whas` eligibility、`wset/wget` 与 `wire_tick` 的逐 edge ordering；完成 Wire gate 后才逐族进入 FIFO、RegFile 和 Probe。继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进；不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计，不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。
