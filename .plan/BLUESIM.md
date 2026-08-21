@@ -1,6 +1,6 @@
 # Bluesim Rust 重写计划
 
-状态：M0/M1 最小 vertical slice 已验证；M1 differential runner 待实现
+状态：M0/M1 最小 vertical slice 与 engine selector 已验证；通用 cross-engine artifact diff 待实现
 所属总体计划：[`OVERALL.md`](OVERALL.md) Phase 1
 更新时间：2026-08-21
 
@@ -245,6 +245,16 @@ Rust bluesim CLI/API only
 
 `both` 必须在两个隔离 workspace 中运行同一个 scenario；cache key、logs 和 artifacts 都包含 engine identity，禁止不同 engine 互相命中缓存或覆盖产物。
 
+2026-08-21 已实现的控制面：
+
+- `bsc-test --bluesim-engine legacy|rust|both`，默认 `legacy`，不影响现有 plan 的默认执行；
+- scenario 含 `bsc.simir_export` 或 `simir.m0_step` typed action 时归类 Rust engine，其余保持 legacy；不添加自由形式 shell action 或第二套 runner；
+- 显式 `--scenario` 与 selector 不匹配时明确报错，不静默跳过或回退；
+- workspace/artifact 路径及 cache fingerprint 均含 `legacy`/`rust` identity；
+- `both` 已对 `bluesim-workflow-mkTest`（legacy）和 `simir-m0-mkTest`（Rust）完成一次隔离运行，两端分别匹配同一 upstream golden。
+
+当前 `both` 是双端独立运行并对共同 golden 做差分的控制面，不是将任意 legacy/Rust artifact 两两即时比较的通用 comparator；后者需以显式 typed comparison artifact/action 加入，不能隐式共享工作目录或缓存。
+
 复用：
 
 - `rust/tests/plans`；
@@ -325,7 +335,7 @@ candidate 失败不得回退到 legacy。
 - hidden `bsc -simir <file>` 已在 `simCOpt` 后将该受限 `SimCC` 子集导出为 SimIR；它跳过 `simBlocksToC`、C++ 编译/链接、SystemC wrapper 和 BDPI header；
 - exporter 只接受实际观察到的一个 state、一个 clock、`read/write`、`add/equal/unsigned_less_than`、`PrimBNot`、条件、`$time`、`$display`、`$finish` 和初始化 reset tick；其他结构明确失败，不产生部分模型；
 - 从 `tiny.bsv` 实际导出的模型已由 Rust `bluesim step --cycles 10` 与 `mkTest_step.out.expected` 字节级一致；`bluesim run --max-cycles 101` 输出 100 行并以 `$finish(0)` 成功退出；过程中不生成/编译 C++、不启动 Tcl、也不按设计调用 `rustc`；
-- canonical Test Plan runner 的隔离 `legacy/rust/both` engine selector 尚未实现，因此这仍是一个受限 end-to-end slice，不是完整 testsuite differential gate。
+- canonical Test Plan runner 已提供隔离 `legacy/rust/both` engine selector；`simir-m0-mkTest` 可只由 Rust engine 运行，或与 legacy `bluesim-workflow-mkTest` 在 `both` 下各自匹配共同 golden；尚未实现任意 artifact 的通用 cross-engine comparator，因此仍不是完整 testsuite differential gate。
 
 退出条件：
 
@@ -345,6 +355,11 @@ candidate 失败不得回退到 legacy。
 - 最小 expression execution；
 - `$display` 和 `$finish`；
 - `bluesim run` CLI。
+
+2026-08-21 验证：
+
+- `simir-m0-mkTest --bluesim-engine rust` 已通过；
+- `bluesim-workflow-mkTest` 与 `simir-m0-mkTest --bluesim-engine both` 已通过，legacy 与 Rust 工作目录、artifacts 和 cache identity 相互隔离。
 
 退出条件：
 

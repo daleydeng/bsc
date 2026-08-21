@@ -1,4 +1,4 @@
-use bsc_rust_tests::test_plan::TestPlanExecutor;
+use bsc_rust_tests::test_plan::{BluesimEngine, TestPlanExecutor};
 use bsc_rust_tests::{secure_directory_within, secure_read_file, Toolchain};
 use bsc_test_plan::{PlanStatus, TestPlan, TestPlanIndex};
 use clap::Parser;
@@ -27,6 +27,9 @@ struct Cli {
     /// Execute only this scenario within the exactly selected Test Plan. May be repeated.
     #[arg(long = "scenario", value_name = "SCENARIO_ID")]
     scenarios: Vec<String>,
+    /// Select the Bluesim engine scenarios to execute. `both` runs each engine in its own workspace/cache identity.
+    #[arg(long, value_enum, default_value_t = BluesimEngine::Legacy)]
+    bluesim_engine: BluesimEngine,
     /// Maximum number of Test Plans to execute concurrently.
     #[arg(long, default_value_t = available_jobs())]
     jobs: usize,
@@ -149,7 +152,7 @@ fn run() -> Result<(), String> {
         ));
     }
 
-    let executor = TestPlanExecutor::new(&toolchain)?;
+    let executor = TestPlanExecutor::new(&toolchain)?.with_bluesim_engine(cli.bluesim_engine);
     let plans = selected
         .into_iter()
         .map(|entry| load_plan(&plans_root, entry))

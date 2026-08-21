@@ -15,6 +15,7 @@ use bsc_test_plan::{
     Requirement, Scenario, SimulationBackend, SimulationGenerationMode, TestPlan,
     TextNormalization, UndeterminedValue, VerilogFilterProfile,
 };
+use clap::ValueEnum;
 use filetime::{set_file_mtime, FileTime};
 use regex::Regex;
 use sha2::{Digest, Sha256};
@@ -41,6 +42,39 @@ pub struct TestPlanCacheSummary {
     pub stores: usize,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+pub enum BluesimEngine {
+    Legacy,
+    Rust,
+    Both,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ScenarioEngine {
+    Legacy,
+    Rust,
+}
+
+impl ScenarioEngine {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Legacy => "legacy",
+            Self::Rust => "rust",
+        }
+    }
+}
+
+impl BluesimEngine {
+    fn includes(self, scenario_engine: ScenarioEngine) -> bool {
+        matches!(
+            (self, scenario_engine),
+            (Self::Both, _)
+                | (Self::Legacy, ScenarioEngine::Legacy)
+                | (Self::Rust, ScenarioEngine::Rust)
+        )
+    }
+}
+
 #[derive(Default)]
 struct BluetclPackageProbeCache {
     results: Mutex<BTreeMap<BluetclPackage, Result<bool, String>>>,
@@ -65,6 +99,7 @@ pub struct TestPlanExecutor<'a> {
     toolchain: &'a Toolchain,
     cache: ScenarioResultCache,
     package_probes: BluetclPackageProbeCache,
+    bluesim_engine: BluesimEngine,
 }
 
 impl<'a> TestPlanExecutor<'a> {
@@ -73,7 +108,13 @@ impl<'a> TestPlanExecutor<'a> {
             toolchain,
             cache: ScenarioResultCache::new(toolchain)?,
             package_probes: BluetclPackageProbeCache::default(),
+            bluesim_engine: BluesimEngine::Legacy,
         })
+    }
+
+    pub fn with_bluesim_engine(mut self, bluesim_engine: BluesimEngine) -> Self {
+        self.bluesim_engine = bluesim_engine;
+        self
     }
 
     pub fn execute(&self, plan: &TestPlan) -> Result<PlanRunSummary, String> {
@@ -105,24 +146,26 @@ impl<'a> TestPlanExecutor<'a> {
         }
         let selected = selected_scenario_ids(plan, selected_scenarios)?;
         verify_plan_origin(self.toolchain, plan)?;
+        let selected_for_engine = |scenario: &Scenario| {
+            scenario_selected_for_engine(scenario, selected.as_ref(), self.bluesim_engine)
+        };
+        ensure_selected_scenarios_match_engine(
+            &plan.id,
+            &plan.scenarios,
+            selected.as_ref(),
+            self.bluesim_engine,
+        )?;
         if plan
             .scenarios
             .iter()
-            .filter(|scenario| {
-                selected
-                    .as_ref()
-                    .is_none_or(|selected| selected.contains(&scenario.id))
-            })
+            .filter(|scenario| selected_for_engine(scenario))
             .any(|scenario| scenario_skip_reason(self.toolchain, scenario).is_none())
         {
             verify_plan_fixtures(self.toolchain, plan)?;
         }
         let mut summary = PlanRunSummary::default();
         for scenario in &plan.scenarios {
-            if selected
-                .as_ref()
-                .is_some_and(|selected| !selected.contains(&scenario.id))
-            {
+            if !selected_for_engine(scenario) {
                 continue;
             }
             if let Some(reason) = scenario_skip_reason(self.toolchain, scenario) {
@@ -138,6 +181,7 @@ impl<'a> TestPlanExecutor<'a> {
                 &self.package_probes,
                 plan,
                 scenario,
+                scenario_engine(scenario),
             ) {
                 Ok(()) => {
                     summary.passed += scenario.stages.len();
@@ -175,6 +219,78 @@ impl<'a> TestPlanExecutor<'a> {
 
 pub fn execute_test_plan(toolchain: &Toolchain, plan: &TestPlan) -> Result<PlanRunSummary, String> {
     TestPlanExecutor::new(toolchain)?.execute(plan)
+}
+
+fn scenario_engine(scenario: &Scenario) -> ScenarioEngine {
+    if scenario
+        .stages
+        .iter()
+        .flat_map(|stage| &stage.operations)
+        .any(|operation| {
+            matches!(
+                operation.action,
+                Action::BscSimirExport { .. } | Action::SimirM0Step { .. }
+            )
+        })
+    {
+        ScenarioEngine::Rust
+    } else {
+        ScenarioEngine::Legacy
+    }
+}
+
+fn scenario_selected_for_engine(
+    scenario: &Scenario,
+    selected: Option<&BTreeSet<String>>,
+    bluesim_engine: BluesimEngine,
+) -> bool {
+    selected.is_none_or(|selected| selected.contains(&scenario.id))
+        && bluesim_engine.includes(scenario_engine(scenario))
+}
+
+fn ensure_selected_scenarios_match_engine(
+    plan_id: &str,
+    scenarios: &[Scenario],
+    selected: Option<&BTreeSet<String>>,
+    bluesim_engine: BluesimEngine,
+) -> Result<(), String> {
+    let Some(selected) = selected else {
+        return Ok(());
+    };
+    let incompatible = scenarios
+        .iter()
+        .filter(|scenario| {
+            selected.contains(&scenario.id) && !bluesim_engine.includes(scenario_engine(scenario))
+        })
+        .map(|scenario| scenario.id.as_str())
+        .collect::<Vec<_>>();
+    if incompatible.is_empty() {
+        Ok(())
+    } else {
+        Err(format!(
+            "selected scenario(s) in Test Plan {plan_id} do not match Bluesim engine {bluesim_engine:?}: {}",
+            incompatible.join(", ")
+        ))
+    }
+}
+
+fn scenario_run_directories(
+    temporary: &Path,
+    engine: ScenarioEngine,
+    name: &str,
+) -> (PathBuf, PathBuf) {
+    (
+        temporary
+            .join("rust-test-work")
+            .join("plans")
+            .join(engine.name())
+            .join(name),
+        temporary
+            .join("rust-test-artifacts")
+            .join("plans")
+            .join(engine.name())
+            .join(name),
+    )
 }
 
 fn selected_scenario_ids(
@@ -706,14 +822,11 @@ fn execute_scenario(
     package_probes: &BluetclPackageProbeCache,
     plan: &TestPlan,
     scenario: &Scenario,
+    engine: ScenarioEngine,
 ) -> Result<(), String> {
     let name = sanitize_name(&format!("{}::{}", plan.id, scenario.id));
     let temporary = toolchain.project_root.join(".pixi").join("tmp");
-    let work_dir = temporary.join("rust-test-work").join("plans").join(&name);
-    let artifact_dir = temporary
-        .join("rust-test-artifacts")
-        .join("plans")
-        .join(&name);
+    let (work_dir, artifact_dir) = scenario_run_directories(&temporary, engine, &name);
     reset_directory(&work_dir)?;
     reset_directory(&artifact_dir)?;
 
@@ -733,7 +846,8 @@ fn execute_scenario(
         })
         .collect::<Result<Vec<_>, _>>()?;
     let mut fingerprint_parts = vec![
-        "bsc-test-plan-executor-v5",
+        "bsc-test-plan-executor-v6",
+        engine.name(),
         plan.id.as_str(),
         fingerprint.as_str(),
     ];
@@ -3671,6 +3785,184 @@ fn sanitize_name(name: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn engine_test_scenario(id: &str, action: Option<Action>) -> Scenario {
+        Scenario {
+            id: id.to_owned(),
+            fixtures: Vec::new(),
+            resource: ResourceClass::Normal,
+            requires: Vec::new(),
+            bsc_options_append: None,
+            timeouts: Timeouts::default(),
+            stages: vec![Stage {
+                id: "stage".to_owned(),
+                operations: action
+                    .into_iter()
+                    .map(|action| {
+                        OperationRecord::new(
+                            action,
+                            OperationExpectation::Required,
+                            bsc_test_plan::Provenance {
+                                span: bsc_test_plan::SourceSpan {
+                                    start_byte: 0,
+                                    end_byte: 0,
+                                    start_line: 1,
+                                    start_column: 1,
+                                    end_line: 1,
+                                    end_column: 1,
+                                },
+                                expansion: Vec::new(),
+                            },
+                        )
+                    })
+                    .collect(),
+            }],
+        }
+    }
+
+    #[test]
+    fn bluesim_engine_inference_uses_typed_simir_actions() {
+        let legacy = engine_test_scenario("legacy", None);
+        let simir_export = engine_test_scenario(
+            "simir-export",
+            Some(Action::BscSimirExport {
+                top: "mkTop".to_owned(),
+                output: "mkTop.bsim.json".to_owned(),
+            }),
+        );
+        let simir_step = engine_test_scenario(
+            "simir-step",
+            Some(Action::SimirM0Step {
+                model: "mkTop.bsim.json".to_owned(),
+                cycles: 1,
+                stdout: "step.out".to_owned(),
+                expected_finish: None,
+            }),
+        );
+
+        assert_eq!(scenario_engine(&legacy), ScenarioEngine::Legacy);
+        assert_eq!(scenario_engine(&simir_export), ScenarioEngine::Rust);
+        assert_eq!(scenario_engine(&simir_step), ScenarioEngine::Rust);
+    }
+
+    #[test]
+    fn bluesim_engine_selector_includes_only_its_scenarios() {
+        let legacy = engine_test_scenario("legacy", None);
+        let rust = engine_test_scenario(
+            "rust",
+            Some(Action::SimirM0Step {
+                model: "mkTop.bsim.json".to_owned(),
+                cycles: 1,
+                stdout: "step.out".to_owned(),
+                expected_finish: None,
+            }),
+        );
+
+        assert!(scenario_selected_for_engine(
+            &legacy,
+            None,
+            BluesimEngine::Legacy
+        ));
+        assert!(!scenario_selected_for_engine(
+            &rust,
+            None,
+            BluesimEngine::Legacy
+        ));
+        assert!(!scenario_selected_for_engine(
+            &legacy,
+            None,
+            BluesimEngine::Rust
+        ));
+        assert!(scenario_selected_for_engine(
+            &rust,
+            None,
+            BluesimEngine::Rust
+        ));
+        assert!(scenario_selected_for_engine(
+            &legacy,
+            None,
+            BluesimEngine::Both
+        ));
+        assert!(scenario_selected_for_engine(
+            &rust,
+            None,
+            BluesimEngine::Both
+        ));
+    }
+
+    #[test]
+    fn explicit_scenarios_must_match_the_selected_bluesim_engine() {
+        let legacy = engine_test_scenario("legacy", None);
+        let selected = BTreeSet::from(["legacy".to_owned()]);
+        let error = ensure_selected_scenarios_match_engine(
+            "selector-test",
+            std::slice::from_ref(&legacy),
+            Some(&selected),
+            BluesimEngine::Rust,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error,
+            "selected scenario(s) in Test Plan selector-test do not match Bluesim engine Rust: legacy"
+        );
+        assert!(ensure_selected_scenarios_match_engine(
+            "selector-test",
+            std::slice::from_ref(&legacy),
+            Some(&selected),
+            BluesimEngine::Both,
+        )
+        .is_ok());
+
+        let rust = engine_test_scenario(
+            "rust",
+            Some(Action::SimirM0Step {
+                model: "mkTop.bsim.json".to_owned(),
+                cycles: 1,
+                stdout: "step.out".to_owned(),
+                expected_finish: None,
+            }),
+        );
+        let selected = BTreeSet::from(["legacy".to_owned(), "rust".to_owned()]);
+        let error = ensure_selected_scenarios_match_engine(
+            "selector-test",
+            &[legacy, rust],
+            Some(&selected),
+            BluesimEngine::Legacy,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error,
+            "selected scenario(s) in Test Plan selector-test do not match Bluesim engine Legacy: rust"
+        );
+    }
+
+    #[test]
+    fn bluesim_engine_run_directories_are_isolated() {
+        let temporary = Path::new("temporary");
+        let (legacy_work, legacy_artifacts) =
+            scenario_run_directories(temporary, ScenarioEngine::Legacy, "plan--scenario");
+        let (rust_work, rust_artifacts) =
+            scenario_run_directories(temporary, ScenarioEngine::Rust, "plan--scenario");
+
+        assert_eq!(
+            legacy_work,
+            temporary.join("rust-test-work/plans/legacy/plan--scenario")
+        );
+        assert_eq!(
+            legacy_artifacts,
+            temporary.join("rust-test-artifacts/plans/legacy/plan--scenario")
+        );
+        assert_eq!(
+            rust_work,
+            temporary.join("rust-test-work/plans/rust/plan--scenario")
+        );
+        assert_eq!(
+            rust_artifacts,
+            temporary.join("rust-test-artifacts/plans/rust/plan--scenario")
+        );
+        assert_ne!(legacy_work, rust_work);
+        assert_ne!(legacy_artifacts, rust_artifacts);
+    }
 
     #[test]
     fn flag_preflights_keep_non_materialized_inputs_after_all_flags() {
