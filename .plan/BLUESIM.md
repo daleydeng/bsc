@@ -499,4 +499,6 @@ Bluesim 重写完成需要：
 
 ## 13. 当前下一步
 
-将 M0 exporter 的生成/运行/黄金比较接入既有 Rust Test Plan runner 的一个隔离 `rust` engine scenario；随后再引入显式 `legacy/rust/both` selector。`both` 必须为两端创建独立 workspace 和 artifact/cache identity，且 Rust candidate 失败不得回退 legacy。先保持 `tiny` 的受限、fail-closed exporter；每个新增 fixture 都要先从真实 SimCC shape 扩展 schema、exporter、runtime 与 differential assertion。此 gate 建立前，不创建 C++ adapter、不铺完整 runtime crate graph、不设计 JIT。
+`tiny` 的隔离 `simir-m0-mkTest` scenario 已注入既有 canonical Test Plan：它生成 `.ba`、执行 `bsc.simir_export`、由 in-process Rust `bluesim::Engine` step 10 次，并复用 upstream golden。两个 typed action 均为 closed contract，不启动 Tcl、不生成/编译 C++、不调用 per-design `rustc`；in-process runtime 的失败不会回退 legacy。生成物检查、schema/importer 和 Rust workspace 测试已通过。
+
+已使用 canonical Rust Test Plan runner 实际执行该单场景：`tiny.bsv → .ba → .bsim.json → in-process Rust engine → mkTest_step.out.expected`，两个 stage 通过、零跳过，且没有 legacy simulation fallback。下一步引入显式 `legacy/rust/both` selector。`both` 必须为两端创建独立 workspace 和 artifact/cache identity，且 Rust candidate 失败不得回退 legacy。每个新增 fixture 都要先从真实 SimCC shape 扩展 schema、exporter、runtime 与 differential assertion。此 gate 建立前，不创建 C++ adapter、不铺完整 runtime crate graph、不设计 JIT。

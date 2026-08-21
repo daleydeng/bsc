@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use thiserror::Error;
 
-pub const TEST_PLAN_SCHEMA_VERSION: u32 = 49;
+pub const TEST_PLAN_SCHEMA_VERSION: u32 = 50;
 pub const TEST_PLAN_INDEX_SCHEMA_VERSION: u32 = 1;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
@@ -298,6 +298,14 @@ impl ArtifactContract {
                         .filter_map(|profile| profile.fixture_path().map(str::to_owned)),
                 );
                 outputs.push(path.clone());
+            }
+            Action::BscSimirExport { top, output } => {
+                inputs.push(format!("{top}.ba"));
+                outputs.push(output.clone());
+            }
+            Action::SimirM0Step { model, stdout, .. } => {
+                inputs.push(model.clone());
+                outputs.push(stdout.clone());
             }
             Action::BscGenerate {
                 source,
@@ -660,6 +668,18 @@ pub enum Action {
         module: Option<String>,
         args: Vec<String>,
     },
+    /// Export the optimized legacy Bluesim schedule as the deliberately narrow M0 SimIR subset.
+    #[serde(rename = "bsc.simir_export")]
+    BscSimirExport { top: String, output: String },
+    /// Execute a generated M0 SimIR model using the Rust Bluesim library for a fixed number of cycles.
+    #[serde(rename = "simir.m0_step")]
+    SimirM0Step {
+        model: String,
+        cycles: u64,
+        stdout: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        expected_finish: Option<i32>,
+    },
     #[serde(rename = "c.compile_object")]
     CObjectBuild {
         source: String,
@@ -883,6 +903,8 @@ impl Action {
             | Self::TextNormalize { .. }
             | Self::VerilogFilter { .. }
             | Self::BscGenerate { .. }
+            | Self::BscSimirExport { .. }
+            | Self::SimirM0Step { .. }
             | Self::CObjectBuild { .. }
             | Self::BscLink { .. }
             | Self::SimulationRun { .. }
@@ -2226,6 +2248,26 @@ fn validate_action(action: &Action) -> Result<(), ValidationError> {
                 validate_portable_segment(module, "bsc.generate module")?;
             }
         }
+        Action::BscSimirExport { top, output } => {
+            validate_portable_segment(top, "bsc.simir_export top")?;
+            if !output.ends_with(".bsim.json") {
+                return Err(ValidationError::new(
+                    "bsc.simir_export output must end with .bsim.json",
+                ));
+            }
+        }
+        Action::SimirM0Step { model, cycles, .. } => {
+            if !model.ends_with(".bsim.json") {
+                return Err(ValidationError::new(
+                    "simir.m0_step model must end with .bsim.json",
+                ));
+            }
+            if !(1..=1_000_000).contains(cycles) {
+                return Err(ValidationError::new(
+                    "simir.m0_step cycles must be between 1 and 1000000",
+                ));
+            }
+        }
         Action::CObjectBuild {
             source,
             makefile,
@@ -2695,6 +2737,8 @@ fn action_paths(action: &Action) -> Vec<&str> {
             paths
         }
         Action::BscGenerate { source, .. } => vec![source],
+        Action::BscSimirExport { top, output } => vec![top, output],
+        Action::SimirM0Step { model, stdout, .. } => vec![model, stdout],
         Action::CObjectBuild {
             source,
             makefile,

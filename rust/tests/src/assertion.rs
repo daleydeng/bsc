@@ -306,6 +306,8 @@ fn plan_action_name(action: &PlanAction) -> &'static str {
         PlanAction::TextNormalize { .. } => "text.normalize",
         PlanAction::VerilogFilter { .. } => "verilog.filter",
         PlanAction::BscGenerate { .. } => "bsc.generate",
+        PlanAction::BscSimirExport { .. } => "bsc.simir_export",
+        PlanAction::SimirM0Step { .. } => "simir.m0_step",
         PlanAction::CObjectBuild { .. } => "c.compile_object",
         PlanAction::BscLink { .. } => "bsc.link",
         PlanAction::BscSystemcLink { .. } => "bsc.systemc_link",

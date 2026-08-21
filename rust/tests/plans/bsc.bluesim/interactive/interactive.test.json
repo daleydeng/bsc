@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 49,
+  "schemaVersion": 50,
   "id": "bsc.bluesim/interactive/interactive",
   "origin": {
     "path": "testsuite/bsc.bluesim/interactive/interactive.exp",
@@ -2978,6 +2978,143 @@
                   "startColumn": 5,
                   "endLine": 118,
                   "endColumn": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simir-m0-mkTest",
+      "resource": "normal",
+      "fixtures": [
+        "mkTest_step.out.expected",
+        "tiny.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "export-m0",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "tiny.bsv",
+              "mode": "bluesim",
+              "module": "mkTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "tiny.bsv"
+                ],
+                "outputs": [
+                  "mkTest.ba",
+                  "tiny.bo",
+                  "tiny.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 58,
+                  "startLine": 2,
+                  "startColumn": 5,
+                  "endLine": 2,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.simir_export",
+              "top": "mkTest",
+              "output": "mkTest.m0.bsim.json",
+              "artifacts": {
+                "inputs": [
+                  "mkTest.ba"
+                ],
+                "outputs": [
+                  "mkTest.m0.bsim.json"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 63,
+                  "endByte": 96,
+                  "startLine": 3,
+                  "startColumn": 5,
+                  "endLine": 3,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "step-m0",
+          "operations": [
+            {
+              "op": "simir.m0_step",
+              "model": "mkTest.m0.bsim.json",
+              "cycles": 10,
+              "stdout": "mkTest_m0_step.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTest.m0.bsim.json"
+                ],
+                "outputs": [
+                  "mkTest_m0_step.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 102,
+                  "endByte": 133,
+                  "startLine": 5,
+                  "startColumn": 5,
+                  "endLine": 5,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTest_m0_step.out",
+              "expected": "mkTest_step.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTest_m0_step.out",
+                  "mkTest_step.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 102,
+                  "endByte": 133,
+                  "startLine": 5,
+                  "startColumn": 5,
+                  "endLine": 5,
+                  "endColumn": 36
                 }
               }
             }

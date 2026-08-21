@@ -6,6 +6,7 @@ use crate::{
     run_bsc_with_options_prepend, run_command, secure_directory_within, secure_file_within,
     Toolchain,
 };
+use bluesim::{Engine as SimirEngine, Model as SimirModel};
 use bsc_test_plan::{
     simulation_executable_artifact, Action, BluetclInstalledScript, BluetclInvocation,
     BluetclMakedependCommand, BluetclPackage, BluetclSyntax, BscCompileMode, BscFlagPreflightMode,
@@ -1182,6 +1183,68 @@ fn execute_operation(
             );
             apply_operation_expectation(contract_result, expectation, action)
         }
+        Action::BscSimirExport { top, output } => {
+            let arguments = vec![
+                "-no-show-timestamps".to_owned(),
+                "-no-show-version".to_owned(),
+                "-sim".to_owned(),
+                "-e".to_owned(),
+                top.clone(),
+                "-simir".to_owned(),
+                output.clone(),
+                format!("{top}.ba"),
+            ];
+            let refs = arguments.iter().map(String::as_str).collect::<Vec<_>>();
+            let log = artifact_dir.join(format!("operation-{operation_index}-simir-export.log"));
+            let result = run_bsc_with_options(
+                toolchain,
+                &refs,
+                work_dir,
+                &log,
+                Duration::from_secs(scenario.timeouts.link_seconds),
+                scenario.bsc_options_append.as_deref(),
+            )?;
+            result.success.then_some(()).ok_or_else(|| {
+                format!("BSC SimIR export for {top} failed; see {}", log.display())
+            })?;
+            ensure_regular_artifact(work_dir, output, "SimIR export output")
+        }
+        Action::SimirM0Step {
+            model,
+            cycles,
+            stdout,
+            expected_finish,
+        } => {
+            ensure_regular_artifact(work_dir, model, "SimIR model")?;
+            let model_path = work_dir.join(model);
+            let model = SimirModel::read_json(&model_path)
+                .map_err(|error| format!("load SimIR {}: {error}", model_path.display()))?;
+            let mut engine = SimirEngine::new(model)
+                .map_err(|error| format!("initialize SimIR engine: {error}"))?;
+            let result = engine
+                .step(*cycles)
+                .map_err(|error| format!("execute SimIR M0 step: {error}"))?;
+            if result.exit_status != *expected_finish {
+                return Err(format!(
+                    "SimIR M0 step finish status {:?}, expected {:?}",
+                    result.exit_status, expected_finish
+                ));
+            }
+            let mut output_text = result.output.join("\n");
+            if !output_text.is_empty() {
+                output_text.push('\n');
+            }
+            fs::write(work_dir.join(stdout), output_text)
+                .map_err(|error| format!("write SimIR M0 output {stdout}: {error}"))?;
+            fs::write(
+                artifact_dir.join(format!("operation-{operation_index}-simir-step.log")),
+                format!(
+                    "cycles={} time={} finish={:?}\n",
+                    result.cycles, result.time, result.exit_status
+                ),
+            )
+            .map_err(|error| format!("write SimIR M0 step log: {error}"))
+        }
         Action::BscGenerate {
             source,
             mode,
@@ -2140,6 +2203,8 @@ fn action_name(action: &Action) -> &'static str {
         Action::TextNormalize { .. } => "text.normalize",
         Action::VerilogFilter { .. } => "verilog.filter",
         Action::BscGenerate { .. } => "bsc.generate",
+        Action::BscSimirExport { .. } => "bsc.simir_export",
+        Action::SimirM0Step { .. } => "simir.m0_step",
         Action::CObjectBuild { .. } => "c.compile_object",
         Action::BscLink { .. } => "bsc.link",
         Action::BscSystemcLink { .. } => "bsc.systemc_link",

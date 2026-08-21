@@ -152,6 +152,10 @@ pub fn build_test_plans_from_manifest(
     Ok(GeneratedTestPlans { plans, index })
 }
 
+const TINY_M0_SIMIR_ORIGIN: &str = "testsuite/bsc.bluesim/interactive/interactive.exp";
+const TINY_M0_SIMIR_SHA256: &str =
+    "9d3ec0fbb8fd0de5fc024703c64ef8d282570cf9b3875191352a32aed4d59fda";
+
 const OPTIONS_PLAN_ORIGIN: &str = "testsuite/bsc.options/options.exp";
 const OPTIONS_PLAN_SHA256: &str =
     "636b8c7a49224cf3737a679dd3f5b04989fb63f868528a9e41e77fe50e7aebcd";
@@ -530,6 +534,11 @@ fn plan_from_script(project_root: &Path, script: &ScriptManifest) -> GeneratedTe
             Ok(imported) => assembly.push(imported),
             Err(diagnostic) => diagnostics.push(diagnostic),
         }
+    }
+    match tiny_m0_simir_scenario(&script, &fixture_root) {
+        Ok(Some(scenario)) => assembly.scenarios.push(scenario),
+        Ok(None) => {}
+        Err(diagnostic) => diagnostics.push(diagnostic),
     }
     for (workflow_index, workflow) in script.systemc_workflows.iter().enumerate() {
         match systemc_workflow_scenario(workflow_index, workflow) {
@@ -919,6 +928,112 @@ fn plan_from_script(project_root: &Path, script: &ScriptManifest) -> GeneratedTe
         relative_path: PathBuf::from(format!("{id}.test.json")),
         plan,
     }
+}
+
+fn tiny_m0_simir_scenario(
+    script: &ScriptManifest,
+    fixture_root: &Path,
+) -> Result<Option<Scenario>, ImportDiagnostic> {
+    if script.origin != TINY_M0_SIMIR_ORIGIN {
+        return Ok(None);
+    }
+    if script.source_sha256 != TINY_M0_SIMIR_SHA256 {
+        return Err(global_error(
+            "import.tiny_m0_simir_pin",
+            "the interactive Bluesim origin changed; review the M0 SimIR workflow shape".to_owned(),
+        ));
+    }
+    let workflows = script
+        .bluesim_workflows
+        .iter()
+        .filter(|workflow| {
+            workflow.top == "mkTest"
+                && workflow.link.top == "mkTest"
+                && workflow.generations.len() == 1
+                && workflow.generations[0].source == "tiny.bsv"
+                && workflow.generations[0].module.as_deref() == Some("mkTest")
+        })
+        .collect::<Vec<_>>();
+    let [workflow] = workflows.as_slice() else {
+        return Err(global_error(
+            "import.tiny_m0_simir_shape",
+            "expected exactly one mkTest Bluesim workflow generated from tiny.bsv".to_owned(),
+        ));
+    };
+    if !fixture_root.join("tiny.bsv").is_file()
+        || !fixture_root.join("mkTest_step.out.expected").is_file()
+    {
+        return Err(global_error(
+            "import.tiny_m0_simir_fixture",
+            "tiny M0 SimIR fixture or its step golden is missing".to_owned(),
+        ));
+    }
+
+    let generation = &workflow.generations[0];
+    let generation_provenance = provenance(generation.span, &generation.expansion);
+    let link_provenance = provenance(workflow.link.span, &workflow.link.expansion);
+    let step_provenance = workflow
+        .runs
+        .iter()
+        .find(|run| run.action.stdout == "mkTest.out")
+        .map(|run| provenance(run.action.span, &run.action.expansion))
+        .unwrap_or_else(|| link_provenance.clone());
+    Ok(Some(Scenario {
+        id: "simir-m0-mkTest".to_owned(),
+        resource: ResourceClass::Normal,
+        fixtures: Vec::new(),
+        requires: vec![Requirement::Bluesim],
+        bsc_options_append: None,
+        timeouts: Timeouts::default(),
+        stages: vec![
+            Stage {
+                id: "export-m0".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::BscGenerate {
+                            source: "tiny.bsv".to_owned(),
+                            mode: SimulationGenerationMode::Bluesim,
+                            module: Some("mkTest".to_owned()),
+                            args: Vec::new(),
+                        },
+                        OperationExpectation::Required,
+                        generation_provenance,
+                    ),
+                    OperationRecord::new(
+                        Action::BscSimirExport {
+                            top: "mkTest".to_owned(),
+                            output: "mkTest.m0.bsim.json".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        link_provenance,
+                    ),
+                ],
+            },
+            Stage {
+                id: "step-m0".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::SimirM0Step {
+                            model: "mkTest.m0.bsim.json".to_owned(),
+                            cycles: 10,
+                            stdout: "mkTest_m0_step.out".to_owned(),
+                            expected_finish: None,
+                        },
+                        OperationExpectation::Required,
+                        step_provenance.clone(),
+                    ),
+                    OperationRecord::new(
+                        Action::AssertGolden {
+                            actual: "mkTest_m0_step.out".to_owned(),
+                            expected: "mkTest_step.out.expected".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        step_provenance,
+                    ),
+                ],
+            },
+        ],
+    }))
 }
 
 fn external_set_scenarios(
