@@ -1,0 +1,449 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1753/b1753",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1753/b1753.exp",
+    "sha256": "762c85e743f2255f7d3807b0b0030b7d55a181252d2afc75e8ab563b0146103f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1753",
+  "fixtures": [
+    {
+      "path": "Bug1753.bsv",
+      "sha256": "0c4b6f3f63bc78deee845f23f4086bddcc2cf74c4710ba86ab0bd8b633b72981",
+      "role": "source"
+    },
+    {
+      "path": "MethodNameShadow.bsv",
+      "sha256": "173aee85398d602056e940f43dbbb63ba487f9ea174e37133cb4c5bf4db99996",
+      "role": "source"
+    },
+    {
+      "path": "ShadowInExpr.bsv",
+      "sha256": "1a9ce08e6e482c693eecf6129b3d799560adc28dd8896bdeb4595b044a40114c",
+      "role": "source"
+    },
+    {
+      "path": "ShadowInMethod.bsv",
+      "sha256": "a379c57a50c3177ddd5279c1b3ce2324430d2eb7ea8aeeab22dabade4eb5ad7e",
+      "role": "source"
+    },
+    {
+      "path": "ShadowInPattern.bsv",
+      "sha256": "af46dad5505613e8bbc3487c1580c4c0b848288c70a7425ef5c54f8d0be4525c",
+      "role": "source"
+    },
+    {
+      "path": "ShadowInRule.bsv",
+      "sha256": "cf70605e842290f1d313bb640b228061b17b660899760ac1d7e38a754f2ca579",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Bug1753",
+      "resource": "normal",
+      "fixtures": [
+        "Bug1753.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug1753",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug1753.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Bug1753.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug1753.bsv"
+                ],
+                "outputs": [
+                  "Bug1753.bo",
+                  "Bug1753.bsv.bsc-vcomp-out",
+                  "sysBug1753.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 136,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ShadowInExpr",
+      "resource": "normal",
+      "fixtures": [
+        "ShadowInExpr.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ShadowInExpr",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ShadowInExpr.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ShadowInExpr.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ShadowInExpr.bsv"
+                ],
+                "outputs": [
+                  "ShadowInExpr.bo",
+                  "ShadowInExpr.bsv.bsc-vcomp-out",
+                  "sysShadowInExpr.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 517,
+                  "endByte": 554,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysShadowInExpr.v",
+              "text": "assign lastdata$D_IN = { ending[5], ending[4:0] + 5'd1 } ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysShadowInExpr.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 651,
+                  "endByte": 752,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 67
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-ShadowInRule",
+      "resource": "normal",
+      "fixtures": [
+        "ShadowInRule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ShadowInRule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ShadowInRule.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ShadowInRule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ShadowInRule.bsv"
+                ],
+                "outputs": [
+                  "ShadowInRule.bo",
+                  "ShadowInRule.bsv.bsc-vcomp-out",
+                  "sysShadowInRule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 785,
+                  "endByte": 822,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysShadowInRule.v",
+              "text": "assign lastdata$D_IN = { 1'd1, ending[4:0] + 5'd1 } ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysShadowInRule.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 823,
+                  "endByte": 919,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-ShadowInMethod",
+      "resource": "normal",
+      "fixtures": [
+        "ShadowInMethod.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ShadowInMethod",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ShadowInMethod.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ShadowInMethod.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ShadowInMethod.bsv"
+                ],
+                "outputs": [
+                  "ShadowInMethod.bo",
+                  "ShadowInMethod.bsv.bsc-vcomp-out",
+                  "sysShadowInMethod.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1037,
+                  "endByte": 1076,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysShadowInMethod.v",
+              "text": "assign lastdata$D_IN = { 1'd1, ending[4:0] + 5'd1 } ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysShadowInMethod.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1077,
+                  "endByte": 1175,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-ShadowInPattern",
+      "resource": "normal",
+      "fixtures": [
+        "ShadowInPattern.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ShadowInPattern",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ShadowInPattern.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ShadowInPattern.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ShadowInPattern.bsv"
+                ],
+                "outputs": [
+                  "ShadowInPattern.bo",
+                  "ShadowInPattern.bsv.bsc-vcomp-out",
+                  "sysShadowInPattern.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1406,
+                  "endByte": 1446,
+                  "startLine": 43,
+                  "startColumn": 1,
+                  "endLine": 43,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-MethodNameShadow",
+      "resource": "normal",
+      "fixtures": [
+        "MethodNameShadow.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodNameShadow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodNameShadow.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MethodNameShadow.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodNameShadow.bsv"
+                ],
+                "outputs": [
+                  "MethodNameShadow.bo",
+                  "MethodNameShadow.bsv.bsc-vcomp-out",
+                  "sysMethodNameShadow.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1735,
+                  "endByte": 1776,
+                  "startLine": 55,
+                  "startColumn": 1,
+                  "endLine": 55,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

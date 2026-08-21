@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/to_systemc/getput/getput",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/to_systemc/getput/getput.exp",
+    "sha256": "5d145f4358afe12608febff01c6eba82d0271dfe80324a14489e9592c84eeff4"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/to_systemc/getput",
+  "fixtures": [
+    {
+      "path": "GetPutTest.bsv",
+      "sha256": "3429c7bba9260bf50d8ed5af85caf04c63a0cac4b952a8f0a40512b72b33c914",
+      "role": "source"
+    },
+    {
+      "path": "TbGetPut.sc",
+      "sha256": "96b9c1db8e91c39251785606505356bb2fef0d31b010c3ed08ac42c5ebc1f219",
+      "role": "data"
+    },
+    {
+      "path": "getput.out.expected",
+      "sha256": "5450fea57967428dad3d0ccbd788e6477556236d63a89cda9f6e6dab3c8eed76",
+      "role": "golden"
+    },
+    {
+      "path": "top.sc",
+      "sha256": "ae6d8d1ee73440433a70e507351b52a63d0ed291b710c4460604159b8d27d8db",
+      "role": "data"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "systemc-workflow-getput",
+      "resource": "heavy",
+      "fixtures": [
+        "GetPutTest.bsv",
+        "TbGetPut.sc",
+        "getput.out.expected",
+        "top.sc"
+      ],
+      "requires": [
+        "bluesim",
+        "system_c"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "systemc-run",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GetPutTest.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GetPutTest.bsv"
+                ],
+                "outputs": [
+                  "GetPutTest.bsv.bsc-ccomp-out",
+                  "GetPutTest.bo",
+                  "mkGetPutTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 81,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "mkGetPutTest.ba"
+              ],
+              "top": "mkGetPutTest",
+              "artifacts": {
+                "inputs": [
+                  "mkGetPutTest.ba"
+                ],
+                "outputs": [
+                  "mkGetPutTest.bsc-ccomp-out",
+                  "mkGetPutTest.o",
+                  "mkGetPutTest_systemc.o",
+                  "model_mkGetPutTest.o"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 82,
+                  "endByte": 138,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "systemc.cxx_link",
+              "executable": "getput",
+              "sources": [
+                "top.sc",
+                "TbGetPut.sc"
+              ],
+              "topModules": [
+                "mkGetPutTest"
+              ],
+              "otherModules": [],
+              "defines": [],
+              "artifacts": {
+                "inputs": [
+                  "top.sc",
+                  "TbGetPut.sc",
+                  "mkGetPutTest.o",
+                  "mkGetPutTest_systemc.o",
+                  "model_mkGetPutTest.o"
+                ],
+                "outputs": [
+                  "getput.syscexe",
+                  "getput.cxx-comp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 209,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "systemc.run",
+              "executable": "getput",
+              "stdout": "getput.out",
+              "sortOutput": false,
+              "artifacts": {
+                "inputs": [
+                  "getput.syscexe"
+                ],
+                "outputs": [
+                  "getput.out",
+                  "getput.raw.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 210,
+                  "endByte": 239,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "getput.out",
+              "expected": "getput.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "getput.out",
+                  "getput.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 210,
+                  "endByte": 239,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

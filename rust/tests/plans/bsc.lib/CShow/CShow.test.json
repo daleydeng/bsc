@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/CShow/CShow",
+  "origin": {
+    "path": "testsuite/bsc.lib/CShow/CShow.exp",
+    "sha256": "ccd606181e632ffcc0cb5e63cffb388fc956a642dd918f9de7e1546523aa1846"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/CShow",
+  "fixtures": [
+    {
+      "path": "TestCShow.bs",
+      "sha256": "1373c6bec008a51964f54cbd25bdd262a365d9eec5149b5bb5e27d91ce5e0e1e",
+      "role": "source"
+    },
+    {
+      "path": "sysTestCShow.out.expected",
+      "sha256": "f3c153f015427c781b801dc09257f4904ea43d4ac12b3904546048655f32fcad",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestCShow",
+      "resource": "heavy",
+      "fixtures": [
+        "TestCShow.bs",
+        "sysTestCShow.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestCShow",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestCShow.bs",
+              "mode": "shared_elaboration",
+              "module": "sysTestCShow",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestCShow.bs"
+                ],
+                "outputs": [
+                  "TestCShow.bo",
+                  "TestCShow.bs.bsc-vcomp-out",
+                  "sysTestCShow.ba",
+                  "sysTestCShow.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestCShow"
+              ],
+              "top": "sysTestCShow",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.v"
+                ],
+                "outputs": [
+                  "sysTestCShow.bsc-vcomp-out",
+                  "sysTestCShow.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestCShow",
+              "args": [],
+              "stdout": "sysTestCShow.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.vexe"
+                ],
+                "outputs": [
+                  "sysTestCShow.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestCShow.v.out",
+              "expected": "sysTestCShow.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.v.out",
+                  "sysTestCShow.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestCShow",
+              "args": [],
+              "stdout": "sysTestCShow.v-vcd.out",
+              "vcd": "sysTestCShow.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.vexe"
+                ],
+                "outputs": [
+                  "sysTestCShow.v-vcd.out",
+                  "sysTestCShow.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestCShow.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestCShow"
+              ],
+              "top": "sysTestCShow",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.ba"
+                ],
+                "outputs": [
+                  "sysTestCShow.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestCShow.cexe",
+                    "sysTestCShow.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestCShow",
+              "args": [],
+              "stdout": "sysTestCShow.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.cexe"
+                ],
+                "outputs": [
+                  "sysTestCShow.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestCShow.c.out",
+              "expected": "sysTestCShow.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.c.out",
+                  "sysTestCShow.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestCShow",
+              "args": [],
+              "stdout": "sysTestCShow.c-vcd.out",
+              "vcd": "sysTestCShow.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.cexe"
+                ],
+                "outputs": [
+                  "sysTestCShow.c-vcd.out",
+                  "sysTestCShow.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestCShow.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestCShow.c-vcd.out",
+              "expected": "sysTestCShow.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCShow.c-vcd.out",
+                  "sysTestCShow.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 62,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

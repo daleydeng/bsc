@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/EqFunction/EqFunction",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/EqFunction/EqFunction.exp",
+    "sha256": "25084b1f7b178fc5fb8c32d03222f201446796a0fb55cf27d5a184079575f8cc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/EqFunction",
+  "fixtures": [
+    {
+      "path": "EqTest.bsv",
+      "sha256": "48192a1bf440ec92cda8dc7131a62ec6e8bda4198195369a2eab9ca664b181d7",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_EqTest.v.out.expected",
+      "sha256": "c20ea089639095c12459ad760a539df55a4f16308eff50f97207efb40a8ac047",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_EqTest",
+      "resource": "heavy",
+      "fixtures": [
+        "EqTest.bsv",
+        "mkTestbench_EqTest.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_EqTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "EqTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_EqTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "EqTest.bsv"
+                ],
+                "outputs": [
+                  "EqTest.bo",
+                  "EqTest.bsv.bsc-vcomp-out",
+                  "mkTestbench_EqTest.ba",
+                  "mkTestbench_EqTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_EqTest"
+              ],
+              "top": "mkTestbench_EqTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.v"
+                ],
+                "outputs": [
+                  "mkTestbench_EqTest.bsc-vcomp-out",
+                  "mkTestbench_EqTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_EqTest",
+              "args": [],
+              "stdout": "mkTestbench_EqTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EqTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EqTest.v.out",
+              "expected": "mkTestbench_EqTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.v.out",
+                  "mkTestbench_EqTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_EqTest",
+              "args": [],
+              "stdout": "mkTestbench_EqTest.v-vcd.out",
+              "vcd": "mkTestbench_EqTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EqTest.v-vcd.out",
+                  "mkTestbench_EqTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_EqTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_EqTest"
+              ],
+              "top": "mkTestbench_EqTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_EqTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_EqTest.cexe",
+                    "mkTestbench_EqTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_EqTest",
+              "args": [],
+              "stdout": "mkTestbench_EqTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EqTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EqTest.c.out",
+              "expected": "mkTestbench_EqTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.c.out",
+                  "mkTestbench_EqTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_EqTest",
+              "args": [],
+              "stdout": "mkTestbench_EqTest.c-vcd.out",
+              "vcd": "mkTestbench_EqTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EqTest.c-vcd.out",
+                  "mkTestbench_EqTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_EqTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EqTest.c-vcd.out",
+              "expected": "mkTestbench_EqTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EqTest.c-vcd.out",
+                  "mkTestbench_EqTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 99,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 100
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

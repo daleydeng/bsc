@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/WMissingRule/WMissingRule",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/WMissingRule/WMissingRule.exp",
+    "sha256": "01150af1fd17bd2768ba9760c86cd7e58522445c5cb07bd0f06dff0f5742a38e"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/WMissingRule",
+  "fixtures": [
+    {
+      "path": "WMissingRule1.bs",
+      "sha256": "13e0f8801651d1cb50ee73e176045b9661c95cc621db399355374219411027d1",
+      "role": "source"
+    },
+    {
+      "path": "WMissingRule1.bs.bsc-vcomp-out.expected",
+      "sha256": "4e6581155586ac82b47d536b403e2ce64d070fdb7ae7fb75f85f17f149c92e30",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-WMissingRule1",
+      "resource": "normal",
+      "fixtures": [
+        "WMissingRule1.bs",
+        "WMissingRule1.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-WMissingRule1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "WMissingRule1.bs",
+              "mode": "verilog",
+              "module": "mkWMissingRule1",
+              "args": [
+                "-show-rule-rel",
+                "Five",
+                "Six"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "WMissingRule1.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "WMissingRule1.bs"
+                ],
+                "outputs": [
+                  "WMissingRule1.bo",
+                  "WMissingRule1.bs.bsc-vcomp-out",
+                  "mkWMissingRule1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 98,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "WMissingRule1.bs.bsc-vcomp-out",
+              "expected": "WMissingRule1.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "WMissingRule1.bs.bsc-vcomp-out",
+                  "WMissingRule1.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 99,
+                  "endByte": 142,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

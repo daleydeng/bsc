@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/ERTSStackOverflow/ERTSStackOverflow",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/ERTSStackOverflow/ERTSStackOverflow.exp",
+    "sha256": "285174e35888c245773ef969d4d6034dd4b515b7a40648da2c785a37a4b1b528"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/ERTSStackOverflow",
+  "fixtures": [
+    {
+      "path": "ERTSStackOverflow1.bs",
+      "sha256": "793708e275e8649ad007cdb9ea30a255e3a8e45a260915a7a122ecbb818bdd44",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ERTSStackOverflow1",
+      "resource": "normal",
+      "fixtures": [
+        "ERTSStackOverflow1.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ERTSStackOverflow1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ERTSStackOverflow1.bs",
+              "mode": "verilog",
+              "module": "mkERTSStackOverflow1",
+              "args": [
+                "+RTS",
+                "-K1M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ERTSStackOverflow1.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ERTSStackOverflow1.bs"
+                ],
+                "outputs": [
+                  "ERTSStackOverflow1.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 80,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "ERTSStackOverflow1.bs.bsc-vcomp-out",
+              "text": "Stack space overflow",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ERTSStackOverflow1.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 102,
+                  "endByte": 177,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

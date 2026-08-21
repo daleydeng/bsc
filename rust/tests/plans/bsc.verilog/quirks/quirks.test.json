@@ -1,0 +1,2349 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/quirks/quirks",
+  "origin": {
+    "path": "testsuite/bsc.verilog/quirks/quirks.exp",
+    "sha256": "3f515d4107d6379d3221e302fb007abb9b076af28553aa972cc0ed24ba55ec43"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/quirks",
+  "fixtures": [
+    {
+      "path": "MulNegOperand.bs",
+      "sha256": "6f760ca30ac867514942db3014bedc780aa1caa246e47ae8cbfcb088c1907153",
+      "role": "source"
+    },
+    {
+      "path": "NonConstantBitExtraction.bsv",
+      "sha256": "169fc2522560ad648e05685e87e388a05437c412493092b127cbb8aa7969d00f",
+      "role": "source"
+    },
+    {
+      "path": "QuotNegOperand.bs",
+      "sha256": "dc8b4587f59cc459eb2143a46f5fa90640344c05835eeec95364e6046649086d",
+      "role": "source"
+    },
+    {
+      "path": "RemNegOperand.bs",
+      "sha256": "103805fa0ebe6f71b69c5197fabc1a94715d4a74dc0d2e308d4143e8bd37626d",
+      "role": "source"
+    },
+    {
+      "path": "SRAConst.bsv",
+      "sha256": "5dc6ffd100d8ffaf77b33461fa00c1d84f880de18baebb9f09e502065eacc050",
+      "role": "source"
+    },
+    {
+      "path": "SRADynamic.bsv",
+      "sha256": "83049c8223b59a7b22db82f8559db2bfe2164ad114b572a918a94772717339fc",
+      "role": "source"
+    },
+    {
+      "path": "SRAZero.bsv",
+      "sha256": "fd60315007a4ddcb25c0fa50639d12d02c5d4bace0c323b1b6ba74e7e2ae4c23",
+      "role": "source"
+    },
+    {
+      "path": "UnaryOps.bsv",
+      "sha256": "62da422ddc0a6523c73d3df3ed03d8534d4038e2dd541a2fabedf89683a7c714",
+      "role": "source"
+    },
+    {
+      "path": "ZeroWidth.bsv",
+      "sha256": "fed283dd5bba672f91f2803aaeaa6812e84a2b4cf0f14be4d305c5b69cd91c75",
+      "role": "source"
+    },
+    {
+      "path": "mkSRAZero.v.expected",
+      "sha256": "11ac1490f892dc1cfdf2bf7e2a401f10e2879b12b532b8022340b9d4b05bd6a3",
+      "role": "golden"
+    },
+    {
+      "path": "sysMulNegOperand.out.expected",
+      "sha256": "7f3ace8c19eb6bc8c9eadf5d9718f166ba75b516e97287c387c9d8c7f51fd73e",
+      "role": "golden"
+    },
+    {
+      "path": "sysNonConstantBitExtraction.out.expected",
+      "sha256": "394b2e87e0fc4fd81e6cbcd4727b8724b298e311d615d1328950ad52f868dc3a",
+      "role": "golden"
+    },
+    {
+      "path": "sysQuotNegOperand.out.expected",
+      "sha256": "b0dcf7bb6daa87d5c6e3a73eede5f7f627a7f03511fc125079d259f20be57623",
+      "role": "golden"
+    },
+    {
+      "path": "sysRemNegOperand.out.expected",
+      "sha256": "976f9a21bf28e578bc6eb7707955c3a23ee1635a07826ff56f63f74e7ec9c637",
+      "role": "golden"
+    },
+    {
+      "path": "sysSRAConst.out.expected",
+      "sha256": "54ece77c29ffda562add1a1594dfe1e4571a9f21a00d41b699150f2651758018",
+      "role": "golden"
+    },
+    {
+      "path": "sysSRADynamic.out.expected",
+      "sha256": "40cef0129eb11c92dc2febd1a333f64bf0b61c94027ab0ea0d77d1f646d71831",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-UnaryOps",
+      "resource": "heavy",
+      "fixtures": [
+        "UnaryOps.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UnaryOps",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UnaryOps.bsv",
+              "mode": "verilog",
+              "module": "sysUnaryOps",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UnaryOps.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UnaryOps.bsv"
+                ],
+                "outputs": [
+                  "UnaryOps.bo",
+                  "UnaryOps.bsv.bsc-vcomp-out",
+                  "sysUnaryOps.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUnaryOps.v"
+              ],
+              "top": "sysUnaryOps",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUnaryOps.v"
+                ],
+                "outputs": [
+                  "sysUnaryOps.bsc-vcomp-out",
+                  "sysUnaryOps.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 89,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-SRAZero",
+      "resource": "normal",
+      "fixtures": [
+        "SRAZero.bsv",
+        "mkSRAZero.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SRAZero",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SRAZero.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SRAZero.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SRAZero.bsv"
+                ],
+                "outputs": [
+                  "SRAZero.bo",
+                  "SRAZero.bsv.bsc-vcomp-out",
+                  "mkSRAZero.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 123,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkSRAZero.v",
+              "expected": "mkSRAZero.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkSRAZero.v",
+                  "mkSRAZero.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 125,
+                  "endByte": 152,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-ZeroWidth",
+      "resource": "heavy",
+      "fixtures": [
+        "ZeroWidth.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ZeroWidth",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ZeroWidth.bsv",
+              "mode": "verilog",
+              "module": "mkTst",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ZeroWidth.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ZeroWidth.bsv"
+                ],
+                "outputs": [
+                  "ZeroWidth.bo",
+                  "ZeroWidth.bsv.bsc-vcomp-out",
+                  "mkTst.v",
+                  "module_selectThread.v",
+                  "module_selectThread2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 194,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTst.v",
+                "module_selectThread.v",
+                "module_selectThread2.v"
+              ],
+              "top": "mkTst",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTst.v",
+                  "module_selectThread.v",
+                  "module_selectThread2.v"
+                ],
+                "outputs": [
+                  "mkTst.bsc-vcomp-out",
+                  "mkTst.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 195,
+                  "endByte": 274,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysNonConstantBitExtraction",
+      "resource": "heavy",
+      "fixtures": [
+        "NonConstantBitExtraction.bsv",
+        "sysNonConstantBitExtraction.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysNonConstantBitExtraction",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "NonConstantBitExtraction.bsv",
+              "mode": "verilog",
+              "module": "sysNonConstantBitExtraction",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "NonConstantBitExtraction.bsv"
+                ],
+                "outputs": [
+                  "NonConstantBitExtraction.bo",
+                  "NonConstantBitExtraction.bsv.bsc-vcomp-out",
+                  "sysNonConstantBitExtraction.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 401,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysNonConstantBitExtraction"
+              ],
+              "top": "sysNonConstantBitExtraction",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysNonConstantBitExtraction.v"
+                ],
+                "outputs": [
+                  "sysNonConstantBitExtraction.bsc-vcomp-out",
+                  "sysNonConstantBitExtraction.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 401,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNonConstantBitExtraction",
+              "args": [],
+              "stdout": "sysNonConstantBitExtraction.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNonConstantBitExtraction.vexe"
+                ],
+                "outputs": [
+                  "sysNonConstantBitExtraction.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 401,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNonConstantBitExtraction.v.out",
+              "expected": "sysNonConstantBitExtraction.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysNonConstantBitExtraction.v.out",
+                  "sysNonConstantBitExtraction.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 401,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNonConstantBitExtraction",
+              "args": [],
+              "stdout": "sysNonConstantBitExtraction.v-vcd.out",
+              "vcd": "sysNonConstantBitExtraction.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNonConstantBitExtraction.vexe"
+                ],
+                "outputs": [
+                  "sysNonConstantBitExtraction.v-vcd.out",
+                  "sysNonConstantBitExtraction.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 401,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysNonConstantBitExtraction.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNonConstantBitExtraction.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 401,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSRAConst",
+      "resource": "heavy",
+      "fixtures": [
+        "SRAConst.bsv",
+        "sysSRAConst.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSRAConst",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SRAConst.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysSRAConst",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SRAConst.bsv"
+                ],
+                "outputs": [
+                  "SRAConst.bo",
+                  "SRAConst.bsv.bsc-vcomp-out",
+                  "sysSRAConst.ba",
+                  "sysSRAConst.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSRAConst"
+              ],
+              "top": "sysSRAConst",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.v"
+                ],
+                "outputs": [
+                  "sysSRAConst.bsc-vcomp-out",
+                  "sysSRAConst.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSRAConst",
+              "args": [],
+              "stdout": "sysSRAConst.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.vexe"
+                ],
+                "outputs": [
+                  "sysSRAConst.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSRAConst.v.out",
+              "expected": "sysSRAConst.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.v.out",
+                  "sysSRAConst.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSRAConst",
+              "args": [],
+              "stdout": "sysSRAConst.v-vcd.out",
+              "vcd": "sysSRAConst.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.vexe"
+                ],
+                "outputs": [
+                  "sysSRAConst.v-vcd.out",
+                  "sysSRAConst.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSRAConst.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSRAConst"
+              ],
+              "top": "sysSRAConst",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.ba"
+                ],
+                "outputs": [
+                  "sysSRAConst.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSRAConst.cexe",
+                    "sysSRAConst.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSRAConst",
+              "args": [],
+              "stdout": "sysSRAConst.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.cexe"
+                ],
+                "outputs": [
+                  "sysSRAConst.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSRAConst.c.out",
+              "expected": "sysSRAConst.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.c.out",
+                  "sysSRAConst.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSRAConst",
+              "args": [],
+              "stdout": "sysSRAConst.c-vcd.out",
+              "vcd": "sysSRAConst.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.cexe"
+                ],
+                "outputs": [
+                  "sysSRAConst.c-vcd.out",
+                  "sysSRAConst.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSRAConst.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSRAConst.c-vcd.out",
+              "expected": "sysSRAConst.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSRAConst.c-vcd.out",
+                  "sysSRAConst.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 427,
+                  "endByte": 451,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSRADynamic",
+      "resource": "heavy",
+      "fixtures": [
+        "SRADynamic.bsv",
+        "sysSRADynamic.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSRADynamic",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SRADynamic.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysSRADynamic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SRADynamic.bsv"
+                ],
+                "outputs": [
+                  "SRADynamic.bo",
+                  "SRADynamic.bsv.bsc-vcomp-out",
+                  "sysSRADynamic.ba",
+                  "sysSRADynamic.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSRADynamic"
+              ],
+              "top": "sysSRADynamic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.v"
+                ],
+                "outputs": [
+                  "sysSRADynamic.bsc-vcomp-out",
+                  "sysSRADynamic.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSRADynamic",
+              "args": [],
+              "stdout": "sysSRADynamic.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.vexe"
+                ],
+                "outputs": [
+                  "sysSRADynamic.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSRADynamic.v.out",
+              "expected": "sysSRADynamic.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.v.out",
+                  "sysSRADynamic.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSRADynamic",
+              "args": [],
+              "stdout": "sysSRADynamic.v-vcd.out",
+              "vcd": "sysSRADynamic.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.vexe"
+                ],
+                "outputs": [
+                  "sysSRADynamic.v-vcd.out",
+                  "sysSRADynamic.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSRADynamic.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSRADynamic"
+              ],
+              "top": "sysSRADynamic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.ba"
+                ],
+                "outputs": [
+                  "sysSRADynamic.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSRADynamic.cexe",
+                    "sysSRADynamic.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSRADynamic",
+              "args": [],
+              "stdout": "sysSRADynamic.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.cexe"
+                ],
+                "outputs": [
+                  "sysSRADynamic.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSRADynamic.c.out",
+              "expected": "sysSRADynamic.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.c.out",
+                  "sysSRADynamic.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSRADynamic",
+              "args": [],
+              "stdout": "sysSRADynamic.c-vcd.out",
+              "vcd": "sysSRADynamic.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.cexe"
+                ],
+                "outputs": [
+                  "sysSRADynamic.c-vcd.out",
+                  "sysSRADynamic.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSRADynamic.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSRADynamic.c-vcd.out",
+              "expected": "sysSRADynamic.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSRADynamic.c-vcd.out",
+                  "sysSRADynamic.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 478,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysMulNegOperand",
+      "resource": "heavy",
+      "fixtures": [
+        "MulNegOperand.bs",
+        "sysMulNegOperand.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMulNegOperand",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MulNegOperand.bs",
+              "mode": "shared_elaboration",
+              "module": "sysMulNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MulNegOperand.bs"
+                ],
+                "outputs": [
+                  "MulNegOperand.bo",
+                  "MulNegOperand.bs.bsc-vcomp-out",
+                  "sysMulNegOperand.ba",
+                  "sysMulNegOperand.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMulNegOperand"
+              ],
+              "top": "sysMulNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.v"
+                ],
+                "outputs": [
+                  "sysMulNegOperand.bsc-vcomp-out",
+                  "sysMulNegOperand.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMulNegOperand",
+              "args": [],
+              "stdout": "sysMulNegOperand.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.vexe"
+                ],
+                "outputs": [
+                  "sysMulNegOperand.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMulNegOperand.v.out",
+              "expected": "sysMulNegOperand.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.v.out",
+                  "sysMulNegOperand.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMulNegOperand",
+              "args": [],
+              "stdout": "sysMulNegOperand.v-vcd.out",
+              "vcd": "sysMulNegOperand.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.vexe"
+                ],
+                "outputs": [
+                  "sysMulNegOperand.v-vcd.out",
+                  "sysMulNegOperand.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMulNegOperand.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMulNegOperand"
+              ],
+              "top": "sysMulNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.ba"
+                ],
+                "outputs": [
+                  "sysMulNegOperand.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMulNegOperand.cexe",
+                    "sysMulNegOperand.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMulNegOperand",
+              "args": [],
+              "stdout": "sysMulNegOperand.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.cexe"
+                ],
+                "outputs": [
+                  "sysMulNegOperand.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMulNegOperand.c.out",
+              "expected": "sysMulNegOperand.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.c.out",
+                  "sysMulNegOperand.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMulNegOperand",
+              "args": [],
+              "stdout": "sysMulNegOperand.c-vcd.out",
+              "vcd": "sysMulNegOperand.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.cexe"
+                ],
+                "outputs": [
+                  "sysMulNegOperand.c-vcd.out",
+                  "sysMulNegOperand.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMulNegOperand.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMulNegOperand.c-vcd.out",
+              "expected": "sysMulNegOperand.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMulNegOperand.c-vcd.out",
+                  "sysMulNegOperand.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 790,
+                  "endByte": 815,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysQuotNegOperand",
+      "resource": "heavy",
+      "fixtures": [
+        "QuotNegOperand.bs",
+        "sysQuotNegOperand.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysQuotNegOperand",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "QuotNegOperand.bs",
+              "mode": "shared_elaboration",
+              "module": "sysQuotNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "QuotNegOperand.bs"
+                ],
+                "outputs": [
+                  "QuotNegOperand.bo",
+                  "QuotNegOperand.bs.bsc-vcomp-out",
+                  "sysQuotNegOperand.ba",
+                  "sysQuotNegOperand.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysQuotNegOperand"
+              ],
+              "top": "sysQuotNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.v"
+                ],
+                "outputs": [
+                  "sysQuotNegOperand.bsc-vcomp-out",
+                  "sysQuotNegOperand.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysQuotNegOperand",
+              "args": [],
+              "stdout": "sysQuotNegOperand.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.vexe"
+                ],
+                "outputs": [
+                  "sysQuotNegOperand.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysQuotNegOperand.v.out",
+              "expected": "sysQuotNegOperand.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.v.out",
+                  "sysQuotNegOperand.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysQuotNegOperand",
+              "args": [],
+              "stdout": "sysQuotNegOperand.v-vcd.out",
+              "vcd": "sysQuotNegOperand.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.vexe"
+                ],
+                "outputs": [
+                  "sysQuotNegOperand.v-vcd.out",
+                  "sysQuotNegOperand.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysQuotNegOperand.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysQuotNegOperand"
+              ],
+              "top": "sysQuotNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.ba"
+                ],
+                "outputs": [
+                  "sysQuotNegOperand.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysQuotNegOperand.cexe",
+                    "sysQuotNegOperand.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysQuotNegOperand",
+              "args": [],
+              "stdout": "sysQuotNegOperand.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.cexe"
+                ],
+                "outputs": [
+                  "sysQuotNegOperand.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysQuotNegOperand.c.out",
+              "expected": "sysQuotNegOperand.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.c.out",
+                  "sysQuotNegOperand.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysQuotNegOperand",
+              "args": [],
+              "stdout": "sysQuotNegOperand.c-vcd.out",
+              "vcd": "sysQuotNegOperand.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.cexe"
+                ],
+                "outputs": [
+                  "sysQuotNegOperand.c-vcd.out",
+                  "sysQuotNegOperand.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysQuotNegOperand.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysQuotNegOperand.c-vcd.out",
+              "expected": "sysQuotNegOperand.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysQuotNegOperand.c-vcd.out",
+                  "sysQuotNegOperand.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 842,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRemNegOperand",
+      "resource": "heavy",
+      "fixtures": [
+        "RemNegOperand.bs",
+        "sysRemNegOperand.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRemNegOperand",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RemNegOperand.bs",
+              "mode": "shared_elaboration",
+              "module": "sysRemNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RemNegOperand.bs"
+                ],
+                "outputs": [
+                  "RemNegOperand.bo",
+                  "RemNegOperand.bs.bsc-vcomp-out",
+                  "sysRemNegOperand.ba",
+                  "sysRemNegOperand.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRemNegOperand"
+              ],
+              "top": "sysRemNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.v"
+                ],
+                "outputs": [
+                  "sysRemNegOperand.bsc-vcomp-out",
+                  "sysRemNegOperand.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRemNegOperand",
+              "args": [],
+              "stdout": "sysRemNegOperand.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.vexe"
+                ],
+                "outputs": [
+                  "sysRemNegOperand.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRemNegOperand.v.out",
+              "expected": "sysRemNegOperand.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.v.out",
+                  "sysRemNegOperand.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRemNegOperand",
+              "args": [],
+              "stdout": "sysRemNegOperand.v-vcd.out",
+              "vcd": "sysRemNegOperand.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.vexe"
+                ],
+                "outputs": [
+                  "sysRemNegOperand.v-vcd.out",
+                  "sysRemNegOperand.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRemNegOperand.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRemNegOperand"
+              ],
+              "top": "sysRemNegOperand",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.ba"
+                ],
+                "outputs": [
+                  "sysRemNegOperand.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRemNegOperand.cexe",
+                    "sysRemNegOperand.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRemNegOperand",
+              "args": [],
+              "stdout": "sysRemNegOperand.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.cexe"
+                ],
+                "outputs": [
+                  "sysRemNegOperand.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRemNegOperand.c.out",
+              "expected": "sysRemNegOperand.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.c.out",
+                  "sysRemNegOperand.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRemNegOperand",
+              "args": [],
+              "stdout": "sysRemNegOperand.c-vcd.out",
+              "vcd": "sysRemNegOperand.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.cexe"
+                ],
+                "outputs": [
+                  "sysRemNegOperand.c-vcd.out",
+                  "sysRemNegOperand.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRemNegOperand.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRemNegOperand.c-vcd.out",
+              "expected": "sysRemNegOperand.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRemNegOperand.c-vcd.out",
+                  "sysRemNegOperand.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 843,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

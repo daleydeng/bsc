@@ -1,0 +1,1721 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/earliness/earliness",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/earliness/earliness.exp",
+    "sha256": "066788a26827e71132507279857703635cd66536a0e785c52ff3b16b3ab81af5"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/earliness",
+  "fixtures": [
+    {
+      "path": "ActionShadowing.bsv",
+      "sha256": "57ea61516bc70d7cae57354f1de8f607577e5b8c7e04322f3d92970d44b36845",
+      "role": "source"
+    },
+    {
+      "path": "ActionShadowing.bsv.bsc-vcomp-out.expected",
+      "sha256": "88d47118fa30c8a9131815f0e8c490f51b83535a799895a4cd9b31f054fd0a15",
+      "role": "golden"
+    },
+    {
+      "path": "AmbiguousEarliness.bsv",
+      "sha256": "f7863e52d63a14faf9e523e4d034a3f75cf9ee7b5dae2d4dbe8e1946355b2054",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessMethodMethod.bsv",
+      "sha256": "2bced8be6c6e7fcc2410a629fc4afb78d67f8038cfd08154ddcef647a0cd5e1a",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessMethodRule.bsv",
+      "sha256": "63bcecaca755547e85725b3ba5ff9df84877aead0f638ddee343e721a990b4e0",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessNoArgs.bsv",
+      "sha256": "f3be78e9c991b24a3023a71b41a92928e02796476b1342d5e61c222436b41eb2",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessSameArgs_ManyCalls.bsv",
+      "sha256": "a301955336782356a186dd6baa6bb66f471613e92d25f04c1dfcd958995ae969",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv",
+      "sha256": "3d0143105c36710b7cc8e8456c21b32f47ff00db1db6d3e11f2027e50f60c993",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessSameArgs_OneCall.bsv",
+      "sha256": "2faed6333bdd05c15982ce944424322cf3bd5fcd0d3a3860450e43aee37567c3",
+      "role": "source"
+    },
+    {
+      "path": "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv",
+      "sha256": "e1f5b816996817be1d77410bbc0b4757cf57bdae017e69bc9d0f0d7eab6922df",
+      "role": "source"
+    },
+    {
+      "path": "EOSingleton.bsv",
+      "sha256": "f6eaec99bcd63bae5c5c7527d82a4ef9658835067bb7b23a50673c1b1e837c40",
+      "role": "source"
+    },
+    {
+      "path": "ExecutionOrderAttrModule.bsv",
+      "sha256": "3cc12c181b7f9fe5d907eeb633e947873f8f8e42f0d467bf340f66c63f941b90",
+      "role": "source"
+    },
+    {
+      "path": "ExecutionOrderAttrRule.bsv",
+      "sha256": "5b6b8325768b012b49a6e9965b363e25de436f0cf5947aa0016f1983e8168859",
+      "role": "source"
+    },
+    {
+      "path": "ExecutionOrderAttrRule_Conflict.bsv",
+      "sha256": "dae844735807b32a27df508e4a8656c2b2641593c9ebb6a085961929ab26ce74",
+      "role": "source"
+    },
+    {
+      "path": "ExecutionOrderAttr_Method.bsv",
+      "sha256": "ae06103f6fbff8835a3b7417bbb04d49a25bdd6c1dc9dc31883f61be95c847e1",
+      "role": "source"
+    },
+    {
+      "path": "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out.expected",
+      "sha256": "e7b58270f1547dfb9e5e5a508e09d379100aad813171ff0278870433f7729a3e",
+      "role": "golden"
+    },
+    {
+      "path": "JoinExecutionOrderMany.bsv",
+      "sha256": "c63f9922dc690962bf8301ca5055101a25cf62bbc3cfbc2de5c6bf5ac67e8ab8",
+      "role": "source"
+    },
+    {
+      "path": "NoErrorDueToSeq.bsv",
+      "sha256": "4cf6344d51933fede1fa684de4912da32264f0a3dbc8bf7fb62a17425792ec33",
+      "role": "source"
+    },
+    {
+      "path": "UnambiguousEarliness.bsv",
+      "sha256": "0683b143015d6f062a6f5c5d7a44a5c99c069939a0043b4a683bba7f367136e4",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-AmbiguousEarliness",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarliness.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarliness",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarliness.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarliness.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarliness.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarliness.bo",
+                  "AmbiguousEarliness.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarliness.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 206,
+                  "endByte": 265,
+                  "startLine": 8,
+                  "startColumn": 3,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarliness.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarliness.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 206,
+                  "endByte": 265,
+                  "startLine": 8,
+                  "startColumn": 3,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-UnambiguousEarliness",
+      "resource": "normal",
+      "fixtures": [
+        "UnambiguousEarliness.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UnambiguousEarliness",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UnambiguousEarliness.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UnambiguousEarliness.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UnambiguousEarliness.bsv"
+                ],
+                "outputs": [
+                  "UnambiguousEarliness.bo",
+                  "UnambiguousEarliness.bsv.bsc-vcomp-out",
+                  "mkUnambiguousEarliness.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 334,
+                  "endByte": 395,
+                  "startLine": 11,
+                  "startColumn": 3,
+                  "endLine": 11,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "UnambiguousEarliness.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "UnambiguousEarliness.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 334,
+                  "endByte": 395,
+                  "startLine": 11,
+                  "startColumn": 3,
+                  "endLine": 11,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-AmbiguousEarlinessMethodRule",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessMethodRule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessMethodRule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessMethodRule.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessMethodRule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessMethodRule.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessMethodRule.bo",
+                  "AmbiguousEarlinessMethodRule.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarlinessMethodRule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 461,
+                  "endByte": 530,
+                  "startLine": 14,
+                  "startColumn": 3,
+                  "endLine": 14,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessMethodRule.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessMethodRule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 461,
+                  "endByte": 530,
+                  "startLine": 14,
+                  "startColumn": 3,
+                  "endLine": 14,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-NoErrorDueToSeq",
+      "resource": "normal",
+      "fixtures": [
+        "NoErrorDueToSeq.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-NoErrorDueToSeq",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "NoErrorDueToSeq.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "NoErrorDueToSeq.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "NoErrorDueToSeq.bsv"
+                ],
+                "outputs": [
+                  "NoErrorDueToSeq.bo",
+                  "NoErrorDueToSeq.bsv.bsc-vcomp-out",
+                  "mkNoErrorDueToSeq.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 630,
+                  "endByte": 695,
+                  "startLine": 18,
+                  "startColumn": 3,
+                  "endLine": 18,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "NoErrorDueToSeq.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "NoErrorDueToSeq.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1082"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 630,
+                  "endByte": 695,
+                  "startLine": 18,
+                  "startColumn": 3,
+                  "endLine": 18,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-AmbiguousEarlinessMethodMethod",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessMethodMethod.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessMethodMethod",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessMethodMethod.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessMethodMethod.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessMethodMethod.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessMethodMethod.bo",
+                  "AmbiguousEarlinessMethodMethod.bsv.bsc-sched-out",
+                  "mkAmbiguousEarlinessMethodMethod.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 821,
+                  "endByte": 885,
+                  "startLine": 22,
+                  "startColumn": 3,
+                  "endLine": 22,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessMethodMethod.bsv.bsc-sched-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessMethodMethod.bsv.bsc-sched-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 968,
+                  "endByte": 1001,
+                  "startLine": 24,
+                  "startColumn": 3,
+                  "endLine": 24,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "AmbiguousEarlinessMethodMethod.bsv.bsc-sched-out",
+              "text": "m1 SBR [m1, m2], m2 SBR m2]",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessMethodMethod.bsv.bsc-sched-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1089,
+                  "endByte": 1143,
+                  "startLine": 27,
+                  "startColumn": 3,
+                  "endLine": 27,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-AmbiguousEarlinessNoArgs",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessNoArgs.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessNoArgs",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessNoArgs.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessNoArgs.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessNoArgs.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessNoArgs.bo",
+                  "AmbiguousEarlinessNoArgs.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarlinessNoArgs.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1223,
+                  "endByte": 1283,
+                  "startLine": 32,
+                  "startColumn": 3,
+                  "endLine": 32,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessNoArgs.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessNoArgs.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1223,
+                  "endByte": 1283,
+                  "startLine": 32,
+                  "startColumn": 3,
+                  "endLine": 32,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-AmbiguousEarlinessSameArgs_OneCall",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessSameArgs_OneCall.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessSameArgs_OneCall",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessSameArgs_OneCall.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessSameArgs_OneCall.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_OneCall.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessSameArgs_OneCall.bo",
+                  "AmbiguousEarlinessSameArgs_OneCall.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarlinessSameArgs_OneCall.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1358,
+                  "endByte": 1428,
+                  "startLine": 35,
+                  "startColumn": 3,
+                  "endLine": 35,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessSameArgs_OneCall.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_OneCall.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1358,
+                  "endByte": 1428,
+                  "startLine": 35,
+                  "startColumn": 3,
+                  "endLine": 35,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-AmbiguousEarlinessSameArgs_OneCall_DiffCond",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessSameArgs_OneCall_DiffCond",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bo",
+                  "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarlinessSameArgs_OneCall_DiffCond.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1431,
+                  "endByte": 1510,
+                  "startLine": 36,
+                  "startColumn": 3,
+                  "endLine": 36,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_OneCall_DiffCond.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1431,
+                  "endByte": 1510,
+                  "startLine": 36,
+                  "startColumn": 3,
+                  "endLine": 36,
+                  "endColumn": 82
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-AmbiguousEarlinessSameArgs_ManyCalls",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessSameArgs_ManyCalls.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessSameArgs_ManyCalls",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessSameArgs_ManyCalls.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessSameArgs_ManyCalls.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_ManyCalls.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessSameArgs_ManyCalls.bo",
+                  "AmbiguousEarlinessSameArgs_ManyCalls.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarlinessSameArgs_ManyCalls.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1513,
+                  "endByte": 1585,
+                  "startLine": 37,
+                  "startColumn": 3,
+                  "endLine": 37,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessSameArgs_ManyCalls.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_ManyCalls.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1513,
+                  "endByte": 1585,
+                  "startLine": 37,
+                  "startColumn": 3,
+                  "endLine": 37,
+                  "endColumn": 75
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-10-AmbiguousEarlinessSameArgs_ManyCalls_DiffCond",
+      "resource": "normal",
+      "fixtures": [
+        "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AmbiguousEarlinessSameArgs_ManyCalls_DiffCond",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv"
+                ],
+                "outputs": [
+                  "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bo",
+                  "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv.bsc-vcomp-out",
+                  "mkAmbiguousEarlinessSameArgs_ManyCalls.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1658,
+                  "endByte": 1748,
+                  "startLine": 40,
+                  "startColumn": 3,
+                  "endLine": 41,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "AmbiguousEarlinessSameArgs_ManyCalls_DiffCond.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1658,
+                  "endByte": 1748,
+                  "startLine": 40,
+                  "startColumn": 3,
+                  "endLine": 41,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-11-ActionShadowingNoWarn",
+      "resource": "normal",
+      "fixtures": [
+        "ActionShadowing.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ActionShadowingNoWarn",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "ActionShadowing.bsv",
+              "destination": "ActionShadowingNoWarn.bsv",
+              "artifacts": {
+                "inputs": [
+                  "ActionShadowing.bsv"
+                ],
+                "outputs": [
+                  "ActionShadowingNoWarn.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1840,
+                  "endByte": 1890,
+                  "startLine": 47,
+                  "startColumn": 3,
+                  "endLine": 47,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "ActionShadowingNoWarn.bsv",
+              "mode": "verilog",
+              "args": [
+                "-no-warn-action-shadowing"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ActionShadowingNoWarn.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ActionShadowingNoWarn.bsv"
+                ],
+                "outputs": [
+                  "ActionShadowingNoWarn.bo",
+                  "ActionShadowingNoWarn.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1893,
+                  "endByte": 1994,
+                  "startLine": 48,
+                  "startColumn": 3,
+                  "endLine": 49,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ActionShadowingNoWarn.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0117",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "ActionShadowingNoWarn.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1893,
+                  "endByte": 1994,
+                  "startLine": 48,
+                  "startColumn": 3,
+                  "endLine": 49,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "ActionShadowingNoWarn.bsv",
+              "artifacts": {
+                "inputs": [
+                  "ActionShadowingNoWarn.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "ActionShadowingNoWarn.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1997,
+                  "endByte": 2028,
+                  "startLine": 50,
+                  "startColumn": 3,
+                  "endLine": 50,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-12-ActionShadowing",
+      "resource": "normal",
+      "fixtures": [
+        "ActionShadowing.bsv",
+        "ActionShadowing.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ActionShadowing",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ActionShadowing.bsv",
+              "mode": "verilog",
+              "args": [
+                "-warn-action-shadowing"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ActionShadowing.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ActionShadowing.bsv"
+                ],
+                "outputs": [
+                  "ActionShadowing.bo",
+                  "ActionShadowing.bsv.bsc-vcomp-out",
+                  "sysTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2032,
+                  "endByte": 2100,
+                  "startLine": 52,
+                  "startColumn": 3,
+                  "endLine": 52,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ActionShadowing.bsv.bsc-vcomp-out",
+              "expected": "ActionShadowing.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ActionShadowing.bsv.bsc-vcomp-out",
+                  "ActionShadowing.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2103,
+                  "endByte": 2164,
+                  "startLine": 53,
+                  "startColumn": 3,
+                  "endLine": 53,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-13-JoinExecutionOrderMany",
+      "resource": "normal",
+      "fixtures": [
+        "JoinExecutionOrderMany.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-JoinExecutionOrderMany",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "JoinExecutionOrderMany.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "JoinExecutionOrderMany.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "JoinExecutionOrderMany.bsv"
+                ],
+                "outputs": [
+                  "JoinExecutionOrderMany.bo",
+                  "JoinExecutionOrderMany.bsv.bsc-vcomp-out",
+                  "sysJoinExecutionOrderMany.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2474,
+                  "endByte": 2537,
+                  "startLine": 63,
+                  "startColumn": 3,
+                  "endLine": 63,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "JoinExecutionOrderMany.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "JoinExecutionOrderMany.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2474,
+                  "endByte": 2537,
+                  "startLine": 63,
+                  "startColumn": 3,
+                  "endLine": 63,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "JoinExecutionOrderMany.bsv.bsc-vcomp-out",
+              "text": "Rule \"r1\" will appear to fire before \"r2\"",
+              "artifacts": {
+                "inputs": [
+                  "JoinExecutionOrderMany.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2540,
+                  "endByte": 2646,
+                  "startLine": 64,
+                  "startColumn": 3,
+                  "endLine": 65,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-14-ExecutionOrderAttrRule",
+      "resource": "normal",
+      "fixtures": [
+        "ExecutionOrderAttrRule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExecutionOrderAttrRule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExecutionOrderAttrRule.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dschedule"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ExecutionOrderAttrRule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule.bsv"
+                ],
+                "outputs": [
+                  "ExecutionOrderAttrRule.bo",
+                  "ExecutionOrderAttrRule.bsv.bsc-vcomp-out",
+                  "sysExecutionOrderAttrRule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2847,
+                  "endByte": 2910,
+                  "startLine": 72,
+                  "startColumn": 3,
+                  "endLine": 72,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ExecutionOrderAttrRule.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2913,
+                  "endByte": 2976,
+                  "startLine": 73,
+                  "startColumn": 3,
+                  "endLine": 73,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "ExecutionOrderAttrRule.bsv.bsc-vcomp-out",
+              "text": "order: [RL_r1, RL_r2]",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2979,
+                  "endByte": 3065,
+                  "startLine": 74,
+                  "startColumn": 3,
+                  "endLine": 75,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ExecutionOrderAttrRule.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3200,
+                  "endByte": 3263,
+                  "startLine": 79,
+                  "startColumn": 3,
+                  "endLine": 79,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "ExecutionOrderAttrRule.bsv.bsc-vcomp-out",
+              "text": "order: [RL_r1, RL_r2]",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3266,
+                  "endByte": 3352,
+                  "startLine": 80,
+                  "startColumn": 3,
+                  "endLine": 81,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-15-ExecutionOrderAttrModule",
+      "resource": "normal",
+      "fixtures": [
+        "ExecutionOrderAttrModule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExecutionOrderAttrModule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExecutionOrderAttrModule.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dschedule"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ExecutionOrderAttrModule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrModule.bsv"
+                ],
+                "outputs": [
+                  "ExecutionOrderAttrModule.bo",
+                  "ExecutionOrderAttrModule.bsv.bsc-vcomp-out",
+                  "sysExecutionOrderAttrModule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3132,
+                  "endByte": 3197,
+                  "startLine": 78,
+                  "startColumn": 3,
+                  "endLine": 78,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-16-ExecutionOrderAttrRule_Conflict",
+      "resource": "normal",
+      "fixtures": [
+        "ExecutionOrderAttrRule_Conflict.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExecutionOrderAttrRule_Conflict",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExecutionOrderAttrRule_Conflict.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ExecutionOrderAttrRule_Conflict.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule_Conflict.bsv"
+                ],
+                "outputs": [
+                  "ExecutionOrderAttrRule_Conflict.bo",
+                  "ExecutionOrderAttrRule_Conflict.bsv.bsc-vcomp-out",
+                  "sysExecutionOrderAttrRule_Conflict.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3521,
+                  "endByte": 3591,
+                  "startLine": 86,
+                  "startColumn": 3,
+                  "endLine": 86,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ExecutionOrderAttrRule_Conflict.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttrRule_Conflict.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3521,
+                  "endByte": 3591,
+                  "startLine": 86,
+                  "startColumn": 3,
+                  "endLine": 86,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-17-ExecutionOrderAttr_Method",
+      "resource": "normal",
+      "fixtures": [
+        "ExecutionOrderAttr_Method.bsv",
+        "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExecutionOrderAttr_Method",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExecutionOrderAttr_Method.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttr_Method.bsv"
+                ],
+                "outputs": [
+                  "ExecutionOrderAttr_Method.bo",
+                  "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out",
+                  "sysExecutionOrderAttr_Method.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3634,
+                  "endByte": 3684,
+                  "startLine": 89,
+                  "startColumn": 3,
+                  "endLine": 89,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out",
+              "expected": "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out",
+                  "ExecutionOrderAttr_Method.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3792,
+                  "endByte": 3848,
+                  "startLine": 92,
+                  "startColumn": 3,
+                  "endLine": 92,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-18-EOSingleton",
+      "resource": "normal",
+      "fixtures": [
+        "EOSingleton.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EOSingleton",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EOSingleton.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "EOSingleton.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EOSingleton.bsv"
+                ],
+                "outputs": [
+                  "EOSingleton.bo",
+                  "EOSingleton.bsv.bsc-vcomp-out",
+                  "sysEOSingleton.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3952,
+                  "endByte": 4002,
+                  "startLine": 97,
+                  "startColumn": 3,
+                  "endLine": 97,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "EOSingleton.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0036",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "EOSingleton.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3952,
+                  "endByte": 4002,
+                  "startLine": 97,
+                  "startColumn": 3,
+                  "endLine": 97,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/Library_latency/SyncRAM/SyncRAM",
+  "origin": {
+    "path": "testsuite/bsc.interra/Library_latency/SyncRAM/SyncRAM.exp",
+    "sha256": "28358d400f5935361ece4a7fc24eaabcbd84def51a27e94889a152775e74d278"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/Library_latency/SyncRAM",
+  "fixtures": [
+    {
+      "path": "Precedence.bs",
+      "sha256": "abf0fe4f4c221106a47c7d5e5f97a63e92ccf2eac1ed72a27958f4bf2d628779",
+      "role": "source"
+    },
+    {
+      "path": "TestSPSRAM.bsv",
+      "sha256": "2a8b06efa5b05516d5085ea15c7e17fbe660b4620d0ea8c973fd4a2c741d6a0f",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_SPSRam.out.expected",
+      "sha256": "34cb00549b55772767fdb73aa1f36b0440da09a4e4a07902045ffdcd34d3b7e8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTestbench_SPSRam",
+      "resource": "heavy",
+      "fixtures": [
+        "Precedence.bs",
+        "TestSPSRAM.bsv",
+        "mkTestbench_SPSRam.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_SPSRam",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestSPSRAM.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_SPSRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestSPSRAM.bsv"
+                ],
+                "outputs": [
+                  "TestSPSRAM.bo",
+                  "TestSPSRAM.bsv.bsc-ccomp-out",
+                  "mkTestbench_SPSRam.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 72,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_SPSRam"
+              ],
+              "top": "mkTestbench_SPSRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_SPSRam.cexe",
+                    "mkTestbench_SPSRam.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 73,
+                  "endByte": 132,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_SPSRam",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_SPSRam.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 224,
+                  "endByte": 264,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_SPSRam.out",
+              "expected": "mkTestbench_SPSRam.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.out",
+                  "mkTestbench_SPSRam.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 265,
+                  "endByte": 302,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,449 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/MCD_library/SpecialSyncFIFO/SpecialSyncFIFO",
+  "origin": {
+    "path": "testsuite/bsc.interra/MCD_library/SpecialSyncFIFO/SpecialSyncFIFO.exp",
+    "sha256": "c059b12ac0ae92f778bcd867075dd062b8016dabf38a456ec6fc14301db27613"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/MCD_library/SpecialSyncFIFO",
+  "fixtures": [
+    {
+      "path": "SyncFIFOSlow.bsv",
+      "sha256": "d1a0f76f7db0b6fdaed7fdba308499c1b2c0e5293d6f93614c8a8d725f7b1d48",
+      "role": "source"
+    },
+    {
+      "path": "Testbench_write_slow_read_fast.bsv",
+      "sha256": "07ec952ea6d18e38caff777732f36431e140f82d380e93a36d3b06c07153167d",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_write_slow_read_fast.out.expected",
+      "sha256": "14585fc5d63679980bdd3e75f1390b1cb7b58eccbe9dd086223275dabe9f3b8f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_write_slow_read_fast",
+      "resource": "heavy",
+      "fixtures": [
+        "SyncFIFOSlow.bsv",
+        "Testbench_write_slow_read_fast.bsv",
+        "mkTestbench_write_slow_read_fast.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_write_slow_read_fast",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench_write_slow_read_fast.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench_write_slow_read_fast.bsv"
+                ],
+                "outputs": [
+                  "Testbench_write_slow_read_fast.bo",
+                  "Testbench_write_slow_read_fast.bsv.bsc-ccomp-out",
+                  "mkSyncFIFOSlow.ba",
+                  "mkTestbench_write_slow_read_fast.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_write_slow_read_fast",
+                "mkSyncFIFOSlow"
+              ],
+              "top": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.ba",
+                  "mkSyncFIFOSlow.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_write_slow_read_fast.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_write_slow_read_fast.cexe",
+                    "mkTestbench_write_slow_read_fast.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "stdout": "mkTestbench_write_slow_read_fast.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_write_slow_read_fast.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_write_slow_read_fast.c.out",
+              "expected": "mkTestbench_write_slow_read_fast.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.c.out",
+                  "mkTestbench_write_slow_read_fast.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "stdout": "mkTestbench_write_slow_read_fast.c-vcd.out",
+              "vcd": "mkTestbench_write_slow_read_fast.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_write_slow_read_fast.c-vcd.out",
+                  "mkTestbench_write_slow_read_fast.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_write_slow_read_fast.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_write_slow_read_fast.c-vcd.out",
+              "expected": "mkTestbench_write_slow_read_fast.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.c-vcd.out",
+                  "mkTestbench_write_slow_read_fast.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_write_slow_read_fast-2",
+      "resource": "heavy",
+      "fixtures": [
+        "SyncFIFOSlow.bsv",
+        "Testbench_write_slow_read_fast.bsv",
+        "mkTestbench_write_slow_read_fast.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_write_slow_read_fast",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench_write_slow_read_fast.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench_write_slow_read_fast.bsv"
+                ],
+                "outputs": [
+                  "Testbench_write_slow_read_fast.bo",
+                  "Testbench_write_slow_read_fast.bsv.bsc-vcomp-out",
+                  "mkSyncFIFOSlow.v",
+                  "mkTestbench_write_slow_read_fast.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_write_slow_read_fast",
+                "mkSyncFIFOSlow"
+              ],
+              "top": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.v",
+                  "mkSyncFIFOSlow.v"
+                ],
+                "outputs": [
+                  "mkTestbench_write_slow_read_fast.bsc-vcomp-out",
+                  "mkTestbench_write_slow_read_fast.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "stdout": "mkTestbench_write_slow_read_fast.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_write_slow_read_fast.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_write_slow_read_fast.v.out",
+              "expected": "mkTestbench_write_slow_read_fast.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.v.out",
+                  "mkTestbench_write_slow_read_fast.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_write_slow_read_fast",
+              "args": [],
+              "stdout": "mkTestbench_write_slow_read_fast.v-vcd.out",
+              "vcd": "mkTestbench_write_slow_read_fast.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_write_slow_read_fast.v-vcd.out",
+                  "mkTestbench_write_slow_read_fast.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_write_slow_read_fast.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_write_slow_read_fast.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 121,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 122
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

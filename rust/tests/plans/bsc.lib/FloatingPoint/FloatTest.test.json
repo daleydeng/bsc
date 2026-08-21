@@ -1,0 +1,1512 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/FloatingPoint/FloatTest",
+  "origin": {
+    "path": "testsuite/bsc.lib/FloatingPoint/FloatTest.exp",
+    "sha256": "ac74ce32560729d6df6ed3e7cd0e1f8852f50d18287a7ea1004e609a95bcd8ab"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/FloatingPoint",
+  "fixtures": [
+    {
+      "path": "FloatTest.bsv",
+      "sha256": "378c44adb68d016252cb4bbff78783e0b9e19bdcbecc0efd709ef9639d8f50c0",
+      "role": "source"
+    },
+    {
+      "path": "FloatToFixed_RoundMode.bsv",
+      "sha256": "f0d79c6e8b37ce19e9fec3bdf4b16ce3018cd4f7a8a131272418c4d16fd14bb4",
+      "role": "source"
+    },
+    {
+      "path": "Float_Divide_TestConds.bsv",
+      "sha256": "50f6066a480c23cb75593c413609418d9d472fc4d4722e621b26cca274efacd8",
+      "role": "source"
+    },
+    {
+      "path": "Float_SquareRoot_TestConds.bsv",
+      "sha256": "ca05e3924364e6e385710145d682c33da4c69197b7ccfa48aa2114dfda2cf4c4",
+      "role": "source"
+    },
+    {
+      "path": "sysFloatTest.out.expected",
+      "sha256": "33637becb2ff276dc740a00ecd79187a3d78e03dca1fa13e8a960ebc8ed8cd5e",
+      "role": "golden"
+    },
+    {
+      "path": "sysFloatToFixed_RoundMode.out.expected",
+      "sha256": "17275a4b8e0c86c336d94ff2bf256fd84f39b2473352fdb3c2aa3bb5c593c1a3",
+      "role": "golden"
+    },
+    {
+      "path": "sysFloat_Divide_TestConds.out.expected",
+      "sha256": "755017c4dcb9075548498f81a35930b2bc626c57669b7fd1e84d69035e635d17",
+      "role": "golden"
+    },
+    {
+      "path": "sysFloat_SquareRoot_TestConds.out.expected",
+      "sha256": "e94f42efff05367f62a3f9871d247908e75ccec5b64ececc466ea2e4f8ce6287",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysFloatTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FloatTest.bsv",
+        "sysFloatTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFloatTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FloatTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysFloatTest",
+              "args": [
+                "+RTS",
+                "-K13M",
+                "-RTS"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FloatTest.bsv"
+                ],
+                "outputs": [
+                  "FloatTest.bo",
+                  "FloatTest.bsv.bsc-vcomp-out",
+                  "mkFloatingPointAdderDouble.ba",
+                  "mkFloatingPointAdderDouble.v",
+                  "mkFloatingPointDividerDouble.ba",
+                  "mkFloatingPointDividerDouble.v",
+                  "mkFloatingPointFusedMultiplyAccumulateDouble.ba",
+                  "mkFloatingPointFusedMultiplyAccumulateDouble.v",
+                  "mkFloatingPointMultiplierDouble.ba",
+                  "mkFloatingPointMultiplierDouble.v",
+                  "mkFloatingPointSquareRooterDouble.ba",
+                  "mkFloatingPointSquareRooterDouble.v",
+                  "sysFloatTest.ba",
+                  "sysFloatTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFloatTest"
+              ],
+              "top": "sysFloatTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.v"
+                ],
+                "outputs": [
+                  "sysFloatTest.bsc-vcomp-out",
+                  "sysFloatTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloatTest",
+              "args": [],
+              "stdout": "sysFloatTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.vexe"
+                ],
+                "outputs": [
+                  "sysFloatTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloatTest.v.out",
+              "expected": "sysFloatTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.v.out",
+                  "sysFloatTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloatTest",
+              "args": [],
+              "stdout": "sysFloatTest.v-vcd.out",
+              "vcd": "sysFloatTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.vexe"
+                ],
+                "outputs": [
+                  "sysFloatTest.v-vcd.out",
+                  "sysFloatTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFloatTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFloatTest"
+              ],
+              "top": "sysFloatTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.ba"
+                ],
+                "outputs": [
+                  "sysFloatTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFloatTest.cexe",
+                    "sysFloatTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloatTest",
+              "args": [],
+              "stdout": "sysFloatTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.cexe"
+                ],
+                "outputs": [
+                  "sysFloatTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloatTest.c.out",
+              "expected": "sysFloatTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.c.out",
+                  "sysFloatTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloatTest",
+              "args": [],
+              "stdout": "sysFloatTest.c-vcd.out",
+              "vcd": "sysFloatTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.cexe"
+                ],
+                "outputs": [
+                  "sysFloatTest.c-vcd.out",
+                  "sysFloatTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFloatTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloatTest.c-vcd.out",
+              "expected": "sysFloatTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatTest.c-vcd.out",
+                  "sysFloatTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysFloat_Divide_TestConds",
+      "resource": "heavy",
+      "fixtures": [
+        "Float_Divide_TestConds.bsv",
+        "sysFloat_Divide_TestConds.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFloat_Divide_TestConds",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Float_Divide_TestConds.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysFloat_Divide_TestConds",
+              "args": [
+                "-no-aggressive-conditions"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Float_Divide_TestConds.bsv"
+                ],
+                "outputs": [
+                  "Float_Divide_TestConds.bo",
+                  "Float_Divide_TestConds.bsv.bsc-vcomp-out",
+                  "sysFloat_Divide_TestConds.ba",
+                  "sysFloat_Divide_TestConds.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFloat_Divide_TestConds"
+              ],
+              "top": "sysFloat_Divide_TestConds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.v"
+                ],
+                "outputs": [
+                  "sysFloat_Divide_TestConds.bsc-vcomp-out",
+                  "sysFloat_Divide_TestConds.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloat_Divide_TestConds",
+              "args": [],
+              "stdout": "sysFloat_Divide_TestConds.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.vexe"
+                ],
+                "outputs": [
+                  "sysFloat_Divide_TestConds.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloat_Divide_TestConds.v.out",
+              "expected": "sysFloat_Divide_TestConds.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.v.out",
+                  "sysFloat_Divide_TestConds.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloat_Divide_TestConds",
+              "args": [],
+              "stdout": "sysFloat_Divide_TestConds.v-vcd.out",
+              "vcd": "sysFloat_Divide_TestConds.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.vexe"
+                ],
+                "outputs": [
+                  "sysFloat_Divide_TestConds.v-vcd.out",
+                  "sysFloat_Divide_TestConds.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFloat_Divide_TestConds.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFloat_Divide_TestConds"
+              ],
+              "top": "sysFloat_Divide_TestConds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.ba"
+                ],
+                "outputs": [
+                  "sysFloat_Divide_TestConds.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFloat_Divide_TestConds.cexe",
+                    "sysFloat_Divide_TestConds.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloat_Divide_TestConds",
+              "args": [],
+              "stdout": "sysFloat_Divide_TestConds.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.cexe"
+                ],
+                "outputs": [
+                  "sysFloat_Divide_TestConds.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloat_Divide_TestConds.c.out",
+              "expected": "sysFloat_Divide_TestConds.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.c.out",
+                  "sysFloat_Divide_TestConds.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloat_Divide_TestConds",
+              "args": [],
+              "stdout": "sysFloat_Divide_TestConds.c-vcd.out",
+              "vcd": "sysFloat_Divide_TestConds.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.cexe"
+                ],
+                "outputs": [
+                  "sysFloat_Divide_TestConds.c-vcd.out",
+                  "sysFloat_Divide_TestConds.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFloat_Divide_TestConds.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloat_Divide_TestConds.c-vcd.out",
+              "expected": "sysFloat_Divide_TestConds.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_Divide_TestConds.c-vcd.out",
+                  "sysFloat_Divide_TestConds.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 219,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 86
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysFloat_SquareRoot_TestConds",
+      "resource": "heavy",
+      "fixtures": [
+        "Float_SquareRoot_TestConds.bsv",
+        "sysFloat_SquareRoot_TestConds.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFloat_SquareRoot_TestConds",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Float_SquareRoot_TestConds.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysFloat_SquareRoot_TestConds",
+              "args": [
+                "-no-aggressive-conditions"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Float_SquareRoot_TestConds.bsv"
+                ],
+                "outputs": [
+                  "Float_SquareRoot_TestConds.bo",
+                  "Float_SquareRoot_TestConds.bsv.bsc-vcomp-out",
+                  "sysFloat_SquareRoot_TestConds.ba",
+                  "sysFloat_SquareRoot_TestConds.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFloat_SquareRoot_TestConds"
+              ],
+              "top": "sysFloat_SquareRoot_TestConds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.v"
+                ],
+                "outputs": [
+                  "sysFloat_SquareRoot_TestConds.bsc-vcomp-out",
+                  "sysFloat_SquareRoot_TestConds.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloat_SquareRoot_TestConds",
+              "args": [],
+              "stdout": "sysFloat_SquareRoot_TestConds.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.vexe"
+                ],
+                "outputs": [
+                  "sysFloat_SquareRoot_TestConds.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloat_SquareRoot_TestConds.v.out",
+              "expected": "sysFloat_SquareRoot_TestConds.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.v.out",
+                  "sysFloat_SquareRoot_TestConds.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloat_SquareRoot_TestConds",
+              "args": [],
+              "stdout": "sysFloat_SquareRoot_TestConds.v-vcd.out",
+              "vcd": "sysFloat_SquareRoot_TestConds.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.vexe"
+                ],
+                "outputs": [
+                  "sysFloat_SquareRoot_TestConds.v-vcd.out",
+                  "sysFloat_SquareRoot_TestConds.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFloat_SquareRoot_TestConds.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFloat_SquareRoot_TestConds"
+              ],
+              "top": "sysFloat_SquareRoot_TestConds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.ba"
+                ],
+                "outputs": [
+                  "sysFloat_SquareRoot_TestConds.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFloat_SquareRoot_TestConds.cexe",
+                    "sysFloat_SquareRoot_TestConds.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloat_SquareRoot_TestConds",
+              "args": [],
+              "stdout": "sysFloat_SquareRoot_TestConds.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.cexe"
+                ],
+                "outputs": [
+                  "sysFloat_SquareRoot_TestConds.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloat_SquareRoot_TestConds.c.out",
+              "expected": "sysFloat_SquareRoot_TestConds.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.c.out",
+                  "sysFloat_SquareRoot_TestConds.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloat_SquareRoot_TestConds",
+              "args": [],
+              "stdout": "sysFloat_SquareRoot_TestConds.c-vcd.out",
+              "vcd": "sysFloat_SquareRoot_TestConds.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.cexe"
+                ],
+                "outputs": [
+                  "sysFloat_SquareRoot_TestConds.c-vcd.out",
+                  "sysFloat_SquareRoot_TestConds.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFloat_SquareRoot_TestConds.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloat_SquareRoot_TestConds.c-vcd.out",
+              "expected": "sysFloat_SquareRoot_TestConds.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloat_SquareRoot_TestConds.c-vcd.out",
+                  "sysFloat_SquareRoot_TestConds.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 90
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysFloatToFixed_RoundMode",
+      "resource": "heavy",
+      "fixtures": [
+        "FloatToFixed_RoundMode.bsv",
+        "sysFloatToFixed_RoundMode.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFloatToFixed_RoundMode",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FloatToFixed_RoundMode.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "FloatToFixed_RoundMode.bsv"
+                ],
+                "outputs": [
+                  "FloatToFixed_RoundMode.bo",
+                  "FloatToFixed_RoundMode.bsv.bsc-vcomp-out",
+                  "sysFloatToFixed_RoundMode.ba",
+                  "sysFloatToFixed_RoundMode.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFloatToFixed_RoundMode"
+              ],
+              "top": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.v"
+                ],
+                "outputs": [
+                  "sysFloatToFixed_RoundMode.bsc-vcomp-out",
+                  "sysFloatToFixed_RoundMode.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "stdout": "sysFloatToFixed_RoundMode.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.vexe"
+                ],
+                "outputs": [
+                  "sysFloatToFixed_RoundMode.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloatToFixed_RoundMode.v.out",
+              "expected": "sysFloatToFixed_RoundMode.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.v.out",
+                  "sysFloatToFixed_RoundMode.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "stdout": "sysFloatToFixed_RoundMode.v-vcd.out",
+              "vcd": "sysFloatToFixed_RoundMode.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.vexe"
+                ],
+                "outputs": [
+                  "sysFloatToFixed_RoundMode.v-vcd.out",
+                  "sysFloatToFixed_RoundMode.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFloatToFixed_RoundMode.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFloatToFixed_RoundMode"
+              ],
+              "top": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.ba"
+                ],
+                "outputs": [
+                  "sysFloatToFixed_RoundMode.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFloatToFixed_RoundMode.cexe",
+                    "sysFloatToFixed_RoundMode.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "stdout": "sysFloatToFixed_RoundMode.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.cexe"
+                ],
+                "outputs": [
+                  "sysFloatToFixed_RoundMode.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloatToFixed_RoundMode.c.out",
+              "expected": "sysFloatToFixed_RoundMode.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.c.out",
+                  "sysFloatToFixed_RoundMode.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFloatToFixed_RoundMode",
+              "args": [],
+              "stdout": "sysFloatToFixed_RoundMode.c-vcd.out",
+              "vcd": "sysFloatToFixed_RoundMode.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.cexe"
+                ],
+                "outputs": [
+                  "sysFloatToFixed_RoundMode.c-vcd.out",
+                  "sysFloatToFixed_RoundMode.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFloatToFixed_RoundMode.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFloatToFixed_RoundMode.c-vcd.out",
+              "expected": "sysFloatToFixed_RoundMode.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFloatToFixed_RoundMode.c-vcd.out",
+                  "sysFloatToFixed_RoundMode.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 569,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

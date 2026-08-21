@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bluesim/commandline_options/array/array",
+  "origin": {
+    "path": "testsuite/bsc.interra/bluesim/commandline_options/array/array.exp",
+    "sha256": "8c4ce5c67ca34cc12dac60c7e819ba96ac4364c4376ca371cc7dc80b4cd8fa67"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bluesim/commandline_options/array",
+  "fixtures": [
+    {
+      "path": "Testbench.bsv",
+      "sha256": "b898c5b5e3a3bd8773ad53214eeb77b1a89b538035ae15afcfef63bc92e2c6ad",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTestbench",
+      "resource": "heavy",
+      "fixtures": [
+        "Testbench.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench.bsv"
+                ],
+                "outputs": [
+                  "Testbench.bo",
+                  "Testbench.bsv.bsc-ccomp-out",
+                  "mkTestbench.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 66,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench"
+              ],
+              "top": "mkTestbench",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench.ba"
+                ],
+                "outputs": [
+                  "mkTestbench.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench.cexe",
+                    "mkTestbench.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 67,
+                  "endByte": 110,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench",
+              "args": [
+                "-V",
+                "dump.vcd"
+              ],
+              "stdout": "mkTestbench.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 435,
+                  "endByte": 471,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "dump.vcd",
+              "destination": "dump_V.out",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "dump_V.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 472,
+                  "endByte": 500,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-2",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench",
+              "args": [
+                "-V",
+                "dump.vcd",
+                "-m",
+                "5"
+              ],
+              "stdout": "mkTestbench.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 530,
+                  "endByte": 571,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "dump.vcd",
+              "destination": "dump_V_m.out",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "dump_V_m.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 572,
+                  "endByte": 602,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 31
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

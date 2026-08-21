@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b302/b302",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b302/b302.exp",
+    "sha256": "7c2e8dc1d2848962b374dfc851a362cfa2b488e86e049a57ab7d8755db0f0e77"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b302",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "0da52526515eead4d87172f2dd9dc5214414bda1a6253dc87a97f9e5004b98e7",
+      "role": "source"
+    },
+    {
+      "path": "mkDesign.v.expected",
+      "sha256": "d677783a864ba1d8b7d3ad2f2c1fd159084485da8b9ddab4e89709fc798e6157",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Design",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "mkDesign.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Design",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Design.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-vcomp-out",
+                  "mkDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 95,
+                  "endByte": 126,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkDesign.v",
+              "expected": "mkDesign.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign.v",
+                  "mkDesign.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 127,
+                  "endByte": 153,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

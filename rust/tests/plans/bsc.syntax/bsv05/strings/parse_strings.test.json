@@ -1,0 +1,861 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.syntax/bsv05/strings/parse_strings",
+  "origin": {
+    "path": "testsuite/bsc.syntax/bsv05/strings/parse_strings.exp",
+    "sha256": "8655502e7ea4ac8fbb77fe0b5d6116c4b8f060cd188dee769ab203c7410a81a9"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.syntax/bsv05/strings",
+  "fixtures": [
+    {
+      "path": "BadOctalEscape.bsv",
+      "sha256": "3a380294a392387e87411e492d817002a904d6d963b9a56690da1f1beddb420e",
+      "role": "source"
+    },
+    {
+      "path": "BadStringEscape.bsv",
+      "sha256": "d7db4ab1c0792d4f39b69de7e855675fb9003cd1279151344f296a30f29d51f5",
+      "role": "source"
+    },
+    {
+      "path": "OctalChars.bsv",
+      "sha256": "38032aa369c0dd8cd5010df0ef2e5ab3f52d0d44a6749978b8443523cbec4d63",
+      "role": "source"
+    },
+    {
+      "path": "OctalCharsAsInteger.bsv",
+      "sha256": "6278e7b63db293745e548b6837050bf43a9b45c2d21d8949615687aa0e660f8b",
+      "role": "source"
+    },
+    {
+      "path": "StringLit.bsv",
+      "sha256": "7476f1539e337bd7e82af02b0942702044e79e3aee78748404085cf090111917",
+      "role": "source"
+    },
+    {
+      "path": "UnterminatedString.bsv",
+      "sha256": "5c01cf709544ade0a6cdfcc39a3836a3bc018b633dc42a6cd872b6defc763ea7",
+      "role": "source"
+    },
+    {
+      "path": "sysOctalChars.v.expected",
+      "sha256": "bc349e779ac86a2a0505e5a3e31967c8b7fc22f9911872f40d90d544d466df13",
+      "role": "golden"
+    },
+    {
+      "path": "sysOctalCharsAsInteger.out.expected",
+      "sha256": "267d46cd9ecad994c436ef05b8616c9b6b9c5506bc3b6ce3578cde9a2561f4d0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-UnterminatedString",
+      "resource": "normal",
+      "fixtures": [
+        "UnterminatedString.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UnterminatedString",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UnterminatedString.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "UnterminatedString.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "UnterminatedString.bsv"
+                ],
+                "outputs": [
+                  "UnterminatedString.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 72,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "UnterminatedString.bsv.bsc-out",
+              "kind": "error",
+              "code": "P0092",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "UnterminatedString.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 72,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-BadStringEscape",
+      "resource": "normal",
+      "fixtures": [
+        "BadStringEscape.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-BadStringEscape",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "BadStringEscape.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "BadStringEscape.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "BadStringEscape.bsv"
+                ],
+                "outputs": [
+                  "BadStringEscape.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 73,
+                  "endByte": 117,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "BadStringEscape.bsv.bsc-out",
+              "kind": "error",
+              "code": "P0091",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "BadStringEscape.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 73,
+                  "endByte": 117,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-BadOctalEscape",
+      "resource": "normal",
+      "fixtures": [
+        "BadOctalEscape.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-BadOctalEscape",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "BadOctalEscape.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "BadOctalEscape.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "BadOctalEscape.bsv"
+                ],
+                "outputs": [
+                  "BadOctalEscape.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 247,
+                  "endByte": 290,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "BadOctalEscape.bsv.bsc-out",
+              "kind": "error",
+              "code": "P0091",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "BadOctalEscape.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 247,
+                  "endByte": 290,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysOctalCharsAsInteger",
+      "resource": "heavy",
+      "fixtures": [
+        "OctalCharsAsInteger.bsv",
+        "sysOctalCharsAsInteger.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysOctalCharsAsInteger",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "OctalCharsAsInteger.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysOctalCharsAsInteger",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "OctalCharsAsInteger.bsv"
+                ],
+                "outputs": [
+                  "OctalCharsAsInteger.bo",
+                  "OctalCharsAsInteger.bsv.bsc-vcomp-out",
+                  "sysOctalCharsAsInteger.ba",
+                  "sysOctalCharsAsInteger.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysOctalCharsAsInteger"
+              ],
+              "top": "sysOctalCharsAsInteger",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.v"
+                ],
+                "outputs": [
+                  "sysOctalCharsAsInteger.bsc-vcomp-out",
+                  "sysOctalCharsAsInteger.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysOctalCharsAsInteger",
+              "args": [],
+              "stdout": "sysOctalCharsAsInteger.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.vexe"
+                ],
+                "outputs": [
+                  "sysOctalCharsAsInteger.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOctalCharsAsInteger.v.out",
+              "expected": "sysOctalCharsAsInteger.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.v.out",
+                  "sysOctalCharsAsInteger.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysOctalCharsAsInteger",
+              "args": [],
+              "stdout": "sysOctalCharsAsInteger.v-vcd.out",
+              "vcd": "sysOctalCharsAsInteger.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.vexe"
+                ],
+                "outputs": [
+                  "sysOctalCharsAsInteger.v-vcd.out",
+                  "sysOctalCharsAsInteger.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysOctalCharsAsInteger.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysOctalCharsAsInteger"
+              ],
+              "top": "sysOctalCharsAsInteger",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.ba"
+                ],
+                "outputs": [
+                  "sysOctalCharsAsInteger.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysOctalCharsAsInteger.cexe",
+                    "sysOctalCharsAsInteger.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysOctalCharsAsInteger",
+              "args": [],
+              "stdout": "sysOctalCharsAsInteger.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.cexe"
+                ],
+                "outputs": [
+                  "sysOctalCharsAsInteger.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOctalCharsAsInteger.c.out",
+              "expected": "sysOctalCharsAsInteger.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.c.out",
+                  "sysOctalCharsAsInteger.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysOctalCharsAsInteger",
+              "args": [],
+              "stdout": "sysOctalCharsAsInteger.c-vcd.out",
+              "vcd": "sysOctalCharsAsInteger.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.cexe"
+                ],
+                "outputs": [
+                  "sysOctalCharsAsInteger.c-vcd.out",
+                  "sysOctalCharsAsInteger.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysOctalCharsAsInteger.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOctalCharsAsInteger.c-vcd.out",
+              "expected": "sysOctalCharsAsInteger.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalCharsAsInteger.c-vcd.out",
+                  "sysOctalCharsAsInteger.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 506,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-OctalChars",
+      "resource": "normal",
+      "fixtures": [
+        "OctalChars.bsv",
+        "sysOctalChars.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OctalChars",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OctalChars.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "OctalChars.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OctalChars.bsv"
+                ],
+                "outputs": [
+                  "OctalChars.bo",
+                  "OctalChars.bsv.bsc-vcomp-out",
+                  "sysOctalChars.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 601,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "sysOctalChars.v",
+              "expected": "sysOctalChars.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOctalChars.v",
+                  "sysOctalChars.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 602,
+                  "endByte": 633,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-StringLit",
+      "resource": "normal",
+      "fixtures": [
+        "StringLit.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StringLit",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StringLit.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "StringLit.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "StringLit.bsv"
+                ],
+                "outputs": [
+                  "StringLit.bsv.bsc-out",
+                  "StringLit.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 653,
+                  "endByte": 679,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysOctalChars",
+      "resource": "heavy",
+      "fixtures": [
+        "OctalChars.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysOctalChars",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "OctalChars.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "OctalChars.bsv"
+                ],
+                "outputs": [
+                  "OctalChars.bo",
+                  "OctalChars.bsv.bsc-ccomp-out",
+                  "sysOctalChars.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 389,
+                  "endByte": 423,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysOctalChars"
+              ],
+              "top": "sysOctalChars",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOctalChars.ba"
+                ],
+                "outputs": [
+                  "sysOctalChars.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysOctalChars.cexe",
+                    "sysOctalChars.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 424,
+                  "endByte": 469,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1386 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/positivereset/SyncReset/SyncReset",
+  "origin": {
+    "path": "testsuite/bsc.verilog/positivereset/SyncReset/SyncReset.exp",
+    "sha256": "5083b5e43597c344b0ea91414ed8666459c06a2d8a1912f144846340f9f05385"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/positivereset/SyncReset",
+  "fixtures": [
+    {
+      "path": "RstTest.bsv",
+      "sha256": "ac984bd7dfe21cd28b502f7574dbb3f599c6d54ab23314eeaa8bcf75484f318e",
+      "role": "source"
+    },
+    {
+      "path": "RstTest_E1.bsv",
+      "sha256": "f4e46d2478f054c76b9a4c81da42c3fc98c00bf7e44672408e77ca80e477e657",
+      "role": "source"
+    },
+    {
+      "path": "RstTest_V1.bsv",
+      "sha256": "e433112083b16ab326c7352d34e8efae5535a6c1f20f5f91ac383d3304a39606",
+      "role": "source"
+    },
+    {
+      "path": "RstTest_V2.bsv",
+      "sha256": "20cc0ec119985343292caaacb242ee0f1071a2d09e656a0742c3bd6882d7be4a",
+      "role": "source"
+    },
+    {
+      "path": "sysRstTest.out.expected",
+      "sha256": "c3fea4090515901f5a4e66630a8dad7033c0f8597257a065f2d651e4f75063da",
+      "role": "golden"
+    },
+    {
+      "path": "sysRstTest.v.out.expected",
+      "sha256": "4eca772e521ec2a42a8305b7f8c02c71effcf1ffadffba8a14908130cefaa1f1",
+      "role": "golden"
+    },
+    {
+      "path": "sysRstTest_V1.out.expected",
+      "sha256": "a635285ab8963566e49101536b559ad37939678efb7e832d647ca6611d94f701",
+      "role": "golden"
+    },
+    {
+      "path": "sysRstTest_V1.v.out.expected",
+      "sha256": "3e1f3f6e73a67008f18876bab10e665d3f56c447b83c929b1fb5f6aded2a0389",
+      "role": "golden"
+    },
+    {
+      "path": "sysRstTest_V2.out.expected",
+      "sha256": "8e0c120ab1da22ebe3e2852fe3dea5160d1f0beff4f88e7aad64c43decdae665",
+      "role": "golden"
+    },
+    {
+      "path": "sysRstTest_V2.v.out.expected",
+      "sha256": "991f87400ca31833be745ace3693e580c878298b7d40d665405263bf366c54ae",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysRstTest",
+      "resource": "heavy",
+      "fixtures": [
+        "RstTest.bsv",
+        "sysRstTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRstTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RstTest.bsv",
+              "mode": "bluesim",
+              "module": "sysRstTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RstTest.bsv"
+                ],
+                "outputs": [
+                  "RstTest.bo",
+                  "RstTest.bsv.bsc-ccomp-out",
+                  "sysRstTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRstTest"
+              ],
+              "top": "sysRstTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.ba"
+                ],
+                "outputs": [
+                  "sysRstTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRstTest.cexe",
+                    "sysRstTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRstTest",
+              "args": [],
+              "stdout": "sysRstTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.cexe"
+                ],
+                "outputs": [
+                  "sysRstTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest.c.out",
+              "expected": "sysRstTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.c.out",
+                  "sysRstTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRstTest",
+              "args": [],
+              "stdout": "sysRstTest.c-vcd.out",
+              "vcd": "sysRstTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.cexe"
+                ],
+                "outputs": [
+                  "sysRstTest.c-vcd.out",
+                  "sysRstTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRstTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest.c-vcd.out",
+              "expected": "sysRstTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.c-vcd.out",
+                  "sysRstTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 727,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRstTest-2",
+      "resource": "heavy",
+      "fixtures": [
+        "RstTest.bsv",
+        "sysRstTest.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRstTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RstTest.bsv",
+              "mode": "verilog",
+              "module": "sysRstTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RstTest.bsv"
+                ],
+                "outputs": [
+                  "RstTest.bo",
+                  "RstTest.bsv.bsc-vcomp-out",
+                  "sysRstTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 728,
+                  "endByte": 780,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRstTest"
+              ],
+              "top": "sysRstTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.v"
+                ],
+                "outputs": [
+                  "sysRstTest.bsc-vcomp-out",
+                  "sysRstTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 728,
+                  "endByte": 780,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRstTest",
+              "args": [],
+              "stdout": "sysRstTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.vexe"
+                ],
+                "outputs": [
+                  "sysRstTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 728,
+                  "endByte": 780,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest.v.out",
+              "expected": "sysRstTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.v.out",
+                  "sysRstTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 728,
+                  "endByte": 780,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRstTest",
+              "args": [],
+              "stdout": "sysRstTest.v-vcd.out",
+              "vcd": "sysRstTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.vexe"
+                ],
+                "outputs": [
+                  "sysRstTest.v-vcd.out",
+                  "sysRstTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 728,
+                  "endByte": 780,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRstTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 728,
+                  "endByte": 780,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRstTest_V1",
+      "resource": "heavy",
+      "fixtures": [
+        "RstTest_V1.bsv",
+        "sysRstTest_V1.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRstTest_V1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RstTest_V1.bsv",
+              "mode": "bluesim",
+              "module": "sysRstTest_V1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RstTest_V1.bsv"
+                ],
+                "outputs": [
+                  "RstTest_V1.bo",
+                  "RstTest_V1.bsv.bsc-ccomp-out",
+                  "sysRstTest_V1.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRstTest_V1"
+              ],
+              "top": "sysRstTest_V1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.ba"
+                ],
+                "outputs": [
+                  "sysRstTest_V1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRstTest_V1.cexe",
+                    "sysRstTest_V1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRstTest_V1",
+              "args": [],
+              "stdout": "sysRstTest_V1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.cexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest_V1.c.out",
+              "expected": "sysRstTest_V1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.c.out",
+                  "sysRstTest_V1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRstTest_V1",
+              "args": [],
+              "stdout": "sysRstTest_V1.c-vcd.out",
+              "vcd": "sysRstTest_V1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.cexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V1.c-vcd.out",
+                  "sysRstTest_V1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRstTest_V1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest_V1.c-vcd.out",
+              "expected": "sysRstTest_V1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.c-vcd.out",
+                  "sysRstTest_V1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 835,
+                  "endByte": 861,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRstTest_V1-2",
+      "resource": "heavy",
+      "fixtures": [
+        "RstTest_V1.bsv",
+        "sysRstTest_V1.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRstTest_V1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RstTest_V1.bsv",
+              "mode": "verilog",
+              "module": "sysRstTest_V1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RstTest_V1.bsv"
+                ],
+                "outputs": [
+                  "RstTest_V1.bo",
+                  "RstTest_V1.bsv.bsc-vcomp-out",
+                  "sysRstTest_V1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 920,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRstTest_V1"
+              ],
+              "top": "sysRstTest_V1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.v"
+                ],
+                "outputs": [
+                  "sysRstTest_V1.bsc-vcomp-out",
+                  "sysRstTest_V1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 920,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRstTest_V1",
+              "args": [],
+              "stdout": "sysRstTest_V1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.vexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 920,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest_V1.v.out",
+              "expected": "sysRstTest_V1.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.v.out",
+                  "sysRstTest_V1.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 920,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRstTest_V1",
+              "args": [],
+              "stdout": "sysRstTest_V1.v-vcd.out",
+              "vcd": "sysRstTest_V1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.vexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V1.v-vcd.out",
+                  "sysRstTest_V1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 920,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRstTest_V1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 920,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-RstTest_E1",
+      "resource": "normal",
+      "fixtures": [
+        "RstTest_E1.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RstTest_E1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RstTest_E1.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "RstTest_E1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RstTest_E1.bsv"
+                ],
+                "outputs": [
+                  "RstTest_E1.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 945,
+                  "endByte": 993,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "RstTest_E1.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0042",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "RstTest_E1.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 945,
+                  "endByte": 993,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRstTest_V2",
+      "resource": "heavy",
+      "fixtures": [
+        "RstTest_V2.bsv",
+        "sysRstTest_V2.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRstTest_V2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RstTest_V2.bsv",
+              "mode": "bluesim",
+              "module": "sysRstTest_V2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RstTest_V2.bsv"
+                ],
+                "outputs": [
+                  "RstTest_V2.bo",
+                  "RstTest_V2.bsv.bsc-ccomp-out",
+                  "sysRstTest_V2.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRstTest_V2"
+              ],
+              "top": "sysRstTest_V2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.ba"
+                ],
+                "outputs": [
+                  "sysRstTest_V2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRstTest_V2.cexe",
+                    "sysRstTest_V2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRstTest_V2",
+              "args": [],
+              "stdout": "sysRstTest_V2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.cexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest_V2.c.out",
+              "expected": "sysRstTest_V2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.c.out",
+                  "sysRstTest_V2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRstTest_V2",
+              "args": [],
+              "stdout": "sysRstTest_V2.c-vcd.out",
+              "vcd": "sysRstTest_V2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.cexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V2.c-vcd.out",
+                  "sysRstTest_V2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRstTest_V2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest_V2.c-vcd.out",
+              "expected": "sysRstTest_V2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.c-vcd.out",
+                  "sysRstTest_V2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1028,
+                  "endByte": 1054,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRstTest_V2-2",
+      "resource": "heavy",
+      "fixtures": [
+        "RstTest_V2.bsv",
+        "sysRstTest_V2.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "bscOptionsAppend": "-reset-prefix RESET_P -D BSV_POSITIVE_RESET",
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRstTest_V2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RstTest_V2.bsv",
+              "mode": "verilog",
+              "module": "sysRstTest_V2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RstTest_V2.bsv"
+                ],
+                "outputs": [
+                  "RstTest_V2.bo",
+                  "RstTest_V2.bsv.bsc-vcomp-out",
+                  "sysRstTest_V2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1113,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRstTest_V2"
+              ],
+              "top": "sysRstTest_V2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.v"
+                ],
+                "outputs": [
+                  "sysRstTest_V2.bsc-vcomp-out",
+                  "sysRstTest_V2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1113,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRstTest_V2",
+              "args": [],
+              "stdout": "sysRstTest_V2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.vexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1113,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRstTest_V2.v.out",
+              "expected": "sysRstTest_V2.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.v.out",
+                  "sysRstTest_V2.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1113,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRstTest_V2",
+              "args": [],
+              "stdout": "sysRstTest_V2.v-vcd.out",
+              "vcd": "sysRstTest_V2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.vexe"
+                ],
+                "outputs": [
+                  "sysRstTest_V2.v-vcd.out",
+                  "sysRstTest_V2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1113,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRstTest_V2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRstTest_V2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1113,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/vcd/vcd",
+  "origin": {
+    "path": "testsuite/bsc.verilog/vcd/vcd.exp",
+    "sha256": "9514ac6248bebc0f8b25bef00e8a45b0162556311d87d2686d8c1b9e5ffeeaac"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/vcd",
+  "fixtures": [
+    {
+      "path": "DumpFlushTest.bsv",
+      "sha256": "ae4bc9f88f0ebdefbaf1d2396870b24af7899018a78ef9f8e77258748d28eaa0",
+      "role": "source"
+    },
+    {
+      "path": "DumpOnOff.bsv",
+      "sha256": "683f9467d70a28216c985253593d6121ec3dfeb0b89c97a5aad4493f3f6f01e5",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-DumpOnOff",
+      "resource": "heavy",
+      "fixtures": [
+        "DumpOnOff.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DumpOnOff",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DumpOnOff.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DumpOnOff.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DumpOnOff.bsv"
+                ],
+                "outputs": [
+                  "DumpOnOff.bo",
+                  "DumpOnOff.bsv.bsc-vcomp-out",
+                  "sysDumpOnOff.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 34,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDumpOnOff.v"
+              ],
+              "top": "sysDumpOnOff",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDumpOnOff.v"
+                ],
+                "outputs": [
+                  "sysDumpOnOff.bsc-vcomp-out",
+                  "sysDumpOnOff.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 35,
+                  "endByte": 80,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDumpOnOff",
+              "args": [],
+              "stdout": "sysDumpOnOff.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDumpOnOff.vexe"
+                ],
+                "outputs": [
+                  "sysDumpOnOff.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 105,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-DumpFlushTest",
+      "resource": "normal",
+      "fixtures": [
+        "DumpFlushTest.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DumpFlushTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DumpFlushTest.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DumpFlushTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DumpFlushTest.bsv"
+                ],
+                "outputs": [
+                  "DumpFlushTest.bo",
+                  "DumpFlushTest.bsv.bsc-vcomp-out",
+                  "sysDumpFlushTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 224,
+                  "endByte": 262,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

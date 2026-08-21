@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID413/bugID413",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID413/bugID413.exp",
+    "sha256": "64e6812b8df6e51f80fa0591d0c4bcb3efab743238b859533cabacf3a80cabc8"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID413",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "ac5aa41ec6699d44a3c1832b18cb366c35f83323f4e608654cb0f16e92622409",
+      "role": "source"
+    },
+    {
+      "path": "Design.bsv.bsc-vcomp-out.expected",
+      "sha256": "14c9b31acea0a00b07f2212b2c41d02f325905e2fb01ddcc4eed046c4875c76b",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Design",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "Design.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Design",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bsv",
+              "mode": "verilog",
+              "module": "mkDesign",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Design.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-vcomp-out",
+                  "mkDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Design.bsv.bsc-vcomp-out",
+              "expected": "Design.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv.bsc-vcomp-out",
+                  "Design.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 61,
+                  "endByte": 98,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

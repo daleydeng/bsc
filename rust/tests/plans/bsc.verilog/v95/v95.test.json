@@ -1,0 +1,1157 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/v95/v95",
+  "origin": {
+    "path": "testsuite/bsc.verilog/v95/v95.exp",
+    "sha256": "515f45ce60e2cdbe2831a7b13072038321f7f760bd56ad5c96167296b927f4a4"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/v95",
+  "fixtures": [
+    {
+      "path": "Param.v",
+      "sha256": "77cdc1e3b9948058c6d0c0091a070b8ec9221750f2bf9967e0435c1dad8d0219",
+      "role": "source"
+    },
+    {
+      "path": "ParamOrder.bsv",
+      "sha256": "28934821f9e734870322d6fb3f6dbae17b037780bd487a9db5a43194e2fd4cdd",
+      "role": "source"
+    },
+    {
+      "path": "Signed.bsv",
+      "sha256": "9060896cb23ac68eaaa091b77de393cc087b5fe0c3a0b0bfb2ab74e5db0eeec1",
+      "role": "source"
+    },
+    {
+      "path": "sysParamOrder.out.expected",
+      "sha256": "223c837800366deddfd064b918917edd3c1a2679bc52fbf1acce2a1b67583e02",
+      "role": "golden"
+    },
+    {
+      "path": "sysSigned.out.expected",
+      "sha256": "72e10cdc3b7d8b0ca611667384da973f0ce13cfb8e726342aebde693eb8b6fa2",
+      "role": "golden"
+    },
+    {
+      "path": "sysSigned.v95.out.expected",
+      "sha256": "a94017a2441a8444d5de44515ae475e29acd012538223ebc2345d2fe6e0bba76",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysParamOrder",
+      "resource": "heavy",
+      "fixtures": [
+        "Param.v",
+        "ParamOrder.bsv",
+        "sysParamOrder.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysParamOrder",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ParamOrder.bsv",
+              "mode": "verilog",
+              "module": "sysParamOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ParamOrder.bsv"
+                ],
+                "outputs": [
+                  "ParamOrder.bo",
+                  "ParamOrder.bsv.bsc-vcomp-out",
+                  "sysParamOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 109,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamOrder",
+                "Param.v"
+              ],
+              "top": "sysParamOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v",
+                  "Param.v"
+                ],
+                "outputs": [
+                  "sysParamOrder.bsc-vcomp-out",
+                  "sysParamOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 109,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamOrder",
+              "args": [],
+              "stdout": "sysParamOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.vexe"
+                ],
+                "outputs": [
+                  "sysParamOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 109,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamOrder.v.out",
+              "expected": "sysParamOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v.out",
+                  "sysParamOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 109,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamOrder",
+              "args": [],
+              "stdout": "sysParamOrder.v-vcd.out",
+              "vcd": "sysParamOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.vexe"
+                ],
+                "outputs": [
+                  "sysParamOrder.v-vcd.out",
+                  "sysParamOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 109,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 109,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysParamOrder-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Param.v",
+        "ParamOrder.bsv",
+        "sysParamOrder.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysParamOrder",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "ParamOrder.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "ParamOrder.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 112,
+                  "endByte": 131,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "ParamOrder.bi",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "ParamOrder.bi"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 151,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "ParamOrder.bsv",
+              "mode": "verilog",
+              "module": "sysParamOrder",
+              "args": [
+                "-v95"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "ParamOrder.bsv"
+                ],
+                "outputs": [
+                  "ParamOrder.bo",
+                  "ParamOrder.bsv.bsc-vcomp-out",
+                  "sysParamOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 207,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamOrder",
+                "Param.v"
+              ],
+              "top": "sysParamOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v",
+                  "Param.v"
+                ],
+                "outputs": [
+                  "sysParamOrder.bsc-vcomp-out",
+                  "sysParamOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 207,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamOrder",
+              "args": [],
+              "stdout": "sysParamOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.vexe"
+                ],
+                "outputs": [
+                  "sysParamOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 207,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamOrder.v.out",
+              "expected": "sysParamOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v.out",
+                  "sysParamOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 207,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamOrder",
+              "args": [],
+              "stdout": "sysParamOrder.v-vcd.out",
+              "vcd": "sysParamOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.vexe"
+                ],
+                "outputs": [
+                  "sysParamOrder.v-vcd.out",
+                  "sysParamOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 207,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 207,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysParamOrder-3",
+      "resource": "heavy",
+      "fixtures": [
+        "Param.v",
+        "ParamOrder.bsv",
+        "sysParamOrder.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysParamOrder",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "ParamOrder.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "ParamOrder.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 210,
+                  "endByte": 229,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "ParamOrder.bi",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "ParamOrder.bi"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 230,
+                  "endByte": 249,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "ParamOrder.bsv",
+              "mode": "verilog",
+              "module": "sysParamOrder",
+              "args": [
+                "-no-v95"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "ParamOrder.bsv"
+                ],
+                "outputs": [
+                  "ParamOrder.bo",
+                  "ParamOrder.bsv.bsc-vcomp-out",
+                  "sysParamOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 250,
+                  "endByte": 308,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamOrder",
+                "Param.v"
+              ],
+              "top": "sysParamOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v",
+                  "Param.v"
+                ],
+                "outputs": [
+                  "sysParamOrder.bsc-vcomp-out",
+                  "sysParamOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 250,
+                  "endByte": 308,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamOrder",
+              "args": [],
+              "stdout": "sysParamOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.vexe"
+                ],
+                "outputs": [
+                  "sysParamOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 250,
+                  "endByte": 308,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamOrder.v.out",
+              "expected": "sysParamOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v.out",
+                  "sysParamOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 250,
+                  "endByte": 308,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamOrder",
+              "args": [],
+              "stdout": "sysParamOrder.v-vcd.out",
+              "vcd": "sysParamOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.vexe"
+                ],
+                "outputs": [
+                  "sysParamOrder.v-vcd.out",
+                  "sysParamOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 250,
+                  "endByte": 308,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 250,
+                  "endByte": 308,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSigned",
+      "resource": "heavy",
+      "fixtures": [
+        "Signed.bsv",
+        "sysSigned.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSigned",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Signed.bsv",
+              "mode": "verilog",
+              "module": "sysSigned",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Signed.bsv"
+                ],
+                "outputs": [
+                  "Signed.bo",
+                  "Signed.bsv.bsc-vcomp-out",
+                  "sysSigned.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSigned"
+              ],
+              "top": "sysSigned",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.v"
+                ],
+                "outputs": [
+                  "sysSigned.bsc-vcomp-out",
+                  "sysSigned.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSigned",
+              "args": [],
+              "stdout": "sysSigned.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.vexe"
+                ],
+                "outputs": [
+                  "sysSigned.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSigned.v.out",
+              "expected": "sysSigned.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.v.out",
+                  "sysSigned.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSigned",
+              "args": [],
+              "stdout": "sysSigned.v-vcd.out",
+              "vcd": "sysSigned.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.vexe"
+                ],
+                "outputs": [
+                  "sysSigned.v-vcd.out",
+                  "sysSigned.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSigned.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSigned-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Signed.bsv",
+        "sysSigned.v95.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSigned",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "Signed.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Signed.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 361,
+                  "endByte": 376,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 16
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "Signed.bi",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Signed.bi"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 377,
+                  "endByte": 392,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 16
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Signed.bsv",
+              "mode": "verilog",
+              "module": "sysSigned",
+              "args": [
+                "-v95"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Signed.bsv"
+                ],
+                "outputs": [
+                  "Signed.bo",
+                  "Signed.bsv.bsc-vcomp-out",
+                  "sysSigned.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 393,
+                  "endByte": 473,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSigned"
+              ],
+              "top": "sysSigned",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.v"
+                ],
+                "outputs": [
+                  "sysSigned.bsc-vcomp-out",
+                  "sysSigned.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 393,
+                  "endByte": 473,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSigned",
+              "args": [],
+              "stdout": "sysSigned.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.vexe"
+                ],
+                "outputs": [
+                  "sysSigned.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 393,
+                  "endByte": 473,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSigned.v.out",
+              "expected": "sysSigned.v95.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.v.out",
+                  "sysSigned.v95.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 393,
+                  "endByte": 473,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSigned",
+              "args": [],
+              "stdout": "sysSigned.v-vcd.out",
+              "vcd": "sysSigned.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.vexe"
+                ],
+                "outputs": [
+                  "sysSigned.v-vcd.out",
+                  "sysSigned.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 393,
+                  "endByte": 473,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSigned.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSigned.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 393,
+                  "endByte": 473,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 81
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/sbr/sbr",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/sbr/sbr.exp",
+    "sha256": "9aeb1b1e0fb096f74fc0a95d37bcdccfefa020643804fb25a7db11e2576bd552"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/sbr",
+  "fixtures": [
+    {
+      "path": "SBRCount.bsv",
+      "sha256": "782bca3eac7d251b655cf8364111bd7ee8e52d8eb6a4cc2f9993b92d4e8edb71",
+      "role": "source"
+    },
+    {
+      "path": "SBRCount.bsv.bsc-sched-out.expected",
+      "sha256": "539e731d68b67705a719eb11674dda1b528aff88b02806a0fe4bdd0eb09a6701",
+      "role": "golden"
+    },
+    {
+      "path": "SBRValueNotOK.bsv",
+      "sha256": "dbbea7e857477b9589a906e3c28ba57d2635bde7a54e37e2ad140cb6a6faf86c",
+      "role": "source"
+    },
+    {
+      "path": "SBRValueOK.bsv",
+      "sha256": "e68f09bfab0cf9b8944c1230cb9d0b885010c25a0b4808fd9e0d7b8b09c366f1",
+      "role": "source"
+    },
+    {
+      "path": "SBRValueOK_small.bsv",
+      "sha256": "a4216d7f5ff087899e317b234e7cd4fa874b6a0df08ecb86f584b6d0645d7a5d",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-SBRCount",
+      "resource": "normal",
+      "fixtures": [
+        "SBRCount.bsv",
+        "SBRCount.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SBRCount",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SBRCount.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SBRCount.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "SBRCount.bsv"
+                ],
+                "outputs": [
+                  "SBRCount.bo",
+                  "SBRCount.bsv.bsc-sched-out",
+                  "mkSBRCount.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 71,
+                  "endByte": 113,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "SBRCount.bsv.bsc-sched-out",
+              "expected": "SBRCount.bsv.bsc-sched-out.expected",
+              "normalizations": [
+                "generated_ids"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "SBRCount.bsv.bsc-sched-out",
+                  "SBRCount.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 184,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-SBRValueOK",
+      "resource": "normal",
+      "fixtures": [
+        "SBRCount.bsv",
+        "SBRValueOK.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SBRValueOK",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SBRCount.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SBRCount.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "SBRCount.bsv"
+                ],
+                "outputs": [
+                  "SBRCount.bo",
+                  "SBRCount.bsv.bsc-sched-out",
+                  "mkSBRCount.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 71,
+                  "endByte": 113,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "SBRValueOK.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SBRValueOK.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SBRValueOK.bsv"
+                ],
+                "outputs": [
+                  "SBRValueOK.bo",
+                  "SBRValueOK.bsv.bsc-vcomp-out",
+                  "mkSBRCount.v",
+                  "sysSBRValueOK.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 277,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-SBRValueNotOK",
+      "resource": "normal",
+      "fixtures": [
+        "SBRCount.bsv",
+        "SBRValueNotOK.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SBRValueNotOK",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SBRValueNotOK.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "SBRValueNotOK.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SBRValueNotOK.bsv"
+                ],
+                "outputs": [
+                  "SBRValueNotOK.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 329,
+                  "endByte": 383,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SBRValueNotOK.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0004",
+              "count": 512,
+              "artifacts": {
+                "inputs": [
+                  "SBRValueNotOK.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 329,
+                  "endByte": 383,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-SBRValueOK_small",
+      "resource": "normal",
+      "fixtures": [
+        "SBRCount.bsv",
+        "SBRValueOK_small.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SBRValueOK_small",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SBRValueOK_small.bsv",
+              "mode": "bluesim_object",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "SBRValueOK_small.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SBRValueOK_small.bsv"
+                ],
+                "outputs": [
+                  "SBRValueOK_small.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 518,
+                  "endByte": 570,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SBRValueOK_small.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0096",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "SBRValueOK_small.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 518,
+                  "endByte": 570,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2567 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/FloatingPoint/floating_point",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/FloatingPoint/floating_point.exp",
+    "sha256": "54baff0edac4623a032cfe5b6606bca9d2f82ce481dd60efa924d222c83210cc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/FloatingPoint",
+  "fixtures": [
+    {
+      "path": "FPAdd.bsv",
+      "sha256": "95808548b4c614f89d93e063c6ffc0739ad6289068426219d09b8714e60ae2e4",
+      "role": "source"
+    },
+    {
+      "path": "FPLibrary.bsv",
+      "sha256": "24214f0dfdae4acd126fcc552438ebc83e54a23d123e0f276a143642911e270c",
+      "role": "source"
+    },
+    {
+      "path": "FPMac.bsv",
+      "sha256": "032494b4ab80b66b27a76ba29e06f0616875e6aa48575637d46b989785f9ec5b",
+      "role": "source"
+    },
+    {
+      "path": "FPMult.bsv",
+      "sha256": "8f2b329e6d224dc069d576812fa92161996274470f7db3ba9de6ab5dcb911757",
+      "role": "source"
+    },
+    {
+      "path": "Makefile.data",
+      "sha256": "7a5463aa62efe79a9db235e2a01ea561a86aae5b86397006fe6cedba93d38864",
+      "role": "build_input"
+    },
+    {
+      "path": "TesterA.bsv",
+      "sha256": "c3eabae9d850391db2cb35afa188056503c8250d2f799e46f9f93d4868f682f3",
+      "role": "source"
+    },
+    {
+      "path": "TesterA64.bsv",
+      "sha256": "7b51c38be285710632e84fcfdd357c20d92df4798244d133394d0b81ab351d2a",
+      "role": "source"
+    },
+    {
+      "path": "TesterLib.bsv",
+      "sha256": "2dac115a9ff3776b5769ecaa231cd776655b3e3bcbeb46e6a96690dee0ca50bb",
+      "role": "source"
+    },
+    {
+      "path": "TesterM.bsv",
+      "sha256": "83c7d32912b5e9d64caefe2e037fa95d300c38720ac4a05dd59b50a00f1ffa12",
+      "role": "source"
+    },
+    {
+      "path": "TesterM64.bsv",
+      "sha256": "c45349721da524023ff3a2423437f094f560c491ee1e85a78199ed5747e4df02",
+      "role": "source"
+    },
+    {
+      "path": "TesterMac.bsv",
+      "sha256": "0a091dbe0197226c7c555a2d37485636f6273b3e310de6ed4338319bb9e34c64",
+      "role": "source"
+    },
+    {
+      "path": "TesterMac64.bsv",
+      "sha256": "eb2e5b1e7c01f05de2d917671577376165371a83f49d128ff11db4e9f6804c4f",
+      "role": "source"
+    },
+    {
+      "path": "dumper.c",
+      "sha256": "1266417d187f0edfe2e5d89a9b32f5e86dced7f5e0551d4d20d6a7dab603453f",
+      "role": "build_input"
+    },
+    {
+      "path": "sysTesterA.out.expected",
+      "sha256": "368aa11649a1dc2ac3a96ea7e99bf39a9aac6e9b36420373eace9915601a3b46",
+      "role": "golden"
+    },
+    {
+      "path": "sysTesterA64.out.expected",
+      "sha256": "0e2ae56323a18a5b7296cd4939ef8ca2c81539bcb1ec961769610d6b1b03ef84",
+      "role": "golden"
+    },
+    {
+      "path": "sysTesterM.out.expected",
+      "sha256": "2f713e4ce3e505d164458beeb4589be188152441aa71ee9378f82c2b980d4467",
+      "role": "golden"
+    },
+    {
+      "path": "sysTesterM64.out.expected",
+      "sha256": "6311435af728188d20969b82706697980bc658a9f95f453543b6c3987bc77749",
+      "role": "golden"
+    },
+    {
+      "path": "sysTesterMac.out.expected",
+      "sha256": "89a2477a209511336f4a214a169793942cf78fef43b6097c0b2e89d59f10f3c5",
+      "role": "golden"
+    },
+    {
+      "path": "sysTesterMac64.out.expected",
+      "sha256": "824767337753337a54b10804cc85a254eef750d056c8aed63608c78a5fd02d23",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTesterA",
+      "resource": "heavy",
+      "fixtures": [
+        "FPAdd.bsv",
+        "FPLibrary.bsv",
+        "Makefile.data",
+        "TesterA.bsv",
+        "TesterLib.bsv",
+        "dumper.c",
+        "sysTesterA.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTesterA",
+          "operations": [
+            {
+              "op": "upstream.make_test_data",
+              "artifacts": {
+                "inputs": [
+                  "Makefile.data",
+                  "dumper.c"
+                ],
+                "outputs": [
+                  "testa.dat",
+                  "testm.dat",
+                  "testmac.dat",
+                  "testa64.dat",
+                  "testm64.dat",
+                  "testmac64.dat"
+                ],
+                "outputAlternatives": [
+                  [
+                    "dumper",
+                    "dumper.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TesterA.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTesterA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TesterA.bsv"
+                ],
+                "outputs": [
+                  "TesterA.bo",
+                  "TesterA.bsv.bsc-vcomp-out",
+                  "mkFPAdd.ba",
+                  "mkFPAdd.v",
+                  "sysTesterA.ba",
+                  "sysTesterA.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTesterA",
+                "mkFPAdd"
+              ],
+              "top": "sysTesterA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.v",
+                  "mkFPAdd.v"
+                ],
+                "outputs": [
+                  "sysTesterA.bsc-vcomp-out",
+                  "sysTesterA.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterA",
+              "args": [],
+              "stdout": "sysTesterA.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.vexe"
+                ],
+                "outputs": [
+                  "sysTesterA.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterA.v.out",
+              "expected": "sysTesterA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.v.out",
+                  "sysTesterA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterA",
+              "args": [],
+              "stdout": "sysTesterA.v-vcd.out",
+              "vcd": "sysTesterA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.vexe"
+                ],
+                "outputs": [
+                  "sysTesterA.v-vcd.out",
+                  "sysTesterA.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTesterA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTesterA",
+                "mkFPAdd"
+              ],
+              "top": "sysTesterA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.ba",
+                  "mkFPAdd.ba"
+                ],
+                "outputs": [
+                  "sysTesterA.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTesterA.cexe",
+                    "sysTesterA.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterA",
+              "args": [],
+              "stdout": "sysTesterA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.cexe"
+                ],
+                "outputs": [
+                  "sysTesterA.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterA.c.out",
+              "expected": "sysTesterA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.c.out",
+                  "sysTesterA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterA",
+              "args": [],
+              "stdout": "sysTesterA.c-vcd.out",
+              "vcd": "sysTesterA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.cexe"
+                ],
+                "outputs": [
+                  "sysTesterA.c-vcd.out",
+                  "sysTesterA.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTesterA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterA.c-vcd.out",
+              "expected": "sysTesterA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA.c-vcd.out",
+                  "sysTesterA.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTesterM",
+      "resource": "heavy",
+      "fixtures": [
+        "FPLibrary.bsv",
+        "FPMult.bsv",
+        "Makefile.data",
+        "TesterLib.bsv",
+        "TesterM.bsv",
+        "dumper.c",
+        "sysTesterM.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTesterM",
+          "operations": [
+            {
+              "op": "upstream.make_test_data",
+              "artifacts": {
+                "inputs": [
+                  "Makefile.data",
+                  "dumper.c"
+                ],
+                "outputs": [
+                  "testa.dat",
+                  "testm.dat",
+                  "testmac.dat",
+                  "testa64.dat",
+                  "testm64.dat",
+                  "testmac64.dat"
+                ],
+                "outputAlternatives": [
+                  [
+                    "dumper",
+                    "dumper.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TesterM.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTesterM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TesterM.bsv"
+                ],
+                "outputs": [
+                  "TesterM.bo",
+                  "TesterM.bsv.bsc-vcomp-out",
+                  "mkFPMult.ba",
+                  "mkFPMult.v",
+                  "mkFPMult64.ba",
+                  "mkFPMult64.v",
+                  "sysTesterM.ba",
+                  "sysTesterM.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTesterM",
+                "mkFPMult"
+              ],
+              "top": "sysTesterM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.v",
+                  "mkFPMult.v"
+                ],
+                "outputs": [
+                  "sysTesterM.bsc-vcomp-out",
+                  "sysTesterM.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterM",
+              "args": [],
+              "stdout": "sysTesterM.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.vexe"
+                ],
+                "outputs": [
+                  "sysTesterM.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterM.v.out",
+              "expected": "sysTesterM.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.v.out",
+                  "sysTesterM.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterM",
+              "args": [],
+              "stdout": "sysTesterM.v-vcd.out",
+              "vcd": "sysTesterM.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.vexe"
+                ],
+                "outputs": [
+                  "sysTesterM.v-vcd.out",
+                  "sysTesterM.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTesterM.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTesterM",
+                "mkFPMult"
+              ],
+              "top": "sysTesterM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.ba",
+                  "mkFPMult.ba"
+                ],
+                "outputs": [
+                  "sysTesterM.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTesterM.cexe",
+                    "sysTesterM.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterM",
+              "args": [],
+              "stdout": "sysTesterM.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.cexe"
+                ],
+                "outputs": [
+                  "sysTesterM.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterM.c.out",
+              "expected": "sysTesterM.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.c.out",
+                  "sysTesterM.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterM",
+              "args": [],
+              "stdout": "sysTesterM.c-vcd.out",
+              "vcd": "sysTesterM.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.cexe"
+                ],
+                "outputs": [
+                  "sysTesterM.c-vcd.out",
+                  "sysTesterM.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTesterM.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterM.c-vcd.out",
+              "expected": "sysTesterM.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM.c-vcd.out",
+                  "sysTesterM.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 149,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTesterA64",
+      "resource": "heavy",
+      "fixtures": [
+        "FPAdd.bsv",
+        "FPLibrary.bsv",
+        "Makefile.data",
+        "TesterA64.bsv",
+        "TesterLib.bsv",
+        "dumper.c",
+        "sysTesterA64.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTesterA64",
+          "operations": [
+            {
+              "op": "upstream.make_test_data",
+              "artifacts": {
+                "inputs": [
+                  "Makefile.data",
+                  "dumper.c"
+                ],
+                "outputs": [
+                  "testa.dat",
+                  "testm.dat",
+                  "testmac.dat",
+                  "testa64.dat",
+                  "testm64.dat",
+                  "testmac64.dat"
+                ],
+                "outputAlternatives": [
+                  [
+                    "dumper",
+                    "dumper.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TesterA64.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTesterA64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TesterA64.bsv"
+                ],
+                "outputs": [
+                  "TesterA64.bo",
+                  "TesterA64.bsv.bsc-vcomp-out",
+                  "mkFPAdd64.ba",
+                  "mkFPAdd64.v",
+                  "sysTesterA64.ba",
+                  "sysTesterA64.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTesterA64",
+                "mkFPAdd64"
+              ],
+              "top": "sysTesterA64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.v",
+                  "mkFPAdd64.v"
+                ],
+                "outputs": [
+                  "sysTesterA64.bsc-vcomp-out",
+                  "sysTesterA64.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterA64",
+              "args": [],
+              "stdout": "sysTesterA64.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.vexe"
+                ],
+                "outputs": [
+                  "sysTesterA64.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterA64.v.out",
+              "expected": "sysTesterA64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.v.out",
+                  "sysTesterA64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterA64",
+              "args": [],
+              "stdout": "sysTesterA64.v-vcd.out",
+              "vcd": "sysTesterA64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.vexe"
+                ],
+                "outputs": [
+                  "sysTesterA64.v-vcd.out",
+                  "sysTesterA64.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTesterA64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTesterA64",
+                "mkFPAdd64"
+              ],
+              "top": "sysTesterA64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.ba",
+                  "mkFPAdd64.ba"
+                ],
+                "outputs": [
+                  "sysTesterA64.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTesterA64.cexe",
+                    "sysTesterA64.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterA64",
+              "args": [],
+              "stdout": "sysTesterA64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.cexe"
+                ],
+                "outputs": [
+                  "sysTesterA64.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterA64.c.out",
+              "expected": "sysTesterA64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.c.out",
+                  "sysTesterA64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterA64",
+              "args": [],
+              "stdout": "sysTesterA64.c-vcd.out",
+              "vcd": "sysTesterA64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.cexe"
+                ],
+                "outputs": [
+                  "sysTesterA64.c-vcd.out",
+                  "sysTesterA64.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTesterA64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterA64.c-vcd.out",
+              "expected": "sysTesterA64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterA64.c-vcd.out",
+                  "sysTesterA64.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 151,
+                  "endByte": 194,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTesterM64",
+      "resource": "heavy",
+      "fixtures": [
+        "FPLibrary.bsv",
+        "FPMult.bsv",
+        "Makefile.data",
+        "TesterLib.bsv",
+        "TesterM64.bsv",
+        "dumper.c",
+        "sysTesterM64.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTesterM64",
+          "operations": [
+            {
+              "op": "upstream.make_test_data",
+              "artifacts": {
+                "inputs": [
+                  "Makefile.data",
+                  "dumper.c"
+                ],
+                "outputs": [
+                  "testa.dat",
+                  "testm.dat",
+                  "testmac.dat",
+                  "testa64.dat",
+                  "testm64.dat",
+                  "testmac64.dat"
+                ],
+                "outputAlternatives": [
+                  [
+                    "dumper",
+                    "dumper.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TesterM64.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTesterM64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TesterM64.bsv"
+                ],
+                "outputs": [
+                  "TesterM64.bo",
+                  "TesterM64.bsv.bsc-vcomp-out",
+                  "mkFPMult.ba",
+                  "mkFPMult.v",
+                  "mkFPMult64.ba",
+                  "mkFPMult64.v",
+                  "sysTesterM64.ba",
+                  "sysTesterM64.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTesterM64",
+                "mkFPMult64"
+              ],
+              "top": "sysTesterM64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.v",
+                  "mkFPMult64.v"
+                ],
+                "outputs": [
+                  "sysTesterM64.bsc-vcomp-out",
+                  "sysTesterM64.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterM64",
+              "args": [],
+              "stdout": "sysTesterM64.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.vexe"
+                ],
+                "outputs": [
+                  "sysTesterM64.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterM64.v.out",
+              "expected": "sysTesterM64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.v.out",
+                  "sysTesterM64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterM64",
+              "args": [],
+              "stdout": "sysTesterM64.v-vcd.out",
+              "vcd": "sysTesterM64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.vexe"
+                ],
+                "outputs": [
+                  "sysTesterM64.v-vcd.out",
+                  "sysTesterM64.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTesterM64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTesterM64",
+                "mkFPMult64"
+              ],
+              "top": "sysTesterM64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.ba",
+                  "mkFPMult64.ba"
+                ],
+                "outputs": [
+                  "sysTesterM64.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTesterM64.cexe",
+                    "sysTesterM64.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterM64",
+              "args": [],
+              "stdout": "sysTesterM64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.cexe"
+                ],
+                "outputs": [
+                  "sysTesterM64.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterM64.c.out",
+              "expected": "sysTesterM64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.c.out",
+                  "sysTesterM64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterM64",
+              "args": [],
+              "stdout": "sysTesterM64.c-vcd.out",
+              "vcd": "sysTesterM64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.cexe"
+                ],
+                "outputs": [
+                  "sysTesterM64.c-vcd.out",
+                  "sysTesterM64.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTesterM64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterM64.c-vcd.out",
+              "expected": "sysTesterM64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterM64.c-vcd.out",
+                  "sysTesterM64.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 240,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTesterMac",
+      "resource": "heavy",
+      "fixtures": [
+        "FPAdd.bsv",
+        "FPLibrary.bsv",
+        "FPMac.bsv",
+        "FPMult.bsv",
+        "Makefile.data",
+        "TesterLib.bsv",
+        "TesterMac.bsv",
+        "dumper.c",
+        "sysTesterMac.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTesterMac",
+          "operations": [
+            {
+              "op": "upstream.make_test_data",
+              "artifacts": {
+                "inputs": [
+                  "Makefile.data",
+                  "dumper.c"
+                ],
+                "outputs": [
+                  "testa.dat",
+                  "testm.dat",
+                  "testmac.dat",
+                  "testa64.dat",
+                  "testm64.dat",
+                  "testmac64.dat"
+                ],
+                "outputAlternatives": [
+                  [
+                    "dumper",
+                    "dumper.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TesterMac.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTesterMac",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TesterMac.bsv"
+                ],
+                "outputs": [
+                  "TesterMac.bo",
+                  "TesterMac.bsv.bsc-vcomp-out",
+                  "mkFPMac.ba",
+                  "mkFPMac.v",
+                  "mkFPMac64.ba",
+                  "mkFPMac64.v",
+                  "mkFPMult.ba",
+                  "mkFPMult.v",
+                  "mkFPMult64.ba",
+                  "mkFPMult64.v",
+                  "sysTesterMac.ba",
+                  "sysTesterMac.v",
+                  "sysTesterMac64.ba",
+                  "sysTesterMac64.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTesterMac",
+                "mkFPMac"
+              ],
+              "top": "sysTesterMac",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.v",
+                  "mkFPMac.v"
+                ],
+                "outputs": [
+                  "sysTesterMac.bsc-vcomp-out",
+                  "sysTesterMac.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterMac",
+              "args": [],
+              "stdout": "sysTesterMac.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.vexe"
+                ],
+                "outputs": [
+                  "sysTesterMac.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterMac.v.out",
+              "expected": "sysTesterMac.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.v.out",
+                  "sysTesterMac.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterMac",
+              "args": [],
+              "stdout": "sysTesterMac.v-vcd.out",
+              "vcd": "sysTesterMac.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.vexe"
+                ],
+                "outputs": [
+                  "sysTesterMac.v-vcd.out",
+                  "sysTesterMac.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTesterMac.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTesterMac",
+                "mkFPMac"
+              ],
+              "top": "sysTesterMac",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.ba",
+                  "mkFPMac.ba"
+                ],
+                "outputs": [
+                  "sysTesterMac.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTesterMac.cexe",
+                    "sysTesterMac.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterMac",
+              "args": [],
+              "stdout": "sysTesterMac.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.cexe"
+                ],
+                "outputs": [
+                  "sysTesterMac.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterMac.c.out",
+              "expected": "sysTesterMac.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.c.out",
+                  "sysTesterMac.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterMac",
+              "args": [],
+              "stdout": "sysTesterMac.c-vcd.out",
+              "vcd": "sysTesterMac.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.cexe"
+                ],
+                "outputs": [
+                  "sysTesterMac.c-vcd.out",
+                  "sysTesterMac.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTesterMac.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterMac.c-vcd.out",
+              "expected": "sysTesterMac.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac.c-vcd.out",
+                  "sysTesterMac.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 283,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTesterMac64",
+      "resource": "heavy",
+      "fixtures": [
+        "FPAdd.bsv",
+        "FPLibrary.bsv",
+        "FPMac.bsv",
+        "FPMult.bsv",
+        "Makefile.data",
+        "TesterLib.bsv",
+        "TesterMac64.bsv",
+        "dumper.c",
+        "sysTesterMac64.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTesterMac64",
+          "operations": [
+            {
+              "op": "upstream.make_test_data",
+              "artifacts": {
+                "inputs": [
+                  "Makefile.data",
+                  "dumper.c"
+                ],
+                "outputs": [
+                  "testa.dat",
+                  "testm.dat",
+                  "testmac.dat",
+                  "testa64.dat",
+                  "testm64.dat",
+                  "testmac64.dat"
+                ],
+                "outputAlternatives": [
+                  [
+                    "dumper",
+                    "dumper.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TesterMac64.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTesterMac64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TesterMac64.bsv"
+                ],
+                "outputs": [
+                  "TesterMac64.bo",
+                  "TesterMac64.bsv.bsc-vcomp-out",
+                  "mkFPMac.ba",
+                  "mkFPMac.v",
+                  "mkFPMac64.ba",
+                  "mkFPMac64.v",
+                  "mkFPMult.ba",
+                  "mkFPMult.v",
+                  "mkFPMult64.ba",
+                  "mkFPMult64.v",
+                  "sysTesterMac64.ba",
+                  "sysTesterMac64.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTesterMac64",
+                "mkFPMac64"
+              ],
+              "top": "sysTesterMac64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.v",
+                  "mkFPMac64.v"
+                ],
+                "outputs": [
+                  "sysTesterMac64.bsc-vcomp-out",
+                  "sysTesterMac64.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterMac64",
+              "args": [],
+              "stdout": "sysTesterMac64.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.vexe"
+                ],
+                "outputs": [
+                  "sysTesterMac64.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterMac64.v.out",
+              "expected": "sysTesterMac64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.v.out",
+                  "sysTesterMac64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTesterMac64",
+              "args": [],
+              "stdout": "sysTesterMac64.v-vcd.out",
+              "vcd": "sysTesterMac64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.vexe"
+                ],
+                "outputs": [
+                  "sysTesterMac64.v-vcd.out",
+                  "sysTesterMac64.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTesterMac64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTesterMac64",
+                "mkFPMac64"
+              ],
+              "top": "sysTesterMac64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.ba",
+                  "mkFPMac64.ba"
+                ],
+                "outputs": [
+                  "sysTesterMac64.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTesterMac64.cexe",
+                    "sysTesterMac64.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterMac64",
+              "args": [],
+              "stdout": "sysTesterMac64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.cexe"
+                ],
+                "outputs": [
+                  "sysTesterMac64.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterMac64.c.out",
+              "expected": "sysTesterMac64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.c.out",
+                  "sysTesterMac64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTesterMac64",
+              "args": [],
+              "stdout": "sysTesterMac64.c-vcd.out",
+              "vcd": "sysTesterMac64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.cexe"
+                ],
+                "outputs": [
+                  "sysTesterMac64.c-vcd.out",
+                  "sysTesterMac64.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTesterMac64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTesterMac64.c-vcd.out",
+              "expected": "sysTesterMac64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTesterMac64.c-vcd.out",
+                  "sysTesterMac64.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 330,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/ETooManySteps/ETooManySteps",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/ETooManySteps/ETooManySteps.exp",
+    "sha256": "eac7a856ee99caab65e5fae9a0695e3aab546e604b4e351299030034a8ac3cbe"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/ETooManySteps",
+  "fixtures": [
+    {
+      "path": "ETooManySteps.bs",
+      "sha256": "193612ba236c75cd9a86f0694822ee38368be79a0316a67d36849a0dccbcf15d",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ETooManySteps",
+      "resource": "normal",
+      "fixtures": [
+        "ETooManySteps.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ETooManySteps",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ETooManySteps.bs",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-g",
+                "top16",
+                "-steps-warn-interval",
+                "10000",
+                "-steps-max-intervals",
+                "5"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ETooManySteps.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ETooManySteps.bs"
+                ],
+                "outputs": [
+                  "ETooManySteps.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 189,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ETooManySteps.bs.bsc-out",
+              "kind": "error",
+              "code": "G0024",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ETooManySteps.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 189,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ETooManySteps.bs.bsc-out",
+              "kind": "warning",
+              "code": "G0024",
+              "count": 4,
+              "artifacts": {
+                "inputs": [
+                  "ETooManySteps.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 232,
+                  "endByte": 279,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1358 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/prims/module_fix/module_fix",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/prims/module_fix/module_fix.exp",
+    "sha256": "22af4c04f8758aa06f3abed7a397fbdc9f2137e2b2e328384700d17ebfa3afcc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/prims/module_fix",
+  "fixtures": [
+    {
+      "path": "IncDecFix.bsv",
+      "sha256": "73aa1ef787f9b58919d8a73175cac5bd8b7d43ff244325e6619a906a3dd6d0dc",
+      "role": "source"
+    },
+    {
+      "path": "IncDecFixContext.bsv",
+      "sha256": "f64f75e751732675a4cbe15057ad1790c860b32c91f5c51fe36d405871d3a150",
+      "role": "source"
+    },
+    {
+      "path": "IncDecFixMC.bsv",
+      "sha256": "af08636b3b5d48fce9321a7c3b59a56fb0c68c902a5911e9aee82b6d976d1587",
+      "role": "source"
+    },
+    {
+      "path": "ModLoop.bsv",
+      "sha256": "18597f8ccba73a1135eb3f9341191a0bcd3cde2c3853bffabb5b161b3150a2d7",
+      "role": "source"
+    },
+    {
+      "path": "sysIncDecFix.out.expected",
+      "sha256": "0e038e32da1679b409b70975d743e1eaf8a628a3e98b87d9e41513d7cd8c4c49",
+      "role": "golden"
+    },
+    {
+      "path": "sysIncDecFixContext.out.expected",
+      "sha256": "0e038e32da1679b409b70975d743e1eaf8a628a3e98b87d9e41513d7cd8c4c49",
+      "role": "golden"
+    },
+    {
+      "path": "sysIncDecFixMC.out.expected",
+      "sha256": "0e038e32da1679b409b70975d743e1eaf8a628a3e98b87d9e41513d7cd8c4c49",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysIncDecFix",
+      "resource": "heavy",
+      "fixtures": [
+        "IncDecFix.bsv",
+        "sysIncDecFix.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncDecFix",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncDecFix.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysIncDecFix",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IncDecFix.bsv"
+                ],
+                "outputs": [
+                  "IncDecFix.bo",
+                  "IncDecFix.bsv.bsc-vcomp-out",
+                  "sysIncDecFix.ba",
+                  "sysIncDecFix.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncDecFix"
+              ],
+              "top": "sysIncDecFix",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.v"
+                ],
+                "outputs": [
+                  "sysIncDecFix.bsc-vcomp-out",
+                  "sysIncDecFix.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncDecFix",
+              "args": [],
+              "stdout": "sysIncDecFix.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.vexe"
+                ],
+                "outputs": [
+                  "sysIncDecFix.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFix.v.out",
+              "expected": "sysIncDecFix.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.v.out",
+                  "sysIncDecFix.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncDecFix",
+              "args": [],
+              "stdout": "sysIncDecFix.v-vcd.out",
+              "vcd": "sysIncDecFix.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.vexe"
+                ],
+                "outputs": [
+                  "sysIncDecFix.v-vcd.out",
+                  "sysIncDecFix.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncDecFix.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncDecFix"
+              ],
+              "top": "sysIncDecFix",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.ba"
+                ],
+                "outputs": [
+                  "sysIncDecFix.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncDecFix.cexe",
+                    "sysIncDecFix.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncDecFix",
+              "args": [],
+              "stdout": "sysIncDecFix.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.cexe"
+                ],
+                "outputs": [
+                  "sysIncDecFix.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFix.c.out",
+              "expected": "sysIncDecFix.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.c.out",
+                  "sysIncDecFix.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncDecFix",
+              "args": [],
+              "stdout": "sysIncDecFix.c-vcd.out",
+              "vcd": "sysIncDecFix.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.cexe"
+                ],
+                "outputs": [
+                  "sysIncDecFix.c-vcd.out",
+                  "sysIncDecFix.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncDecFix.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFix.c-vcd.out",
+              "expected": "sysIncDecFix.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFix.c-vcd.out",
+                  "sysIncDecFix.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysIncDecFixMC",
+      "resource": "heavy",
+      "fixtures": [
+        "IncDecFixMC.bsv",
+        "sysIncDecFixMC.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncDecFixMC",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncDecFixMC.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysIncDecFixMC",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixMC.bsv"
+                ],
+                "outputs": [
+                  "IncDecFixMC.bo",
+                  "IncDecFixMC.bsv.bsc-vcomp-out",
+                  "sysIncDecFixMC.ba",
+                  "sysIncDecFixMC.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncDecFixMC"
+              ],
+              "top": "sysIncDecFixMC",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.v"
+                ],
+                "outputs": [
+                  "sysIncDecFixMC.bsc-vcomp-out",
+                  "sysIncDecFixMC.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncDecFixMC",
+              "args": [],
+              "stdout": "sysIncDecFixMC.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.vexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixMC.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFixMC.v.out",
+              "expected": "sysIncDecFixMC.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.v.out",
+                  "sysIncDecFixMC.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncDecFixMC",
+              "args": [],
+              "stdout": "sysIncDecFixMC.v-vcd.out",
+              "vcd": "sysIncDecFixMC.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.vexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixMC.v-vcd.out",
+                  "sysIncDecFixMC.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncDecFixMC.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncDecFixMC"
+              ],
+              "top": "sysIncDecFixMC",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.ba"
+                ],
+                "outputs": [
+                  "sysIncDecFixMC.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncDecFixMC.cexe",
+                    "sysIncDecFixMC.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncDecFixMC",
+              "args": [],
+              "stdout": "sysIncDecFixMC.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.cexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixMC.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFixMC.c.out",
+              "expected": "sysIncDecFixMC.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.c.out",
+                  "sysIncDecFixMC.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncDecFixMC",
+              "args": [],
+              "stdout": "sysIncDecFixMC.c-vcd.out",
+              "vcd": "sysIncDecFixMC.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.cexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixMC.c-vcd.out",
+                  "sysIncDecFixMC.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncDecFixMC.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFixMC.c-vcd.out",
+              "expected": "sysIncDecFixMC.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixMC.c-vcd.out",
+                  "sysIncDecFixMC.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "IncDecFixMC.bsv.bsc-vcomp-out",
+              "text": "Compilation message",
+              "count": 3,
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixMC.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 230,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "IncDecFixMC.bsv.bsc-vcomp-out",
+              "text": ": 3",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixMC.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 231,
+                  "endByte": 283,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "IncDecFixMC.bsv.bsc-vcomp-out",
+              "text": ": 5",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixMC.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 284,
+                  "endByte": 336,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "IncDecFixMC.bsv.bsc-vcomp-out",
+              "text": ": 7",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixMC.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 337,
+                  "endByte": 389,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysIncDecFixContext",
+      "resource": "heavy",
+      "fixtures": [
+        "IncDecFixContext.bsv",
+        "sysIncDecFixContext.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncDecFixContext",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncDecFixContext.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysIncDecFixContext",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixContext.bsv"
+                ],
+                "outputs": [
+                  "IncDecFixContext.bo",
+                  "IncDecFixContext.bsv.bsc-vcomp-out",
+                  "sysIncDecFixContext.ba",
+                  "sysIncDecFixContext.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncDecFixContext"
+              ],
+              "top": "sysIncDecFixContext",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.v"
+                ],
+                "outputs": [
+                  "sysIncDecFixContext.bsc-vcomp-out",
+                  "sysIncDecFixContext.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncDecFixContext",
+              "args": [],
+              "stdout": "sysIncDecFixContext.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.vexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixContext.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFixContext.v.out",
+              "expected": "sysIncDecFixContext.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.v.out",
+                  "sysIncDecFixContext.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncDecFixContext",
+              "args": [],
+              "stdout": "sysIncDecFixContext.v-vcd.out",
+              "vcd": "sysIncDecFixContext.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.vexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixContext.v-vcd.out",
+                  "sysIncDecFixContext.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncDecFixContext.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncDecFixContext"
+              ],
+              "top": "sysIncDecFixContext",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.ba"
+                ],
+                "outputs": [
+                  "sysIncDecFixContext.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncDecFixContext.cexe",
+                    "sysIncDecFixContext.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncDecFixContext",
+              "args": [],
+              "stdout": "sysIncDecFixContext.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.cexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixContext.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFixContext.c.out",
+              "expected": "sysIncDecFixContext.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.c.out",
+                  "sysIncDecFixContext.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncDecFixContext",
+              "args": [],
+              "stdout": "sysIncDecFixContext.c-vcd.out",
+              "vcd": "sysIncDecFixContext.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.cexe"
+                ],
+                "outputs": [
+                  "sysIncDecFixContext.c-vcd.out",
+                  "sysIncDecFixContext.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncDecFixContext.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncDecFixContext.c-vcd.out",
+              "expected": "sysIncDecFixContext.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncDecFixContext.c-vcd.out",
+                  "sysIncDecFixContext.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "IncDecFixContext.bsv.bsc-vcomp-out",
+              "text": "Compilation message",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixContext.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 391,
+                  "endByte": 464,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "IncDecFixContext.bsv.bsc-vcomp-out",
+              "text": ": 6",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncDecFixContext.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 465,
+                  "endByte": 522,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-ModLoop",
+      "resource": "normal",
+      "fixtures": [
+        "ModLoop.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ModLoop",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ModLoop.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ModLoop.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ModLoop.bsv"
+                ],
+                "outputs": [
+                  "ModLoop.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 562,
+                  "endByte": 606,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ModLoop.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0104",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ModLoop.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 562,
+                  "endByte": 606,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1091 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.driver/imports/imports",
+  "origin": {
+    "path": "testsuite/bsc.driver/imports/imports.exp",
+    "sha256": "e4d456b1ff7a86e3d2600337c8702aa0da84ebcdaf09e701140f4c5f7abcb521"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.driver/imports",
+  "fixtures": [
+    {
+      "path": "CircPkg-lib.bsv",
+      "sha256": "0139cb3f4713703eaa77db33439e22be3aadb31ed6f76f7f771128f2fed7a635",
+      "role": "data"
+    },
+    {
+      "path": "CircPkg-local.bsv",
+      "sha256": "4d4887975a727774de0612c7e173be426b3218fe946c59fe250b344dbffebc16",
+      "role": "data"
+    },
+    {
+      "path": "CircPkg.bsv.bsc-out.expected",
+      "sha256": "80ab80e1f2749808ed1717718b0682e3a0c00fc09a0af3f928e0084e562815bd",
+      "role": "golden"
+    },
+    {
+      "path": "CircTop-lib.bsv",
+      "sha256": "adf51a1b2ad14c6f30c5e8e42fc60bb5159abdf51900d3ef1c8e2193d678ecd0",
+      "role": "data"
+    },
+    {
+      "path": "DupPkg.bsv",
+      "sha256": "295909670c965d2f9b798923f0b1411fc1d152bd25c191122f582d53a1d77f38",
+      "role": "source"
+    },
+    {
+      "path": "DupTop.bsv",
+      "sha256": "3856bfc1b1caa9726bd7c5f12b2412823985fb180b253fdcdbea24f2acc614a9",
+      "role": "source"
+    },
+    {
+      "path": "DupTop.bsv.bsc-out.expected",
+      "sha256": "f1579203b861693a4af832cdacb78c88237afd01c1a4e1ab7882e8a8f81d6d66",
+      "role": "golden"
+    },
+    {
+      "path": "Exclude.bs",
+      "sha256": "cae938f6a583cd5f6747f1dc4e6150dcc715aef8ecfe36e97ede633833eab9f1",
+      "role": "source"
+    },
+    {
+      "path": "TestExcludeBad.bs",
+      "sha256": "c000c4d208e6de7e6ad5041716a1d289cece583cbe739f7248c92da6d8fa43b0",
+      "role": "source"
+    },
+    {
+      "path": "TestExcludeBad.bs.bsc-out.expected",
+      "sha256": "2484631c35c0b10d8748f93893e8ff25e9f856ee6f9d9a95b809d3be34177c9a",
+      "role": "golden"
+    },
+    {
+      "path": "TestExcludeOK.bs",
+      "sha256": "4f47a32b26cc46dc53941f646c7ef3861a08f34a9e239c84c1144c0a61aeeee1",
+      "role": "source"
+    },
+    {
+      "path": "UnreadableTop.bsv",
+      "sha256": "2917081fc3e3eeb252bf6acf29503f773e9bf92c78a35fcf288494c42b9fdeb5",
+      "role": "source"
+    },
+    {
+      "path": "UnreadableTop.bsv.bsc-out.expected",
+      "sha256": "2f66bf1759a7a756d4e8e90a3ab2b518272c1312542b451c9fc6234294d232e0",
+      "role": "golden"
+    },
+    {
+      "path": "WrongPkg.bsv",
+      "sha256": "290162dba525e015689e8d3e57b087bcda4aff5a09623b0cbc97cf8771678dc0",
+      "role": "source"
+    },
+    {
+      "path": "WrongTop.bsv",
+      "sha256": "547ce3abaeca4ab0113232c0997e80e7566a18061f8a11232f819441ade87bde",
+      "role": "source"
+    },
+    {
+      "path": "WrongTop.bsv.bsc-out.expected",
+      "sha256": "354ec73df761d3cfeb70c08e85058086663232bff7cbd0a763e11e3d324f0068",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "ordered-workspace-compile-1",
+      "resource": "normal",
+      "fixtures": [
+        "CircPkg-lib.bsv",
+        "CircPkg-local.bsv",
+        "CircPkg.bsv.bsc-out.expected",
+        "CircTop-lib.bsv",
+        "DupPkg.bsv",
+        "DupTop.bsv",
+        "DupTop.bsv.bsc-out.expected",
+        "Exclude.bs",
+        "TestExcludeBad.bs",
+        "TestExcludeBad.bs.bsc-out.expected",
+        "TestExcludeOK.bs",
+        "UnreadableTop.bsv",
+        "UnreadableTop.bsv.bsc-out.expected",
+        "WrongPkg.bsv",
+        "WrongTop.bsv",
+        "WrongTop.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-workspace",
+          "operations": [
+            {
+              "op": "fs.create_dir_all",
+              "path": "libdir",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 260,
+                  "endByte": 272,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 13
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "CircPkg-lib.bsv",
+              "destination": "libdir/CircPkg.bsv",
+              "artifacts": {
+                "inputs": [
+                  "CircPkg-lib.bsv"
+                ],
+                "outputs": [
+                  "libdir/CircPkg.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 312,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "CircTop-lib.bsv",
+              "destination": "libdir/CircTop.bsv",
+              "artifacts": {
+                "inputs": [
+                  "CircTop-lib.bsv"
+                ],
+                "outputs": [
+                  "libdir/CircTop.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 313,
+                  "endByte": 352,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "CircTop.bsv",
+              "workingDirectory": "libdir",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "CircTop.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "libdir/CircTop.bsv"
+                ],
+                "outputs": [
+                  "libdir/CircTop.bsv.bsc-out",
+                  "libdir/CircTop.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 473,
+                  "endByte": 497,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "libdir/CircTop.bsv",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "libdir/CircTop.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 498,
+                  "endByte": 515,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "libdir/CircPkg.bsv",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "libdir/CircPkg.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 516,
+                  "endByte": 533,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "CircPkg-local.bsv",
+              "destination": "CircPkg.bsv",
+              "artifacts": {
+                "inputs": [
+                  "CircPkg-local.bsv"
+                ],
+                "outputs": [
+                  "CircPkg.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 645,
+                  "endByte": 679,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "CircPkg.bsv",
+              "mode": "frontend",
+              "args": [
+                "-p",
+                "libdir:+"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "CircPkg.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "CircPkg.bsv"
+                ],
+                "outputs": [
+                  "CircPkg.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 680,
+                  "endByte": 732,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "CircPkg.bsv.bsc-out",
+              "kind": "error",
+              "code": "S0082",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "CircPkg.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 680,
+                  "endByte": 732,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "CircPkg.bsv.bsc-out",
+              "expected": "CircPkg.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "CircPkg.bsv.bsc-out",
+                  "CircPkg.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 733,
+                  "endByte": 765,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "fs.create_dir_all",
+              "path": "libdir1",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir1"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 974,
+                  "endByte": 984,
+                  "startLine": 40,
+                  "startColumn": 5,
+                  "endLine": 40,
+                  "endColumn": 15
+                },
+                "expansion": [
+                  {
+                    "startByte": 1293,
+                    "endByte": 1309,
+                    "startLine": 55,
+                    "startColumn": 1,
+                    "endLine": 55,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "DupPkg.bsv",
+              "destination": "libdir1/DupPkg.bsv",
+              "artifacts": {
+                "inputs": [
+                  "DupPkg.bsv"
+                ],
+                "outputs": [
+                  "libdir1/DupPkg.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 989,
+                  "endByte": 1009,
+                  "startLine": 41,
+                  "startColumn": 5,
+                  "endLine": 41,
+                  "endColumn": 25
+                },
+                "expansion": [
+                  {
+                    "startByte": 1293,
+                    "endByte": 1309,
+                    "startLine": 55,
+                    "startColumn": 1,
+                    "endLine": 55,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "DupPkg.bsv",
+              "workingDirectory": "libdir1",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DupPkg.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "libdir1/DupPkg.bsv"
+                ],
+                "outputs": [
+                  "libdir1/DupPkg.bsv.bsc-out",
+                  "libdir1/DupPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1143,
+                  "endByte": 1166,
+                  "startLine": 47,
+                  "startColumn": 5,
+                  "endLine": 47,
+                  "endColumn": 28
+                },
+                "expansion": [
+                  {
+                    "startByte": 1293,
+                    "endByte": 1309,
+                    "startLine": 55,
+                    "startColumn": 1,
+                    "endLine": 55,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "libdir1/DupPkg.bsv",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "libdir1/DupPkg.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1171,
+                  "endByte": 1187,
+                  "startLine": 48,
+                  "startColumn": 5,
+                  "endLine": 48,
+                  "endColumn": 21
+                },
+                "expansion": [
+                  {
+                    "startByte": 1293,
+                    "endByte": 1309,
+                    "startLine": 55,
+                    "startColumn": 1,
+                    "endLine": 55,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.create_dir_all",
+              "path": "libdir2",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir2"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 974,
+                  "endByte": 984,
+                  "startLine": 40,
+                  "startColumn": 5,
+                  "endLine": 40,
+                  "endColumn": 15
+                },
+                "expansion": [
+                  {
+                    "startByte": 1310,
+                    "endByte": 1326,
+                    "startLine": 56,
+                    "startColumn": 1,
+                    "endLine": 56,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "DupPkg.bsv",
+              "destination": "libdir2/DupPkg.bsv",
+              "artifacts": {
+                "inputs": [
+                  "DupPkg.bsv"
+                ],
+                "outputs": [
+                  "libdir2/DupPkg.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 989,
+                  "endByte": 1009,
+                  "startLine": 41,
+                  "startColumn": 5,
+                  "endLine": 41,
+                  "endColumn": 25
+                },
+                "expansion": [
+                  {
+                    "startByte": 1310,
+                    "endByte": 1326,
+                    "startLine": 56,
+                    "startColumn": 1,
+                    "endLine": 56,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "DupPkg.bsv",
+              "workingDirectory": "libdir2",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DupPkg.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "libdir2/DupPkg.bsv"
+                ],
+                "outputs": [
+                  "libdir2/DupPkg.bsv.bsc-out",
+                  "libdir2/DupPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1143,
+                  "endByte": 1166,
+                  "startLine": 47,
+                  "startColumn": 5,
+                  "endLine": 47,
+                  "endColumn": 28
+                },
+                "expansion": [
+                  {
+                    "startByte": 1310,
+                    "endByte": 1326,
+                    "startLine": 56,
+                    "startColumn": 1,
+                    "endLine": 56,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "libdir2/DupPkg.bsv",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "libdir2/DupPkg.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1171,
+                  "endByte": 1187,
+                  "startLine": 48,
+                  "startColumn": 5,
+                  "endLine": 48,
+                  "endColumn": 21
+                },
+                "expansion": [
+                  {
+                    "startByte": 1310,
+                    "endByte": 1326,
+                    "startLine": 56,
+                    "startColumn": 1,
+                    "endLine": 56,
+                    "endColumn": 17
+                  }
+                ]
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "DupPkg.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DupPkg.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "DupPkg.bsv"
+                ],
+                "outputs": [
+                  "DupPkg.bsv.bsc-out",
+                  "DupPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1388,
+                  "endByte": 1411,
+                  "startLine": 59,
+                  "startColumn": 1,
+                  "endLine": 59,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "DupTop.bsv",
+              "mode": "frontend",
+              "args": [
+                "-p",
+                "+:libdir1:libdir2"
+              ],
+              "dependencyMode": "no_deps",
+              "expectedExit": "success",
+              "stdout": "DupTop.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "DupTop.bsv"
+                ],
+                "outputs": [
+                  "DupTop.bsv.bsc-out",
+                  "DupTop.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1585,
+                  "endByte": 1633,
+                  "startLine": 64,
+                  "startColumn": 1,
+                  "endLine": 64,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "DupTop.bsv.bsc-out",
+              "expected": "DupTop.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "DupTop.bsv.bsc-out",
+                  "DupTop.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1723,
+                  "endByte": 1754,
+                  "startLine": 68,
+                  "startColumn": 1,
+                  "endLine": 68,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.remove_user_read",
+              "path": "libdir1/DupPkg.bo",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "libdir1/DupPkg.bo"
+                ],
+                "outputs": [
+                  "libdir1/DupPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1856,
+                  "endByte": 1885,
+                  "startLine": 74,
+                  "startColumn": 1,
+                  "endLine": 74,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "fs.remove_user_read",
+              "path": "libdir2/DupPkg.bo",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "libdir2/DupPkg.bo"
+                ],
+                "outputs": [
+                  "libdir2/DupPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1886,
+                  "endByte": 1915,
+                  "startLine": 75,
+                  "startColumn": 1,
+                  "endLine": 75,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "UnreadableTop.bsv",
+              "mode": "frontend",
+              "args": [
+                "-p",
+                "libdir1:+:libdir2"
+              ],
+              "dependencyMode": "no_deps",
+              "expectedExit": "success",
+              "stdout": "UnreadableTop.bsv.bsc-out",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "UnreadableTop.bsv"
+                ],
+                "outputs": [
+                  "UnreadableTop.bsv.bsc-out",
+                  "UnreadableTop.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2108,
+                  "endByte": 2163,
+                  "startLine": 80,
+                  "startColumn": 1,
+                  "endLine": 80,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "UnreadableTop.bsv.bsc-out",
+              "expected": "UnreadableTop.bsv.bsc-out.expected",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "UnreadableTop.bsv.bsc-out",
+                  "UnreadableTop.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2299,
+                  "endByte": 2337,
+                  "startLine": 85,
+                  "startColumn": 1,
+                  "endLine": 85,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "WrongPkg.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "WrongPkg.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "WrongPkg.bsv"
+                ],
+                "outputs": [
+                  "WrongPkg.bsv.bsc-out",
+                  "WrongPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2445,
+                  "endByte": 2470,
+                  "startLine": 91,
+                  "startColumn": 1,
+                  "endLine": 91,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "WrongPkg.bo",
+              "destination": "RightPkg.bo",
+              "artifacts": {
+                "inputs": [
+                  "WrongPkg.bo"
+                ],
+                "outputs": [
+                  "RightPkg.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "WrongPkg.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2512,
+                  "endByte": 2540,
+                  "startLine": 94,
+                  "startColumn": 1,
+                  "endLine": 94,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "WrongTop.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "WrongTop.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "WrongTop.bsv"
+                ],
+                "outputs": [
+                  "WrongTop.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2570,
+                  "endByte": 2595,
+                  "startLine": 97,
+                  "startColumn": 1,
+                  "endLine": 97,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "WrongTop.bsv.bsc-out",
+              "expected": "WrongTop.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "WrongTop.bsv.bsc-out",
+                  "WrongTop.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2635,
+                  "endByte": 2668,
+                  "startLine": 100,
+                  "startColumn": 1,
+                  "endLine": 100,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "TestExcludeOK.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestExcludeOK.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TestExcludeOK.bs"
+                ],
+                "outputs": [
+                  "TestExcludeOK.bs.bsc-out",
+                  "TestExcludeOK.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2740,
+                  "endByte": 2769,
+                  "startLine": 105,
+                  "startColumn": 1,
+                  "endLine": 105,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "TestExcludeBad.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TestExcludeBad.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TestExcludeBad.bs"
+                ],
+                "outputs": [
+                  "TestExcludeBad.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2770,
+                  "endByte": 2800,
+                  "startLine": 106,
+                  "startColumn": 1,
+                  "endLine": 106,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "TestExcludeBad.bs.bsc-out",
+              "expected": "TestExcludeBad.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "TestExcludeBad.bs.bsc-out",
+                  "TestExcludeBad.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2801,
+                  "endByte": 2839,
+                  "startLine": 107,
+                  "startColumn": 1,
+                  "endLine": 107,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b540/b540",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b540/b540.exp",
+    "sha256": "d3d66bdf58f16146e37de4c0aae6602aa9cada977cedc629e07e27cdde01d58f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b540",
+  "fixtures": [
+    {
+      "path": "Bug540_1.bsv",
+      "sha256": "11daf11bfce1b608e436f5853e61e6f769a2121c7ae6581df53a44cffe821d1a",
+      "role": "source"
+    },
+    {
+      "path": "Bug540_2.bsv",
+      "sha256": "37b0ba07e962262bb588608606ae1073725ba182bcc8f0a0b75cf924ecbfcc01",
+      "role": "source"
+    },
+    {
+      "path": "sysBug540_1.out.expected",
+      "sha256": "1f083081b3f46bb25e3c6b9b1939003c39be01c0a4379ecd60baa36a2b060f73",
+      "role": "golden"
+    },
+    {
+      "path": "sysBug540_2.out.expected",
+      "sha256": "c5a37e53cadb93359e1f385ff361a54c057226ae8fcedbd4262009dbe406adc6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBug540_1",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug540_1.bsv",
+        "sysBug540_1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug540_1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug540_1.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBug540_1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug540_1.bsv"
+                ],
+                "outputs": [
+                  "Bug540_1.bo",
+                  "Bug540_1.bsv.bsc-vcomp-out",
+                  "sysBug540_1.ba",
+                  "sysBug540_1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBug540_1"
+              ],
+              "top": "sysBug540_1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.v"
+                ],
+                "outputs": [
+                  "sysBug540_1.bsc-vcomp-out",
+                  "sysBug540_1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug540_1",
+              "args": [],
+              "stdout": "sysBug540_1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.vexe"
+                ],
+                "outputs": [
+                  "sysBug540_1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug540_1.v.out",
+              "expected": "sysBug540_1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.v.out",
+                  "sysBug540_1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug540_1",
+              "args": [],
+              "stdout": "sysBug540_1.v-vcd.out",
+              "vcd": "sysBug540_1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.vexe"
+                ],
+                "outputs": [
+                  "sysBug540_1.v-vcd.out",
+                  "sysBug540_1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBug540_1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug540_1"
+              ],
+              "top": "sysBug540_1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.ba"
+                ],
+                "outputs": [
+                  "sysBug540_1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug540_1.cexe",
+                    "sysBug540_1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug540_1",
+              "args": [],
+              "stdout": "sysBug540_1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.cexe"
+                ],
+                "outputs": [
+                  "sysBug540_1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug540_1.c.out",
+              "expected": "sysBug540_1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.c.out",
+                  "sysBug540_1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug540_1",
+              "args": [],
+              "stdout": "sysBug540_1.c-vcd.out",
+              "vcd": "sysBug540_1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.cexe"
+                ],
+                "outputs": [
+                  "sysBug540_1.c-vcd.out",
+                  "sysBug540_1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug540_1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug540_1.c-vcd.out",
+              "expected": "sysBug540_1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_1.c-vcd.out",
+                  "sysBug540_1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBug540_2",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug540_2.bsv",
+        "sysBug540_2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug540_2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug540_2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBug540_2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug540_2.bsv"
+                ],
+                "outputs": [
+                  "Bug540_2.bo",
+                  "Bug540_2.bsv.bsc-vcomp-out",
+                  "sysBug540_2.ba",
+                  "sysBug540_2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBug540_2"
+              ],
+              "top": "sysBug540_2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.v"
+                ],
+                "outputs": [
+                  "sysBug540_2.bsc-vcomp-out",
+                  "sysBug540_2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug540_2",
+              "args": [],
+              "stdout": "sysBug540_2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.vexe"
+                ],
+                "outputs": [
+                  "sysBug540_2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug540_2.v.out",
+              "expected": "sysBug540_2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.v.out",
+                  "sysBug540_2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug540_2",
+              "args": [],
+              "stdout": "sysBug540_2.v-vcd.out",
+              "vcd": "sysBug540_2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.vexe"
+                ],
+                "outputs": [
+                  "sysBug540_2.v-vcd.out",
+                  "sysBug540_2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBug540_2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug540_2"
+              ],
+              "top": "sysBug540_2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.ba"
+                ],
+                "outputs": [
+                  "sysBug540_2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug540_2.cexe",
+                    "sysBug540_2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug540_2",
+              "args": [],
+              "stdout": "sysBug540_2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.cexe"
+                ],
+                "outputs": [
+                  "sysBug540_2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug540_2.c.out",
+              "expected": "sysBug540_2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.c.out",
+                  "sysBug540_2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug540_2",
+              "args": [],
+              "stdout": "sysBug540_2.c-vcd.out",
+              "vcd": "sysBug540_2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.cexe"
+                ],
+                "outputs": [
+                  "sysBug540_2.c-vcd.out",
+                  "sysBug540_2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug540_2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug540_2.c-vcd.out",
+              "expected": "sysBug540_2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug540_2.c-vcd.out",
+                  "sysBug540_2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 25,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

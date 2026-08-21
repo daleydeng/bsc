@@ -1,0 +1,798 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/github/gh221/gh221",
+  "origin": {
+    "path": "testsuite/bsc.bugs/github/gh221/gh221.exp",
+    "sha256": "2938c190c8fbd46910e7b96d97252581cf3db299a71b88adf15a9440d1881ebf"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/github/gh221",
+  "fixtures": [
+    {
+      "path": "Example1.bs",
+      "sha256": "c637a173932867e6de80066c109188be8a9ed91bee12aad86352f4e10394e864",
+      "role": "source"
+    },
+    {
+      "path": "Example2.bs",
+      "sha256": "488d815d499f15ea798c7f90334fccb9e392007d750bd9133f4ac78976e481f2",
+      "role": "source"
+    },
+    {
+      "path": "Example2.bs.bsc-out.expected",
+      "sha256": "3d0bc31232c67f2ded074c9eae4b55aa538e4d76e3fa2ac1a4d9309276031c31",
+      "role": "golden"
+    },
+    {
+      "path": "Example3.bs",
+      "sha256": "6a67eff6cb59cccd957fa85dac05eff1f56aa2ba728b9693319c7b874689a42a",
+      "role": "source"
+    },
+    {
+      "path": "Example4.bs",
+      "sha256": "38980bf4e4f504f0b642aec48440ee7ffa2f8a67c779b11a1bb333c831704791",
+      "role": "source"
+    },
+    {
+      "path": "Example4.bs.bsc-out.expected",
+      "sha256": "ec8be628b7de217031e1339474ae6a5b3ef15c048dd715a02ebc60ffc8508100",
+      "role": "golden"
+    },
+    {
+      "path": "ShouldCompile.bs",
+      "sha256": "21686db62bc0dc4f4b1ac1d39e9636a4b3bacd2aede0d47c912803759dd16a9e",
+      "role": "source"
+    },
+    {
+      "path": "Test.bs",
+      "sha256": "df07a360a232c0f9cf3aac54d0dff55ffa3ebcfd8f7112d25471dc643c6da27b",
+      "role": "source"
+    },
+    {
+      "path": "Test.bs.bsc-out.expected",
+      "sha256": "938d230e923f9bd99a60ff1ace6f8db0b8f1c9f0220e23135c83328dc1b503ce",
+      "role": "golden"
+    },
+    {
+      "path": "ZipCrash.bs",
+      "sha256": "a838ca904e34d4754cd10214587c5bd998d835f1aa21ce740c7e312c6b84661c",
+      "role": "source"
+    },
+    {
+      "path": "ZipCrash.bs.bsc-out.expected",
+      "sha256": "5a45735af2ba0405320c621f4c5002e4dac72e6d89e3036c9ddec6f8328f8010",
+      "role": "golden"
+    },
+    {
+      "path": "ZipCrash2.bs",
+      "sha256": "55d84f0013bf3d0efc47ed7dd17bdef2cbe369a6d75eb50d8708f710c854da1d",
+      "role": "source"
+    },
+    {
+      "path": "ZipCrash2.bs.bsc-out.expected",
+      "sha256": "3c18b6ecf91fb84e4be885337c74c60c5a73bdf4034b27f5976668f76bfdb558",
+      "role": "golden"
+    },
+    {
+      "path": "ZipNoCrash3.bs",
+      "sha256": "d368c89bd2cec73b369c1633883ce36ceb525ace2b3dc121475c1df34cc571ab",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "Test.bs",
+        "Test.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Test.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bs"
+                ],
+                "outputs": [
+                  "Test.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 204,
+                  "endByte": 236,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Test.bs.bsc-out",
+              "kind": "error",
+              "code": "T0013",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Test.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 204,
+                  "endByte": 236,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Test.bs.bsc-out",
+              "expected": "Test.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Test.bs.bsc-out",
+                  "Test.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 237,
+                  "endByte": 265,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ZipCrash",
+      "resource": "normal",
+      "fixtures": [
+        "ZipCrash.bs",
+        "ZipCrash.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ZipCrash",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ZipCrash.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ZipCrash.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ZipCrash.bs"
+                ],
+                "outputs": [
+                  "ZipCrash.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 267,
+                  "endByte": 303,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ZipCrash.bs.bsc-out",
+              "kind": "error",
+              "code": "T0013",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ZipCrash.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 267,
+                  "endByte": 303,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ZipCrash.bs.bsc-out",
+              "expected": "ZipCrash.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ZipCrash.bs.bsc-out",
+                  "ZipCrash.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 304,
+                  "endByte": 336,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Example1",
+      "resource": "normal",
+      "fixtures": [
+        "Example1.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Example1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Example1.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Example1.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Example1.bs"
+                ],
+                "outputs": [
+                  "Example1.bs.bsc-out",
+                  "Example1.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 338,
+                  "endByte": 362,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-Example2",
+      "resource": "normal",
+      "fixtures": [
+        "Example2.bs",
+        "Example2.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Example2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Example2.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Example2.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Example2.bs"
+                ],
+                "outputs": [
+                  "Example2.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 449,
+                  "endByte": 485,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Example2.bs.bsc-out",
+              "kind": "error",
+              "code": "T0032",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Example2.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 449,
+                  "endByte": 485,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Example2.bs.bsc-out",
+              "expected": "Example2.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Example2.bs.bsc-out",
+                  "Example2.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 486,
+                  "endByte": 518,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-Example3",
+      "resource": "normal",
+      "fixtures": [
+        "Example3.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Example3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Example3.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Example3.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Example3.bs"
+                ],
+                "outputs": [
+                  "Example3.bs.bsc-out",
+                  "Example3.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 569,
+                  "endByte": 593,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-Example4",
+      "resource": "normal",
+      "fixtures": [
+        "Example4.bs",
+        "Example4.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Example4",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Example4.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Example4.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Example4.bs"
+                ],
+                "outputs": [
+                  "Example4.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 680,
+                  "endByte": 716,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Example4.bs.bsc-out",
+              "kind": "error",
+              "code": "T0031",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Example4.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 680,
+                  "endByte": 716,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Example4.bs.bsc-out",
+              "expected": "Example4.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Example4.bs.bsc-out",
+                  "Example4.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 717,
+                  "endByte": 749,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-ShouldCompile",
+      "resource": "normal",
+      "fixtures": [
+        "ShouldCompile.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ShouldCompile",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ShouldCompile.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ShouldCompile.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ShouldCompile.bs"
+                ],
+                "outputs": [
+                  "ShouldCompile.bs.bsc-out",
+                  "ShouldCompile.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 909,
+                  "endByte": 938,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-ZipCrash2",
+      "resource": "normal",
+      "fixtures": [
+        "ZipCrash2.bs",
+        "ZipCrash2.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ZipCrash2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ZipCrash2.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ZipCrash2.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ZipCrash2.bs"
+                ],
+                "outputs": [
+                  "ZipCrash2.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1138,
+                  "endByte": 1175,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ZipCrash2.bs.bsc-out",
+              "kind": "error",
+              "code": "T0013",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ZipCrash2.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1138,
+                  "endByte": 1175,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ZipCrash2.bs.bsc-out",
+              "expected": "ZipCrash2.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ZipCrash2.bs.bsc-out",
+                  "ZipCrash2.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1176,
+                  "endByte": 1209,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-ZipNoCrash3",
+      "resource": "normal",
+      "fixtures": [
+        "ZipNoCrash3.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ZipNoCrash3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ZipNoCrash3.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ZipNoCrash3.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ZipNoCrash3.bs"
+                ],
+                "outputs": [
+                  "ZipNoCrash3.bs.bsc-out",
+                  "ZipNoCrash3.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1281,
+                  "endByte": 1308,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

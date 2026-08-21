@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/regtwo/regtwo",
+  "origin": {
+    "path": "testsuite/bsc.lib/regtwo/regtwo.exp",
+    "sha256": "85cf334f5855436d9449648fa79ff201a2d0e869f116d25b84bdaf8a9c3242bc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/regtwo",
+  "fixtures": [
+    {
+      "path": "RegTwoTest.bsv",
+      "sha256": "460579d418deb369523d13e38a8ffa0292efb4d3d48f14bcf677b62cd04c3cff",
+      "role": "source"
+    },
+    {
+      "path": "sysRegTwoTest.out.expected",
+      "sha256": "0c6da995be405e360aac1e3583aa1c77ccc5d9ae3c20eeb89fc4059106c0f3e4",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysRegTwoTest",
+      "resource": "heavy",
+      "fixtures": [
+        "RegTwoTest.bsv",
+        "sysRegTwoTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRegTwoTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RegTwoTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysRegTwoTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RegTwoTest.bsv"
+                ],
+                "outputs": [
+                  "RegTwoTest.bo",
+                  "RegTwoTest.bsv.bsc-vcomp-out",
+                  "sysRegTwoTest.ba",
+                  "sysRegTwoTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRegTwoTest"
+              ],
+              "top": "sysRegTwoTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.v"
+                ],
+                "outputs": [
+                  "sysRegTwoTest.bsc-vcomp-out",
+                  "sysRegTwoTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRegTwoTest",
+              "args": [],
+              "stdout": "sysRegTwoTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.vexe"
+                ],
+                "outputs": [
+                  "sysRegTwoTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRegTwoTest.v.out",
+              "expected": "sysRegTwoTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.v.out",
+                  "sysRegTwoTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRegTwoTest",
+              "args": [],
+              "stdout": "sysRegTwoTest.v-vcd.out",
+              "vcd": "sysRegTwoTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.vexe"
+                ],
+                "outputs": [
+                  "sysRegTwoTest.v-vcd.out",
+                  "sysRegTwoTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRegTwoTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRegTwoTest"
+              ],
+              "top": "sysRegTwoTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.ba"
+                ],
+                "outputs": [
+                  "sysRegTwoTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRegTwoTest.cexe",
+                    "sysRegTwoTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRegTwoTest",
+              "args": [],
+              "stdout": "sysRegTwoTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.cexe"
+                ],
+                "outputs": [
+                  "sysRegTwoTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRegTwoTest.c.out",
+              "expected": "sysRegTwoTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.c.out",
+                  "sysRegTwoTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRegTwoTest",
+              "args": [],
+              "stdout": "sysRegTwoTest.c-vcd.out",
+              "vcd": "sysRegTwoTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.cexe"
+                ],
+                "outputs": [
+                  "sysRegTwoTest.c-vcd.out",
+                  "sysRegTwoTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRegTwoTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRegTwoTest.c-vcd.out",
+              "expected": "sysRegTwoTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTwoTest.c-vcd.out",
+                  "sysRegTwoTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 26,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

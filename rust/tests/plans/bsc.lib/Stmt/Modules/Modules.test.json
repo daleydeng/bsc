@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Stmt/Modules/Modules",
+  "origin": {
+    "path": "testsuite/bsc.lib/Stmt/Modules/Modules.exp",
+    "sha256": "71171b3f73e911765c6477834b4f024dfd42ea316b1676c8ae009c1e5bffd194"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Stmt/Modules",
+  "fixtures": [
+    {
+      "path": "AlwaysFSM_OneAction.bsv",
+      "sha256": "d409c5454f1c0d917c7432f1621eeaefec68330fa0bedd7dc5baba266bc6575d",
+      "role": "source"
+    },
+    {
+      "path": "sysAlwaysFSM_OneAction.out.expected",
+      "sha256": "a9af453ef36cf8384dfea56063428d2634c868e736802893bb0017fcf939d92d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysAlwaysFSM_OneAction",
+      "resource": "heavy",
+      "fixtures": [
+        "AlwaysFSM_OneAction.bsv",
+        "sysAlwaysFSM_OneAction.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysAlwaysFSM_OneAction",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "AlwaysFSM_OneAction.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "AlwaysFSM_OneAction.bsv"
+                ],
+                "outputs": [
+                  "AlwaysFSM_OneAction.bo",
+                  "AlwaysFSM_OneAction.bsv.bsc-vcomp-out",
+                  "sysAlwaysFSM_OneAction.ba",
+                  "sysAlwaysFSM_OneAction.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysAlwaysFSM_OneAction"
+              ],
+              "top": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.v"
+                ],
+                "outputs": [
+                  "sysAlwaysFSM_OneAction.bsc-vcomp-out",
+                  "sysAlwaysFSM_OneAction.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "stdout": "sysAlwaysFSM_OneAction.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.vexe"
+                ],
+                "outputs": [
+                  "sysAlwaysFSM_OneAction.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAlwaysFSM_OneAction.v.out",
+              "expected": "sysAlwaysFSM_OneAction.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.v.out",
+                  "sysAlwaysFSM_OneAction.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "stdout": "sysAlwaysFSM_OneAction.v-vcd.out",
+              "vcd": "sysAlwaysFSM_OneAction.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.vexe"
+                ],
+                "outputs": [
+                  "sysAlwaysFSM_OneAction.v-vcd.out",
+                  "sysAlwaysFSM_OneAction.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysAlwaysFSM_OneAction.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysAlwaysFSM_OneAction"
+              ],
+              "top": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.ba"
+                ],
+                "outputs": [
+                  "sysAlwaysFSM_OneAction.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysAlwaysFSM_OneAction.cexe",
+                    "sysAlwaysFSM_OneAction.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "stdout": "sysAlwaysFSM_OneAction.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.cexe"
+                ],
+                "outputs": [
+                  "sysAlwaysFSM_OneAction.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAlwaysFSM_OneAction.c.out",
+              "expected": "sysAlwaysFSM_OneAction.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.c.out",
+                  "sysAlwaysFSM_OneAction.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysAlwaysFSM_OneAction",
+              "args": [],
+              "stdout": "sysAlwaysFSM_OneAction.c-vcd.out",
+              "vcd": "sysAlwaysFSM_OneAction.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.cexe"
+                ],
+                "outputs": [
+                  "sysAlwaysFSM_OneAction.c-vcd.out",
+                  "sysAlwaysFSM_OneAction.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysAlwaysFSM_OneAction.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAlwaysFSM_OneAction.c-vcd.out",
+              "expected": "sysAlwaysFSM_OneAction.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAlwaysFSM_OneAction.c-vcd.out",
+                  "sysAlwaysFSM_OneAction.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 379,
+                  "endByte": 414,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1306 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/BRAM/BRAMTest/BRAMTest",
+  "origin": {
+    "path": "testsuite/bsc.lib/BRAM/BRAMTest/BRAMTest.exp",
+    "sha256": "0333663b4533274b87e52b64e0cda60e8b89cfebf426446749ebfde9729b2bef"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/BRAM/BRAMTest",
+  "fixtures": [
+    {
+      "path": "BRAM1Test.bsv",
+      "sha256": "53042398391f955fdd87e7422650f1683ab095f1df81eb283776cf18f61d569f",
+      "role": "source"
+    },
+    {
+      "path": "BRAMPipelined.bsv",
+      "sha256": "c95978b5a3c94288ce234f2390806ce4c91f054148726817efe0e506602b1107",
+      "role": "source"
+    },
+    {
+      "path": "BRAMTest.bsv",
+      "sha256": "f0ab068eabcd3fb1f0630e46e22d2885466c2900fe9b85d1640e5f9b92046ddc",
+      "role": "source"
+    },
+    {
+      "path": "bram2.txt",
+      "sha256": "aaa2e04b8643ae6874123f0741b6dd2852499cfcf9df122f1ce8c1533920f0a4",
+      "role": "data"
+    },
+    {
+      "path": "sysBRAM1Test.c.out.expected",
+      "sha256": "1e7a3a910cd21cece305392bb9308b7a6499b17182e6c8c897e5c644f587cf79",
+      "role": "golden"
+    },
+    {
+      "path": "sysBRAM1Test.v.out.expected",
+      "sha256": "be9f978f2f42cf53006032ff23ea99bfae4b1de9b53766e878b43a02c1dd74f6",
+      "role": "golden"
+    },
+    {
+      "path": "sysBRAMPipelined.c.out.expected",
+      "sha256": "3f6d2cac88a4a32ee0e199b401cf7cf83b5c4f166710ed8ea59cb2a25dcedbbc",
+      "role": "golden"
+    },
+    {
+      "path": "sysBRAMPipelined.v.out.expected",
+      "sha256": "fd2f6fe5176a52165b6c2a3579c0ce9098d714b4da94803b7941193f092e4e12",
+      "role": "golden"
+    },
+    {
+      "path": "sysBRAMTest.c.out.expected",
+      "sha256": "9fc926f67cc49441f968188666e879ba6688cada4a8e9361792e26a24dbf9fd4",
+      "role": "golden"
+    },
+    {
+      "path": "sysBRAMTest.v.out.expected",
+      "sha256": "c5aba216508208dcdb53a12edce700ef13766a36b77196b2665f5f971755d2ed",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBRAMTest",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAMTest.bsv",
+        "bram2.txt",
+        "sysBRAMTest.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAMTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAMTest.bsv",
+              "mode": "verilog",
+              "module": "sysBRAMTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAMTest.bsv"
+                ],
+                "outputs": [
+                  "BRAMTest.bo",
+                  "BRAMTest.bsv.bsc-vcomp-out",
+                  "sysBRAMTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBRAMTest"
+              ],
+              "top": "sysBRAMTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.v"
+                ],
+                "outputs": [
+                  "sysBRAMTest.bsc-vcomp-out",
+                  "sysBRAMTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAMTest",
+              "args": [],
+              "stdout": "sysBRAMTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.vexe"
+                ],
+                "outputs": [
+                  "sysBRAMTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAMTest.v.out",
+              "expected": "sysBRAMTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.v.out",
+                  "sysBRAMTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAMTest",
+              "args": [],
+              "stdout": "sysBRAMTest.v-vcd.out",
+              "vcd": "sysBRAMTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.vexe"
+                ],
+                "outputs": [
+                  "sysBRAMTest.v-vcd.out",
+                  "sysBRAMTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBRAMTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBRAMTest-2",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAMTest.bsv",
+        "bram2.txt",
+        "sysBRAMTest.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAMTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAMTest.bsv",
+              "mode": "bluesim",
+              "module": "sysBRAMTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAMTest.bsv"
+                ],
+                "outputs": [
+                  "BRAMTest.bo",
+                  "BRAMTest.bsv.bsc-ccomp-out",
+                  "sysBRAMTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBRAMTest"
+              ],
+              "top": "sysBRAMTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.ba"
+                ],
+                "outputs": [
+                  "sysBRAMTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBRAMTest.cexe",
+                    "sysBRAMTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAMTest",
+              "args": [],
+              "stdout": "sysBRAMTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.cexe"
+                ],
+                "outputs": [
+                  "sysBRAMTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAMTest.c.out",
+              "expected": "sysBRAMTest.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.c.out",
+                  "sysBRAMTest.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAMTest",
+              "args": [],
+              "stdout": "sysBRAMTest.c-vcd.out",
+              "vcd": "sysBRAMTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.cexe"
+                ],
+                "outputs": [
+                  "sysBRAMTest.c-vcd.out",
+                  "sysBRAMTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBRAMTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAMTest.c-vcd.out",
+              "expected": "sysBRAMTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMTest.c-vcd.out",
+                  "sysBRAMTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBRAM1Test",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAM1Test.bsv",
+        "bram2.txt",
+        "sysBRAM1Test.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAM1Test",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAM1Test.bsv",
+              "mode": "verilog",
+              "module": "sysBRAM1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAM1Test.bsv"
+                ],
+                "outputs": [
+                  "BRAM1Test.bo",
+                  "BRAM1Test.bsv.bsc-vcomp-out",
+                  "sysBRAM1Test.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 164,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBRAM1Test"
+              ],
+              "top": "sysBRAM1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.v"
+                ],
+                "outputs": [
+                  "sysBRAM1Test.bsc-vcomp-out",
+                  "sysBRAM1Test.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 164,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAM1Test",
+              "args": [],
+              "stdout": "sysBRAM1Test.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.vexe"
+                ],
+                "outputs": [
+                  "sysBRAM1Test.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 164,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAM1Test.v.out",
+              "expected": "sysBRAM1Test.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.v.out",
+                  "sysBRAM1Test.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 164,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAM1Test",
+              "args": [],
+              "stdout": "sysBRAM1Test.v-vcd.out",
+              "vcd": "sysBRAM1Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.vexe"
+                ],
+                "outputs": [
+                  "sysBRAM1Test.v-vcd.out",
+                  "sysBRAM1Test.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 164,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBRAM1Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 164,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBRAM1Test-2",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAM1Test.bsv",
+        "bram2.txt",
+        "sysBRAM1Test.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAM1Test",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAM1Test.bsv",
+              "mode": "bluesim",
+              "module": "sysBRAM1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAM1Test.bsv"
+                ],
+                "outputs": [
+                  "BRAM1Test.bo",
+                  "BRAM1Test.bsv.bsc-ccomp-out",
+                  "sysBRAM1Test.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBRAM1Test"
+              ],
+              "top": "sysBRAM1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.ba"
+                ],
+                "outputs": [
+                  "sysBRAM1Test.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBRAM1Test.cexe",
+                    "sysBRAM1Test.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAM1Test",
+              "args": [],
+              "stdout": "sysBRAM1Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.cexe"
+                ],
+                "outputs": [
+                  "sysBRAM1Test.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAM1Test.c.out",
+              "expected": "sysBRAM1Test.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.c.out",
+                  "sysBRAM1Test.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAM1Test",
+              "args": [],
+              "stdout": "sysBRAM1Test.c-vcd.out",
+              "vcd": "sysBRAM1Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.cexe"
+                ],
+                "outputs": [
+                  "sysBRAM1Test.c-vcd.out",
+                  "sysBRAM1Test.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBRAM1Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAM1Test.c-vcd.out",
+              "expected": "sysBRAM1Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM1Test.c-vcd.out",
+                  "sysBRAM1Test.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 165,
+                  "endByte": 218,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBRAMPipelined",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAMPipelined.bsv",
+        "bram2.txt",
+        "sysBRAMPipelined.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAMPipelined",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAMPipelined.bsv",
+              "mode": "verilog",
+              "module": "sysBRAMPipelined",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAMPipelined.bsv"
+                ],
+                "outputs": [
+                  "BRAMPipelined.bo",
+                  "BRAMPipelined.bsv.bsc-vcomp-out",
+                  "sysBRAMPipelined.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 284,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBRAMPipelined"
+              ],
+              "top": "sysBRAMPipelined",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.v"
+                ],
+                "outputs": [
+                  "sysBRAMPipelined.bsc-vcomp-out",
+                  "sysBRAMPipelined.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 284,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAMPipelined",
+              "args": [],
+              "stdout": "sysBRAMPipelined.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.vexe"
+                ],
+                "outputs": [
+                  "sysBRAMPipelined.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 284,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAMPipelined.v.out",
+              "expected": "sysBRAMPipelined.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.v.out",
+                  "sysBRAMPipelined.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 284,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAMPipelined",
+              "args": [],
+              "stdout": "sysBRAMPipelined.v-vcd.out",
+              "vcd": "sysBRAMPipelined.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.vexe"
+                ],
+                "outputs": [
+                  "sysBRAMPipelined.v-vcd.out",
+                  "sysBRAMPipelined.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 284,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBRAMPipelined.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 284,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBRAMPipelined-2",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAMPipelined.bsv",
+        "bram2.txt",
+        "sysBRAMPipelined.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAMPipelined",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAMPipelined.bsv",
+              "mode": "bluesim",
+              "module": "sysBRAMPipelined",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAMPipelined.bsv"
+                ],
+                "outputs": [
+                  "BRAMPipelined.bo",
+                  "BRAMPipelined.bsv.bsc-ccomp-out",
+                  "sysBRAMPipelined.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBRAMPipelined"
+              ],
+              "top": "sysBRAMPipelined",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.ba"
+                ],
+                "outputs": [
+                  "sysBRAMPipelined.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBRAMPipelined.cexe",
+                    "sysBRAMPipelined.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAMPipelined",
+              "args": [],
+              "stdout": "sysBRAMPipelined.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.cexe"
+                ],
+                "outputs": [
+                  "sysBRAMPipelined.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAMPipelined.c.out",
+              "expected": "sysBRAMPipelined.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.c.out",
+                  "sysBRAMPipelined.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAMPipelined",
+              "args": [],
+              "stdout": "sysBRAMPipelined.c-vcd.out",
+              "vcd": "sysBRAMPipelined.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.cexe"
+                ],
+                "outputs": [
+                  "sysBRAMPipelined.c-vcd.out",
+                  "sysBRAMPipelined.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBRAMPipelined.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAMPipelined.c-vcd.out",
+              "expected": "sysBRAMPipelined.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAMPipelined.c-vcd.out",
+                  "sysBRAMPipelined.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 285,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

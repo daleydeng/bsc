@@ -1,0 +1,542 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.syntax/bsv05/method-args/method-args",
+  "origin": {
+    "path": "testsuite/bsc.syntax/bsv05/method-args/method-args.exp",
+    "sha256": "54aa200e90a03587d97186247d071de279e45a305ea1d9eb92e9f8ef21507bbc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.syntax/bsv05/method-args",
+  "fixtures": [
+    {
+      "path": "IfcMethodArgsQualLookup.bsv",
+      "sha256": "086fd8113a4820e4264d7464d1cb92fb1fb87fbaa3b89d04c387ea7d54cb1749",
+      "role": "source"
+    },
+    {
+      "path": "IfcMethodArgsQualLookup_Sub.bsv",
+      "sha256": "46270cc414d961b53e044f55fc46b07121d266c3039d2b168fbe5444e0042e0c",
+      "role": "source"
+    },
+    {
+      "path": "MethodCond.bsv",
+      "sha256": "9d300bf44f695bb046ab52037b1b5e86a98a9b77ee79dbf9140ee793d2d741eb",
+      "role": "source"
+    },
+    {
+      "path": "MethodCond2.bsv",
+      "sha256": "40c82f8aa6b481afb3981d6286433edb9412e9244a0309b09eb3cd464e24bbcb",
+      "role": "source"
+    },
+    {
+      "path": "MethodCond3.bsv",
+      "sha256": "1adeb4dc5f716737cf91ef87da08b6dd6e6d9022923f4a21faf1f32761d92c62",
+      "role": "source"
+    },
+    {
+      "path": "NonSynthesizedModule.bsv",
+      "sha256": "6b13f7fb5ccbf0047bf893874bdf848341592f3155c42376f73ccc31f328c1e7",
+      "role": "source"
+    },
+    {
+      "path": "SynthesizedModule.bsv",
+      "sha256": "073ff0b520fa93e011ffd26bee4a413b12931cdf500ba12c833bfcebb4de9504",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-SynthesizedModule",
+      "resource": "normal",
+      "fixtures": [
+        "SynthesizedModule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SynthesizedModule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SynthesizedModule.bsv",
+              "mode": "verilog",
+              "args": [
+                "-warn-meth-arg-mismatch"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SynthesizedModule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SynthesizedModule.bsv"
+                ],
+                "outputs": [
+                  "SynthesizedModule.bo",
+                  "SynthesizedModule.bsv.bsc-vcomp-out",
+                  "sysSynthesizedModule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 88,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SynthesizedModule.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0093",
+              "count": 3,
+              "artifacts": {
+                "inputs": [
+                  "SynthesizedModule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 88,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 88
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-NonSynthesizedModule",
+      "resource": "normal",
+      "fixtures": [
+        "NonSynthesizedModule.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-NonSynthesizedModule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "NonSynthesizedModule.bsv",
+              "mode": "frontend",
+              "args": [
+                "-warn-meth-arg-mismatch"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "NonSynthesizedModule.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "NonSynthesizedModule.bsv"
+                ],
+                "outputs": [
+                  "NonSynthesizedModule.bsv.bsc-out",
+                  "NonSynthesizedModule.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 90,
+                  "endByte": 169,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "NonSynthesizedModule.bsv.bsc-out",
+              "kind": "warning",
+              "code": "T0093",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "NonSynthesizedModule.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 90,
+                  "endByte": 169,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-MethodCond",
+      "resource": "normal",
+      "fixtures": [
+        "MethodCond.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodCond",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodCond.bsv",
+              "mode": "verilog",
+              "args": [
+                "-warn-meth-arg-mismatch",
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MethodCond.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodCond.bsv"
+                ],
+                "outputs": [
+                  "MethodCond.bo",
+                  "MethodCond.bsv.bsc-vcomp-out",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 171,
+                  "endByte": 274,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodCond.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0093",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodCond.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 171,
+                  "endByte": 274,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 104
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-MethodCond2",
+      "resource": "normal",
+      "fixtures": [
+        "MethodCond2.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodCond2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodCond2.bsv",
+              "mode": "frontend",
+              "args": [
+                "-warn-meth-arg-mismatch"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MethodCond2.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodCond2.bsv"
+                ],
+                "outputs": [
+                  "MethodCond2.bsv.bsc-out",
+                  "MethodCond2.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 276,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodCond2.bsv.bsc-out",
+              "kind": "warning",
+              "code": "T0093",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodCond2.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 276,
+                  "endByte": 346,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 71
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-MethodCond3",
+      "resource": "normal",
+      "fixtures": [
+        "MethodCond3.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodCond3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodCond3.bsv",
+              "mode": "verilog",
+              "args": [
+                "-warn-meth-arg-mismatch",
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MethodCond3.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodCond3.bsv"
+                ],
+                "outputs": [
+                  "MethodCond3.bo",
+                  "MethodCond3.bsv.bsc-vcomp-out",
+                  "mkMethodCond3_32.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 385,
+                  "endByte": 473,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodCond3.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "MethodCond3.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 499,
+                  "endByte": 540,
+                  "startLine": 13,
+                  "startColumn": 5,
+                  "endLine": 13,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-IfcMethodArgsQualLookup",
+      "resource": "normal",
+      "fixtures": [
+        "IfcMethodArgsQualLookup.bsv",
+        "IfcMethodArgsQualLookup_Sub.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IfcMethodArgsQualLookup",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IfcMethodArgsQualLookup.bsv",
+              "mode": "verilog",
+              "args": [
+                "-warn-meth-arg-mismatch",
+                "-suppress-warnings",
+                "T0157:S0080"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IfcMethodArgsQualLookup.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "IfcMethodArgsQualLookup.bsv"
+                ],
+                "outputs": [
+                  "IfcMethodArgsQualLookup.bo",
+                  "IfcMethodArgsQualLookup.bsv.bsc-vcomp-out",
+                  "sysIfcMethodArgsQualLookup.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 670,
+                  "endByte": 789,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 120
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "IfcMethodArgsQualLookup.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "IfcMethodArgsQualLookup.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 670,
+                  "endByte": 789,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 120
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bluesim/interactive/traffic_light_controller_hierar/traffic_light_controller_hier",
+  "origin": {
+    "path": "testsuite/bsc.interra/bluesim/interactive/traffic_light_controller_hierar/traffic_light_controller_hier.exp",
+    "sha256": "ea9c0017e7a6fe2cd5112aafb89ca1d1eda1abb7952c2dec72287947a8bdb142"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bluesim/interactive/traffic_light_controller_hierar",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "74e04d2cbb6fbf9320a24d3287ef4071cfcf2ab636879208d912a64202451474",
+      "role": "source"
+    },
+    {
+      "path": "Testbench.bsv",
+      "sha256": "335ab75cc7e6f190fa7ac5f75adf41912dcb60eeb770f2d8435c0ad227821cb1",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTestbench",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench.bsv"
+                ],
+                "outputs": [
+                  "Testbench.bo",
+                  "Testbench.bsv.bsc-ccomp-out",
+                  "mkTestbench.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 68,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench"
+              ],
+              "top": "mkTestbench",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench.ba"
+                ],
+                "outputs": [
+                  "mkTestbench.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench.cexe",
+                    "mkTestbench.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 70,
+                  "endByte": 113,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

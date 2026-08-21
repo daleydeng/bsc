@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1480/b1480",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1480/b1480.exp",
+    "sha256": "4709c8e9bc5f89a3269577c543ee363afff2e69792fcadf56770f5e88938f421"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1480",
+  "fixtures": [
+    {
+      "path": "If1.bsv",
+      "sha256": "5a544815ad481dd89bef2df8209dc7972fcbfeb1538e15596517d9f6a1e93dba",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-If1",
+      "resource": "heavy",
+      "fixtures": [
+        "If1.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-If1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "If1.bsv",
+              "mode": "verilog",
+              "args": [
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "If1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "If1.bsv"
+                ],
+                "outputs": [
+                  "If1.bo",
+                  "If1.bsv.bsc-vcomp-out",
+                  "sysIf1.ba",
+                  "sysIf1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 64,
+                  "endByte": 103,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIf1.ba"
+              ],
+              "top": "sysIf1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIf1.ba"
+                ],
+                "outputs": [
+                  "sysIf1.bsc-vcomp-out",
+                  "sysIf1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 138,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysIf1",
+      "resource": "heavy",
+      "fixtures": [
+        "If1.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysIf1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "If1.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "If1.bsv"
+                ],
+                "outputs": [
+                  "If1.bo",
+                  "If1.bsv.bsc-ccomp-out",
+                  "sysIf1.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIf1.ba"
+              ],
+              "top": "sysIf1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIf1.ba"
+                ],
+                "outputs": [
+                  "sysIf1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIf1.cexe",
+                    "sysIf1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

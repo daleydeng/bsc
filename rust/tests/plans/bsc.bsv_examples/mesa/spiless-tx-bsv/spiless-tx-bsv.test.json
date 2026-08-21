@@ -1,0 +1,642 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv/spiless-tx-bsv.exp",
+    "sha256": "fb90d23265538d15b7bbb2e84dde2c46c4fa25ef4174a44a7afc68c7394290d4"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/mesa/spiless-tx-bsv",
+  "fixtures": [
+    {
+      "path": "ClientServerLib.bsv",
+      "sha256": "5ad220ce429ffe2b1fc24dbf1e3fdc18fb3a3e923b7deb37dad6c6cc00dd89d6",
+      "role": "source"
+    },
+    {
+      "path": "ExtSDRAM.bsv",
+      "sha256": "30ef60e8a0f68d4758c39f32e88e1353712bb0fd15e054cfd3b44a5f38efd5e7",
+      "role": "source"
+    },
+    {
+      "path": "Mesa.bsv",
+      "sha256": "cfbc140cd15b07b08acc4c563e4067f7264a7173e328742e02880c2b6070073e",
+      "role": "source"
+    },
+    {
+      "path": "MesaDefs.bsv",
+      "sha256": "a22d30fd2f58c306047ec646a1777305e066099b77a71fd22938d56bee0191bb",
+      "role": "source"
+    },
+    {
+      "path": "MesaIDefs.bsv",
+      "sha256": "53ddaddec19528e4db562c0a1f5d8f70eee4a09949c5aa8cf0ed6fe4dda8a96c",
+      "role": "source"
+    },
+    {
+      "path": "MesaTxLpm.bsv",
+      "sha256": "71f7d3730ec65ae310818352685cfe0e847ac4319dccebda61f372a3383a9b26",
+      "role": "source"
+    },
+    {
+      "path": "Mesa_Dm.bsv",
+      "sha256": "0063fa372f19626813db411649c55b9a0bd11687e92048d19fdc142dea07fb12",
+      "role": "source"
+    },
+    {
+      "path": "Mesa_Mif.bsv",
+      "sha256": "eb656b7969ee280e7b57e03a2655dce7793345fddd9a91f90c62a12092fc89b5",
+      "role": "source"
+    },
+    {
+      "path": "Mesa_Vff.bsv",
+      "sha256": "298d7ab3457ce2be132a649466e4b03d42e9aeb1905e5cf4ae709b06364b2cca",
+      "role": "source"
+    },
+    {
+      "path": "SDRAM.bsv",
+      "sha256": "86453463c9687d38b732d9bfce4f257e1698fd9b7c89e88c61242cecf98ed11b",
+      "role": "source"
+    },
+    {
+      "path": "SRAM.handbuilt",
+      "sha256": "07ef0ead5f3fafa7ef81bffbfab9bc65ccae5bd583825da9ff03f19312732a38",
+      "role": "data"
+    },
+    {
+      "path": "TestMesa.bsv",
+      "sha256": "bd15c0b0118c50b373d9b532f10af35975cf40ec0b0c8994643aba17e3d3d4e5",
+      "role": "source"
+    },
+    {
+      "path": "addrs.handbuilt",
+      "sha256": "fe3ff70ce96a1c4ffa8d61d65bf4952545cb0a8936097f902a21a8b24eae3347",
+      "role": "data"
+    },
+    {
+      "path": "sysTestMesa.out.expected",
+      "sha256": "e03358c65b299830228c8e1175500675b645a327e6ea037ae4dc36c6126d63be",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestMesa.v.out.expected",
+      "sha256": "4479cb05b6f6ad934812caeb27973c9411b0879b1fd7d03e0926f3f05bd84d78",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-TestMesa",
+      "resource": "heavy",
+      "fixtures": [
+        "ClientServerLib.bsv",
+        "ExtSDRAM.bsv",
+        "Mesa.bsv",
+        "MesaDefs.bsv",
+        "MesaIDefs.bsv",
+        "MesaTxLpm.bsv",
+        "Mesa_Dm.bsv",
+        "Mesa_Mif.bsv",
+        "Mesa_Vff.bsv",
+        "SDRAM.bsv",
+        "SRAM.handbuilt",
+        "TestMesa.bsv",
+        "addrs.handbuilt",
+        "sysTestMesa.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestMesa",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestMesa.bsv",
+              "mode": "verilog",
+              "module": "sysTestMesa",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestMesa.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TestMesa.bsv"
+                ],
+                "outputs": [
+                  "TestMesa.bo",
+                  "TestMesa.bsv.bsc-vcomp-out",
+                  "mkMesa.v",
+                  "mkMesaTxLpm.v",
+                  "mkMesa_Dm.v",
+                  "mkMesa_Mif.v",
+                  "mkMesa_Vff.v",
+                  "sysTestMesa.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 510,
+                  "endByte": 555,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestMesa.v",
+                "mkMesaTxLpm.v",
+                "mkMesa_Vff.v",
+                "mkMesa_Dm.v",
+                "mkMesa_Mif.v",
+                "mkMesa.v"
+              ],
+              "top": "sysTestMesa",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.v",
+                  "mkMesaTxLpm.v",
+                  "mkMesa_Vff.v",
+                  "mkMesa_Dm.v",
+                  "mkMesa_Mif.v",
+                  "mkMesa.v"
+                ],
+                "outputs": [
+                  "sysTestMesa.bsc-vcomp-out",
+                  "sysTestMesa.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 556,
+                  "endByte": 662,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestMesa",
+              "args": [],
+              "stdout": "sysTestMesa.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.vexe"
+                ],
+                "outputs": [
+                  "sysTestMesa.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 663,
+                  "endByte": 686,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestMesa.out",
+              "destination": "sysTestMesa.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.out"
+                ],
+                "outputs": [
+                  "sysTestMesa.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestMesa.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 687,
+                  "endByte": 725,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "sysTestMesa.out",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestMesa.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 808,
+                  "endByte": 829,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "dump.vcd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 830,
+                  "endByte": 844,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 15
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestMesa.v.out",
+              "expected": "sysTestMesa.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.v.out",
+                  "sysTestMesa.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 845,
+                  "endByte": 913,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 69
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestMesa",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestMesa",
+              "args": [],
+              "stdout": "sysTestMesa.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.vexe"
+                ],
+                "outputs": [
+                  "sysTestMesa.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 914,
+                  "endByte": 947,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "sysTestMesa.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "sysTestMesa.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 948,
+                  "endByte": 979,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTestMesa",
+      "resource": "heavy",
+      "fixtures": [
+        "ClientServerLib.bsv",
+        "ExtSDRAM.bsv",
+        "Mesa.bsv",
+        "MesaDefs.bsv",
+        "MesaIDefs.bsv",
+        "MesaTxLpm.bsv",
+        "Mesa_Dm.bsv",
+        "Mesa_Mif.bsv",
+        "Mesa_Vff.bsv",
+        "SDRAM.bsv",
+        "SRAM.handbuilt",
+        "TestMesa.bsv",
+        "addrs.handbuilt",
+        "sysTestMesa.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestMesa",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestMesa.bsv",
+              "mode": "bluesim",
+              "module": "sysTestMesa",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestMesa.bsv"
+                ],
+                "outputs": [
+                  "TestMesa.bo",
+                  "TestMesa.bsv.bsc-ccomp-out",
+                  "mkMesa.ba",
+                  "mkMesaTxLpm.ba",
+                  "mkMesa_Dm.ba",
+                  "mkMesa_Mif.ba",
+                  "mkMesa_Vff.ba",
+                  "sysTestMesa.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestMesa",
+                "mkMesaTxLpm",
+                "mkMesa_Vff",
+                "mkMesa_Dm",
+                "mkMesa_Mif",
+                "mkMesa"
+              ],
+              "top": "sysTestMesa",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.ba",
+                  "mkMesaTxLpm.ba",
+                  "mkMesa_Vff.ba",
+                  "mkMesa_Dm.ba",
+                  "mkMesa_Mif.ba",
+                  "mkMesa.ba"
+                ],
+                "outputs": [
+                  "sysTestMesa.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestMesa.cexe",
+                    "sysTestMesa.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestMesa",
+              "args": [],
+              "stdout": "sysTestMesa.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.cexe"
+                ],
+                "outputs": [
+                  "sysTestMesa.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestMesa.c.out",
+              "expected": "sysTestMesa.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.c.out",
+                  "sysTestMesa.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestMesa",
+              "args": [],
+              "stdout": "sysTestMesa.c-vcd.out",
+              "vcd": "sysTestMesa.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.cexe"
+                ],
+                "outputs": [
+                  "sysTestMesa.c-vcd.out",
+                  "sysTestMesa.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestMesa.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestMesa.c-vcd.out",
+              "expected": "sysTestMesa.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestMesa.c-vcd.out",
+                  "sysTestMesa.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1036,
+                  "endByte": 1146,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 111
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

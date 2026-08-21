@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/continueOutsideLoop/continueOutsideLoop",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/continueOutsideLoop/continueOutsideLoop.exp",
+    "sha256": "f53791e6e4e04c9c3270b1521070e13a54a288ba9ca65fb027d126fe66f0785c"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/continueOutsideLoop",
+  "fixtures": [
+    {
+      "path": "continueOutsideLoop.bsv",
+      "sha256": "46d601e2651c6a09a8185b1648411a770bdfbce6dc61a977ca92da17dca4b026",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-continueOutsideLoop",
+      "resource": "normal",
+      "fixtures": [
+        "continueOutsideLoop.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-continueOutsideLoop",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "continueOutsideLoop.bsv",
+              "mode": "frontend",
+              "args": [
+                "-verilog"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "continueOutsideLoop.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "continueOutsideLoop.bsv"
+                ],
+                "outputs": [
+                  "continueOutsideLoop.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "continueOutsideLoop.bsv.bsc-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "continueOutsideLoop.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

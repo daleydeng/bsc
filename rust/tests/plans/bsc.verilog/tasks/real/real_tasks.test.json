@@ -1,0 +1,1214 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/tasks/real/real_tasks",
+  "origin": {
+    "path": "testsuite/bsc.verilog/tasks/real/real_tasks.exp",
+    "sha256": "a7c102d0240a3c42bba0184f4c4cfdee4ca31e71829f7dbe3f38f8da8dcb26c5"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/tasks/real",
+  "fixtures": [
+    {
+      "path": "RealDisplay.bsv",
+      "sha256": "f07f7c74f46ac3617a7c3dbc6ccf266ea895b4f5d3532b769a6b6891654b4972",
+      "role": "source"
+    },
+    {
+      "path": "RealDisplay2.bsv",
+      "sha256": "f0ffd200bf1396038aaa6fc79fe65819b149e4c21fef6208cc145207abed2532",
+      "role": "source"
+    },
+    {
+      "path": "RealDisplayErr1.bsv",
+      "sha256": "cbed19faaa2122368be6d8da31fdf1f6a957ba4d16ba0743272c028ada75aaec",
+      "role": "source"
+    },
+    {
+      "path": "RealDisplayErr2.bsv",
+      "sha256": "e525e60127734e2767d095c53c8b15ad30ce4fedb83df8426378af18dcf815c2",
+      "role": "source"
+    },
+    {
+      "path": "sysRealDisplay.out.expected",
+      "sha256": "e5d59987c7904e230e99326e5eb042902bf85e42039351bee06121e8a4fa1d80",
+      "role": "golden"
+    },
+    {
+      "path": "sysRealDisplay2.out.expected",
+      "sha256": "486e6f44ff7f4efdf358e6e6257794b6be25dfcba6093d4e3131b117a19083d6",
+      "role": "golden"
+    },
+    {
+      "path": "sysRealDisplayErr1.out.expected",
+      "sha256": "87496272ec4ee35a7776fa8fae75aa22a80677c60cbd1648092ee042c513cf04",
+      "role": "golden"
+    },
+    {
+      "path": "sysRealDisplayErr2.out.expected",
+      "sha256": "c4d43a4eb32cb91c1998a53a27a1e1e9acad3c7734db0c481b3c8bb7b363b18f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysRealDisplay",
+      "resource": "heavy",
+      "fixtures": [
+        "RealDisplay.bsv",
+        "sysRealDisplay.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRealDisplay",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RealDisplay.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysRealDisplay",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RealDisplay.bsv"
+                ],
+                "outputs": [
+                  "RealDisplay.bo",
+                  "RealDisplay.bsv.bsc-vcomp-out",
+                  "sysRealDisplay.ba",
+                  "sysRealDisplay.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRealDisplay"
+              ],
+              "top": "sysRealDisplay",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.v"
+                ],
+                "outputs": [
+                  "sysRealDisplay.bsc-vcomp-out",
+                  "sysRealDisplay.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRealDisplay",
+              "args": [],
+              "stdout": "sysRealDisplay.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.vexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplay.v.out",
+              "expected": "sysRealDisplay.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.v.out",
+                  "sysRealDisplay.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRealDisplay",
+              "args": [],
+              "stdout": "sysRealDisplay.v-vcd.out",
+              "vcd": "sysRealDisplay.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.vexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay.v-vcd.out",
+                  "sysRealDisplay.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRealDisplay.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRealDisplay"
+              ],
+              "top": "sysRealDisplay",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.ba"
+                ],
+                "outputs": [
+                  "sysRealDisplay.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRealDisplay.cexe",
+                    "sysRealDisplay.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplay",
+              "args": [],
+              "stdout": "sysRealDisplay.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplay.c.out",
+              "expected": "sysRealDisplay.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.c.out",
+                  "sysRealDisplay.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplay",
+              "args": [],
+              "stdout": "sysRealDisplay.c-vcd.out",
+              "vcd": "sysRealDisplay.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay.c-vcd.out",
+                  "sysRealDisplay.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRealDisplay.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplay.c-vcd.out",
+              "expected": "sysRealDisplay.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay.c-vcd.out",
+                  "sysRealDisplay.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRealDisplay2",
+      "resource": "heavy",
+      "fixtures": [
+        "RealDisplay2.bsv",
+        "sysRealDisplay2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRealDisplay2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RealDisplay2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysRealDisplay2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RealDisplay2.bsv"
+                ],
+                "outputs": [
+                  "RealDisplay2.bo",
+                  "RealDisplay2.bsv.bsc-vcomp-out",
+                  "sysRealDisplay2.ba",
+                  "sysRealDisplay2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRealDisplay2"
+              ],
+              "top": "sysRealDisplay2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.v"
+                ],
+                "outputs": [
+                  "sysRealDisplay2.bsc-vcomp-out",
+                  "sysRealDisplay2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRealDisplay2",
+              "args": [],
+              "stdout": "sysRealDisplay2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.vexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplay2.v.out",
+              "expected": "sysRealDisplay2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.v.out",
+                  "sysRealDisplay2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRealDisplay2",
+              "args": [],
+              "stdout": "sysRealDisplay2.v-vcd.out",
+              "vcd": "sysRealDisplay2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.vexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay2.v-vcd.out",
+                  "sysRealDisplay2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRealDisplay2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRealDisplay2"
+              ],
+              "top": "sysRealDisplay2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.ba"
+                ],
+                "outputs": [
+                  "sysRealDisplay2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRealDisplay2.cexe",
+                    "sysRealDisplay2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplay2",
+              "args": [],
+              "stdout": "sysRealDisplay2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplay2.c.out",
+              "expected": "sysRealDisplay2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.c.out",
+                  "sysRealDisplay2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplay2",
+              "args": [],
+              "stdout": "sysRealDisplay2.c-vcd.out",
+              "vcd": "sysRealDisplay2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplay2.c-vcd.out",
+                  "sysRealDisplay2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRealDisplay2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplay2.c-vcd.out",
+              "expected": "sysRealDisplay2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplay2.c-vcd.out",
+                  "sysRealDisplay2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 56,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRealDisplayErr1",
+      "resource": "heavy",
+      "fixtures": [
+        "RealDisplayErr1.bsv",
+        "sysRealDisplayErr1.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRealDisplayErr1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RealDisplayErr1.bsv",
+              "mode": "bluesim",
+              "module": "sysRealDisplayErr1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RealDisplayErr1.bsv"
+                ],
+                "outputs": [
+                  "RealDisplayErr1.bo",
+                  "RealDisplayErr1.bsv.bsc-ccomp-out",
+                  "sysRealDisplayErr1.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRealDisplayErr1"
+              ],
+              "top": "sysRealDisplayErr1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr1.ba"
+                ],
+                "outputs": [
+                  "sysRealDisplayErr1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRealDisplayErr1.cexe",
+                    "sysRealDisplayErr1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplayErr1",
+              "args": [],
+              "stdout": "sysRealDisplayErr1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr1.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplayErr1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplayErr1.c.out",
+              "expected": "sysRealDisplayErr1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr1.c.out",
+                  "sysRealDisplayErr1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplayErr1",
+              "args": [],
+              "stdout": "sysRealDisplayErr1.c-vcd.out",
+              "vcd": "sysRealDisplayErr1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr1.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplayErr1.c-vcd.out",
+                  "sysRealDisplayErr1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRealDisplayErr1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplayErr1.c-vcd.out",
+              "expected": "sysRealDisplayErr1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr1.c-vcd.out",
+                  "sysRealDisplayErr1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 120,
+                  "endByte": 151,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRealDisplayErr2",
+      "resource": "heavy",
+      "fixtures": [
+        "RealDisplayErr2.bsv",
+        "sysRealDisplayErr2.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRealDisplayErr2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RealDisplayErr2.bsv",
+              "mode": "bluesim",
+              "module": "sysRealDisplayErr2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RealDisplayErr2.bsv"
+                ],
+                "outputs": [
+                  "RealDisplayErr2.bo",
+                  "RealDisplayErr2.bsv.bsc-ccomp-out",
+                  "sysRealDisplayErr2.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRealDisplayErr2"
+              ],
+              "top": "sysRealDisplayErr2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr2.ba"
+                ],
+                "outputs": [
+                  "sysRealDisplayErr2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRealDisplayErr2.cexe",
+                    "sysRealDisplayErr2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplayErr2",
+              "args": [],
+              "stdout": "sysRealDisplayErr2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr2.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplayErr2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplayErr2.c.out",
+              "expected": "sysRealDisplayErr2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr2.c.out",
+                  "sysRealDisplayErr2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRealDisplayErr2",
+              "args": [],
+              "stdout": "sysRealDisplayErr2.c-vcd.out",
+              "vcd": "sysRealDisplayErr2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr2.cexe"
+                ],
+                "outputs": [
+                  "sysRealDisplayErr2.c-vcd.out",
+                  "sysRealDisplayErr2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRealDisplayErr2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRealDisplayErr2.c-vcd.out",
+              "expected": "sysRealDisplayErr2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRealDisplayErr2.c-vcd.out",
+                  "sysRealDisplayErr2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 152,
+                  "endByte": 183,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

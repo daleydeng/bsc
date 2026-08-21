@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bluesim/interactive/parity_checker/parity_checker",
+  "origin": {
+    "path": "testsuite/bsc.interra/bluesim/interactive/parity_checker/parity_checker.exp",
+    "sha256": "eda329f8a6aaa65fb4c04d2020ba6249b444ceeea25757f35712c6ccda9e41b6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bluesim/interactive/parity_checker",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "b4e1336abd24940ab2c9495d2520ba3497d184a470622008ac598bc8144bb7e2",
+      "role": "source"
+    },
+    {
+      "path": "Testbench.bsv",
+      "sha256": "6227716f848cd1cd40cab1e40df5c2206eba029a0ea6374a1c28d327b2666f22",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTestbench",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Design.bsv",
+              "mode": "bluesim",
+              "module": "mkDesign",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-ccomp-out",
+                  "mkDesign.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 60,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Testbench.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench.bsv"
+                ],
+                "outputs": [
+                  "Testbench.bo",
+                  "Testbench.bsv.bsc-ccomp-out",
+                  "mkTestbench.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 61,
+                  "endByte": 106,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench",
+                "mkDesign"
+              ],
+              "top": "mkTestbench",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench.ba",
+                  "mkDesign.ba"
+                ],
+                "outputs": [
+                  "mkTestbench.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench.cexe",
+                    "mkTestbench.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 159,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

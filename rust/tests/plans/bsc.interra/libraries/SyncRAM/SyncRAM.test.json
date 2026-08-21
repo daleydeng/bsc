@@ -1,0 +1,452 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/SyncRAM/SyncRAM",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/SyncRAM/SyncRAM.exp",
+    "sha256": "671936cef52a79ea480d07ccc625a67a0813f4bb015565b03232273918e3b331"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/SyncRAM",
+  "fixtures": [
+    {
+      "path": "Precedence.bs",
+      "sha256": "abf0fe4f4c221106a47c7d5e5f97a63e92ccf2eac1ed72a27958f4bf2d628779",
+      "role": "source"
+    },
+    {
+      "path": "RRSPSRAM_65536_16_bussed.v",
+      "sha256": "7b43f508534c106ab33c53032611d0ac474b7b5b2a9480729f03cb6529c8c1d6",
+      "role": "source"
+    },
+    {
+      "path": "TestSPSRAM.bsv",
+      "sha256": "2a8b06efa5b05516d5085ea15c7e17fbe660b4620d0ea8c973fd4a2c741d6a0f",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_SPSRam.v.out.expected",
+      "sha256": "34cb00549b55772767fdb73aa1f36b0440da09a4e4a07902045ffdcd34d3b7e8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_SPSRam",
+      "resource": "heavy",
+      "fixtures": [
+        "Precedence.bs",
+        "TestSPSRAM.bsv",
+        "mkTestbench_SPSRam.v.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_SPSRam",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestSPSRAM.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_SPSRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestSPSRAM.bsv"
+                ],
+                "outputs": [
+                  "TestSPSRAM.bo",
+                  "TestSPSRAM.bsv.bsc-ccomp-out",
+                  "mkTestbench_SPSRam.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_SPSRam"
+              ],
+              "top": "mkTestbench_SPSRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_SPSRam.cexe",
+                    "mkTestbench_SPSRam.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_SPSRam",
+              "args": [],
+              "stdout": "mkTestbench_SPSRam.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_SPSRam.c.out",
+              "expected": "mkTestbench_SPSRam.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.c.out",
+                  "mkTestbench_SPSRam.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_SPSRam",
+              "args": [],
+              "stdout": "mkTestbench_SPSRam.c-vcd.out",
+              "vcd": "mkTestbench_SPSRam.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.c-vcd.out",
+                  "mkTestbench_SPSRam.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_SPSRam.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_SPSRam.c-vcd.out",
+              "expected": "mkTestbench_SPSRam.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.c-vcd.out",
+                  "mkTestbench_SPSRam.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 103,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 104
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_SPSRam-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Precedence.bs",
+        "RRSPSRAM_65536_16_bussed.v",
+        "TestSPSRAM.bsv",
+        "mkTestbench_SPSRam.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_SPSRam",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestSPSRAM.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_SPSRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestSPSRAM.bsv"
+                ],
+                "outputs": [
+                  "RRSPSRAM_65536_16_bussed.v",
+                  "TestSPSRAM.bo",
+                  "TestSPSRAM.bsv.bsc-vcomp-out",
+                  "mkTestbench_SPSRam.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 232,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 128
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_SPSRam",
+                "RRSPSRAM_65536_16_bussed"
+              ],
+              "top": "mkTestbench_SPSRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.v",
+                  "RRSPSRAM_65536_16_bussed.v"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.bsc-vcomp-out",
+                  "mkTestbench_SPSRam.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 232,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 128
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_SPSRam",
+              "args": [],
+              "stdout": "mkTestbench_SPSRam.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 232,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 128
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_SPSRam.v.out",
+              "expected": "mkTestbench_SPSRam.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.v.out",
+                  "mkTestbench_SPSRam.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 232,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 128
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_SPSRam",
+              "args": [],
+              "stdout": "mkTestbench_SPSRam.v-vcd.out",
+              "vcd": "mkTestbench_SPSRam.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_SPSRam.v-vcd.out",
+                  "mkTestbench_SPSRam.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 232,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 128
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_SPSRam.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_SPSRam.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 232,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 128
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

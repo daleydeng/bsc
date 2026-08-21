@@ -1,0 +1,966 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/aggressive-conditions/aggressive-conditions",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/aggressive-conditions/aggressive-conditions.exp",
+    "sha256": "c6b30f06150a4c4e0d56c7d90a891283bf1ac411d7a9c1436c40977093e2218c"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/aggressive-conditions",
+  "fixtures": [
+    {
+      "path": "AggConds.bsv",
+      "sha256": "2c44ce6eb04f95fe6acb85b1204bfe5c5e2b995daea1155fd89dfea8ef29f47e",
+      "role": "source"
+    },
+    {
+      "path": "AggCondsRules.bsv",
+      "sha256": "ea3567656c5df55f9bd24ef577c0d617337f4bb85580f67799d66c61c09e20b8",
+      "role": "source"
+    },
+    {
+      "path": "AggCondsRulesOff.bsv",
+      "sha256": "fcbf7b2b50493b13d523a0af2ecacd1116b44957d009455e559698f9b57dfca8",
+      "role": "source"
+    },
+    {
+      "path": "CanLift_DefExp.bsv",
+      "sha256": "5649806c1c97d065c0d969ca4b6cc7c3a8588bd945a61a98638d5fe222db362c",
+      "role": "source"
+    },
+    {
+      "path": "CanLift_DynSel_2D_AVValue.bsv",
+      "sha256": "1343a938f90be27ef067934c005402afbc67f1fda3f89a33efd44135877571a9",
+      "role": "source"
+    },
+    {
+      "path": "CanLift_DynSel_AVValue.bsv",
+      "sha256": "edc6c483b0d163ea28d9dd4947362c9a776efb8aa7f58f0db470348c7fac9ea3",
+      "role": "source"
+    },
+    {
+      "path": "CanLift_DynSel_Idx_AVValue.bsv",
+      "sha256": "91cb6485557ece6d8461f7340a72b795c49d0ddf8ad66e8e490149a93b55af4d",
+      "role": "source"
+    },
+    {
+      "path": "CantLift_AVValue_Arg.bsv",
+      "sha256": "691c4e9e596e9cd64235aaba3097ad3a35c03420c499a442dd48c7c6cf3ce218",
+      "role": "source"
+    },
+    {
+      "path": "CantLift_AVValue_NoArg.bsv",
+      "sha256": "2846efd0c091ce5c4a17168251622bc731314c29ed2f775e5f0f8152af3d6cf6",
+      "role": "source"
+    },
+    {
+      "path": "ExpandedBug.bsv",
+      "sha256": "2d36ed138ac49151cd13733286f97385ecce5a6828939f2bc3598f5753ba4acd",
+      "role": "source"
+    },
+    {
+      "path": "MethodCondVecSel.bsv",
+      "sha256": "a787e806c7f97689e2ef3fa398c71ee5ff37c3a3d12f9794e3072b1c9ead2307",
+      "role": "source"
+    },
+    {
+      "path": "sysCanLift_DefExp.sched.expected",
+      "sha256": "97478c1f46fd6862ff299ed9ff4733290f1399f5357a7868213fc35aa18f1687",
+      "role": "golden"
+    },
+    {
+      "path": "sysCanLift_DynSel_2D_AVValue.sched.expected",
+      "sha256": "d424dace803be728a9fc2a72f43936a869ef44815e05deb8b1e6637931e0d9d7",
+      "role": "golden"
+    },
+    {
+      "path": "sysCanLift_DynSel_AVValue.sched.expected",
+      "sha256": "f3813ac3fc4368591f80f0d7977b3d8428bff9ca7e54beb615a0c4e151adb4f4",
+      "role": "golden"
+    },
+    {
+      "path": "sysCanLift_DynSel_Idx_AVValue.sched.expected",
+      "sha256": "64b3e0459ca72b31bb98c66231b3649cb775a0ade26ce4132a745bc92a45939f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-AggConds",
+      "resource": "normal",
+      "fixtures": [
+        "AggConds.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AggConds",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AggConds.bsv",
+              "mode": "verilog",
+              "module": "mkDesign",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AggConds.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AggConds.bsv"
+                ],
+                "outputs": [
+                  "AggConds.bo",
+                  "AggConds.bsv.bsc-vcomp-out",
+                  "mkDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 67,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-AggCondsRulesOff",
+      "resource": "normal",
+      "fixtures": [
+        "AggCondsRulesOff.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AggCondsRulesOff",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AggCondsRulesOff.bsv",
+              "mode": "verilog",
+              "module": "sysAggCondsRulesOff",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AggCondsRulesOff.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AggCondsRulesOff.bsv"
+                ],
+                "outputs": [
+                  "AggCondsRulesOff.bo",
+                  "AggCondsRulesOff.bsv.bsc-vcomp-out",
+                  "sysAggCondsRulesOff.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 68,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 87
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-AggCondsRules",
+      "resource": "normal",
+      "fixtures": [
+        "AggCondsRules.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AggCondsRules",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AggCondsRules.bsv",
+              "mode": "verilog",
+              "module": "sysAggCondsRules",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "AggCondsRules.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AggCondsRules.bsv"
+                ],
+                "outputs": [
+                  "AggCondsRules.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 155,
+                  "endByte": 235,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "AggCondsRules.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0002",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "AggCondsRules.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 257,
+                  "endByte": 309,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-ExpandedBug",
+      "resource": "normal",
+      "fixtures": [
+        "ExpandedBug.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExpandedBug",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExpandedBug.bsv",
+              "mode": "verilog",
+              "args": [
+                "+RTS",
+                "-M384M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ExpandedBug.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ExpandedBug.bsv"
+                ],
+                "outputs": [
+                  "ExpandedBug.bo",
+                  "ExpandedBug.bsv.bsc-vcomp-out",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 313,
+                  "endByte": 371,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-MethodCondVecSel",
+      "resource": "normal",
+      "fixtures": [
+        "MethodCondVecSel.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodCondVecSel",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodCondVecSel.bsv",
+              "mode": "verilog",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MethodCondVecSel.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodCondVecSel.bsv"
+                ],
+                "outputs": [
+                  "MethodCondVecSel.bo",
+                  "MethodCondVecSel.bsv.bsc-vcomp-out",
+                  "sysMethodCondVecSel.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 449,
+                  "endByte": 518,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysMethodCondVecSel.v",
+              "pattern": "assign RDY_m = fs_0\\$FULL_N && fs_1\\$FULL_N && fs_2\\$FULL_N && fs_3\\$FULL_N ;",
+              "artifacts": {
+                "inputs": [
+                  "sysMethodCondVecSel.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 540,
+                  "endByte": 667,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 92
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-CanLift_DefExp",
+      "resource": "normal",
+      "fixtures": [
+        "CanLift_DefExp.bsv",
+        "sysCanLift_DefExp.sched.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-CanLift_DefExp",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "CanLift_DefExp.bsv",
+              "mode": "verilog",
+              "args": [
+                "-aggressive-conditions",
+                "-show-schedule"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "CanLift_DefExp.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "CanLift_DefExp.bsv"
+                ],
+                "outputs": [
+                  "CanLift_DefExp.bo",
+                  "CanLift_DefExp.bsv.bsc-vcomp-out",
+                  "sysCanLift_DefExp.sched",
+                  "sysCanLift_DefExp.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1993,
+                  "endByte": 2075,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCanLift_DefExp.sched",
+              "expected": "sysCanLift_DefExp.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCanLift_DefExp.sched",
+                  "sysCanLift_DefExp.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2133,
+                  "endByte": 2169,
+                  "startLine": 55,
+                  "startColumn": 1,
+                  "endLine": 55,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-CantLift_AVValue_Arg",
+      "resource": "normal",
+      "fixtures": [
+        "CantLift_AVValue_Arg.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-CantLift_AVValue_Arg",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "CantLift_AVValue_Arg.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "CantLift_AVValue_Arg.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "CantLift_AVValue_Arg.bsv"
+                ],
+                "outputs": [
+                  "CantLift_AVValue_Arg.bo",
+                  "CantLift_AVValue_Arg.bsv.bsc-vcomp-out",
+                  "mkSub2.v",
+                  "mkTop2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2275,
+                  "endByte": 2320,
+                  "startLine": 63,
+                  "startColumn": 1,
+                  "endLine": 63,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-CantLift_AVValue_NoArg",
+      "resource": "normal",
+      "fixtures": [
+        "CantLift_AVValue_NoArg.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-CantLift_AVValue_NoArg",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "CantLift_AVValue_NoArg.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "CantLift_AVValue_NoArg.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "CantLift_AVValue_NoArg.bsv"
+                ],
+                "outputs": [
+                  "CantLift_AVValue_NoArg.bo",
+                  "CantLift_AVValue_NoArg.bsv.bsc-vcomp-out",
+                  "mkSub.v",
+                  "mkTop.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2321,
+                  "endByte": 2368,
+                  "startLine": 64,
+                  "startColumn": 1,
+                  "endLine": 64,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysCanLift_DynSel_AVValue",
+      "resource": "heavy",
+      "fixtures": [
+        "CanLift_DynSel_AVValue.bsv",
+        "sysCanLift_DynSel_AVValue.sched.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysCanLift_DynSel_AVValue",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CanLift_DynSel_AVValue.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-aggressive-conditions",
+                "-show-schedule"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "CanLift_DynSel_AVValue.bsv"
+                ],
+                "outputs": [
+                  "CanLift_DynSel_AVValue.bo",
+                  "CanLift_DynSel_AVValue.bsv.bsc-ccomp-out",
+                  "mkCanLift_DynSel_AVValue_Sub.ba",
+                  "sysCanLift_DynSel_AVValue.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 827,
+                  "endByte": 916,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "sysCanLift_DynSel_AVValue",
+              "args": [],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "sysCanLift_DynSel_AVValue.bsc-ccomp-out",
+                  "sysCanLift_DynSel_AVValue.sched"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCanLift_DynSel_AVValue.cexe",
+                    "sysCanLift_DynSel_AVValue.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 917,
+                  "endByte": 963,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCanLift_DynSel_AVValue.sched",
+              "expected": "sysCanLift_DynSel_AVValue.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCanLift_DynSel_AVValue.sched",
+                  "sysCanLift_DynSel_AVValue.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1099,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-sysCanLift_DynSel_2D_AVValue",
+      "resource": "heavy",
+      "fixtures": [
+        "CanLift_DynSel_2D_AVValue.bsv",
+        "sysCanLift_DynSel_2D_AVValue.sched.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysCanLift_DynSel_2D_AVValue",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CanLift_DynSel_2D_AVValue.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-aggressive-conditions",
+                "-show-schedule"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "CanLift_DynSel_2D_AVValue.bsv"
+                ],
+                "outputs": [
+                  "CanLift_DynSel_2D_AVValue.bo",
+                  "CanLift_DynSel_2D_AVValue.bsv.bsc-ccomp-out",
+                  "mkCanLift_DynSel_2D_AVValue_Sub.ba",
+                  "sysCanLift_DynSel_2D_AVValue.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1134,
+                  "endByte": 1226,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 93
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "sysCanLift_DynSel_2D_AVValue",
+              "args": [],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "sysCanLift_DynSel_2D_AVValue.bsc-ccomp-out",
+                  "sysCanLift_DynSel_2D_AVValue.sched"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCanLift_DynSel_2D_AVValue.cexe",
+                    "sysCanLift_DynSel_2D_AVValue.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1227,
+                  "endByte": 1276,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCanLift_DynSel_2D_AVValue.sched",
+              "expected": "sysCanLift_DynSel_2D_AVValue.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCanLift_DynSel_2D_AVValue.sched",
+                  "sysCanLift_DynSel_2D_AVValue.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1368,
+                  "endByte": 1415,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-3-sysCanLift_DynSel_Idx_AVValue",
+      "resource": "heavy",
+      "fixtures": [
+        "CanLift_DynSel_Idx_AVValue.bsv",
+        "sysCanLift_DynSel_Idx_AVValue.sched.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysCanLift_DynSel_Idx_AVValue",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CanLift_DynSel_Idx_AVValue.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-aggressive-conditions",
+                "-show-schedule"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "CanLift_DynSel_Idx_AVValue.bsv"
+                ],
+                "outputs": [
+                  "CanLift_DynSel_Idx_AVValue.bo",
+                  "CanLift_DynSel_Idx_AVValue.bsv.bsc-ccomp-out",
+                  "mkCanLift_DynSel_Idx_AVValue_Sub.ba",
+                  "sysCanLift_DynSel_Idx_AVValue.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1479,
+                  "endByte": 1572,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "sysCanLift_DynSel_Idx_AVValue",
+              "args": [],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "sysCanLift_DynSel_Idx_AVValue.bsc-ccomp-out",
+                  "sysCanLift_DynSel_Idx_AVValue.sched"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCanLift_DynSel_Idx_AVValue.cexe",
+                    "sysCanLift_DynSel_Idx_AVValue.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1573,
+                  "endByte": 1623,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 41,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCanLift_DynSel_Idx_AVValue.sched",
+              "expected": "sysCanLift_DynSel_Idx_AVValue.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCanLift_DynSel_Idx_AVValue.sched",
+                  "sysCanLift_DynSel_Idx_AVValue.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1715,
+                  "endByte": 1763,
+                  "startLine": 44,
+                  "startColumn": 1,
+                  "endLine": 44,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

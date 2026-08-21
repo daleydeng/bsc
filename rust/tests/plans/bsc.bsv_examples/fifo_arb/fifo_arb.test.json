@@ -1,0 +1,1479 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/fifo_arb/fifo_arb",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/fifo_arb/fifo_arb.exp",
+    "sha256": "4b1c140e458c45c147f96af42ace4ec0f8a9f7bb0f115e72a0bd158d15dcfc74"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/fifo_arb",
+  "fixtures": [
+    {
+      "path": "Block1.bsv",
+      "sha256": "a0c1f97061f020858a3d9e5d802ebf2792f174910fa63e322c2672c143523ba3",
+      "role": "source"
+    },
+    {
+      "path": "Block2.bsv",
+      "sha256": "9ac92ec1d898a1c6d2a02de28952124c46cdcf0a499eac672091550dfc06ff0d",
+      "role": "source"
+    },
+    {
+      "path": "Block2b.bsv",
+      "sha256": "f76669f5737ac3a5d19a3cb117350b8c0b1c9a7e5155ed0983208d9c0a9f73b2",
+      "role": "source"
+    },
+    {
+      "path": "Block3.bsv",
+      "sha256": "ee419d2f10b834e050e35a58e4a52fda2d1e2bb842ee1941a86b699b488f0080",
+      "role": "source"
+    },
+    {
+      "path": "Includes.bsv",
+      "sha256": "48f87d15f71c1e5891e29a728c4bad5d2ce568a2e0b705020896965110f9d0cf",
+      "role": "source"
+    },
+    {
+      "path": "Tb1.bsv",
+      "sha256": "c1cde192fda925fb987231cd4edcad36ceffb07d74c5505518e05ee1b082484d",
+      "role": "source"
+    },
+    {
+      "path": "Tb2.bsv",
+      "sha256": "deb5dc03622edab2478f41d8369a49e2727ed854cc542cd20fa0b63cc961b873",
+      "role": "source"
+    },
+    {
+      "path": "Tb2b.bsv",
+      "sha256": "1903ab56656461ba6c183657f6f9f4caa9a653dc9bd21723aa82f7cac14be9fe",
+      "role": "source"
+    },
+    {
+      "path": "Tb3.bsv",
+      "sha256": "a83ce57c3e02e72103fe7d074c3d2cb07d1e716fa006d12a74e9b7cdcd5ddf05",
+      "role": "source"
+    },
+    {
+      "path": "mkTb1.out.expected",
+      "sha256": "f99567faca959cc9b46872e5411dcd63868649bebcdf5ece1dbf85cd2e4271af",
+      "role": "golden"
+    },
+    {
+      "path": "mkTb2.out.expected",
+      "sha256": "b62178da7d7ae27b44edc843f6933db2b8464a403ef838a1c92cbdc94f8238b4",
+      "role": "golden"
+    },
+    {
+      "path": "mkTb2b.out.expected",
+      "sha256": "b62178da7d7ae27b44edc843f6933db2b8464a403ef838a1c92cbdc94f8238b4",
+      "role": "golden"
+    },
+    {
+      "path": "mkTb3.out.expected",
+      "sha256": "b62178da7d7ae27b44edc843f6933db2b8464a403ef838a1c92cbdc94f8238b4",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Tb1",
+      "resource": "heavy",
+      "fixtures": [
+        "Block1.bsv",
+        "Includes.bsv",
+        "Tb1.bsv",
+        "mkTb1.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Tb1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Tb1.bsv",
+              "mode": "verilog",
+              "module": "mkTb1",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Tb1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Tb1.bsv"
+                ],
+                "outputs": [
+                  "Tb1.bo",
+                  "Tb1.bsv.bsc-vcomp-out",
+                  "mkBlock1.v",
+                  "mkTb1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 290,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTb1.v",
+                "mkBlock1.v"
+              ],
+              "top": "mkTb1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.v",
+                  "mkBlock1.v"
+                ],
+                "outputs": [
+                  "mkTb1.bsc-vcomp-out",
+                  "mkTb1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 291,
+                  "endByte": 335,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTb1",
+              "args": [],
+              "stdout": "mkTb1.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.vexe"
+                ],
+                "outputs": [
+                  "mkTb1.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 336,
+                  "endByte": 353,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb1.out",
+              "destination": "mkTb1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.out"
+                ],
+                "outputs": [
+                  "mkTb1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 354,
+                  "endByte": 380,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb1.v.out",
+              "expected": "mkTb1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.v.out",
+                  "mkTb1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 381,
+                  "endByte": 424,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Tb2",
+      "resource": "heavy",
+      "fixtures": [
+        "Block2.bsv",
+        "Includes.bsv",
+        "Tb2.bsv",
+        "mkTb2.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Tb2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Tb2.bsv",
+              "mode": "verilog",
+              "module": "mkTb2",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Tb2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Tb2.bsv"
+                ],
+                "outputs": [
+                  "Tb2.bo",
+                  "Tb2.bsv.bsc-vcomp-out",
+                  "mkBlock2.v",
+                  "mkTb2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 684,
+                  "endByte": 718,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTb2.v",
+                "mkBlock2.v"
+              ],
+              "top": "mkTb2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.v",
+                  "mkBlock2.v"
+                ],
+                "outputs": [
+                  "mkTb2.bsc-vcomp-out",
+                  "mkTb2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 719,
+                  "endByte": 763,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTb2",
+              "args": [],
+              "stdout": "mkTb2.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.vexe"
+                ],
+                "outputs": [
+                  "mkTb2.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 764,
+                  "endByte": 781,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb2.out",
+              "destination": "mkTb2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.out"
+                ],
+                "outputs": [
+                  "mkTb2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 783,
+                  "endByte": 809,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb2.v.out",
+              "expected": "mkTb2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.v.out",
+                  "mkTb2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 810,
+                  "endByte": 853,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Tb2b",
+      "resource": "heavy",
+      "fixtures": [
+        "Block2b.bsv",
+        "Includes.bsv",
+        "Tb2b.bsv",
+        "mkTb2b.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Tb2b",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Tb2b.bsv",
+              "mode": "verilog",
+              "module": "mkTb2b",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Tb2b.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Tb2b.bsv"
+                ],
+                "outputs": [
+                  "Tb2b.bo",
+                  "Tb2b.bsv.bsc-vcomp-out",
+                  "mkBlock2b.v",
+                  "mkTb2b.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1121,
+                  "endByte": 1157,
+                  "startLine": 51,
+                  "startColumn": 1,
+                  "endLine": 51,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTb2b.v",
+                "mkBlock2b.v"
+              ],
+              "top": "mkTb2b",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.v",
+                  "mkBlock2b.v"
+                ],
+                "outputs": [
+                  "mkTb2b.bsc-vcomp-out",
+                  "mkTb2b.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1158,
+                  "endByte": 1205,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTb2b",
+              "args": [],
+              "stdout": "mkTb2b.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.vexe"
+                ],
+                "outputs": [
+                  "mkTb2b.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1206,
+                  "endByte": 1224,
+                  "startLine": 53,
+                  "startColumn": 1,
+                  "endLine": 53,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb2b.out",
+              "destination": "mkTb2b.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.out"
+                ],
+                "outputs": [
+                  "mkTb2b.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1225,
+                  "endByte": 1253,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 54,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb2b.v.out",
+              "expected": "mkTb2b.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.v.out",
+                  "mkTb2b.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1254,
+                  "endByte": 1299,
+                  "startLine": 55,
+                  "startColumn": 1,
+                  "endLine": 55,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-Tb3",
+      "resource": "heavy",
+      "fixtures": [
+        "Block3.bsv",
+        "Includes.bsv",
+        "Tb3.bsv",
+        "mkTb3.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Tb3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Tb3.bsv",
+              "mode": "verilog",
+              "module": "mkTb3",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Tb3.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Tb3.bsv"
+                ],
+                "outputs": [
+                  "Tb3.bo",
+                  "Tb3.bsv.bsc-vcomp-out",
+                  "mkBlock3.v",
+                  "mkTb3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1555,
+                  "endByte": 1589,
+                  "startLine": 67,
+                  "startColumn": 1,
+                  "endLine": 67,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTb3.v",
+                "mkBlock3.v"
+              ],
+              "top": "mkTb3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.v",
+                  "mkBlock3.v"
+                ],
+                "outputs": [
+                  "mkTb3.bsc-vcomp-out",
+                  "mkTb3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1590,
+                  "endByte": 1634,
+                  "startLine": 68,
+                  "startColumn": 1,
+                  "endLine": 68,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTb3",
+              "args": [],
+              "stdout": "mkTb3.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.vexe"
+                ],
+                "outputs": [
+                  "mkTb3.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1635,
+                  "endByte": 1652,
+                  "startLine": 69,
+                  "startColumn": 1,
+                  "endLine": 69,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb3.out",
+              "destination": "mkTb3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.out"
+                ],
+                "outputs": [
+                  "mkTb3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1653,
+                  "endByte": 1679,
+                  "startLine": 70,
+                  "startColumn": 1,
+                  "endLine": 70,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb3.v.out",
+              "expected": "mkTb3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.v.out",
+                  "mkTb3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1680,
+                  "endByte": 1723,
+                  "startLine": 71,
+                  "startColumn": 1,
+                  "endLine": 71,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkTb1",
+      "resource": "heavy",
+      "fixtures": [
+        "Block1.bsv",
+        "Includes.bsv",
+        "Tb1.bsv",
+        "mkTb1.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTb1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Tb1.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Tb1.bsv"
+                ],
+                "outputs": [
+                  "Tb1.bo",
+                  "Tb1.bsv.bsc-ccomp-out",
+                  "mkBlock1.ba",
+                  "mkTb1.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 73,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTb1",
+                "mkBlock1"
+              ],
+              "top": "mkTb1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.ba",
+                  "mkBlock1.ba"
+                ],
+                "outputs": [
+                  "mkTb1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTb1.cexe",
+                    "mkTb1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 74,
+                  "endByte": 114,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTb1",
+              "args": [],
+              "stdout": "mkTb1.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.cexe"
+                ],
+                "outputs": [
+                  "mkTb1.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 115,
+                  "endByte": 131,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 17
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb1.out",
+              "destination": "mkTb1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.out"
+                ],
+                "outputs": [
+                  "mkTb1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 158,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb1.c.out",
+              "expected": "mkTb1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb1.c.out",
+                  "mkTb1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 159,
+                  "endByte": 202,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-mkTb2",
+      "resource": "heavy",
+      "fixtures": [
+        "Block2.bsv",
+        "Includes.bsv",
+        "Tb2.bsv",
+        "mkTb2.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTb2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Tb2.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Tb2.bsv"
+                ],
+                "outputs": [
+                  "Tb2.bo",
+                  "Tb2.bsv.bsc-ccomp-out",
+                  "mkBlock2.ba",
+                  "mkTb2.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 473,
+                  "endByte": 500,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTb2",
+                "mkBlock2"
+              ],
+              "top": "mkTb2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.ba",
+                  "mkBlock2.ba"
+                ],
+                "outputs": [
+                  "mkTb2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTb2.cexe",
+                    "mkTb2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 501,
+                  "endByte": 541,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTb2",
+              "args": [],
+              "stdout": "mkTb2.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.cexe"
+                ],
+                "outputs": [
+                  "mkTb2.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 542,
+                  "endByte": 558,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 17
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb2.out",
+              "destination": "mkTb2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.out"
+                ],
+                "outputs": [
+                  "mkTb2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 559,
+                  "endByte": 585,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb2.c.out",
+              "expected": "mkTb2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2.c.out",
+                  "mkTb2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 586,
+                  "endByte": 629,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-3-mkTb2b",
+      "resource": "heavy",
+      "fixtures": [
+        "Block2b.bsv",
+        "Includes.bsv",
+        "Tb2b.bsv",
+        "mkTb2b.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTb2b",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Tb2b.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Tb2b.bsv"
+                ],
+                "outputs": [
+                  "Tb2b.bo",
+                  "Tb2b.bsv.bsc-ccomp-out",
+                  "mkBlock2b.ba",
+                  "mkTb2b.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 902,
+                  "endByte": 930,
+                  "startLine": 43,
+                  "startColumn": 1,
+                  "endLine": 43,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTb2b",
+                "mkBlock2b"
+              ],
+              "top": "mkTb2b",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.ba",
+                  "mkBlock2b.ba"
+                ],
+                "outputs": [
+                  "mkTb2b.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTb2b.cexe",
+                    "mkTb2b.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 931,
+                  "endByte": 974,
+                  "startLine": 44,
+                  "startColumn": 1,
+                  "endLine": 44,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTb2b",
+              "args": [],
+              "stdout": "mkTb2b.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.cexe"
+                ],
+                "outputs": [
+                  "mkTb2b.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 975,
+                  "endByte": 992,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb2b.out",
+              "destination": "mkTb2b.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.out"
+                ],
+                "outputs": [
+                  "mkTb2b.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 993,
+                  "endByte": 1021,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb2b.c.out",
+              "expected": "mkTb2b.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb2b.c.out",
+                  "mkTb2b.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1022,
+                  "endByte": 1067,
+                  "startLine": 47,
+                  "startColumn": 1,
+                  "endLine": 47,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-4-mkTb3",
+      "resource": "heavy",
+      "fixtures": [
+        "Block3.bsv",
+        "Includes.bsv",
+        "Tb3.bsv",
+        "mkTb3.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTb3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Tb3.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Tb3.bsv"
+                ],
+                "outputs": [
+                  "Tb3.bo",
+                  "Tb3.bsv.bsc-ccomp-out",
+                  "mkBlock3.ba",
+                  "mkTb3.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1346,
+                  "endByte": 1373,
+                  "startLine": 59,
+                  "startColumn": 1,
+                  "endLine": 59,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTb3",
+                "mkBlock3"
+              ],
+              "top": "mkTb3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.ba",
+                  "mkBlock3.ba"
+                ],
+                "outputs": [
+                  "mkTb3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTb3.cexe",
+                    "mkTb3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1374,
+                  "endByte": 1414,
+                  "startLine": 60,
+                  "startColumn": 1,
+                  "endLine": 60,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTb3",
+              "args": [],
+              "stdout": "mkTb3.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.cexe"
+                ],
+                "outputs": [
+                  "mkTb3.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1415,
+                  "endByte": 1431,
+                  "startLine": 61,
+                  "startColumn": 1,
+                  "endLine": 61,
+                  "endColumn": 17
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTb3.out",
+              "destination": "mkTb3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.out"
+                ],
+                "outputs": [
+                  "mkTb3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1432,
+                  "endByte": 1458,
+                  "startLine": 62,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTb3.c.out",
+              "expected": "mkTb3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTb3.c.out",
+                  "mkTb3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1459,
+                  "endByte": 1502,
+                  "startLine": 63,
+                  "startColumn": 1,
+                  "endLine": 63,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

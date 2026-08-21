@@ -58,13 +58,14 @@ YICES_HS = ../vendor/yices/include_hs
 YICES_INC_FLAGS = -I../vendor/yices/include
 YICES_LIB_FLAGS = -L../vendor/yices/lib -lyices
 
-# Native Windows uses the Z3 executable backend exclusively,
-# avoiding C FFI and DLL ABI dependencies.
+# Native Windows uses the Rust Z3 bridge staged by `cargo xtask build`.
+# The bridge owns the Z3 C API and presents one stable C ABI to GHC/MinGW.
 ifeq ($(OSTYPE), Windows)
+BSC_Z3_BRIDGE_DIR ?= ../../.pixi/tmp/z3-bridge
 SOLVER_CPP_FLAGS = -DBSC_Z3_ONLY
 SOLVER_HS =
 SOLVER_INC_FLAGS =
-SOLVER_LIB_FLAGS =
+SOLVER_LIB_FLAGS = -L$(BSC_Z3_BRIDGE_DIR)/lib -lbsc_z3_bridge
 SOLVER_SOURCES =
 SOLVER_TAG_DIRS =
 else

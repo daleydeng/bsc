@@ -377,8 +377,8 @@ instance TclObjCvt WordPtr where
 foreign import capi "tcl.h Tcl_GetIntFromObj"
   tcl_GetIntFromObj :: TclInterp -> PTclObj -> Ptr CInt -> IO CInt
 
-foreign import capi "tcl.h Tcl_GetLongFromObj"
-  tcl_GetLongFromObj :: TclInterp -> PTclObj -> Ptr CLong -> IO CLong
+foreign import capi "tcl.h Tcl_GetWideIntFromObj"
+  tcl_GetWideIntFromObj :: TclInterp -> PTclObj -> Ptr CLLong -> IO CInt
 
 foreign import capi "tcl.h Tcl_GetBooleanFromObj"
   tcl_GetBooleanFromObj :: TclInterp -> PTclObj -> Ptr CInt -> IO CInt
@@ -924,7 +924,7 @@ htclPObjToMInt interp po = do
 htclPObjToMWordPtr :: TclInterp -> PTclObj -> IO (Maybe WordPtr)
 htclPObjToMWordPtr interp po = do
   alloca (\pint -> do
-            stat <- tcl_GetLongFromObj interp po pint
+            stat <- tcl_GetWideIntFromObj interp po pint
             case stat of
               0 -> peek pint >>= (return . Just . castI)
               _ -> return Nothing

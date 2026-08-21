@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/forInRepeat/forInRepeat",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/forInRepeat/forInRepeat.exp",
+    "sha256": "c6d513b3a011a9d231d0dc6047621c188e57858ad4f83c8484a4de5da1362515"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/forInRepeat",
+  "fixtures": [
+    {
+      "path": "forInRepeat.bsv",
+      "sha256": "459718290edd40885ea72c4e54b2aec4b25d1d5ccae8576daa457e32eb10320d",
+      "role": "source"
+    },
+    {
+      "path": "forInRepeat.out.expected",
+      "sha256": "817110ca5f419deb21686a6fa9c629a1b1a3ac99177d6e7b3aba8ebd7085250f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-forInRepeat",
+      "resource": "heavy",
+      "fixtures": [
+        "forInRepeat.bsv",
+        "forInRepeat.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "forInRepeat",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "forInRepeat.bsv",
+              "mode": "shared_elaboration",
+              "module": "forInRepeat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.bsv"
+                ],
+                "outputs": [
+                  "forInRepeat.ba",
+                  "forInRepeat.bo",
+                  "forInRepeat.bsv.bsc-vcomp-out",
+                  "forInRepeat.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "forInRepeat"
+              ],
+              "top": "forInRepeat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.v"
+                ],
+                "outputs": [
+                  "forInRepeat.bsc-vcomp-out",
+                  "forInRepeat.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "forInRepeat",
+              "args": [],
+              "stdout": "forInRepeat.v.out",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.vexe"
+                ],
+                "outputs": [
+                  "forInRepeat.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "forInRepeat.v.out",
+              "expected": "forInRepeat.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.v.out",
+                  "forInRepeat.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "forInRepeat",
+              "args": [],
+              "stdout": "forInRepeat.v-vcd.out",
+              "vcd": "forInRepeat.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.vexe"
+                ],
+                "outputs": [
+                  "forInRepeat.v-vcd.out",
+                  "forInRepeat.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "forInRepeat.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "forInRepeat"
+              ],
+              "top": "forInRepeat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.ba"
+                ],
+                "outputs": [
+                  "forInRepeat.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "forInRepeat.cexe",
+                    "forInRepeat.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "forInRepeat",
+              "args": [],
+              "stdout": "forInRepeat.c.out",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.cexe"
+                ],
+                "outputs": [
+                  "forInRepeat.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "forInRepeat.c.out",
+              "expected": "forInRepeat.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.c.out",
+                  "forInRepeat.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "forInRepeat",
+              "args": [],
+              "stdout": "forInRepeat.c-vcd.out",
+              "vcd": "forInRepeat.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.cexe"
+                ],
+                "outputs": [
+                  "forInRepeat.c-vcd.out",
+                  "forInRepeat.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "forInRepeat.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "forInRepeat.c-vcd.out",
+              "expected": "forInRepeat.c.out",
+              "artifacts": {
+                "inputs": [
+                  "forInRepeat.c-vcd.out",
+                  "forInRepeat.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

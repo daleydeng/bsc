@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b359/b359",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b359/b359.exp",
+    "sha256": "0e166b6048173988a50d53b8d7e3f50f622fcc82239146016b52e825d9e86724"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b359",
+  "fixtures": [
+    {
+      "path": "Bug359.bsv",
+      "sha256": "33789a5519355c3534c2968262493843ec9c6b575afbd0c8b598ee80dcf044c5",
+      "role": "source"
+    },
+    {
+      "path": "Bug359.bsv.bsc-vcomp-out.expected",
+      "sha256": "f1c5200097057543ab37d3c88ccad967c33c7c961d8c399ac8375ce26a503add",
+      "role": "golden"
+    },
+    {
+      "path": "Bug359_2.bs",
+      "sha256": "5c8cbec5fb8686147ea72f04acaead8fb758ff5da9ea6a002ab008f76f7b2560",
+      "role": "source"
+    },
+    {
+      "path": "ModuleBind.bs",
+      "sha256": "b9203ea941ebea0024dd98471b548200d96794f51a0451a4848b47df3b3f226c",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ModuleBind",
+      "resource": "normal",
+      "fixtures": [
+        "ModuleBind.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ModuleBind",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ModuleBind.bs",
+              "mode": "verilog",
+              "module": "sysFoo",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ModuleBind.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ModuleBind.bs"
+                ],
+                "outputs": [
+                  "ModuleBind.bo",
+                  "ModuleBind.bs.bsc-vcomp-out",
+                  "sysFoo.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 60,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Bug359",
+      "resource": "normal",
+      "fixtures": [
+        "Bug359.bsv",
+        "Bug359.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug359",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug359.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Bug359.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug359.bsv"
+                ],
+                "outputs": [
+                  "Bug359.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 61,
+                  "endByte": 104,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Bug359.bsv.bsc-vcomp-out",
+              "expected": "Bug359.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Bug359.bsv.bsc-vcomp-out",
+                  "Bug359.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 143,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Bug359_2",
+      "resource": "normal",
+      "fixtures": [
+        "Bug359_2.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug359_2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug359_2.bs",
+              "mode": "verilog",
+              "module": "sysBug359_2",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Bug359_2.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug359_2.bs"
+                ],
+                "outputs": [
+                  "Bug359_2.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 144,
+                  "endByte": 188,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

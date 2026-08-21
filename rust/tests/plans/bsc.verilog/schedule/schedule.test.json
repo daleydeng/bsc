@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/schedule/schedule",
+  "origin": {
+    "path": "testsuite/bsc.verilog/schedule/schedule.exp",
+    "sha256": "36251a296774f054c35e39f83af39a6745cc66c6071a6a68505a8ffe95f132dc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/schedule",
+  "fixtures": [
+    {
+      "path": "EspositoPreempt.bsv",
+      "sha256": "a927fe6ab5fd525d389d5f484b636d4f483239bea45c458aa0731646711fa343",
+      "role": "source"
+    },
+    {
+      "path": "MethodNeverEnabled.bsv",
+      "sha256": "e20919b0274e0bb2540ae0d0533f49db382f915db51948a20fe629b9ddbe1ab5",
+      "role": "source"
+    },
+    {
+      "path": "sysEspositoPreempt.out.expected",
+      "sha256": "0263829989b6fd954f72baaf2fc64bc2e2f01d692d4de72986ea808f6e99813f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysEspositoPreempt",
+      "resource": "heavy",
+      "fixtures": [
+        "EspositoPreempt.bsv",
+        "sysEspositoPreempt.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysEspositoPreempt",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "EspositoPreempt.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysEspositoPreempt",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "EspositoPreempt.bsv"
+                ],
+                "outputs": [
+                  "EspositoPreempt.bo",
+                  "EspositoPreempt.bsv.bsc-vcomp-out",
+                  "sysEspositoPreempt.ba",
+                  "sysEspositoPreempt.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysEspositoPreempt"
+              ],
+              "top": "sysEspositoPreempt",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.v"
+                ],
+                "outputs": [
+                  "sysEspositoPreempt.bsc-vcomp-out",
+                  "sysEspositoPreempt.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEspositoPreempt",
+              "args": [],
+              "stdout": "sysEspositoPreempt.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.vexe"
+                ],
+                "outputs": [
+                  "sysEspositoPreempt.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEspositoPreempt.v.out",
+              "expected": "sysEspositoPreempt.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.v.out",
+                  "sysEspositoPreempt.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEspositoPreempt",
+              "args": [],
+              "stdout": "sysEspositoPreempt.v-vcd.out",
+              "vcd": "sysEspositoPreempt.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.vexe"
+                ],
+                "outputs": [
+                  "sysEspositoPreempt.v-vcd.out",
+                  "sysEspositoPreempt.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysEspositoPreempt.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysEspositoPreempt"
+              ],
+              "top": "sysEspositoPreempt",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.ba"
+                ],
+                "outputs": [
+                  "sysEspositoPreempt.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysEspositoPreempt.cexe",
+                    "sysEspositoPreempt.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEspositoPreempt",
+              "args": [],
+              "stdout": "sysEspositoPreempt.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.cexe"
+                ],
+                "outputs": [
+                  "sysEspositoPreempt.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEspositoPreempt.c.out",
+              "expected": "sysEspositoPreempt.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.c.out",
+                  "sysEspositoPreempt.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEspositoPreempt",
+              "args": [],
+              "stdout": "sysEspositoPreempt.c-vcd.out",
+              "vcd": "sysEspositoPreempt.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.cexe"
+                ],
+                "outputs": [
+                  "sysEspositoPreempt.c-vcd.out",
+                  "sysEspositoPreempt.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysEspositoPreempt.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEspositoPreempt.c-vcd.out",
+              "expected": "sysEspositoPreempt.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEspositoPreempt.c-vcd.out",
+                  "sysEspositoPreempt.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-MethodNeverEnabled",
+      "resource": "normal",
+      "fixtures": [
+        "MethodNeverEnabled.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodNeverEnabled",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodNeverEnabled.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MethodNeverEnabled.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodNeverEnabled.bsv"
+                ],
+                "outputs": [
+                  "MethodNeverEnabled.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 211,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodNeverEnabled.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0066",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodNeverEnabled.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 211,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

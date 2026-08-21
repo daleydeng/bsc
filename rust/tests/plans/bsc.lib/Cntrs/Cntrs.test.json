@@ -1,0 +1,1305 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Cntrs/Cntrs",
+  "origin": {
+    "path": "testsuite/bsc.lib/Cntrs/Cntrs.exp",
+    "sha256": "e9577f43a8e4770ed251ddec9fb0f9f905107a1655d546a5ebe088a4815d6beb"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Cntrs",
+  "fixtures": [
+    {
+      "path": "CntrSched.bsv",
+      "sha256": "db492092ec1ae8676ff19ea6e9ccebde20e7fbfbcbf37fb64a7359dfa443db2e",
+      "role": "source"
+    },
+    {
+      "path": "CntrTest.bsv",
+      "sha256": "cb735cb8f1e148d5018e54f5aa5ecd3f42dac84919d29d569c12a88f3cc972c6",
+      "role": "source"
+    },
+    {
+      "path": "Cntrs0.bsv",
+      "sha256": "e3821645c4f2fea8d37ab7170e795c91b221aebb26377ded3cc946f9df3cd4de",
+      "role": "source"
+    },
+    {
+      "path": "CntrsLimits.bsv",
+      "sha256": "e8347d81c2dc2efb6ed23f8565a0eff5129306d52ce9fff9d78c42c4996ab1ed",
+      "role": "source"
+    },
+    {
+      "path": "UCntrTest.bsv",
+      "sha256": "ff7c83e11f492ac60a8e1b26804f8225309fe88809e21c13288b8ae7c39a3bad",
+      "role": "source"
+    },
+    {
+      "path": "sysCntrSched.sched.expected",
+      "sha256": "a15b1bbab902226b6f719022d5f40c64ed072858ee69c913ffd0a32bc3fb340b",
+      "role": "golden"
+    },
+    {
+      "path": "sysCntrSched.v.expected",
+      "sha256": "70e659c33c4bf4baabf0ad5b88d8324f885aea07d821d595658df138a92fb0b8",
+      "role": "golden"
+    },
+    {
+      "path": "sysCntrTest.out.expected",
+      "sha256": "3d2614ff0a0769ef3912a56f438a432656620dbea65a62a399d5bc948b14e10a",
+      "role": "golden"
+    },
+    {
+      "path": "sysCntrs0.out.expected",
+      "sha256": "4286761f0a66c985341ace6c2b9b38e75177ac9f6a2a1f4bf2f304bd78144b96",
+      "role": "golden"
+    },
+    {
+      "path": "sysUCntrTest.out.expected",
+      "sha256": "91d30a1f543a4ff7a83e3bca261594cde11799a73e7408c8683cce8f8cb9a243",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysCntrTest",
+      "resource": "heavy",
+      "fixtures": [
+        "CntrTest.bsv",
+        "sysCntrTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCntrTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CntrTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCntrTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CntrTest.bsv"
+                ],
+                "outputs": [
+                  "CntrTest.bo",
+                  "CntrTest.bsv.bsc-vcomp-out",
+                  "sysCntrTest.ba",
+                  "sysCntrTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCntrTest"
+              ],
+              "top": "sysCntrTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.v"
+                ],
+                "outputs": [
+                  "sysCntrTest.bsc-vcomp-out",
+                  "sysCntrTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCntrTest",
+              "args": [],
+              "stdout": "sysCntrTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.vexe"
+                ],
+                "outputs": [
+                  "sysCntrTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrTest.v.out",
+              "expected": "sysCntrTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.v.out",
+                  "sysCntrTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCntrTest",
+              "args": [],
+              "stdout": "sysCntrTest.v-vcd.out",
+              "vcd": "sysCntrTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.vexe"
+                ],
+                "outputs": [
+                  "sysCntrTest.v-vcd.out",
+                  "sysCntrTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCntrTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCntrTest"
+              ],
+              "top": "sysCntrTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.ba"
+                ],
+                "outputs": [
+                  "sysCntrTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCntrTest.cexe",
+                    "sysCntrTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCntrTest",
+              "args": [],
+              "stdout": "sysCntrTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.cexe"
+                ],
+                "outputs": [
+                  "sysCntrTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrTest.c.out",
+              "expected": "sysCntrTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.c.out",
+                  "sysCntrTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCntrTest",
+              "args": [],
+              "stdout": "sysCntrTest.c-vcd.out",
+              "vcd": "sysCntrTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.cexe"
+                ],
+                "outputs": [
+                  "sysCntrTest.c-vcd.out",
+                  "sysCntrTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCntrTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrTest.c-vcd.out",
+              "expected": "sysCntrTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrTest.c-vcd.out",
+                  "sysCntrTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 25,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-CntrSched",
+      "resource": "normal",
+      "fixtures": [
+        "CntrSched.bsv",
+        "sysCntrSched.sched.expected",
+        "sysCntrSched.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-CntrSched",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "CntrSched.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "CntrSched.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "CntrSched.bsv"
+                ],
+                "outputs": [
+                  "CntrSched.bo",
+                  "CntrSched.bsv.bsc-sched-out",
+                  "sysCntrSched.sched",
+                  "sysCntrSched.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 27,
+                  "endByte": 71,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "sysCntrSched.v",
+              "expected": "sysCntrSched.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrSched.v",
+                  "sysCntrSched.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 72,
+                  "endByte": 102,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrSched.sched",
+              "expected": "sysCntrSched.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrSched.sched",
+                  "sysCntrSched.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 103,
+                  "endByte": 134,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysUCntrTest",
+      "resource": "heavy",
+      "fixtures": [
+        "UCntrTest.bsv",
+        "sysUCntrTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysUCntrTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "UCntrTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysUCntrTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "UCntrTest.bsv"
+                ],
+                "outputs": [
+                  "UCntrTest.bo",
+                  "UCntrTest.bsv.bsc-vcomp-out",
+                  "sysUCntrTest.ba",
+                  "sysUCntrTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUCntrTest"
+              ],
+              "top": "sysUCntrTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.v"
+                ],
+                "outputs": [
+                  "sysUCntrTest.bsc-vcomp-out",
+                  "sysUCntrTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUCntrTest",
+              "args": [],
+              "stdout": "sysUCntrTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.vexe"
+                ],
+                "outputs": [
+                  "sysUCntrTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUCntrTest.v.out",
+              "expected": "sysUCntrTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.v.out",
+                  "sysUCntrTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUCntrTest",
+              "args": [],
+              "stdout": "sysUCntrTest.v-vcd.out",
+              "vcd": "sysUCntrTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.vexe"
+                ],
+                "outputs": [
+                  "sysUCntrTest.v-vcd.out",
+                  "sysUCntrTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysUCntrTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysUCntrTest"
+              ],
+              "top": "sysUCntrTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.ba"
+                ],
+                "outputs": [
+                  "sysUCntrTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysUCntrTest.cexe",
+                    "sysUCntrTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUCntrTest",
+              "args": [],
+              "stdout": "sysUCntrTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.cexe"
+                ],
+                "outputs": [
+                  "sysUCntrTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUCntrTest.c.out",
+              "expected": "sysUCntrTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.c.out",
+                  "sysUCntrTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUCntrTest",
+              "args": [],
+              "stdout": "sysUCntrTest.c-vcd.out",
+              "vcd": "sysUCntrTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.cexe"
+                ],
+                "outputs": [
+                  "sysUCntrTest.c-vcd.out",
+                  "sysUCntrTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysUCntrTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUCntrTest.c-vcd.out",
+              "expected": "sysUCntrTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUCntrTest.c-vcd.out",
+                  "sysUCntrTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 161,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysCntrs0",
+      "resource": "heavy",
+      "fixtures": [
+        "Cntrs0.bsv",
+        "sysCntrs0.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCntrs0",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Cntrs0.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCntrs0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Cntrs0.bsv"
+                ],
+                "outputs": [
+                  "Cntrs0.bo",
+                  "Cntrs0.bsv.bsc-vcomp-out",
+                  "sysCntrs0.ba",
+                  "sysCntrs0.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCntrs0"
+              ],
+              "top": "sysCntrs0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.v"
+                ],
+                "outputs": [
+                  "sysCntrs0.bsc-vcomp-out",
+                  "sysCntrs0.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCntrs0",
+              "args": [],
+              "stdout": "sysCntrs0.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.vexe"
+                ],
+                "outputs": [
+                  "sysCntrs0.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrs0.v.out",
+              "expected": "sysCntrs0.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.v.out",
+                  "sysCntrs0.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCntrs0",
+              "args": [],
+              "stdout": "sysCntrs0.v-vcd.out",
+              "vcd": "sysCntrs0.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.vexe"
+                ],
+                "outputs": [
+                  "sysCntrs0.v-vcd.out",
+                  "sysCntrs0.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCntrs0.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCntrs0"
+              ],
+              "top": "sysCntrs0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.ba"
+                ],
+                "outputs": [
+                  "sysCntrs0.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCntrs0.cexe",
+                    "sysCntrs0.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCntrs0",
+              "args": [],
+              "stdout": "sysCntrs0.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.cexe"
+                ],
+                "outputs": [
+                  "sysCntrs0.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrs0.c.out",
+              "expected": "sysCntrs0.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.c.out",
+                  "sysCntrs0.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCntrs0",
+              "args": [],
+              "stdout": "sysCntrs0.c-vcd.out",
+              "vcd": "sysCntrs0.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.cexe"
+                ],
+                "outputs": [
+                  "sysCntrs0.c-vcd.out",
+                  "sysCntrs0.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCntrs0.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCntrs0.c-vcd.out",
+              "expected": "sysCntrs0.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCntrs0.c-vcd.out",
+                  "sysCntrs0.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 184,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-CntrsLimits",
+      "resource": "normal",
+      "fixtures": [
+        "CntrsLimits.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-CntrsLimits",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "CntrsLimits.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "CntrsLimits.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "CntrsLimits.bsv"
+                ],
+                "outputs": [
+                  "CntrsLimits.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 187,
+                  "endByte": 223,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

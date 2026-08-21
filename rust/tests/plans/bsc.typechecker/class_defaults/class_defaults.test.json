@@ -1,0 +1,1535 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/class_defaults/class_defaults",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/class_defaults/class_defaults.exp",
+    "sha256": "a269c0c4adfca27d52ae58ecb0d21d2c8641107f0c55a684d94a5918fe6733a2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/class_defaults",
+  "fixtures": [
+    {
+      "path": "ClassWithDefault.bs",
+      "sha256": "7bb9cc80714b307934355af208cafffc76c407ab36d07f3b2a5d63a420400f35",
+      "role": "source"
+    },
+    {
+      "path": "ClassWithDefault_Clauses.bs",
+      "sha256": "bee472d23c3072a669f6fd42d1fc7925ce1bb9f75e024d6d98de2faddc91daa6",
+      "role": "source"
+    },
+    {
+      "path": "ClassWithDefault_Interface.bsv",
+      "sha256": "e91381e003da0fb7732b28b223b154b82b7451bdc20443955b863465d2f2b0fc",
+      "role": "source"
+    },
+    {
+      "path": "DuplicateConstr_Qual.bs",
+      "sha256": "13d1792a6a9a118295dcaa2f177f2c83f7b3bcc9839c2f94911cfc2037e699ee",
+      "role": "source"
+    },
+    {
+      "path": "DuplicateConstr_Unqual.bs",
+      "sha256": "edd63dd64c0033f1a1f04e6759961f27d58df528ed3e18117d32b4f3f49f547a",
+      "role": "source"
+    },
+    {
+      "path": "ImportClassWithDefault.bsv",
+      "sha256": "6bbc18c8f4616e6e34998b560e4bbc86b3f802cdfaab74c2b6b0764cdd4d6b2a",
+      "role": "source"
+    },
+    {
+      "path": "ImportClassWithDefault_Clauses.bsv",
+      "sha256": "6a0304d227c0126b4aea01874fe6b5f0a98f1ba182c902b811fdb1ce5dbbd71b",
+      "role": "source"
+    },
+    {
+      "path": "ImportClassWithDefault_Interface.bsv",
+      "sha256": "c53c0c0c38f0c9ced3e6d4730d268e9382a26eec743dd5d7871657fc18f8bedc",
+      "role": "source"
+    },
+    {
+      "path": "ImportedInfixInDefault.bs",
+      "sha256": "030798d2a8d30ba9324406c91683ef62ff42d4253a05f3e61f70d72698acfa37",
+      "role": "source"
+    },
+    {
+      "path": "ImportedInfixInDefaultImported.bs",
+      "sha256": "262cc15affdf89ebbbbaa4e755ec526b415eca66b65ec4ab17cfb00da09cb8d2",
+      "role": "source"
+    },
+    {
+      "path": "MutuallyRecursiveDefaults.bs",
+      "sha256": "0920a628232f7a4a6129b84548c2cfa999d8aeb0a5f67ff06007021183c92343",
+      "role": "source"
+    },
+    {
+      "path": "TypeCheck_Fail_MissingProviso.bs",
+      "sha256": "c04422b23ca1e868fa6e6c9d2bdc29b2d8d446cc18d2175d09d3066cd669b0cc",
+      "role": "source"
+    },
+    {
+      "path": "TypeCheck_Pass_SuperClass.bs",
+      "sha256": "9ca397caacef848a99578d0f65ebbcc4a98ac51ccf29cbe5d8544e63116fd0c9",
+      "role": "source"
+    },
+    {
+      "path": "sysImportedInfixInDefaultImported.out.expected",
+      "sha256": "7ae2d8deaffabf15a64bb4af6d86a54d416b2916915e98d8e7d025eeb0df4c1a",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ClassWithDefault",
+      "resource": "normal",
+      "fixtures": [
+        "ClassWithDefault.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ClassWithDefault",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassWithDefault.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassWithDefault.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault.bs"
+                ],
+                "outputs": [
+                  "ClassWithDefault.bo",
+                  "ClassWithDefault.bs.bsc-vcomp-out",
+                  "sysClassWithDefault.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 395,
+                  "endByte": 451,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ClassWithDefault.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0054",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 395,
+                  "endByte": 451,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysClassWithDefault.v",
+              "pattern": "1yes",
+              "artifacts": {
+                "inputs": [
+                  "sysClassWithDefault.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 514,
+                  "endByte": 554,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysClassWithDefault.v",
+              "pattern": "2no",
+              "artifacts": {
+                "inputs": [
+                  "sysClassWithDefault.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 555,
+                  "endByte": 594,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 40
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ImportClassWithDefault",
+      "resource": "normal",
+      "fixtures": [
+        "ClassWithDefault.bs",
+        "ImportClassWithDefault.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ImportClassWithDefault",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassWithDefault.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassWithDefault.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault.bs"
+                ],
+                "outputs": [
+                  "ClassWithDefault.bo",
+                  "ClassWithDefault.bs.bsc-vcomp-out",
+                  "sysClassWithDefault.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 395,
+                  "endByte": 451,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "ImportClassWithDefault.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ImportClassWithDefault.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ImportClassWithDefault.bsv"
+                ],
+                "outputs": [
+                  "ImportClassWithDefault.bo",
+                  "ImportClassWithDefault.bsv.bsc-vcomp-out",
+                  "sysClassWithDefault.v",
+                  "sysImportClassWithDefault.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 769,
+                  "endByte": 832,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ImportClassWithDefault.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0054",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ImportClassWithDefault.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 769,
+                  "endByte": 832,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysImportClassWithDefault.v",
+              "pattern": "1yes",
+              "artifacts": {
+                "inputs": [
+                  "sysImportClassWithDefault.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 895,
+                  "endByte": 941,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysImportClassWithDefault.v",
+              "pattern": "2no",
+              "artifacts": {
+                "inputs": [
+                  "sysImportClassWithDefault.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 942,
+                  "endByte": 987,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-ClassWithDefault_Interface",
+      "resource": "normal",
+      "fixtures": [
+        "ClassWithDefault_Interface.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ClassWithDefault_Interface",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassWithDefault_Interface.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassWithDefault_Interface.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault_Interface.bsv"
+                ],
+                "outputs": [
+                  "ClassWithDefault_Interface.bsv.bsc-out",
+                  "ClassWithDefault_Interface.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1058,
+                  "endByte": 1101,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-ImportClassWithDefault_Interface",
+      "resource": "normal",
+      "fixtures": [
+        "ClassWithDefault_Interface.bsv",
+        "ImportClassWithDefault_Interface.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ImportClassWithDefault_Interface",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassWithDefault_Interface.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassWithDefault_Interface.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault_Interface.bsv"
+                ],
+                "outputs": [
+                  "ClassWithDefault_Interface.bsv.bsc-out",
+                  "ClassWithDefault_Interface.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1058,
+                  "endByte": 1101,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "ImportClassWithDefault_Interface.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ImportClassWithDefault_Interface.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ImportClassWithDefault_Interface.bsv"
+                ],
+                "outputs": [
+                  "ImportClassWithDefault_Interface.bsv.bsc-out",
+                  "ImportClassWithDefault_Interface.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1147,
+                  "endByte": 1196,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-TypeCheck_Fail_MissingProviso",
+      "resource": "normal",
+      "fixtures": [
+        "TypeCheck_Fail_MissingProviso.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TypeCheck_Fail_MissingProviso",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TypeCheck_Fail_MissingProviso.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TypeCheck_Fail_MissingProviso.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TypeCheck_Fail_MissingProviso.bs"
+                ],
+                "outputs": [
+                  "TypeCheck_Fail_MissingProviso.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1326,
+                  "endByte": 1383,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "TypeCheck_Fail_MissingProviso.bs.bsc-out",
+              "kind": "error",
+              "code": "T0030",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "TypeCheck_Fail_MissingProviso.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1326,
+                  "endByte": 1383,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-TypeCheck_Pass_SuperClass",
+      "resource": "normal",
+      "fixtures": [
+        "TypeCheck_Pass_SuperClass.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TypeCheck_Pass_SuperClass",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TypeCheck_Pass_SuperClass.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TypeCheck_Pass_SuperClass.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TypeCheck_Pass_SuperClass.bs"
+                ],
+                "outputs": [
+                  "TypeCheck_Pass_SuperClass.bo",
+                  "TypeCheck_Pass_SuperClass.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1460,
+                  "endByte": 1520,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "TypeCheck_Pass_SuperClass.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "TypeCheck_Pass_SuperClass.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1460,
+                  "endByte": 1520,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 61
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-ClassWithDefault_Clauses",
+      "resource": "normal",
+      "fixtures": [
+        "ClassWithDefault_Clauses.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ClassWithDefault_Clauses",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassWithDefault_Clauses.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassWithDefault_Clauses.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault_Clauses.bs"
+                ],
+                "outputs": [
+                  "ClassWithDefault_Clauses.bo",
+                  "ClassWithDefault_Clauses.bs.bsc-vcomp-out",
+                  "sysClassWithDefault_Clauses.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1598,
+                  "endByte": 1657,
+                  "startLine": 58,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ClassWithDefault_Clauses.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault_Clauses.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1598,
+                  "endByte": 1657,
+                  "startLine": 58,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysClassWithDefault_Clauses.v",
+              "pattern": "1yes",
+              "artifacts": {
+                "inputs": [
+                  "sysClassWithDefault_Clauses.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1720,
+                  "endByte": 1768,
+                  "startLine": 62,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysClassWithDefault_Clauses.v",
+              "pattern": "2no",
+              "artifacts": {
+                "inputs": [
+                  "sysClassWithDefault_Clauses.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1769,
+                  "endByte": 1816,
+                  "startLine": 63,
+                  "startColumn": 1,
+                  "endLine": 63,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-ImportClassWithDefault_Clauses",
+      "resource": "normal",
+      "fixtures": [
+        "ClassWithDefault_Clauses.bs",
+        "ImportClassWithDefault_Clauses.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ImportClassWithDefault_Clauses",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassWithDefault_Clauses.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassWithDefault_Clauses.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassWithDefault_Clauses.bs"
+                ],
+                "outputs": [
+                  "ClassWithDefault_Clauses.bo",
+                  "ClassWithDefault_Clauses.bs.bsc-vcomp-out",
+                  "sysClassWithDefault_Clauses.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1598,
+                  "endByte": 1657,
+                  "startLine": 58,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "ImportClassWithDefault_Clauses.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ImportClassWithDefault_Clauses.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ImportClassWithDefault_Clauses.bsv"
+                ],
+                "outputs": [
+                  "ImportClassWithDefault_Clauses.bo",
+                  "ImportClassWithDefault_Clauses.bsv.bsc-vcomp-out",
+                  "sysClassWithDefault_Clauses.v",
+                  "sysImportClassWithDefault_Clauses.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1908,
+                  "endByte": 1979,
+                  "startLine": 70,
+                  "startColumn": 1,
+                  "endLine": 70,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ImportClassWithDefault_Clauses.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0127",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ImportClassWithDefault_Clauses.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1908,
+                  "endByte": 1979,
+                  "startLine": 70,
+                  "startColumn": 1,
+                  "endLine": 70,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysImportClassWithDefault_Clauses.v",
+              "pattern": "1yes",
+              "artifacts": {
+                "inputs": [
+                  "sysImportClassWithDefault_Clauses.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2042,
+                  "endByte": 2096,
+                  "startLine": 74,
+                  "startColumn": 1,
+                  "endLine": 74,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysImportClassWithDefault_Clauses.v",
+              "pattern": "2no",
+              "artifacts": {
+                "inputs": [
+                  "sysImportClassWithDefault_Clauses.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2097,
+                  "endByte": 2150,
+                  "startLine": 75,
+                  "startColumn": 1,
+                  "endLine": 75,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-MutuallyRecursiveDefaults",
+      "resource": "normal",
+      "fixtures": [
+        "MutuallyRecursiveDefaults.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MutuallyRecursiveDefaults",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MutuallyRecursiveDefaults.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MutuallyRecursiveDefaults.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MutuallyRecursiveDefaults.bs"
+                ],
+                "outputs": [
+                  "MutuallyRecursiveDefaults.bo",
+                  "MutuallyRecursiveDefaults.bs.bsc-vcomp-out",
+                  "sysMutuallyRecursiveDefaults.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2222,
+                  "endByte": 2282,
+                  "startLine": 82,
+                  "startColumn": 1,
+                  "endLine": 82,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MutuallyRecursiveDefaults.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "MutuallyRecursiveDefaults.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2222,
+                  "endByte": 2282,
+                  "startLine": 82,
+                  "startColumn": 1,
+                  "endLine": 82,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysMutuallyRecursiveDefaults.v",
+              "pattern": "1no",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyRecursiveDefaults.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2344,
+                  "endByte": 2392,
+                  "startLine": 85,
+                  "startColumn": 1,
+                  "endLine": 85,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysMutuallyRecursiveDefaults.v",
+              "pattern": "2yes",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyRecursiveDefaults.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2393,
+                  "endByte": 2442,
+                  "startLine": 86,
+                  "startColumn": 1,
+                  "endLine": 86,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysMutuallyRecursiveDefaults.v",
+              "pattern": "3yes",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyRecursiveDefaults.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2443,
+                  "endByte": 2492,
+                  "startLine": 87,
+                  "startColumn": 1,
+                  "endLine": 87,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-10-DuplicateConstr_Unqual",
+      "resource": "normal",
+      "fixtures": [
+        "DuplicateConstr_Unqual.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DuplicateConstr_Unqual",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DuplicateConstr_Unqual.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "DuplicateConstr_Unqual.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DuplicateConstr_Unqual.bs"
+                ],
+                "outputs": [
+                  "DuplicateConstr_Unqual.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2660,
+                  "endByte": 2718,
+                  "startLine": 95,
+                  "startColumn": 1,
+                  "endLine": 95,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "DuplicateConstr_Unqual.bs.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "DuplicateConstr_Unqual.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2660,
+                  "endByte": 2718,
+                  "startLine": 95,
+                  "startColumn": 1,
+                  "endLine": 95,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-11-DuplicateConstr_Qual",
+      "resource": "normal",
+      "fixtures": [
+        "DuplicateConstr_Qual.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DuplicateConstr_Qual",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DuplicateConstr_Qual.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DuplicateConstr_Qual.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DuplicateConstr_Qual.bs"
+                ],
+                "outputs": [
+                  "DuplicateConstr_Qual.bo",
+                  "DuplicateConstr_Qual.bs.bsc-vcomp-out",
+                  "sysDuplicateConstr_Qual.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2769,
+                  "endByte": 2824,
+                  "startLine": 98,
+                  "startColumn": 1,
+                  "endLine": 98,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "DuplicateConstr_Qual.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "DuplicateConstr_Qual.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2769,
+                  "endByte": 2824,
+                  "startLine": 98,
+                  "startColumn": 1,
+                  "endLine": 98,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysDuplicateConstr_Qual.v",
+              "pattern": "1no",
+              "artifacts": {
+                "inputs": [
+                  "sysDuplicateConstr_Qual.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2846,
+                  "endByte": 2889,
+                  "startLine": 100,
+                  "startColumn": 1,
+                  "endLine": 100,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-12-ImportedInfixInDefault",
+      "resource": "normal",
+      "fixtures": [
+        "ImportedInfixInDefault.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ImportedInfixInDefault",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ImportedInfixInDefault.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ImportedInfixInDefault.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ImportedInfixInDefault.bs"
+                ],
+                "outputs": [
+                  "ImportedInfixInDefault.bs.bsc-out",
+                  "ImportedInfixInDefault.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3152,
+                  "endByte": 3190,
+                  "startLine": 110,
+                  "startColumn": 1,
+                  "endLine": 110,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysImportedInfixInDefaultImported",
+      "resource": "heavy",
+      "fixtures": [
+        "ImportedInfixInDefault.bs",
+        "ImportedInfixInDefaultImported.bs",
+        "sysImportedInfixInDefaultImported.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysImportedInfixInDefaultImported",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ImportedInfixInDefaultImported.bs",
+              "mode": "verilog",
+              "module": "sysImportedInfixInDefaultImported",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ImportedInfixInDefaultImported.bs"
+                ],
+                "outputs": [
+                  "ImportedInfixInDefaultImported.bo",
+                  "ImportedInfixInDefaultImported.bs.bsc-vcomp-out",
+                  "sysImportedInfixInDefaultImported.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3191,
+                  "endByte": 3236,
+                  "startLine": 111,
+                  "startColumn": 1,
+                  "endLine": 111,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysImportedInfixInDefaultImported"
+              ],
+              "top": "sysImportedInfixInDefaultImported",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysImportedInfixInDefaultImported.v"
+                ],
+                "outputs": [
+                  "sysImportedInfixInDefaultImported.bsc-vcomp-out",
+                  "sysImportedInfixInDefaultImported.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3191,
+                  "endByte": 3236,
+                  "startLine": 111,
+                  "startColumn": 1,
+                  "endLine": 111,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysImportedInfixInDefaultImported",
+              "args": [],
+              "stdout": "sysImportedInfixInDefaultImported.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysImportedInfixInDefaultImported.vexe"
+                ],
+                "outputs": [
+                  "sysImportedInfixInDefaultImported.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3191,
+                  "endByte": 3236,
+                  "startLine": 111,
+                  "startColumn": 1,
+                  "endLine": 111,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysImportedInfixInDefaultImported.v.out",
+              "expected": "sysImportedInfixInDefaultImported.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysImportedInfixInDefaultImported.v.out",
+                  "sysImportedInfixInDefaultImported.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3191,
+                  "endByte": 3236,
+                  "startLine": 111,
+                  "startColumn": 1,
+                  "endLine": 111,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysImportedInfixInDefaultImported",
+              "args": [],
+              "stdout": "sysImportedInfixInDefaultImported.v-vcd.out",
+              "vcd": "sysImportedInfixInDefaultImported.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysImportedInfixInDefaultImported.vexe"
+                ],
+                "outputs": [
+                  "sysImportedInfixInDefaultImported.v-vcd.out",
+                  "sysImportedInfixInDefaultImported.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3191,
+                  "endByte": 3236,
+                  "startLine": 111,
+                  "startColumn": 1,
+                  "endLine": 111,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysImportedInfixInDefaultImported.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysImportedInfixInDefaultImported.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3191,
+                  "endByte": 3236,
+                  "startLine": 111,
+                  "startColumn": 1,
+                  "endLine": 111,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

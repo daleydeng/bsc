@@ -1,0 +1,2648 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/instances/order/order",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/instances/order/order.exp",
+    "sha256": "f1258a9e4f0a756910d3ace431a6f0d8db0829f5cc6d2004275dc968d06167d0"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/instances/order",
+  "fixtures": [
+    {
+      "path": "FdStability.bs",
+      "sha256": "2884b777055d948c1d9ced2e3e154c183621834a9d8f0a89a69dff380b3f8e5b",
+      "role": "source"
+    },
+    {
+      "path": "LeafOrder.bs",
+      "sha256": "af6a06866aba28430156ea66b8f335e5bb1f64c099ffbac1f569f07d3dbd2e16",
+      "role": "source"
+    },
+    {
+      "path": "LeafOrderChain.bs",
+      "sha256": "b2066ff6465bca1745fdc6129f4444c7ea789b601c2d56e346364023c3535c64",
+      "role": "source"
+    },
+    {
+      "path": "StuckATF.bs",
+      "sha256": "16f15f3baac015fbd868bce5082f0ed496fd838510d9eb173373bc15506979de",
+      "role": "source"
+    },
+    {
+      "path": "StuckATF.bs.bsc-out.expected",
+      "sha256": "568bab2b3d9dfbec10c828b24bf8c1e260d7f30bc07d6f6228e80e171ae3e387",
+      "role": "golden"
+    },
+    {
+      "path": "TFunHead.bs",
+      "sha256": "c811cbc04b289da9be14cdaa0f33342f34a3c8788936a9b9f30eb5ab21e08ed6",
+      "role": "source"
+    },
+    {
+      "path": "sysFdStability.out.expected",
+      "sha256": "a6e2b7a040683432de03a18fd8a1939a2fdf82585b364bfc874bdd4095c4cae1",
+      "role": "golden"
+    },
+    {
+      "path": "sysLeafOrder.out.expected",
+      "sha256": "1121cfccd5913f0a63fec40a6ffd44ea64f9dc135c66634ba001d10bcf4302a2",
+      "role": "golden"
+    },
+    {
+      "path": "sysLeafOrderChain.out.expected",
+      "sha256": "c108684fcef5bbd299385d30a0486addbbf6349b81ee40985239297ee86c2980",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysLeafOrder",
+      "resource": "heavy",
+      "fixtures": [
+        "LeafOrder.bs",
+        "sysLeafOrder.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLeafOrder",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "LeafOrder.bs",
+              "mode": "shared_elaboration",
+              "module": "sysLeafOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "LeafOrder.bs"
+                ],
+                "outputs": [
+                  "LeafOrder.bo",
+                  "LeafOrder.bs.bsc-vcomp-out",
+                  "sysLeafOrder.ba",
+                  "sysLeafOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLeafOrder"
+              ],
+              "top": "sysLeafOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.v"
+                ],
+                "outputs": [
+                  "sysLeafOrder.bsc-vcomp-out",
+                  "sysLeafOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrder.v.out",
+              "expected": "sysLeafOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.v.out",
+                  "sysLeafOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.v-vcd.out",
+              "vcd": "sysLeafOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.v-vcd.out",
+                  "sysLeafOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLeafOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLeafOrder"
+              ],
+              "top": "sysLeafOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.ba"
+                ],
+                "outputs": [
+                  "sysLeafOrder.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLeafOrder.cexe",
+                    "sysLeafOrder.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrder.c.out",
+              "expected": "sysLeafOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.c.out",
+                  "sysLeafOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.c-vcd.out",
+              "vcd": "sysLeafOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.c-vcd.out",
+                  "sysLeafOrder.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLeafOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrder.c-vcd.out",
+              "expected": "sysLeafOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.c-vcd.out",
+                  "sysLeafOrder.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1003,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysLeafOrder-2",
+      "resource": "heavy",
+      "fixtures": [
+        "LeafOrder.bs",
+        "sysLeafOrder.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLeafOrder",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "LeafOrder.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "LeafOrder.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1004,
+                  "endByte": 1022,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "LeafOrder.bs",
+              "mode": "shared_elaboration",
+              "module": "sysLeafOrder",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "LeafOrder.bs"
+                ],
+                "outputs": [
+                  "LeafOrder.bo",
+                  "LeafOrder.bs.bsc-vcomp-out",
+                  "sysLeafOrder.ba",
+                  "sysLeafOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLeafOrder"
+              ],
+              "top": "sysLeafOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.v"
+                ],
+                "outputs": [
+                  "sysLeafOrder.bsc-vcomp-out",
+                  "sysLeafOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrder.v.out",
+              "expected": "sysLeafOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.v.out",
+                  "sysLeafOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.v-vcd.out",
+              "vcd": "sysLeafOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.v-vcd.out",
+                  "sysLeafOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLeafOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLeafOrder"
+              ],
+              "top": "sysLeafOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.ba"
+                ],
+                "outputs": [
+                  "sysLeafOrder.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLeafOrder.cexe",
+                    "sysLeafOrder.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrder.c.out",
+              "expected": "sysLeafOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.c.out",
+                  "sysLeafOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrder",
+              "args": [],
+              "stdout": "sysLeafOrder.c-vcd.out",
+              "vcd": "sysLeafOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrder.c-vcd.out",
+                  "sysLeafOrder.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLeafOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrder.c-vcd.out",
+              "expected": "sysLeafOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrder.c-vcd.out",
+                  "sysLeafOrder.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1168,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 91
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysLeafOrderChain",
+      "resource": "heavy",
+      "fixtures": [
+        "LeafOrderChain.bs",
+        "sysLeafOrderChain.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLeafOrderChain",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "LeafOrderChain.bs",
+              "mode": "shared_elaboration",
+              "module": "sysLeafOrderChain",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "LeafOrderChain.bs"
+                ],
+                "outputs": [
+                  "LeafOrderChain.bo",
+                  "LeafOrderChain.bs.bsc-vcomp-out",
+                  "sysLeafOrderChain.ba",
+                  "sysLeafOrderChain.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLeafOrderChain"
+              ],
+              "top": "sysLeafOrderChain",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.v"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.bsc-vcomp-out",
+                  "sysLeafOrderChain.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrderChain.v.out",
+              "expected": "sysLeafOrderChain.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.v.out",
+                  "sysLeafOrderChain.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.v-vcd.out",
+              "vcd": "sysLeafOrderChain.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.v-vcd.out",
+                  "sysLeafOrderChain.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLeafOrderChain.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLeafOrderChain"
+              ],
+              "top": "sysLeafOrderChain",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.ba"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLeafOrderChain.cexe",
+                    "sysLeafOrderChain.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrderChain.c.out",
+              "expected": "sysLeafOrderChain.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.c.out",
+                  "sysLeafOrderChain.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.c-vcd.out",
+              "vcd": "sysLeafOrderChain.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.c-vcd.out",
+                  "sysLeafOrderChain.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLeafOrderChain.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrderChain.c-vcd.out",
+              "expected": "sysLeafOrderChain.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.c-vcd.out",
+                  "sysLeafOrderChain.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1537,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysLeafOrderChain-2",
+      "resource": "heavy",
+      "fixtures": [
+        "LeafOrderChain.bs",
+        "sysLeafOrderChain.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLeafOrderChain",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "LeafOrderChain.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "LeafOrderChain.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1538,
+                  "endByte": 1561,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "LeafOrderChain.bs",
+              "mode": "shared_elaboration",
+              "module": "sysLeafOrderChain",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "LeafOrderChain.bs"
+                ],
+                "outputs": [
+                  "LeafOrderChain.bo",
+                  "LeafOrderChain.bs.bsc-vcomp-out",
+                  "sysLeafOrderChain.ba",
+                  "sysLeafOrderChain.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLeafOrderChain"
+              ],
+              "top": "sysLeafOrderChain",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.v"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.bsc-vcomp-out",
+                  "sysLeafOrderChain.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrderChain.v.out",
+              "expected": "sysLeafOrderChain.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.v.out",
+                  "sysLeafOrderChain.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.v-vcd.out",
+              "vcd": "sysLeafOrderChain.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.vexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.v-vcd.out",
+                  "sysLeafOrderChain.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLeafOrderChain.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLeafOrderChain"
+              ],
+              "top": "sysLeafOrderChain",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.ba"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLeafOrderChain.cexe",
+                    "sysLeafOrderChain.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrderChain.c.out",
+              "expected": "sysLeafOrderChain.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.c.out",
+                  "sysLeafOrderChain.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLeafOrderChain",
+              "args": [],
+              "stdout": "sysLeafOrderChain.c-vcd.out",
+              "vcd": "sysLeafOrderChain.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.cexe"
+                ],
+                "outputs": [
+                  "sysLeafOrderChain.c-vcd.out",
+                  "sysLeafOrderChain.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLeafOrderChain.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLeafOrderChain.c-vcd.out",
+              "expected": "sysLeafOrderChain.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLeafOrderChain.c-vcd.out",
+                  "sysLeafOrderChain.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1562,
+                  "endByte": 1662,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 101
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysFdStability",
+      "resource": "heavy",
+      "fixtures": [
+        "FdStability.bs",
+        "sysFdStability.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFdStability",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FdStability.bs",
+              "mode": "shared_elaboration",
+              "module": "sysFdStability",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "FdStability.bs"
+                ],
+                "outputs": [
+                  "FdStability.bo",
+                  "FdStability.bs.bsc-vcomp-out",
+                  "sysFdStability.ba",
+                  "sysFdStability.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFdStability"
+              ],
+              "top": "sysFdStability",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.v"
+                ],
+                "outputs": [
+                  "sysFdStability.bsc-vcomp-out",
+                  "sysFdStability.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.vexe"
+                ],
+                "outputs": [
+                  "sysFdStability.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFdStability.v.out",
+              "expected": "sysFdStability.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.v.out",
+                  "sysFdStability.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.v-vcd.out",
+              "vcd": "sysFdStability.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.vexe"
+                ],
+                "outputs": [
+                  "sysFdStability.v-vcd.out",
+                  "sysFdStability.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFdStability.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFdStability"
+              ],
+              "top": "sysFdStability",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.ba"
+                ],
+                "outputs": [
+                  "sysFdStability.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFdStability.cexe",
+                    "sysFdStability.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.cexe"
+                ],
+                "outputs": [
+                  "sysFdStability.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFdStability.c.out",
+              "expected": "sysFdStability.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.c.out",
+                  "sysFdStability.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.c-vcd.out",
+              "vcd": "sysFdStability.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.cexe"
+                ],
+                "outputs": [
+                  "sysFdStability.c-vcd.out",
+                  "sysFdStability.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFdStability.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFdStability.c-vcd.out",
+              "expected": "sysFdStability.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.c-vcd.out",
+                  "sysFdStability.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2207,
+                  "endByte": 2258,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysFdStability-2",
+      "resource": "heavy",
+      "fixtures": [
+        "FdStability.bs",
+        "sysFdStability.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFdStability",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "FdStability.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "FdStability.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2259,
+                  "endByte": 2279,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 41,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "FdStability.bs",
+              "mode": "shared_elaboration",
+              "module": "sysFdStability",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FdStability.bs"
+                ],
+                "outputs": [
+                  "FdStability.bo",
+                  "FdStability.bs.bsc-vcomp-out",
+                  "sysFdStability.ba",
+                  "sysFdStability.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFdStability"
+              ],
+              "top": "sysFdStability",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.v"
+                ],
+                "outputs": [
+                  "sysFdStability.bsc-vcomp-out",
+                  "sysFdStability.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.vexe"
+                ],
+                "outputs": [
+                  "sysFdStability.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFdStability.v.out",
+              "expected": "sysFdStability.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.v.out",
+                  "sysFdStability.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.v-vcd.out",
+              "vcd": "sysFdStability.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.vexe"
+                ],
+                "outputs": [
+                  "sysFdStability.v-vcd.out",
+                  "sysFdStability.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFdStability.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFdStability"
+              ],
+              "top": "sysFdStability",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.ba"
+                ],
+                "outputs": [
+                  "sysFdStability.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFdStability.cexe",
+                    "sysFdStability.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.cexe"
+                ],
+                "outputs": [
+                  "sysFdStability.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFdStability.c.out",
+              "expected": "sysFdStability.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.c.out",
+                  "sysFdStability.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFdStability",
+              "args": [],
+              "stdout": "sysFdStability.c-vcd.out",
+              "vcd": "sysFdStability.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.cexe"
+                ],
+                "outputs": [
+                  "sysFdStability.c-vcd.out",
+                  "sysFdStability.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFdStability.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFdStability.c-vcd.out",
+              "expected": "sysFdStability.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFdStability.c-vcd.out",
+                  "sysFdStability.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2374,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-13-TFunHead",
+      "resource": "normal",
+      "fixtures": [
+        "TFunHead.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TFunHead",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TFunHead.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TFunHead.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TFunHead.bs"
+                ],
+                "outputs": [
+                  "TFunHead.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2798,
+                  "endByte": 2834,
+                  "startLine": 50,
+                  "startColumn": 1,
+                  "endLine": 50,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "TFunHead.bs.bsc-out",
+              "kind": "error",
+              "code": "T0128",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "TFunHead.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2798,
+                  "endByte": 2834,
+                  "startLine": 50,
+                  "startColumn": 1,
+                  "endLine": 50,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "TFunHead.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "TFunHead.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2835,
+                  "endByte": 2852,
+                  "startLine": 51,
+                  "startColumn": 1,
+                  "endLine": 51,
+                  "endColumn": 18
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-14-TFunHead",
+      "resource": "normal",
+      "fixtures": [
+        "TFunHead.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TFunHead",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TFunHead.bs",
+              "mode": "frontend",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TFunHead.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TFunHead.bs"
+                ],
+                "outputs": [
+                  "TFunHead.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2853,
+                  "endByte": 2912,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "TFunHead.bs.bsc-out",
+              "kind": "error",
+              "code": "T0128",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "TFunHead.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2853,
+                  "endByte": 2912,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-15-StuckATF",
+      "resource": "normal",
+      "fixtures": [
+        "StuckATF.bs",
+        "StuckATF.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StuckATF",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StuckATF.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "StuckATF.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "StuckATF.bs"
+                ],
+                "outputs": [
+                  "StuckATF.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3525,
+                  "endByte": 3549,
+                  "startLine": 63,
+                  "startColumn": 1,
+                  "endLine": 63,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "StuckATF.bs.bsc-out",
+              "expected": "StuckATF.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "StuckATF.bs.bsc-out",
+                  "StuckATF.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3550,
+                  "endByte": 3582,
+                  "startLine": 64,
+                  "startColumn": 1,
+                  "endLine": 64,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "StuckATF.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "StuckATF.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3583,
+                  "endByte": 3600,
+                  "startLine": 65,
+                  "startColumn": 1,
+                  "endLine": 65,
+                  "endColumn": 18
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-16-StuckATF",
+      "resource": "normal",
+      "fixtures": [
+        "StuckATF.bs",
+        "StuckATF.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StuckATF",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StuckATF.bs",
+              "mode": "frontend",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "StuckATF.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "StuckATF.bs"
+                ],
+                "outputs": [
+                  "StuckATF.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3744,
+                  "endByte": 3789,
+                  "startLine": 69,
+                  "startColumn": 1,
+                  "endLine": 69,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "StuckATF.bs.bsc-out",
+              "expected": "StuckATF.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "StuckATF.bs.bsc-out",
+                  "StuckATF.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3790,
+                  "endByte": 3822,
+                  "startLine": 70,
+                  "startColumn": 1,
+                  "endLine": 70,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

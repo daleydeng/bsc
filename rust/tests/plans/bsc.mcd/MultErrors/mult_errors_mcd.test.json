@@ -1,0 +1,919 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.mcd/MultErrors/mult_errors_mcd",
+  "origin": {
+    "path": "testsuite/bsc.mcd/MultErrors/mult_errors_mcd.exp",
+    "sha256": "390d8dbbc539182956482c3cef5c40b182635d8f99d0571739aecc68aa4b3f75"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.mcd/MultErrors",
+  "fixtures": [
+    {
+      "path": "MsgTest_ClockOfMultiClock.bsv",
+      "sha256": "7e3e645030715770d3ddda317c3f1c3d04e0f8f43b6ded9a2cb32b7d71a8f275",
+      "role": "source"
+    },
+    {
+      "path": "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out.expected",
+      "sha256": "8b14d54a44e5f1981291c04e711d1be6a0d1799cf5b26b52dbf8e33aa18cb710",
+      "role": "golden"
+    },
+    {
+      "path": "MsgTest_MultiClock.bsv",
+      "sha256": "e3d8d9869215d1fedbcaacb27cf6b8ae49f0e8274da42adfbd486df9792e971f",
+      "role": "source"
+    },
+    {
+      "path": "MsgTest_MultiClock.bsv.bsc-vcomp-out.expected",
+      "sha256": "883ac190d8dc31185c6c88cf70ebee1a766c3b1706b927c4049b65598083b40e",
+      "role": "golden"
+    },
+    {
+      "path": "MsgTest_MultiReset.bsv",
+      "sha256": "6d45e60db96ed9f1464402d172fda327da7e7b2190da8b0b1e2c342be98e8f73",
+      "role": "source"
+    },
+    {
+      "path": "MsgTest_MultiReset.bsv.bsc-vcomp-out.expected",
+      "sha256": "8db625a8de68d3fb0ebb6f17d692b062202d5c3718a006b1d52a5cac1230a16f",
+      "role": "golden"
+    },
+    {
+      "path": "MsgTest_ResetOfMultiReset.bsv",
+      "sha256": "3fe6f4cf6712b1718bfa254b8909a9f81a4d46f0ef952002382b134d1ca68380",
+      "role": "source"
+    },
+    {
+      "path": "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out.expected",
+      "sha256": "fdb4df15b4bfbb5ad9c0af31b57c18626a412c0904762f201bd6188730293fe6",
+      "role": "golden"
+    },
+    {
+      "path": "MultArgErrors.bsv",
+      "sha256": "bf6a94c9ea194e23db96db8730ea1f78b21518485de8c1f896ce0af59e237efc",
+      "role": "source"
+    },
+    {
+      "path": "MultBoundaryClockErr.bsv",
+      "sha256": "527a3fc222d2932d6c7992935ad44b69aabae164a88fdd4f602142dfde906a74",
+      "role": "source"
+    },
+    {
+      "path": "MultClockCrossErr.bsv",
+      "sha256": "0b8cf0968c26e6cfd84244a37f6f6b33faba4179eb77fba3dd26012847a7b8a1",
+      "role": "source"
+    },
+    {
+      "path": "MultClockCrossErr.bsv.bsc-ccomp-out.expected",
+      "sha256": "f7ca7025504ea9d3e36b2204182b8d2ef9bafb9fc8ee715b2a66f3afa552b987",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MultClockCrossErr",
+      "resource": "normal",
+      "fixtures": [
+        "MultClockCrossErr.bsv",
+        "MultClockCrossErr.bsv.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MultClockCrossErr",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MultClockCrossErr.bsv",
+              "mode": "bluesim_object",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MultClockCrossErr.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MultClockCrossErr.bsv"
+                ],
+                "outputs": [
+                  "MultClockCrossErr.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 76,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultClockCrossErr.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0007",
+              "count": 4,
+              "artifacts": {
+                "inputs": [
+                  "MultClockCrossErr.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 76,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MultClockCrossErr.bsv.bsc-ccomp-out",
+              "expected": "MultClockCrossErr.bsv.bsc-ccomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MultClockCrossErr.bsv.bsc-ccomp-out",
+                  "MultClockCrossErr.bsv.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 125,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-MultBoundaryClockErr",
+      "resource": "normal",
+      "fixtures": [
+        "MultBoundaryClockErr.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MultBoundaryClockErr",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MultBoundaryClockErr.bsv",
+              "mode": "bluesim_object",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MultBoundaryClockErr.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MultBoundaryClockErr.bsv"
+                ],
+                "outputs": [
+                  "MultBoundaryClockErr.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 127,
+                  "endByte": 185,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultBoundaryClockErr.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0045",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "MultBoundaryClockErr.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 127,
+                  "endByte": 185,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultBoundaryClockErr.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0042",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultBoundaryClockErr.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 186,
+                  "endByte": 245,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultBoundaryClockErr.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0014",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "MultBoundaryClockErr.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 305,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-MultArgErrors",
+      "resource": "normal",
+      "fixtures": [
+        "MultArgErrors.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MultArgErrors",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MultArgErrors.bsv",
+              "mode": "bluesim_object",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MultArgErrors.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MultArgErrors.bsv"
+                ],
+                "outputs": [
+                  "MultArgErrors.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 307,
+                  "endByte": 358,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultArgErrors.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0014",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "MultArgErrors.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 307,
+                  "endByte": 358,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultArgErrors.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0081",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "MultArgErrors.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 411,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultArgErrors.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0068",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultArgErrors.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 464,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultArgErrors.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0067",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultArgErrors.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 465,
+                  "endByte": 517,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultArgErrors.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0053",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultArgErrors.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 518,
+                  "endByte": 570,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-MsgTest_MultiClock",
+      "resource": "normal",
+      "fixtures": [
+        "MsgTest_MultiClock.bsv",
+        "MsgTest_MultiClock.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MsgTest_MultiClock",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MsgTest_MultiClock.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MsgTest_MultiClock.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_MultiClock.bsv"
+                ],
+                "outputs": [
+                  "MsgTest_MultiClock.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 928,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MsgTest_MultiClock.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0007",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_MultiClock.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 928,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MsgTest_MultiClock.bsv.bsc-vcomp-out",
+              "expected": "MsgTest_MultiClock.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_MultiClock.bsv.bsc-vcomp-out",
+                  "MsgTest_MultiClock.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 929,
+                  "endByte": 993,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-MsgTest_MultiReset",
+      "resource": "normal",
+      "fixtures": [
+        "MsgTest_MultiReset.bsv",
+        "MsgTest_MultiReset.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MsgTest_MultiReset",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MsgTest_MultiReset.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MsgTest_MultiReset.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_MultiReset.bsv"
+                ],
+                "outputs": [
+                  "MsgTest_MultiReset.bo",
+                  "MsgTest_MultiReset.bsv.bsc-vcomp-out",
+                  "sysMsgTest_MultiReset.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1029,
+                  "endByte": 1086,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MsgTest_MultiReset.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0043",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_MultiReset.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1029,
+                  "endByte": 1086,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MsgTest_MultiReset.bsv.bsc-vcomp-out",
+              "expected": "MsgTest_MultiReset.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_MultiReset.bsv.bsc-vcomp-out",
+                  "MsgTest_MultiReset.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1087,
+                  "endByte": 1151,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-MsgTest_ClockOfMultiClock",
+      "resource": "normal",
+      "fixtures": [
+        "MsgTest_ClockOfMultiClock.bsv",
+        "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MsgTest_ClockOfMultiClock",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MsgTest_ClockOfMultiClock.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_ClockOfMultiClock.bsv"
+                ],
+                "outputs": [
+                  "MsgTest_ClockOfMultiClock.bo",
+                  "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out",
+                  "sysMsgTest_ClockOfMultiClock.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1195,
+                  "endByte": 1259,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0038",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1195,
+                  "endByte": 1259,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out",
+              "expected": "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out",
+                  "MsgTest_ClockOfMultiClock.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1260,
+                  "endByte": 1331,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-MsgTest_ResetOfMultiReset",
+      "resource": "normal",
+      "fixtures": [
+        "MsgTest_ResetOfMultiReset.bsv",
+        "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MsgTest_ResetOfMultiReset",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MsgTest_ResetOfMultiReset.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_ResetOfMultiReset.bsv"
+                ],
+                "outputs": [
+                  "MsgTest_ResetOfMultiReset.bo",
+                  "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out",
+                  "sysMsgTest_MultiReset.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1374,
+                  "endByte": 1438,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0044",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1374,
+                  "endByte": 1438,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out",
+              "expected": "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out",
+                  "MsgTest_ResetOfMultiReset.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1439,
+                  "endByte": 1510,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

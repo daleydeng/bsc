@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/SRAMFile/SRAMFile",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/SRAMFile/SRAMFile.exp",
+    "sha256": "f36b597c7760acdef2e008a26298df9dcba696f0ea7f424ff76ad4535ebe59ff"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/SRAMFile",
+  "fixtures": [
+    {
+      "path": "EqPrecedence.bs",
+      "sha256": "eb12d67c4f75c38b35039e37896deffb64ea2ef5c7f1e692976f0377a9a35fb4",
+      "role": "source"
+    },
+    {
+      "path": "MkSRAMFile.bsv",
+      "sha256": "a79796562e37fa49b9c689d51e9ab55359999a5dc84294b33477eef6a317aac3",
+      "role": "source"
+    },
+    {
+      "path": "Precedence.bs",
+      "sha256": "abf0fe4f4c221106a47c7d5e5f97a63e92ccf2eac1ed72a27958f4bf2d628779",
+      "role": "source"
+    },
+    {
+      "path": "input_file",
+      "sha256": "0e038ccc2b2dfc4fe27145428226e4ba670df087bbf556c0e5ee5f37ab6c2627",
+      "role": "data"
+    },
+    {
+      "path": "input_file1",
+      "sha256": "d1ed95a0492bd68e47f819cd4cd7f3400939c296102adbc69a6ad40e044ec861",
+      "role": "data"
+    },
+    {
+      "path": "mkTestbench_MkSRAMFile.v.out.expected",
+      "sha256": "6a2f9b16c472138a544f5733136b90675947f3d97ac4e7c2d4dfc9bf5b064c28",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_MkSRAMFile",
+      "resource": "heavy",
+      "fixtures": [
+        "EqPrecedence.bs",
+        "MkSRAMFile.bsv",
+        "Precedence.bs",
+        "input_file",
+        "input_file1",
+        "mkTestbench_MkSRAMFile.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkSRAMFile",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkSRAMFile.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkSRAMFile.bsv"
+                ],
+                "outputs": [
+                  "MkSRAMFile.bo",
+                  "MkSRAMFile.bsv.bsc-vcomp-out",
+                  "mkTestbench_MkSRAMFile.ba",
+                  "mkTestbench_MkSRAMFile.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkSRAMFile"
+              ],
+              "top": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkSRAMFile.bsc-vcomp-out",
+                  "mkTestbench_MkSRAMFile.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "stdout": "mkTestbench_MkSRAMFile.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkSRAMFile.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkSRAMFile.v.out",
+              "expected": "mkTestbench_MkSRAMFile.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.v.out",
+                  "mkTestbench_MkSRAMFile.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "stdout": "mkTestbench_MkSRAMFile.v-vcd.out",
+              "vcd": "mkTestbench_MkSRAMFile.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkSRAMFile.v-vcd.out",
+                  "mkTestbench_MkSRAMFile.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkSRAMFile.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkSRAMFile"
+              ],
+              "top": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkSRAMFile.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkSRAMFile.cexe",
+                    "mkTestbench_MkSRAMFile.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "stdout": "mkTestbench_MkSRAMFile.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkSRAMFile.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkSRAMFile.c.out",
+              "expected": "mkTestbench_MkSRAMFile.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.c.out",
+                  "mkTestbench_MkSRAMFile.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkSRAMFile",
+              "args": [],
+              "stdout": "mkTestbench_MkSRAMFile.c-vcd.out",
+              "vcd": "mkTestbench_MkSRAMFile.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkSRAMFile.c-vcd.out",
+                  "mkTestbench_MkSRAMFile.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkSRAMFile.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkSRAMFile.c-vcd.out",
+              "expected": "mkTestbench_MkSRAMFile.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkSRAMFile.c-vcd.out",
+                  "mkTestbench_MkSRAMFile.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

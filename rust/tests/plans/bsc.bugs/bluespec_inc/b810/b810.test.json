@@ -1,0 +1,1205 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b810/b810",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b810/b810.exp",
+    "sha256": "cca562e32a49204846bf5ebcbb84155369d3201df9e23cacd83f7abfdcf1b563"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b810",
+  "fixtures": [
+    {
+      "path": "Bug810_1.bsv",
+      "sha256": "e14b41b49739f0e683f9668f732f57d140e824256150e7235c3f0ac3dcaaa4cb",
+      "role": "source"
+    },
+    {
+      "path": "Bug810_2.bsv",
+      "sha256": "f94c767f423f81babd7c5200c70801deeb2d54dd5e070382955bf03c4f51fdd1",
+      "role": "source"
+    },
+    {
+      "path": "Bug810_3.bsv",
+      "sha256": "92ec2187dd0d32a19d71afe3cc60e2b389ef30a43deed70a176ce19f588c4619",
+      "role": "source"
+    },
+    {
+      "path": "Opt_bug.bsv",
+      "sha256": "c90d6af6b4e586f31d6a01b5135605359e0cdfd4aeb93a4968a681bdc579a571",
+      "role": "source"
+    },
+    {
+      "path": "sysBug810_1.out.expected",
+      "sha256": "eb7e041d12a73898c48ca4c35e850c0888c6e5f07a89933ab6d905f4680cfaf5",
+      "role": "golden"
+    },
+    {
+      "path": "sysBug810_3.out.expected",
+      "sha256": "1c3d4a7a030dc54ad7c15d9b012debf9d89b127f0787917f4b93af114e7efa8d",
+      "role": "golden"
+    },
+    {
+      "path": "sysOpt_bug.out.expected",
+      "sha256": "1b33c4c51078bc13a45b415a4c8cf29ccc55b4f4d5dcc547d5c0e73c8f1499b3",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBug810_1",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug810_1.bsv",
+        "sysBug810_1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug810_1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug810_1.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBug810_1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug810_1.bsv"
+                ],
+                "outputs": [
+                  "Bug810_1.bo",
+                  "Bug810_1.bsv.bsc-vcomp-out",
+                  "sysBug810_1.ba",
+                  "sysBug810_1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBug810_1"
+              ],
+              "top": "sysBug810_1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.v"
+                ],
+                "outputs": [
+                  "sysBug810_1.bsc-vcomp-out",
+                  "sysBug810_1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug810_1",
+              "args": [],
+              "stdout": "sysBug810_1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.vexe"
+                ],
+                "outputs": [
+                  "sysBug810_1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug810_1.v.out",
+              "expected": "sysBug810_1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.v.out",
+                  "sysBug810_1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug810_1",
+              "args": [],
+              "stdout": "sysBug810_1.v-vcd.out",
+              "vcd": "sysBug810_1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.vexe"
+                ],
+                "outputs": [
+                  "sysBug810_1.v-vcd.out",
+                  "sysBug810_1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBug810_1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug810_1"
+              ],
+              "top": "sysBug810_1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.ba"
+                ],
+                "outputs": [
+                  "sysBug810_1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug810_1.cexe",
+                    "sysBug810_1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug810_1",
+              "args": [],
+              "stdout": "sysBug810_1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.cexe"
+                ],
+                "outputs": [
+                  "sysBug810_1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug810_1.c.out",
+              "expected": "sysBug810_1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.c.out",
+                  "sysBug810_1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug810_1",
+              "args": [],
+              "stdout": "sysBug810_1.c-vcd.out",
+              "vcd": "sysBug810_1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.cexe"
+                ],
+                "outputs": [
+                  "sysBug810_1.c-vcd.out",
+                  "sysBug810_1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug810_1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug810_1.c-vcd.out",
+              "expected": "sysBug810_1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_1.c-vcd.out",
+                  "sysBug810_1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3,
+                  "endByte": 27,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Bug810_2",
+      "resource": "normal",
+      "fixtures": [
+        "Bug810_2.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug810_2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug810_2.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Bug810_2.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug810_2.bsv"
+                ],
+                "outputs": [
+                  "Bug810_2.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 29,
+                  "endByte": 66,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Bug810_2.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0031",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Bug810_2.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 29,
+                  "endByte": 66,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysBug810_3",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug810_3.bsv",
+        "sysBug810_3.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug810_3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug810_3.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBug810_3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug810_3.bsv"
+                ],
+                "outputs": [
+                  "Bug810_3.bo",
+                  "Bug810_3.bsv.bsc-vcomp-out",
+                  "sysBug810_3.ba",
+                  "sysBug810_3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBug810_3"
+              ],
+              "top": "sysBug810_3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.v"
+                ],
+                "outputs": [
+                  "sysBug810_3.bsc-vcomp-out",
+                  "sysBug810_3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug810_3",
+              "args": [],
+              "stdout": "sysBug810_3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.vexe"
+                ],
+                "outputs": [
+                  "sysBug810_3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug810_3.v.out",
+              "expected": "sysBug810_3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.v.out",
+                  "sysBug810_3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug810_3",
+              "args": [],
+              "stdout": "sysBug810_3.v-vcd.out",
+              "vcd": "sysBug810_3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.vexe"
+                ],
+                "outputs": [
+                  "sysBug810_3.v-vcd.out",
+                  "sysBug810_3.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBug810_3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug810_3"
+              ],
+              "top": "sysBug810_3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.ba"
+                ],
+                "outputs": [
+                  "sysBug810_3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug810_3.cexe",
+                    "sysBug810_3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug810_3",
+              "args": [],
+              "stdout": "sysBug810_3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.cexe"
+                ],
+                "outputs": [
+                  "sysBug810_3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug810_3.c.out",
+              "expected": "sysBug810_3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.c.out",
+                  "sysBug810_3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug810_3",
+              "args": [],
+              "stdout": "sysBug810_3.c-vcd.out",
+              "vcd": "sysBug810_3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.cexe"
+                ],
+                "outputs": [
+                  "sysBug810_3.c-vcd.out",
+                  "sysBug810_3.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug810_3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug810_3.c-vcd.out",
+              "expected": "sysBug810_3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug810_3.c-vcd.out",
+                  "sysBug810_3.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 93,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysOpt_bug",
+      "resource": "heavy",
+      "fixtures": [
+        "Opt_bug.bsv",
+        "sysOpt_bug.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysOpt_bug",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Opt_bug.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysOpt_bug",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Opt_bug.bsv"
+                ],
+                "outputs": [
+                  "Opt_bug.bo",
+                  "Opt_bug.bsv.bsc-vcomp-out",
+                  "sysOpt_bug.ba",
+                  "sysOpt_bug.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysOpt_bug"
+              ],
+              "top": "sysOpt_bug",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.v"
+                ],
+                "outputs": [
+                  "sysOpt_bug.bsc-vcomp-out",
+                  "sysOpt_bug.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysOpt_bug",
+              "args": [],
+              "stdout": "sysOpt_bug.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.vexe"
+                ],
+                "outputs": [
+                  "sysOpt_bug.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOpt_bug.v.out",
+              "expected": "sysOpt_bug.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.v.out",
+                  "sysOpt_bug.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysOpt_bug",
+              "args": [],
+              "stdout": "sysOpt_bug.v-vcd.out",
+              "vcd": "sysOpt_bug.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.vexe"
+                ],
+                "outputs": [
+                  "sysOpt_bug.v-vcd.out",
+                  "sysOpt_bug.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysOpt_bug.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysOpt_bug"
+              ],
+              "top": "sysOpt_bug",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.ba"
+                ],
+                "outputs": [
+                  "sysOpt_bug.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysOpt_bug.cexe",
+                    "sysOpt_bug.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysOpt_bug",
+              "args": [],
+              "stdout": "sysOpt_bug.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.cexe"
+                ],
+                "outputs": [
+                  "sysOpt_bug.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOpt_bug.c.out",
+              "expected": "sysOpt_bug.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.c.out",
+                  "sysOpt_bug.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysOpt_bug",
+              "args": [],
+              "stdout": "sysOpt_bug.c-vcd.out",
+              "vcd": "sysOpt_bug.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.cexe"
+                ],
+                "outputs": [
+                  "sysOpt_bug.c-vcd.out",
+                  "sysOpt_bug.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysOpt_bug.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOpt_bug.c-vcd.out",
+              "expected": "sysOpt_bug.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOpt_bug.c-vcd.out",
+                  "sysOpt_bug.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 117,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

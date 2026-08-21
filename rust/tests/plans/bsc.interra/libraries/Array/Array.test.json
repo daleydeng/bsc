@@ -1,0 +1,1130 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/Array/Array",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/Array/Array.exp",
+    "sha256": "0bf868144addd33ae400f5fe5d7a671b66f58124e1b6f9fedf49ad6abb7a0212"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/Array",
+  "fixtures": [
+    {
+      "path": "MkArray.bsv",
+      "sha256": "7dd93afed72aebd91588a9d6545ae7d01ee7a3107ffe98774043e696dfec3475",
+      "role": "source"
+    },
+    {
+      "path": "MkArrayFull.bsv",
+      "sha256": "4320d16fb338de805f4bfeb945a1aac6d0805dce7169e9930d2145a06bd72987",
+      "role": "source"
+    },
+    {
+      "path": "MkArrayWCF.bsv",
+      "sha256": "453de2a1716b738f7d9a1872f206146539bd72901bbfaa833385e2c8c4d1016b",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_MkArray.v.out.expected",
+      "sha256": "594cee9592d37670915952c14f8f081306f9462d09638c28e43ffa4ca66a1c9b",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_MkArrayFull.v.out.expected",
+      "sha256": "594cee9592d37670915952c14f8f081306f9462d09638c28e43ffa4ca66a1c9b",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_MkArrayWCF.v.out.expected",
+      "sha256": "bb290190f84281185b1c2a2f09749a59b954d33674db149dd086cbdf1458c695",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_MkArray",
+      "resource": "heavy",
+      "fixtures": [
+        "MkArray.bsv",
+        "mkTestbench_MkArray.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkArray",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkArray.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkArray",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkArray.bsv"
+                ],
+                "outputs": [
+                  "MkArray.bo",
+                  "MkArray.bsv.bsc-vcomp-out",
+                  "mkTestbench_MkArray.ba",
+                  "mkTestbench_MkArray.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkArray"
+              ],
+              "top": "mkTestbench_MkArray",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArray.bsc-vcomp-out",
+                  "mkTestbench_MkArray.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkArray",
+              "args": [],
+              "stdout": "mkTestbench_MkArray.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArray.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArray.v.out",
+              "expected": "mkTestbench_MkArray.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.v.out",
+                  "mkTestbench_MkArray.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkArray",
+              "args": [],
+              "stdout": "mkTestbench_MkArray.v-vcd.out",
+              "vcd": "mkTestbench_MkArray.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArray.v-vcd.out",
+                  "mkTestbench_MkArray.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkArray.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkArray"
+              ],
+              "top": "mkTestbench_MkArray",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArray.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkArray.cexe",
+                    "mkTestbench_MkArray.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkArray",
+              "args": [],
+              "stdout": "mkTestbench_MkArray.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArray.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArray.c.out",
+              "expected": "mkTestbench_MkArray.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.c.out",
+                  "mkTestbench_MkArray.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkArray",
+              "args": [],
+              "stdout": "mkTestbench_MkArray.c-vcd.out",
+              "vcd": "mkTestbench_MkArray.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArray.c-vcd.out",
+                  "mkTestbench_MkArray.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkArray.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArray.c-vcd.out",
+              "expected": "mkTestbench_MkArray.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArray.c-vcd.out",
+                  "mkTestbench_MkArray.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_MkArrayFull",
+      "resource": "heavy",
+      "fixtures": [
+        "MkArrayFull.bsv",
+        "mkTestbench_MkArrayFull.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkArrayFull",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkArrayFull.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkArrayFull",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkArrayFull.bsv"
+                ],
+                "outputs": [
+                  "MkArrayFull.bo",
+                  "MkArrayFull.bsv.bsc-vcomp-out",
+                  "mkTestbench_MkArrayFull.ba",
+                  "mkTestbench_MkArrayFull.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkArrayFull"
+              ],
+              "top": "mkTestbench_MkArrayFull",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayFull.bsc-vcomp-out",
+                  "mkTestbench_MkArrayFull.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkArrayFull",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayFull.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayFull.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArrayFull.v.out",
+              "expected": "mkTestbench_MkArrayFull.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.v.out",
+                  "mkTestbench_MkArrayFull.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkArrayFull",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayFull.v-vcd.out",
+              "vcd": "mkTestbench_MkArrayFull.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayFull.v-vcd.out",
+                  "mkTestbench_MkArrayFull.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkArrayFull.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkArrayFull"
+              ],
+              "top": "mkTestbench_MkArrayFull",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayFull.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkArrayFull.cexe",
+                    "mkTestbench_MkArrayFull.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkArrayFull",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayFull.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayFull.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArrayFull.c.out",
+              "expected": "mkTestbench_MkArrayFull.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.c.out",
+                  "mkTestbench_MkArrayFull.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkArrayFull",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayFull.c-vcd.out",
+              "vcd": "mkTestbench_MkArrayFull.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayFull.c-vcd.out",
+                  "mkTestbench_MkArrayFull.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkArrayFull.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArrayFull.c-vcd.out",
+              "expected": "mkTestbench_MkArrayFull.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayFull.c-vcd.out",
+                  "mkTestbench_MkArrayFull.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 218,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 115
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_MkArrayWCF",
+      "resource": "heavy",
+      "fixtures": [
+        "MkArrayWCF.bsv",
+        "mkTestbench_MkArrayWCF.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkArrayWCF",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkArrayWCF.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkArrayWCF.bsv"
+                ],
+                "outputs": [
+                  "MkArrayWCF.bo",
+                  "MkArrayWCF.bsv.bsc-vcomp-out",
+                  "mkDesign_MkArrayWCF.ba",
+                  "mkDesign_MkArrayWCF.v",
+                  "mkTestbench_MkArrayWCF.ba",
+                  "mkTestbench_MkArrayWCF.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkArrayWCF",
+                "mkDesign_MkArrayWCF"
+              ],
+              "top": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.v",
+                  "mkDesign_MkArrayWCF.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayWCF.bsc-vcomp-out",
+                  "mkTestbench_MkArrayWCF.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayWCF.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayWCF.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArrayWCF.v.out",
+              "expected": "mkTestbench_MkArrayWCF.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.v.out",
+                  "mkTestbench_MkArrayWCF.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayWCF.v-vcd.out",
+              "vcd": "mkTestbench_MkArrayWCF.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayWCF.v-vcd.out",
+                  "mkTestbench_MkArrayWCF.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkArrayWCF.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkArrayWCF",
+                "mkDesign_MkArrayWCF"
+              ],
+              "top": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.ba",
+                  "mkDesign_MkArrayWCF.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayWCF.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkArrayWCF.cexe",
+                    "mkTestbench_MkArrayWCF.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayWCF.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayWCF.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArrayWCF.c.out",
+              "expected": "mkTestbench_MkArrayWCF.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.c.out",
+                  "mkTestbench_MkArrayWCF.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkArrayWCF",
+              "args": [],
+              "stdout": "mkTestbench_MkArrayWCF.c-vcd.out",
+              "vcd": "mkTestbench_MkArrayWCF.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkArrayWCF.c-vcd.out",
+                  "mkTestbench_MkArrayWCF.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkArrayWCF.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkArrayWCF.c-vcd.out",
+              "expected": "mkTestbench_MkArrayWCF.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkArrayWCF.c-vcd.out",
+                  "mkTestbench_MkArrayWCF.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 220,
+                  "endByte": 350,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 131
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

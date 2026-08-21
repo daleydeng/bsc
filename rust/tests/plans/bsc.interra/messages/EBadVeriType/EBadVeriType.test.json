@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/EBadVeriType/EBadVeriType",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/EBadVeriType/EBadVeriType.exp",
+    "sha256": "49091fee96e9d3154e81cc5826b2a01a2acd3d4c2c6bac72c75bf73147f3d56a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/EBadVeriType",
+  "fixtures": [
+    {
+      "path": "Fib.bs",
+      "sha256": "95a0d8221c39a722f17125f31cfc252ea81c6e852c81619fc82ff3ea5da5703b",
+      "role": "source"
+    },
+    {
+      "path": "Fib.bs.bsc-vcomp-out.expected",
+      "sha256": "b7e97af1bdc962a27097ba30efe881d21dfca54b5ec17f9294d317b5e4c3582f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Fib",
+      "resource": "normal",
+      "fixtures": [
+        "Fib.bs",
+        "Fib.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Fib",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Fib.bs",
+              "mode": "verilog",
+              "module": "mkFib8",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Fib.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Fib.bs"
+                ],
+                "outputs": [
+                  "Fib.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Fib.bs.bsc-vcomp-out",
+              "expected": "Fib.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Fib.bs.bsc-vcomp-out",
+                  "Fib.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 87,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

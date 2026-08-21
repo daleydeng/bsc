@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/BuildVector/BuildVector",
+  "origin": {
+    "path": "testsuite/bsc.lib/BuildVector/BuildVector.exp",
+    "sha256": "1c8d009b8b736424d581fe51c1a6206b57ae7c260843b9146367c18953c837be"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/BuildVector",
+  "fixtures": [
+    {
+      "path": "TestBuildVector.bsv",
+      "sha256": "f6cd99e0f8185afb89cac0c8343ad42a9c535968f092184decf312db6b3dbc28",
+      "role": "source"
+    },
+    {
+      "path": "TestBuildVectorFail.bsv",
+      "sha256": "3501d3d3a077e955d0c5edd76407878c4d8d3fe23022c2ef8f41abe9578d5b48",
+      "role": "source"
+    },
+    {
+      "path": "TestBuildVectorFail.bsv.bsc-out.expected",
+      "sha256": "811925bb5b6eb1ab5cb4ad887f26b9ab9e9f4977b6f4802b3b06851bc5ac89a6",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestBuildVector.out.expected",
+      "sha256": "44e83fc3f4803095bc50f7d0993c0b9e1f53982b6659bcd706f65dc3fb4fe480",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestBuildVector",
+      "resource": "heavy",
+      "fixtures": [
+        "TestBuildVector.bsv",
+        "sysTestBuildVector.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestBuildVector",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestBuildVector.bsv",
+              "mode": "verilog",
+              "module": "sysTestBuildVector",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestBuildVector.bsv"
+                ],
+                "outputs": [
+                  "TestBuildVector.bo",
+                  "TestBuildVector.bsv.bsc-vcomp-out",
+                  "sysTestBuildVector.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 56,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestBuildVector"
+              ],
+              "top": "sysTestBuildVector",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestBuildVector.v"
+                ],
+                "outputs": [
+                  "sysTestBuildVector.bsc-vcomp-out",
+                  "sysTestBuildVector.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 56,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestBuildVector",
+              "args": [],
+              "stdout": "sysTestBuildVector.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestBuildVector.vexe"
+                ],
+                "outputs": [
+                  "sysTestBuildVector.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 56,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestBuildVector.v.out",
+              "expected": "sysTestBuildVector.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestBuildVector.v.out",
+                  "sysTestBuildVector.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 56,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestBuildVector",
+              "args": [],
+              "stdout": "sysTestBuildVector.v-vcd.out",
+              "vcd": "sysTestBuildVector.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestBuildVector.vexe"
+                ],
+                "outputs": [
+                  "sysTestBuildVector.v-vcd.out",
+                  "sysTestBuildVector.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 56,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestBuildVector.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestBuildVector.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 56,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-TestBuildVectorFail",
+      "resource": "normal",
+      "fixtures": [
+        "TestBuildVectorFail.bsv",
+        "TestBuildVectorFail.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestBuildVectorFail",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestBuildVectorFail.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TestBuildVectorFail.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TestBuildVectorFail.bsv"
+                ],
+                "outputs": [
+                  "TestBuildVectorFail.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 127,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "TestBuildVectorFail.bsv.bsc-out",
+              "expected": "TestBuildVectorFail.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "TestBuildVectorFail.bsv.bsc-out",
+                  "TestBuildVectorFail.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 128,
+                  "endByte": 172,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

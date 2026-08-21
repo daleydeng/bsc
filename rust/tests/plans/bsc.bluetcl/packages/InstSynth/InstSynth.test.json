@@ -1,0 +1,534 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluetcl/packages/InstSynth/InstSynth",
+  "origin": {
+    "path": "testsuite/bsc.bluetcl/packages/InstSynth/InstSynth.exp",
+    "sha256": "c29b82cf61700f2ba8244df3cb5a19f1dea6ada369ed1b2a569c69a3046be86f"
+  },
+  "status": "blocked",
+  "fixtureDir": "testsuite/bsc.bluetcl/packages/InstSynth",
+  "fixtures": [
+    {
+      "path": "FIFO.include.bsv.expected",
+      "sha256": "92fa35450743fc2fb1d25bcce23f33a7a6762bd51c57c2ba8c4ed960dee62717",
+      "role": "golden"
+    },
+    {
+      "path": "FIFOLevel.include.bsv.expected",
+      "sha256": "022f25a325a750969936da9faac46b56e894d3e14872da64c39d1415b127ed41",
+      "role": "golden"
+    },
+    {
+      "path": "Inst.bsv",
+      "sha256": "d6ed65e2c8432a79cde95945f94fd82ce1d8105497f3f98efa93e66966ab6275",
+      "role": "source"
+    },
+    {
+      "path": "Inst_auto.bsv",
+      "sha256": "5c072a4854d5e4082fe1c5de819ed03e516df8a6ec8324a5b1a33cac34bff4b0",
+      "role": "source"
+    },
+    {
+      "path": "instsynth.tcl",
+      "sha256": "1a1c92949fd1b6e04e8185805316b6f7488fdeaa29a07880e1d870203d282bad",
+      "role": "script"
+    },
+    {
+      "path": "instsynth.tcl.bluetcl-out.expected",
+      "sha256": "cdbfe7ab114342e96e63f86568ca8c99d84a9df2ad8cafa6c22c6d43b90d0baa",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "instsynth-package-episode",
+      "resource": "normal",
+      "fixtures": [
+        "FIFO.include.bsv.expected",
+        "FIFOLevel.include.bsv.expected",
+        "Inst.bsv",
+        "Inst_auto.bsv",
+        "instsynth.tcl",
+        "instsynth.tcl.bluetcl-out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "bluetcl"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-package-run-compile-checks",
+          "operations": [
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "instsynth.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [],
+              "artifactOutputs": [
+                "FIFO.include.bsv",
+                "FIFOLevel.include.bsv"
+              ],
+              "stdout": "instsynth.tcl.bluetcl-out",
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "instsynth.tcl"
+                ],
+                "outputs": [
+                  "instsynth.tcl.bluetcl-out",
+                  "FIFO.include.bsv",
+                  "FIFOLevel.include.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 92,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "instsynth.tcl.bluetcl-out",
+              "expected": "instsynth.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "instsynth.tcl.bluetcl-out",
+                  "instsynth.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 92,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "instsynth.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [],
+              "artifactOutputs": [
+                "FIFO.include.bsv",
+                "FIFOLevel.include.bsv"
+              ],
+              "stdout": "instsynth.tcl.bluetcl-bh-out",
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "instsynth.tcl"
+                ],
+                "outputs": [
+                  "instsynth.tcl.bluetcl-bh-out",
+                  "FIFO.include.bsv",
+                  "FIFOLevel.include.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 92,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "instsynth.tcl.bluetcl-bh-out",
+              "expected": "instsynth.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "instsynth.tcl.bluetcl-bh-out",
+                  "instsynth.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 92,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "FIFO.include.bsv",
+              "expected": "FIFO.include.bsv.expected",
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FIFO.include.bsv",
+                  "FIFO.include.bsv.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 124,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "FIFOLevel.include.bsv",
+              "expected": "FIFOLevel.include.bsv.expected",
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FIFOLevel.include.bsv",
+                  "FIFOLevel.include.bsv.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 125,
+                  "endByte": 160,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Inst_auto.bsv",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "Inst_auto.bsv.bsc-out",
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst_auto.bsv",
+                  "FIFO.include.bsv",
+                  "FIFOLevel.include.bsv"
+                ],
+                "outputs": [
+                  "Inst_auto.bsv.bsc-out",
+                  "Inst_auto.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 211,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Inst.bsv",
+              "mode": "verilog",
+              "module": "sysInst",
+              "args": [
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Inst.bsv.bsc-vcomp-out",
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst.bsv",
+                  "Inst_auto.bo"
+                ],
+                "outputs": [
+                  "Inst.bo",
+                  "Inst.bsv.bsc-vcomp-out",
+                  "sysInst.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 212,
+                  "endByte": 263,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Inst.bsv.bsc-vcomp-out",
+              "text": "Using mkFIFO__FIFO_int_ for mkFIFO of type",
+              "count": 4,
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 340,
+                  "endByte": 424,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 85
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Inst.bsv.bsc-vcomp-out",
+              "text": "No concrete definition of mkFIFO for type",
+              "count": 2,
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 425,
+                  "endByte": 508,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Inst.bsv.bsc-vcomp-out",
+              "text": "Using mkFIFOCount__FIFOCountIfc_int_10_ for mkFIFOCount of type:",
+              "count": 2,
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 509,
+                  "endByte": 615,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Inst.bsv.bsc-vcomp-out",
+              "text": "Using mkFIFOCount__FIFOCountIfc_int_11_ for mkFIFOCount of type:",
+              "count": 2,
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 616,
+                  "endByte": 722,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Inst.bsv.bsc-vcomp-out",
+              "text": "No concrete definition of mkFIFOCount",
+              "count": 4,
+              "requires": [
+                {
+                  "bluetcl_package": "inst_synth"
+                }
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Inst.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 723,
+                  "endByte": 802,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "fixture.missing",
+      "message": "could not validate fixture \\\\?\\D:\\projects\\hw\\bsc\\testsuite\\bsc.bluetcl\\packages\\InstSynth\\instsynth.tcl.bluetcl-bh-out.expected: inspect fixture \\\\?\\D:\\projects\\hw\\bsc\\testsuite\\bsc.bluetcl\\packages\\InstSynth\\instsynth.tcl.bluetcl-bh-out.expected: 系统找不到指定的文件。 (os error 2)",
+      "provenance": {
+        "span": {
+          "startByte": 0,
+          "endByte": 0,
+          "startLine": 1,
+          "startColumn": 1,
+          "endLine": 1,
+          "endColumn": 1
+        }
+      }
+    }
+  ]
+}

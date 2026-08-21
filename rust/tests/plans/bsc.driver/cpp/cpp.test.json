@@ -1,0 +1,998 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.driver/cpp/cpp",
+  "origin": {
+    "path": "testsuite/bsc.driver/cpp/cpp.exp",
+    "sha256": "ff0764bdcf5d57315d61c7ed6f1669bd620f4c45f4e38f7b9ca51db413dea3ae"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.driver/cpp",
+  "fixtures": [
+    {
+      "path": "Cpreprocess.bsv",
+      "sha256": "233583fba3fe7c71411907445512f9cd0bb437c806b29ad080ebb3fe905923f4",
+      "role": "source"
+    },
+    {
+      "path": "Cpreprocess1.bsv",
+      "source": "Cpreprocess.bsv",
+      "sha256": "233583fba3fe7c71411907445512f9cd0bb437c806b29ad080ebb3fe905923f4",
+      "role": "source"
+    },
+    {
+      "path": "Cpreprocess_line.bsv",
+      "sha256": "850b8095fad535846ef1f81b64f5be2cb3226e3f70549f85fbc34c7c9fe0c6c0",
+      "role": "source"
+    },
+    {
+      "path": "Cpreprocess_line.bsv.bsc-out.expected",
+      "sha256": "efd5d3bd6bf6977e30df393730874eda5b805f23c82f38ec0078c7bb43889a57",
+      "role": "golden"
+    },
+    {
+      "path": "Cpreprocess_unusual_format.bsv",
+      "sha256": "20877e013c9490fdba678cbd94017d1b259eec3f40dfa1139fc7390856fb3246",
+      "role": "source"
+    },
+    {
+      "path": "more.bsv",
+      "sha256": "cfb588ff1be57c729a09487097cc3a519ea6b6ef07b7ea276b138afc3767f101",
+      "role": "source"
+    },
+    {
+      "path": "sysCpreprocess.out.expected",
+      "sha256": "a4f3034f9d97d6797bbf04f837863a9fc810b87e45140954b22f966709424005",
+      "role": "golden"
+    },
+    {
+      "path": "sysCpreprocess_unusual_format.out.expected",
+      "sha256": "b693a5048e38040449b7318cf6a3b19278dee7d6559abfb7adafa865f8720489",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysCpreprocess",
+      "resource": "heavy",
+      "fixtures": [
+        "Cpreprocess.bsv",
+        "sysCpreprocess.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCpreprocess",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Cpreprocess.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCpreprocess",
+              "args": [
+                "-cpp",
+                "-Xcpp",
+                "-DKEN123",
+                "-Xcpp",
+                "-DMESSAGE=\"don't pa\\\"nic\""
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess.bsv"
+                ],
+                "outputs": [
+                  "Cpreprocess.bo",
+                  "Cpreprocess.bsv.bsc-vcomp-out",
+                  "sysCpreprocess.ba",
+                  "sysCpreprocess.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCpreprocess"
+              ],
+              "top": "sysCpreprocess",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.v"
+                ],
+                "outputs": [
+                  "sysCpreprocess.bsc-vcomp-out",
+                  "sysCpreprocess.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCpreprocess",
+              "args": [],
+              "stdout": "sysCpreprocess.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.vexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCpreprocess.v.out",
+              "expected": "sysCpreprocess.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.v.out",
+                  "sysCpreprocess.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCpreprocess",
+              "args": [],
+              "stdout": "sysCpreprocess.v-vcd.out",
+              "vcd": "sysCpreprocess.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.vexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess.v-vcd.out",
+                  "sysCpreprocess.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCpreprocess.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCpreprocess"
+              ],
+              "top": "sysCpreprocess",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.ba"
+                ],
+                "outputs": [
+                  "sysCpreprocess.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCpreprocess.cexe",
+                    "sysCpreprocess.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCpreprocess",
+              "args": [],
+              "stdout": "sysCpreprocess.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.cexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCpreprocess.c.out",
+              "expected": "sysCpreprocess.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.c.out",
+                  "sysCpreprocess.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCpreprocess",
+              "args": [],
+              "stdout": "sysCpreprocess.c-vcd.out",
+              "vcd": "sysCpreprocess.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.cexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess.c-vcd.out",
+                  "sysCpreprocess.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCpreprocess.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCpreprocess.c-vcd.out",
+              "expected": "sysCpreprocess.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess.c-vcd.out",
+                  "sysCpreprocess.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 181,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 107
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Cpreprocess1",
+      "resource": "normal",
+      "fixtures": [
+        "Cpreprocess1.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Cpreprocess1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Cpreprocess1.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Cpreprocess1.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess1.bsv"
+                ],
+                "outputs": [
+                  "Cpreprocess1.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 205,
+                  "endByte": 246,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Cpreprocess1.bsv.bsc-out",
+              "kind": "error",
+              "code": "P0210",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess1.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 205,
+                  "endByte": 246,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-Cpreprocess_line",
+      "resource": "normal",
+      "fixtures": [
+        "Cpreprocess_line.bsv",
+        "Cpreprocess_line.bsv.bsc-out.expected",
+        "more.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-normalize-compare",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Cpreprocess_line.bsv",
+              "mode": "frontend",
+              "args": [
+                "-cpp"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Cpreprocess_line.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess_line.bsv",
+                  "more.bsv"
+                ],
+                "outputs": [
+                  "Cpreprocess_line.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 396,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "fs.rewrite_darwin_cpp_include_path",
+              "source": "Cpreprocess_line.bsv.bsc-out",
+              "destination": "Cpreprocess_line.bsv.bsc-out.filtered",
+              "requires": [
+                "darwin"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess_line.bsv.bsc-out"
+                ],
+                "outputs": [
+                  "Cpreprocess_line.bsv.bsc-out.filtered"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 554,
+                  "endByte": 670,
+                  "startLine": 15,
+                  "startColumn": 5,
+                  "endLine": 17,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "fs.move_replace",
+              "source": "Cpreprocess_line.bsv.bsc-out.filtered",
+              "destination": "Cpreprocess_line.bsv.bsc-out",
+              "requires": [
+                "darwin"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess_line.bsv.bsc-out.filtered",
+                  "Cpreprocess_line.bsv.bsc-out"
+                ],
+                "outputs": [
+                  "Cpreprocess_line.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Cpreprocess_line.bsv.bsc-out.filtered"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 675,
+                  "endByte": 749,
+                  "startLine": 18,
+                  "startColumn": 5,
+                  "endLine": 19,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Cpreprocess_line.bsv.bsc-out",
+              "expected": "Cpreprocess_line.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess_line.bsv.bsc-out",
+                  "Cpreprocess_line.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 752,
+                  "endByte": 793,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysCpreprocess_unusual_format",
+      "resource": "heavy",
+      "fixtures": [
+        "Cpreprocess_unusual_format.bsv",
+        "sysCpreprocess_unusual_format.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCpreprocess_unusual_format",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Cpreprocess_unusual_format.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCpreprocess_unusual_format",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Cpreprocess_unusual_format.bsv"
+                ],
+                "outputs": [
+                  "Cpreprocess_unusual_format.bo",
+                  "Cpreprocess_unusual_format.bsv.bsc-vcomp-out",
+                  "sysCpreprocess_unusual_format.ba",
+                  "sysCpreprocess_unusual_format.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCpreprocess_unusual_format"
+              ],
+              "top": "sysCpreprocess_unusual_format",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.v"
+                ],
+                "outputs": [
+                  "sysCpreprocess_unusual_format.bsc-vcomp-out",
+                  "sysCpreprocess_unusual_format.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCpreprocess_unusual_format",
+              "args": [],
+              "stdout": "sysCpreprocess_unusual_format.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.vexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess_unusual_format.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCpreprocess_unusual_format.v.out",
+              "expected": "sysCpreprocess_unusual_format.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.v.out",
+                  "sysCpreprocess_unusual_format.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCpreprocess_unusual_format",
+              "args": [],
+              "stdout": "sysCpreprocess_unusual_format.v-vcd.out",
+              "vcd": "sysCpreprocess_unusual_format.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.vexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess_unusual_format.v-vcd.out",
+                  "sysCpreprocess_unusual_format.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCpreprocess_unusual_format.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCpreprocess_unusual_format"
+              ],
+              "top": "sysCpreprocess_unusual_format",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.ba"
+                ],
+                "outputs": [
+                  "sysCpreprocess_unusual_format.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCpreprocess_unusual_format.cexe",
+                    "sysCpreprocess_unusual_format.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCpreprocess_unusual_format",
+              "args": [],
+              "stdout": "sysCpreprocess_unusual_format.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.cexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess_unusual_format.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCpreprocess_unusual_format.c.out",
+              "expected": "sysCpreprocess_unusual_format.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.c.out",
+                  "sysCpreprocess_unusual_format.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCpreprocess_unusual_format",
+              "args": [],
+              "stdout": "sysCpreprocess_unusual_format.c-vcd.out",
+              "vcd": "sysCpreprocess_unusual_format.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.cexe"
+                ],
+                "outputs": [
+                  "sysCpreprocess_unusual_format.c-vcd.out",
+                  "sysCpreprocess_unusual_format.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCpreprocess_unusual_format.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCpreprocess_unusual_format.c-vcd.out",
+              "expected": "sysCpreprocess_unusual_format.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCpreprocess_unusual_format.c-vcd.out",
+                  "sysCpreprocess_unusual_format.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 881,
+                  "endByte": 923,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

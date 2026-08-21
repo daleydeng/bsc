@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b431/b431",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b431/b431.exp",
+    "sha256": "42a0d00c5c3d21a7b5e38a462ed79aeadea38e0ee4356a8bc54ffeb7d1e6c0ac"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b431",
+  "fixtures": [
+    {
+      "path": "Bug431.bsv",
+      "sha256": "65dc7adf4b784c1ab1c222523165bd973903d7cbeae025ab13ad6bda59a754df",
+      "role": "source"
+    },
+    {
+      "path": "sysBug431.out.expected",
+      "sha256": "1247cb8e9f76d932f47b2bdd03c7534fc0200f0bd3068c7224a57afc698d334f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBug431",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug431.bsv",
+        "sysBug431.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug431",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug431.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBug431",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug431.bsv"
+                ],
+                "outputs": [
+                  "Bug431.bo",
+                  "Bug431.bsv.bsc-vcomp-out",
+                  "sysBug431.ba",
+                  "sysBug431.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBug431"
+              ],
+              "top": "sysBug431",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.v"
+                ],
+                "outputs": [
+                  "sysBug431.bsc-vcomp-out",
+                  "sysBug431.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug431",
+              "args": [],
+              "stdout": "sysBug431.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.vexe"
+                ],
+                "outputs": [
+                  "sysBug431.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug431.v.out",
+              "expected": "sysBug431.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.v.out",
+                  "sysBug431.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug431",
+              "args": [],
+              "stdout": "sysBug431.v-vcd.out",
+              "vcd": "sysBug431.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.vexe"
+                ],
+                "outputs": [
+                  "sysBug431.v-vcd.out",
+                  "sysBug431.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBug431.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug431"
+              ],
+              "top": "sysBug431",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.ba"
+                ],
+                "outputs": [
+                  "sysBug431.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug431.cexe",
+                    "sysBug431.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug431",
+              "args": [],
+              "stdout": "sysBug431.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.cexe"
+                ],
+                "outputs": [
+                  "sysBug431.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug431.c.out",
+              "expected": "sysBug431.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.c.out",
+                  "sysBug431.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug431",
+              "args": [],
+              "stdout": "sysBug431.c-vcd.out",
+              "vcd": "sysBug431.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.cexe"
+                ],
+                "outputs": [
+                  "sysBug431.c-vcd.out",
+                  "sysBug431.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug431.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug431.c-vcd.out",
+              "expected": "sysBug431.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug431.c-vcd.out",
+                  "sysBug431.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

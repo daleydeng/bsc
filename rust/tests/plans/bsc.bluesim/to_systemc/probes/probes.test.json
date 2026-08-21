@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/to_systemc/probes/probes",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/to_systemc/probes/probes.exp",
+    "sha256": "506f74d1615ce63ac44246c5f0ae04d8b9fdeb555997fab50736723c031dba4b"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/to_systemc/probes",
+  "fixtures": [
+    {
+      "path": "Dut.bsv",
+      "sha256": "1cbf316d163b848b8166bc5f9da4535416d9445e0e7af1cbf9904a65e8a2ce30",
+      "role": "source"
+    },
+    {
+      "path": "probes.out.expected",
+      "sha256": "6b6171368a36b41c7ee61225207cf703f1052c04253167f8b1930baba05571ca",
+      "role": "golden"
+    },
+    {
+      "path": "top.sc",
+      "sha256": "4f7516814aff8d1d250e84c3ba0563739006fbb3ccc6acc1d771a2d14804e546",
+      "role": "data"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "systemc-workflow-probes",
+      "resource": "heavy",
+      "fixtures": [
+        "Dut.bsv",
+        "probes.out.expected",
+        "top.sc"
+      ],
+      "requires": [
+        "bluesim",
+        "system_c"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "systemc-run",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Dut.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Dut.bsv"
+                ],
+                "outputs": [
+                  "Dut.bsv.bsc-ccomp-out",
+                  "Dut.bo",
+                  "mkDut.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 74,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "mkDut.ba"
+              ],
+              "top": "mkDut",
+              "artifacts": {
+                "inputs": [
+                  "mkDut.ba"
+                ],
+                "outputs": [
+                  "mkDut.bsc-ccomp-out",
+                  "mkDut.o",
+                  "mkDut_systemc.o",
+                  "model_mkDut.o"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 117,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "systemc.cxx_link",
+              "executable": "probes",
+              "sources": [
+                "top.sc"
+              ],
+              "topModules": [
+                "mkDut"
+              ],
+              "otherModules": [],
+              "defines": [],
+              "artifacts": {
+                "inputs": [
+                  "top.sc",
+                  "mkDut.o",
+                  "mkDut_systemc.o",
+                  "model_mkDut.o"
+                ],
+                "outputs": [
+                  "probes.syscexe",
+                  "probes.cxx-comp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 118,
+                  "endByte": 167,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "systemc.run",
+              "executable": "probes",
+              "stdout": "probes.out",
+              "sortOutput": false,
+              "artifacts": {
+                "inputs": [
+                  "probes.syscexe"
+                ],
+                "outputs": [
+                  "probes.out",
+                  "probes.raw.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 168,
+                  "endByte": 197,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "probes.out",
+              "expected": "probes.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "probes.out",
+                  "probes.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 168,
+                  "endByte": 197,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

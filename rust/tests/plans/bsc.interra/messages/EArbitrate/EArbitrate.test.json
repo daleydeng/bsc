@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/EArbitrate/EArbitrate",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/EArbitrate/EArbitrate.exp",
+    "sha256": "af65418d2862a9b0246b6b62f0ab768e686feec7617ad8d4d5da2e9147994bb7"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/EArbitrate",
+  "fixtures": [
+    {
+      "path": "ResourceTwoRules.bs",
+      "sha256": "4c4c3b72db11c1466693f395f0461e4737ebf8debc33b0d6c3c3398a284a5f96",
+      "role": "source"
+    },
+    {
+      "path": "ResourceTwoRules.bs.bsc-vcomp-out.expected",
+      "sha256": "5edb4debb6a750263b114a6009585799579a310b4d57fc557fb07477e820ac5b",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ResourceTwoRules",
+      "resource": "normal",
+      "fixtures": [
+        "ResourceTwoRules.bs",
+        "ResourceTwoRules.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ResourceTwoRules",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ResourceTwoRules.bs",
+              "mode": "verilog",
+              "module": "sysResourceTwoRules",
+              "args": [
+                "-resource-simple"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ResourceTwoRules.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ResourceTwoRules.bs"
+                ],
+                "outputs": [
+                  "ResourceTwoRules.bo",
+                  "ResourceTwoRules.bs.bsc-vcomp-out",
+                  "sysResourceTwoRules.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 98,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ResourceTwoRules.bs.bsc-vcomp-out",
+              "expected": "ResourceTwoRules.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ResourceTwoRules.bs.bsc-vcomp-out",
+                  "ResourceTwoRules.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 146,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 47
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

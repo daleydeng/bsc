@@ -1,0 +1,476 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/CompletionBuffer/CompletionBuffer",
+  "origin": {
+    "path": "testsuite/bsc.lib/CompletionBuffer/CompletionBuffer.exp",
+    "sha256": "326050bcb8bb319e2709a2c6580fa256ade42f62b17608d61056ea764e777620"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/CompletionBuffer",
+  "fixtures": [
+    {
+      "path": "TestCompletionBuffer.bsv",
+      "sha256": "4b502fe65775eab1f88d2011eb96cad6e5d089c2d9628a1ee89c59ce8f258fe5",
+      "role": "source"
+    },
+    {
+      "path": "TestCompletionBufferSchedule.bsv",
+      "sha256": "24f544da534a394ed12522b1129307560c8eadf712a3b827bba5cc3574b8a494",
+      "role": "source"
+    },
+    {
+      "path": "mkCompletionBuffer_4_Bit32.sched.expected",
+      "sha256": "ce2a9baa896fa70eec98be49f1ba7926adbbf87387f25a78663cce8194522155",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestCompletionBuffer.out.expected",
+      "sha256": "ebb3f509734b58b29ca07942f957118619e272905c79ad535dde73930f8e886f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestCompletionBuffer",
+      "resource": "heavy",
+      "fixtures": [
+        "TestCompletionBuffer.bsv",
+        "sysTestCompletionBuffer.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestCompletionBuffer",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestCompletionBuffer.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestCompletionBuffer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestCompletionBuffer.bsv"
+                ],
+                "outputs": [
+                  "TestCompletionBuffer.bo",
+                  "TestCompletionBuffer.bsv.bsc-vcomp-out",
+                  "sysTestCompletionBuffer.ba",
+                  "sysTestCompletionBuffer.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestCompletionBuffer"
+              ],
+              "top": "sysTestCompletionBuffer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.v"
+                ],
+                "outputs": [
+                  "sysTestCompletionBuffer.bsc-vcomp-out",
+                  "sysTestCompletionBuffer.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestCompletionBuffer",
+              "args": [],
+              "stdout": "sysTestCompletionBuffer.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.vexe"
+                ],
+                "outputs": [
+                  "sysTestCompletionBuffer.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestCompletionBuffer.v.out",
+              "expected": "sysTestCompletionBuffer.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.v.out",
+                  "sysTestCompletionBuffer.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestCompletionBuffer",
+              "args": [],
+              "stdout": "sysTestCompletionBuffer.v-vcd.out",
+              "vcd": "sysTestCompletionBuffer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.vexe"
+                ],
+                "outputs": [
+                  "sysTestCompletionBuffer.v-vcd.out",
+                  "sysTestCompletionBuffer.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestCompletionBuffer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestCompletionBuffer"
+              ],
+              "top": "sysTestCompletionBuffer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.ba"
+                ],
+                "outputs": [
+                  "sysTestCompletionBuffer.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestCompletionBuffer.cexe",
+                    "sysTestCompletionBuffer.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestCompletionBuffer",
+              "args": [],
+              "stdout": "sysTestCompletionBuffer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.cexe"
+                ],
+                "outputs": [
+                  "sysTestCompletionBuffer.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestCompletionBuffer.c.out",
+              "expected": "sysTestCompletionBuffer.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.c.out",
+                  "sysTestCompletionBuffer.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestCompletionBuffer",
+              "args": [],
+              "stdout": "sysTestCompletionBuffer.c-vcd.out",
+              "vcd": "sysTestCompletionBuffer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.cexe"
+                ],
+                "outputs": [
+                  "sysTestCompletionBuffer.c-vcd.out",
+                  "sysTestCompletionBuffer.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestCompletionBuffer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestCompletionBuffer.c-vcd.out",
+              "expected": "sysTestCompletionBuffer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestCompletionBuffer.c-vcd.out",
+                  "sysTestCompletionBuffer.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 86,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-TestCompletionBufferSchedule",
+      "resource": "normal",
+      "fixtures": [
+        "TestCompletionBufferSchedule.bsv",
+        "mkCompletionBuffer_4_Bit32.sched.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestCompletionBufferSchedule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestCompletionBufferSchedule.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestCompletionBufferSchedule.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "TestCompletionBufferSchedule.bsv"
+                ],
+                "outputs": [
+                  "TestCompletionBufferSchedule.bo",
+                  "TestCompletionBufferSchedule.bsv.bsc-sched-out",
+                  "mkCompletionBuffer_4_Bit32.sched",
+                  "mkCompletionBuffer_4_Bit32.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 252,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkCompletionBuffer_4_Bit32.sched",
+              "expected": "mkCompletionBuffer_4_Bit32.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkCompletionBuffer_4_Bit32.sched",
+                  "mkCompletionBuffer_4_Bit32.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 253,
+                  "endByte": 298,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID336/bugID336",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID336/bugID336.exp",
+    "sha256": "098700c4f3618a394a043afd38aabcab35334cfc482e1132ea77180664d6f33a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID336",
+  "fixtures": [
+    {
+      "path": "Test.bsv",
+      "sha256": "7a26fdb2f0e60926c0ce4be7ecb24091e1c879d03aa476133a271308f45fdd85",
+      "role": "source"
+    },
+    {
+      "path": "Test.bsv.bsc-vcomp-out.expected",
+      "sha256": "3aa4ca4104154062418949de814a9fbcad87c3feb542599a94b3e936b46391cc",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "Test.bsv",
+        "Test.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Test.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 60,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Test.bsv.bsc-vcomp-out",
+              "expected": "Test.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv.bsc-vcomp-out",
+                  "Test.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 62,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

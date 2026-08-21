@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1353/b1353",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1353/b1353.exp",
+    "sha256": "924d089029c52039fa219aca253845cf88915e0ca9daa7695efb1a684d68e77f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1353",
+  "fixtures": [
+    {
+      "path": "Bug1353.bsv",
+      "sha256": "86e8639a3047bde8e27a7ca9bcffe94da80ac4675335ca2d8c9c5ad732ead2a2",
+      "role": "source"
+    },
+    {
+      "path": "sysBug1353.out.expected",
+      "sha256": "eecfc7be87b4338be7c24219b43cac18f59dcfdeccd9b017b61d140c8541b2f0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBug1353",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug1353.bsv",
+        "sysBug1353.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug1353",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug1353.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBug1353",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug1353.bsv"
+                ],
+                "outputs": [
+                  "Bug1353.bo",
+                  "Bug1353.bsv.bsc-vcomp-out",
+                  "sysBug1353.ba",
+                  "sysBug1353.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBug1353"
+              ],
+              "top": "sysBug1353",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.v"
+                ],
+                "outputs": [
+                  "sysBug1353.bsc-vcomp-out",
+                  "sysBug1353.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug1353",
+              "args": [],
+              "stdout": "sysBug1353.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.vexe"
+                ],
+                "outputs": [
+                  "sysBug1353.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug1353.v.out",
+              "expected": "sysBug1353.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.v.out",
+                  "sysBug1353.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBug1353",
+              "args": [],
+              "stdout": "sysBug1353.v-vcd.out",
+              "vcd": "sysBug1353.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.vexe"
+                ],
+                "outputs": [
+                  "sysBug1353.v-vcd.out",
+                  "sysBug1353.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBug1353.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug1353"
+              ],
+              "top": "sysBug1353",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.ba"
+                ],
+                "outputs": [
+                  "sysBug1353.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug1353.cexe",
+                    "sysBug1353.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug1353",
+              "args": [],
+              "stdout": "sysBug1353.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.cexe"
+                ],
+                "outputs": [
+                  "sysBug1353.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug1353.c.out",
+              "expected": "sysBug1353.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.c.out",
+                  "sysBug1353.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug1353",
+              "args": [],
+              "stdout": "sysBug1353.c-vcd.out",
+              "vcd": "sysBug1353.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.cexe"
+                ],
+                "outputs": [
+                  "sysBug1353.c-vcd.out",
+                  "sysBug1353.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug1353.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug1353.c-vcd.out",
+              "expected": "sysBug1353.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1353.c-vcd.out",
+                  "sysBug1353.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

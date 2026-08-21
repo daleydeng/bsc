@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/Life/example_life",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/Life/example_life.exp",
+    "sha256": "144279890b0700ede73a9be53d3d0fd547a4abc8befb28deb0672922f56bec10"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/Life",
+  "fixtures": [
+    {
+      "path": "Life.bsv",
+      "sha256": "b1b81ff9be8ab70284b93d6804485a4749858e148e2ae25c13a7b52fad2a1cad",
+      "role": "source"
+    },
+    {
+      "path": "sysLife.out.expected",
+      "sha256": "4675aab7ebe3d8656d61ce819e9539d69e053fa48f6112058226c271539a46e0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysLife",
+      "resource": "heavy",
+      "fixtures": [
+        "Life.bsv",
+        "sysLife.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLife",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Life.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysLife",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Life.bsv"
+                ],
+                "outputs": [
+                  "Life.bo",
+                  "Life.bsv.bsc-vcomp-out",
+                  "mkLife55.ba",
+                  "mkLife55.v",
+                  "sysLife.ba",
+                  "sysLife.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLife",
+                "mkLife55"
+              ],
+              "top": "sysLife",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLife.v",
+                  "mkLife55.v"
+                ],
+                "outputs": [
+                  "sysLife.bsc-vcomp-out",
+                  "sysLife.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLife",
+              "args": [],
+              "stdout": "sysLife.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.vexe"
+                ],
+                "outputs": [
+                  "sysLife.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLife.v.out",
+              "expected": "sysLife.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.v.out",
+                  "sysLife.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLife",
+              "args": [],
+              "stdout": "sysLife.v-vcd.out",
+              "vcd": "sysLife.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.vexe"
+                ],
+                "outputs": [
+                  "sysLife.v-vcd.out",
+                  "sysLife.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLife.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLife",
+                "mkLife55"
+              ],
+              "top": "sysLife",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLife.ba",
+                  "mkLife55.ba"
+                ],
+                "outputs": [
+                  "sysLife.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLife.cexe",
+                    "sysLife.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLife",
+              "args": [],
+              "stdout": "sysLife.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.cexe"
+                ],
+                "outputs": [
+                  "sysLife.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLife.c.out",
+              "expected": "sysLife.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.c.out",
+                  "sysLife.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLife",
+              "args": [],
+              "stdout": "sysLife.c-vcd.out",
+              "vcd": "sysLife.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.cexe"
+                ],
+                "outputs": [
+                  "sysLife.c-vcd.out",
+                  "sysLife.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLife.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLife.c-vcd.out",
+              "expected": "sysLife.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLife.c-vcd.out",
+                  "sysLife.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

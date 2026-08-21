@@ -1,0 +1,835 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/oint/oint",
+  "origin": {
+    "path": "testsuite/bsc.lib/oint/oint.exp",
+    "sha256": "5e21faf8391709bcfd5429f128289e364105d22c00d1ea0ab8166f235cbc288e"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/oint",
+  "fixtures": [
+    {
+      "path": "OIntBroken.bsv",
+      "sha256": "99814a04b9fa7a502cc4ea1a3a9daed2bc9e2633b6f5c59811637131d6e398bd",
+      "role": "source"
+    },
+    {
+      "path": "OIntDynamic.bsv",
+      "sha256": "0604ffda521bd303c17f7c5d886dadbb06f7f8182ba729528ccda4e4c780cba1",
+      "role": "source"
+    },
+    {
+      "path": "OIntDynamicHigh.bsv",
+      "sha256": "fe3190e235870311ddd63d2d159e21e2bb5fc160b762177de6f9775f50fd1a2e",
+      "role": "source"
+    },
+    {
+      "path": "OIntDynamicLow.bsv",
+      "sha256": "4bc11a16e7643fb9bcbd6a55560e2252f3ac83d99b9ab52dd3be2582d110f463",
+      "role": "source"
+    },
+    {
+      "path": "OIntHigh.bsv",
+      "sha256": "ffb214e0a62553dd48effb22c09c599943f9c689c1274cf0bf4c9e57ebe773b5",
+      "role": "source"
+    },
+    {
+      "path": "OIntLow.bsv",
+      "sha256": "16b909007e7c04ae93c625825c94c5eef5137944b77003e138ed7b9256313df6",
+      "role": "source"
+    },
+    {
+      "path": "sysOIntDynamic.out.expected",
+      "sha256": "abcedfe11678b96c03330e309bfc3d0eb4494450bbe4f0d13fa905745d6ed590",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-OIntBroken",
+      "resource": "normal",
+      "fixtures": [
+        "OIntBroken.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OIntBroken",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OIntBroken.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "OIntBroken.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OIntBroken.bsv"
+                ],
+                "outputs": [
+                  "OIntBroken.bo",
+                  "OIntBroken.bsv.bsc-vcomp-out",
+                  "sysOIntBroken.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 61,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OIntBroken.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "OIntBroken.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1268"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 61,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OIntBroken.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "OIntBroken.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 61,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-OIntLow",
+      "resource": "normal",
+      "fixtures": [
+        "OIntLow.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OIntLow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OIntLow.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "OIntLow.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OIntLow.bsv"
+                ],
+                "outputs": [
+                  "OIntLow.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 62,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OIntLow.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "OIntLow.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 62,
+                  "endByte": 106,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-OIntHigh",
+      "resource": "normal",
+      "fixtures": [
+        "OIntHigh.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OIntHigh",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OIntHigh.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "OIntHigh.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OIntHigh.bsv"
+                ],
+                "outputs": [
+                  "OIntHigh.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 152,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OIntHigh.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "OIntHigh.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 152,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysOIntDynamic",
+      "resource": "heavy",
+      "fixtures": [
+        "OIntDynamic.bsv",
+        "sysOIntDynamic.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysOIntDynamic",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "OIntDynamic.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysOIntDynamic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "OIntDynamic.bsv"
+                ],
+                "outputs": [
+                  "OIntDynamic.bo",
+                  "OIntDynamic.bsv.bsc-vcomp-out",
+                  "sysOIntDynamic.ba",
+                  "sysOIntDynamic.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysOIntDynamic"
+              ],
+              "top": "sysOIntDynamic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.v"
+                ],
+                "outputs": [
+                  "sysOIntDynamic.bsc-vcomp-out",
+                  "sysOIntDynamic.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysOIntDynamic",
+              "args": [],
+              "stdout": "sysOIntDynamic.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.vexe"
+                ],
+                "outputs": [
+                  "sysOIntDynamic.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOIntDynamic.v.out",
+              "expected": "sysOIntDynamic.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.v.out",
+                  "sysOIntDynamic.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysOIntDynamic",
+              "args": [],
+              "stdout": "sysOIntDynamic.v-vcd.out",
+              "vcd": "sysOIntDynamic.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.vexe"
+                ],
+                "outputs": [
+                  "sysOIntDynamic.v-vcd.out",
+                  "sysOIntDynamic.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysOIntDynamic.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysOIntDynamic"
+              ],
+              "top": "sysOIntDynamic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.ba"
+                ],
+                "outputs": [
+                  "sysOIntDynamic.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysOIntDynamic.cexe",
+                    "sysOIntDynamic.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysOIntDynamic",
+              "args": [],
+              "stdout": "sysOIntDynamic.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.cexe"
+                ],
+                "outputs": [
+                  "sysOIntDynamic.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOIntDynamic.c.out",
+              "expected": "sysOIntDynamic.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.c.out",
+                  "sysOIntDynamic.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysOIntDynamic",
+              "args": [],
+              "stdout": "sysOIntDynamic.c-vcd.out",
+              "vcd": "sysOIntDynamic.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.cexe"
+                ],
+                "outputs": [
+                  "sysOIntDynamic.c-vcd.out",
+                  "sysOIntDynamic.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysOIntDynamic.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysOIntDynamic.c-vcd.out",
+              "expected": "sysOIntDynamic.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysOIntDynamic.c-vcd.out",
+                  "sysOIntDynamic.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 181,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-OIntDynamicLow",
+      "resource": "normal",
+      "fixtures": [
+        "OIntDynamicLow.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OIntDynamicLow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OIntDynamicLow.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "OIntDynamicLow.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OIntDynamicLow.bsv"
+                ],
+                "outputs": [
+                  "OIntDynamicLow.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 183,
+                  "endByte": 234,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OIntDynamicLow.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "OIntDynamicLow.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 183,
+                  "endByte": 234,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-OIntDynamicHigh",
+      "resource": "normal",
+      "fixtures": [
+        "OIntDynamicHigh.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OIntDynamicHigh",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OIntDynamicHigh.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "OIntDynamicHigh.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OIntDynamicHigh.bsv"
+                ],
+                "outputs": [
+                  "OIntDynamicHigh.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 235,
+                  "endByte": 287,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OIntDynamicHigh.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "OIntDynamicHigh.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 235,
+                  "endByte": 287,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Tieoff/Tieoff",
+  "origin": {
+    "path": "testsuite/bsc.lib/Tieoff/Tieoff.exp",
+    "sha256": "dfd2f311ba51744a15513e81aa12c8a6a2bbb99d16e9a31fcf8246a8a33d6c68"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Tieoff",
+  "fixtures": [
+    {
+      "path": "TieOffTest.bsv",
+      "sha256": "3ab72cf54342d7c85502755983ad356e33d3e95b2e4d3d7e27cf89fd58d61fbb",
+      "role": "source"
+    },
+    {
+      "path": "sysTieOffTest.out.expected",
+      "sha256": "549adcb972e00d02bdd01fd4f8a85fce7acea3076d130bae47bf8ee7772e178c",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTieOffTest",
+      "resource": "heavy",
+      "fixtures": [
+        "TieOffTest.bsv",
+        "sysTieOffTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTieOffTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TieOffTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTieOffTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TieOffTest.bsv"
+                ],
+                "outputs": [
+                  "TieOffTest.bo",
+                  "TieOffTest.bsv.bsc-vcomp-out",
+                  "sysTieOffTest.ba",
+                  "sysTieOffTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTieOffTest"
+              ],
+              "top": "sysTieOffTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.v"
+                ],
+                "outputs": [
+                  "sysTieOffTest.bsc-vcomp-out",
+                  "sysTieOffTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTieOffTest",
+              "args": [],
+              "stdout": "sysTieOffTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.vexe"
+                ],
+                "outputs": [
+                  "sysTieOffTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTieOffTest.v.out",
+              "expected": "sysTieOffTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.v.out",
+                  "sysTieOffTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTieOffTest",
+              "args": [],
+              "stdout": "sysTieOffTest.v-vcd.out",
+              "vcd": "sysTieOffTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.vexe"
+                ],
+                "outputs": [
+                  "sysTieOffTest.v-vcd.out",
+                  "sysTieOffTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTieOffTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTieOffTest"
+              ],
+              "top": "sysTieOffTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.ba"
+                ],
+                "outputs": [
+                  "sysTieOffTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTieOffTest.cexe",
+                    "sysTieOffTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTieOffTest",
+              "args": [],
+              "stdout": "sysTieOffTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.cexe"
+                ],
+                "outputs": [
+                  "sysTieOffTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTieOffTest.c.out",
+              "expected": "sysTieOffTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.c.out",
+                  "sysTieOffTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTieOffTest",
+              "args": [],
+              "stdout": "sysTieOffTest.c-vcd.out",
+              "vcd": "sysTieOffTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.cexe"
+                ],
+                "outputs": [
+                  "sysTieOffTest.c-vcd.out",
+                  "sysTieOffTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTieOffTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTieOffTest.c-vcd.out",
+              "expected": "sysTieOffTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTieOffTest.c-vcd.out",
+                  "sysTieOffTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

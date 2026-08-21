@@ -1,0 +1,548 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/vending/vending",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/vending/vending.exp",
+    "sha256": "e73a362d97ccdd1f8a7c8196757c2bcd6c1152bfbfb226018693e42b8fac0701"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/vending",
+  "fixtures": [
+    {
+      "path": "TestVending.bsv",
+      "sha256": "62f70041bed0ea9eb3a0ec802ec866471d631d921bc979ccec62b5127eaf09b4",
+      "role": "source"
+    },
+    {
+      "path": "Vending.bsv",
+      "sha256": "00c25071337da40cc57fbba9cb1441f5c4ae17b2659c5167eef4984d019d384b",
+      "role": "source"
+    },
+    {
+      "path": "Vending0.bsv",
+      "sha256": "c73cf5f03a3bc1e6eee6bfbcb5c85174cec02461e0d7f5c729053fdc1efa93ed",
+      "role": "source"
+    },
+    {
+      "path": "VendingIfc.bsv",
+      "sha256": "3bf5b4869f2062a82dcb79b59d3cdad809f24a6d770a34f9a0042ea7a0312b2f",
+      "role": "source"
+    },
+    {
+      "path": "sysTestVending.out.expected",
+      "sha256": "d42d146d86d67dd9511a1d809b30f594f5d34fb1cf695eb4217187e044e43224",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestVending.v.out.expected",
+      "sha256": "756de850e320445dafa847cef28d9cc619f944975ee301e288200211ece9e4bb",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Vending0",
+      "resource": "normal",
+      "fixtures": [
+        "Vending0.bsv",
+        "VendingIfc.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Vending0",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Vending0.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Vending0.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Vending0.bsv"
+                ],
+                "outputs": [
+                  "Vending0.bo",
+                  "Vending0.bsv.bsc-vcomp-out",
+                  "mkVending0.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 49,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Vending0.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 3,
+              "artifacts": {
+                "inputs": [
+                  "Vending0.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 49,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTestVending",
+      "resource": "heavy",
+      "fixtures": [
+        "TestVending.bsv",
+        "Vending.bsv",
+        "VendingIfc.bsv",
+        "sysTestVending.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestVending",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestVending.bsv",
+              "mode": "verilog",
+              "module": "sysTestVending",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestVending.bsv"
+                ],
+                "outputs": [
+                  "TestVending.bo",
+                  "TestVending.bsv.bsc-vcomp-out",
+                  "mkVending.v",
+                  "sysTestVending.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 385,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestVending",
+                "mkVending"
+              ],
+              "top": "sysTestVending",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.v",
+                  "mkVending.v"
+                ],
+                "outputs": [
+                  "sysTestVending.bsc-vcomp-out",
+                  "sysTestVending.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 385,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestVending",
+              "args": [],
+              "stdout": "sysTestVending.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.vexe"
+                ],
+                "outputs": [
+                  "sysTestVending.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 385,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestVending.v.out",
+              "expected": "sysTestVending.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.v.out",
+                  "sysTestVending.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 385,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestVending",
+              "args": [],
+              "stdout": "sysTestVending.v-vcd.out",
+              "vcd": "sysTestVending.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.vexe"
+                ],
+                "outputs": [
+                  "sysTestVending.v-vcd.out",
+                  "sysTestVending.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 385,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestVending.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 385,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 81
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTestVending-2",
+      "resource": "heavy",
+      "fixtures": [
+        "TestVending.bsv",
+        "Vending.bsv",
+        "VendingIfc.bsv",
+        "sysTestVending.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestVending",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestVending.bsv",
+              "mode": "bluesim",
+              "module": "sysTestVending",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestVending.bsv"
+                ],
+                "outputs": [
+                  "TestVending.bo",
+                  "TestVending.bsv.bsc-ccomp-out",
+                  "mkVending.ba",
+                  "sysTestVending.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestVending",
+                "mkVending"
+              ],
+              "top": "sysTestVending",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.ba",
+                  "mkVending.ba"
+                ],
+                "outputs": [
+                  "sysTestVending.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestVending.cexe",
+                    "sysTestVending.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestVending",
+              "args": [],
+              "stdout": "sysTestVending.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.cexe"
+                ],
+                "outputs": [
+                  "sysTestVending.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestVending.c.out",
+              "expected": "sysTestVending.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.c.out",
+                  "sysTestVending.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestVending",
+              "args": [],
+              "stdout": "sysTestVending.c-vcd.out",
+              "vcd": "sysTestVending.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.cexe"
+                ],
+                "outputs": [
+                  "sysTestVending.c-vcd.out",
+                  "sysTestVending.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestVending.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestVending.c-vcd.out",
+              "expected": "sysTestVending.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestVending.c-vcd.out",
+                  "sysTestVending.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 386,
+                  "endByte": 433,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2586 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/tasks/plusargs/plusargs",
+  "origin": {
+    "path": "testsuite/bsc.verilog/tasks/plusargs/plusargs.exp",
+    "sha256": "1b033333932580493a9361d37230fe3e52267ed75ec9252ba5f65aabd3484b23"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/tasks/plusargs",
+  "fixtures": [
+    {
+      "path": "TestPlusargsSimple.bsv",
+      "sha256": "b0dde20a7d39f56c54500991d421018f2104ad559a752779dbc546f99266c839",
+      "role": "source"
+    },
+    {
+      "path": "TestPlusargsTwoUseDiffArg.bsv",
+      "sha256": "cdc49b8c0d997dfc73648514fff30528eef666d1960aa591d2ab83bace3560f3",
+      "role": "source"
+    },
+    {
+      "path": "TestPlusargsTwoUseSameArg.bsv",
+      "sha256": "875e35a84acb1d60d3943562fc67644ab6052e19fd32b708c2240b25b72afd65",
+      "role": "source"
+    },
+    {
+      "path": "sysTestPlusargsSimple.out.expected",
+      "sha256": "d4740ac1747d6005a72f157f1af666fe2dfa483786da1756da21eccbd1fd9084",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsSimple.test1.out.expected",
+      "sha256": "008025913b0594080b151570ad35566897145a30c4c733296749f48449234275",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsSimple.test2.out.expected",
+      "sha256": "d4740ac1747d6005a72f157f1af666fe2dfa483786da1756da21eccbd1fd9084",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsTwoUseDiffArg.out.expected",
+      "sha256": "b45c74021209e6bf4e68b8bcffcfc3320959e865f9471ddadc80f6530ecd842f",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsTwoUseDiffArg.test1.out.expected",
+      "sha256": "139446fb9ff0ee8a386b08181e18f8f84fc8c9d3e0ba081f5ab79cafd7eca5bc",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsTwoUseDiffArg.test2.out.expected",
+      "sha256": "939373cbd4094a7923616c6d93538f0cc34994f47e898ccc15ebdfce09d5b86b",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsTwoUseDiffArg.test3.out.expected",
+      "sha256": "1f6cca02023d2ec57b6c2bd02187b29fa0af38ec3cd4bf88385fac156c7f9e8e",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsTwoUseSameArg.out.expected",
+      "sha256": "b45c74021209e6bf4e68b8bcffcfc3320959e865f9471ddadc80f6530ecd842f",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestPlusargsTwoUseSameArg.test1.out.expected",
+      "sha256": "1f6cca02023d2ec57b6c2bd02187b29fa0af38ec3cd4bf88385fac156c7f9e8e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestPlusargsSimple",
+      "resource": "heavy",
+      "fixtures": [
+        "TestPlusargsSimple.bsv",
+        "sysTestPlusargsSimple.out.expected",
+        "sysTestPlusargsSimple.test1.out.expected",
+        "sysTestPlusargsSimple.test2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestPlusargsSimple",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestPlusargsSimple.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestPlusargsSimple",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestPlusargsSimple.bsv"
+                ],
+                "outputs": [
+                  "TestPlusargsSimple.bo",
+                  "TestPlusargsSimple.bsv.bsc-vcomp-out",
+                  "sysTestPlusargsSimple.ba",
+                  "sysTestPlusargsSimple.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestPlusargsSimple"
+              ],
+              "top": "sysTestPlusargsSimple",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.v"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.bsc-vcomp-out",
+                  "sysTestPlusargsSimple.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsSimple",
+              "args": [],
+              "stdout": "sysTestPlusargsSimple.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.v.out",
+              "expected": "sysTestPlusargsSimple.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.v.out",
+                  "sysTestPlusargsSimple.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsSimple",
+              "args": [],
+              "stdout": "sysTestPlusargsSimple.v-vcd.out",
+              "vcd": "sysTestPlusargsSimple.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.v-vcd.out",
+                  "sysTestPlusargsSimple.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestPlusargsSimple.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestPlusargsSimple"
+              ],
+              "top": "sysTestPlusargsSimple",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.ba"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestPlusargsSimple.cexe",
+                    "sysTestPlusargsSimple.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsSimple",
+              "args": [],
+              "stdout": "sysTestPlusargsSimple.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.c.out",
+              "expected": "sysTestPlusargsSimple.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.c.out",
+                  "sysTestPlusargsSimple.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsSimple",
+              "args": [],
+              "stdout": "sysTestPlusargsSimple.c-vcd.out",
+              "vcd": "sysTestPlusargsSimple.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.c-vcd.out",
+                  "sysTestPlusargsSimple.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestPlusargsSimple.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.c-vcd.out",
+              "expected": "sysTestPlusargsSimple.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.c-vcd.out",
+                  "sysTestPlusargsSimple.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 533,
+                  "endByte": 567,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsSimple",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsSimple",
+              "args": [
+                "+HI",
+                "+Hello",
+                "+Howdy"
+              ],
+              "stdout": "sysTestPlusargsSimple.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 301,
+                  "startLine": 13,
+                  "startColumn": 7,
+                  "endLine": 13,
+                  "endColumn": 35
+                },
+                "expansion": [
+                  {
+                    "startByte": 568,
+                    "endByte": 629,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsSimple.out",
+              "destination": "sysTestPlusargsSimple.test1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.test1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsSimple.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 337,
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 568,
+                    "endByte": 629,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.test1.c.out",
+              "expected": "sysTestPlusargsSimple.test1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.test1.c.out",
+                  "sysTestPlusargsSimple.test1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 379,
+                  "startLine": 15,
+                  "startColumn": 7,
+                  "endLine": 15,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 568,
+                    "endByte": 629,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsSimple-2",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsSimple",
+              "args": [
+                "+HI",
+                "+Hello",
+                "+Howdy"
+              ],
+              "stdout": "sysTestPlusargsSimple.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 416,
+                  "endByte": 445,
+                  "startLine": 19,
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 568,
+                    "endByte": 629,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsSimple.out",
+              "destination": "sysTestPlusargsSimple.test1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.test1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsSimple.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 481,
+                  "startLine": 20,
+                  "startColumn": 7,
+                  "endLine": 20,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 568,
+                    "endByte": 629,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.test1.v.out",
+              "expected": "sysTestPlusargsSimple.test1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.test1.v.out",
+                  "sysTestPlusargsSimple.test1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 488,
+                  "endByte": 523,
+                  "startLine": 21,
+                  "startColumn": 7,
+                  "endLine": 21,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 568,
+                    "endByte": 629,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsSimple-3",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsSimple",
+              "args": [
+                "+HI",
+                "+Howdy",
+                "+HE"
+              ],
+              "stdout": "sysTestPlusargsSimple.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 301,
+                  "startLine": 13,
+                  "startColumn": 7,
+                  "endLine": 13,
+                  "endColumn": 35
+                },
+                "expansion": [
+                  {
+                    "startByte": 630,
+                    "endByte": 691,
+                    "startLine": 28,
+                    "startColumn": 1,
+                    "endLine": 28,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsSimple.out",
+              "destination": "sysTestPlusargsSimple.test2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.test2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsSimple.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 337,
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 630,
+                    "endByte": 691,
+                    "startLine": 28,
+                    "startColumn": 1,
+                    "endLine": 28,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.test2.c.out",
+              "expected": "sysTestPlusargsSimple.test2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.test2.c.out",
+                  "sysTestPlusargsSimple.test2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 379,
+                  "startLine": 15,
+                  "startColumn": 7,
+                  "endLine": 15,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 630,
+                    "endByte": 691,
+                    "startLine": 28,
+                    "startColumn": 1,
+                    "endLine": 28,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsSimple-4",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsSimple",
+              "args": [
+                "+HI",
+                "+Howdy",
+                "+HE"
+              ],
+              "stdout": "sysTestPlusargsSimple.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 416,
+                  "endByte": 445,
+                  "startLine": 19,
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 630,
+                    "endByte": 691,
+                    "startLine": 28,
+                    "startColumn": 1,
+                    "endLine": 28,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsSimple.out",
+              "destination": "sysTestPlusargsSimple.test2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsSimple.test2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsSimple.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 481,
+                  "startLine": 20,
+                  "startColumn": 7,
+                  "endLine": 20,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 630,
+                    "endByte": 691,
+                    "startLine": 28,
+                    "startColumn": 1,
+                    "endLine": 28,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsSimple.test2.v.out",
+              "expected": "sysTestPlusargsSimple.test2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsSimple.test2.v.out",
+                  "sysTestPlusargsSimple.test2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 488,
+                  "endByte": 523,
+                  "startLine": 21,
+                  "startColumn": 7,
+                  "endLine": 21,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 630,
+                    "endByte": 691,
+                    "startLine": 28,
+                    "startColumn": 1,
+                    "endLine": 28,
+                    "endColumn": 62
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTestPlusargsTwoUseSameArg",
+      "resource": "heavy",
+      "fixtures": [
+        "TestPlusargsTwoUseSameArg.bsv",
+        "sysTestPlusargsTwoUseSameArg.out.expected",
+        "sysTestPlusargsTwoUseSameArg.test1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestPlusargsTwoUseSameArg",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestPlusargsTwoUseSameArg.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestPlusargsTwoUseSameArg.bsv"
+                ],
+                "outputs": [
+                  "TestPlusargsTwoUseSameArg.bo",
+                  "TestPlusargsTwoUseSameArg.bsv.bsc-vcomp-out",
+                  "sysTestPlusargsTwoUseSameArg.ba",
+                  "sysTestPlusargsTwoUseSameArg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestPlusargsTwoUseSameArg"
+              ],
+              "top": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.v"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.bsc-vcomp-out",
+                  "sysTestPlusargsTwoUseSameArg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseSameArg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseSameArg.v.out",
+              "expected": "sysTestPlusargsTwoUseSameArg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.v.out",
+                  "sysTestPlusargsTwoUseSameArg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseSameArg.v-vcd.out",
+              "vcd": "sysTestPlusargsTwoUseSameArg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.v-vcd.out",
+                  "sysTestPlusargsTwoUseSameArg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestPlusargsTwoUseSameArg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestPlusargsTwoUseSameArg"
+              ],
+              "top": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.ba"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestPlusargsTwoUseSameArg.cexe",
+                    "sysTestPlusargsTwoUseSameArg.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseSameArg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseSameArg.c.out",
+              "expected": "sysTestPlusargsTwoUseSameArg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.c.out",
+                  "sysTestPlusargsTwoUseSameArg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseSameArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseSameArg.c-vcd.out",
+              "vcd": "sysTestPlusargsTwoUseSameArg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.c-vcd.out",
+                  "sysTestPlusargsTwoUseSameArg.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestPlusargsTwoUseSameArg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseSameArg.c-vcd.out",
+              "expected": "sysTestPlusargsTwoUseSameArg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.c-vcd.out",
+                  "sysTestPlusargsTwoUseSameArg.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 693,
+                  "endByte": 734,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseSameArg",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseSameArg",
+              "args": [
+                "+He"
+              ],
+              "stdout": "sysTestPlusargsTwoUseSameArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 301,
+                  "startLine": 13,
+                  "startColumn": 7,
+                  "endLine": 13,
+                  "endColumn": 35
+                },
+                "expansion": [
+                  {
+                    "startByte": 735,
+                    "endByte": 789,
+                    "startLine": 31,
+                    "startColumn": 1,
+                    "endLine": 31,
+                    "endColumn": 55
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseSameArg.out",
+              "destination": "sysTestPlusargsTwoUseSameArg.test1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.test1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseSameArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 337,
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 735,
+                    "endByte": 789,
+                    "startLine": 31,
+                    "startColumn": 1,
+                    "endLine": 31,
+                    "endColumn": 55
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseSameArg.test1.c.out",
+              "expected": "sysTestPlusargsTwoUseSameArg.test1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.test1.c.out",
+                  "sysTestPlusargsTwoUseSameArg.test1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 379,
+                  "startLine": 15,
+                  "startColumn": 7,
+                  "endLine": 15,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 735,
+                    "endByte": 789,
+                    "startLine": 31,
+                    "startColumn": 1,
+                    "endLine": 31,
+                    "endColumn": 55
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseSameArg-2",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseSameArg",
+              "args": [
+                "+He"
+              ],
+              "stdout": "sysTestPlusargsTwoUseSameArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 416,
+                  "endByte": 445,
+                  "startLine": 19,
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 735,
+                    "endByte": 789,
+                    "startLine": 31,
+                    "startColumn": 1,
+                    "endLine": 31,
+                    "endColumn": 55
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseSameArg.out",
+              "destination": "sysTestPlusargsTwoUseSameArg.test1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseSameArg.test1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseSameArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 481,
+                  "startLine": 20,
+                  "startColumn": 7,
+                  "endLine": 20,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 735,
+                    "endByte": 789,
+                    "startLine": 31,
+                    "startColumn": 1,
+                    "endLine": 31,
+                    "endColumn": 55
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseSameArg.test1.v.out",
+              "expected": "sysTestPlusargsTwoUseSameArg.test1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseSameArg.test1.v.out",
+                  "sysTestPlusargsTwoUseSameArg.test1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 488,
+                  "endByte": 523,
+                  "startLine": 21,
+                  "startColumn": 7,
+                  "endLine": 21,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 735,
+                    "endByte": 789,
+                    "startLine": 31,
+                    "startColumn": 1,
+                    "endLine": 31,
+                    "endColumn": 55
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTestPlusargsTwoUseDiffArg",
+      "resource": "heavy",
+      "fixtures": [
+        "TestPlusargsTwoUseDiffArg.bsv",
+        "sysTestPlusargsTwoUseDiffArg.out.expected",
+        "sysTestPlusargsTwoUseDiffArg.test1.out.expected",
+        "sysTestPlusargsTwoUseDiffArg.test2.out.expected",
+        "sysTestPlusargsTwoUseDiffArg.test3.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestPlusargsTwoUseDiffArg",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestPlusargsTwoUseDiffArg.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestPlusargsTwoUseDiffArg.bsv"
+                ],
+                "outputs": [
+                  "TestPlusargsTwoUseDiffArg.bo",
+                  "TestPlusargsTwoUseDiffArg.bsv.bsc-vcomp-out",
+                  "sysTestPlusargsTwoUseDiffArg.ba",
+                  "sysTestPlusargsTwoUseDiffArg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestPlusargsTwoUseDiffArg"
+              ],
+              "top": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.v"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.bsc-vcomp-out",
+                  "sysTestPlusargsTwoUseDiffArg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.v.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.v.out",
+                  "sysTestPlusargsTwoUseDiffArg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.v-vcd.out",
+              "vcd": "sysTestPlusargsTwoUseDiffArg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.v-vcd.out",
+                  "sysTestPlusargsTwoUseDiffArg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestPlusargsTwoUseDiffArg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestPlusargsTwoUseDiffArg"
+              ],
+              "top": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.ba"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestPlusargsTwoUseDiffArg.cexe",
+                    "sysTestPlusargsTwoUseDiffArg.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.c.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.c.out",
+                  "sysTestPlusargsTwoUseDiffArg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.c-vcd.out",
+              "vcd": "sysTestPlusargsTwoUseDiffArg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.c-vcd.out",
+                  "sysTestPlusargsTwoUseDiffArg.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestPlusargsTwoUseDiffArg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.c-vcd.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.c-vcd.out",
+                  "sysTestPlusargsTwoUseDiffArg.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 791,
+                  "endByte": 832,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseDiffArg",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [
+                "+He"
+              ],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 301,
+                  "startLine": 13,
+                  "startColumn": 7,
+                  "endLine": 13,
+                  "endColumn": 35
+                },
+                "expansion": [
+                  {
+                    "startByte": 833,
+                    "endByte": 892,
+                    "startLine": 34,
+                    "startColumn": 1,
+                    "endLine": 34,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseDiffArg.out",
+              "destination": "sysTestPlusargsTwoUseDiffArg.test1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 337,
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 833,
+                    "endByte": 892,
+                    "startLine": 34,
+                    "startColumn": 1,
+                    "endLine": 34,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.test1.c.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.test1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test1.c.out",
+                  "sysTestPlusargsTwoUseDiffArg.test1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 379,
+                  "startLine": 15,
+                  "startColumn": 7,
+                  "endLine": 15,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 833,
+                    "endByte": 892,
+                    "startLine": 34,
+                    "startColumn": 1,
+                    "endLine": 34,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseDiffArg-2",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [
+                "+He"
+              ],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 416,
+                  "endByte": 445,
+                  "startLine": 19,
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 833,
+                    "endByte": 892,
+                    "startLine": 34,
+                    "startColumn": 1,
+                    "endLine": 34,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseDiffArg.out",
+              "destination": "sysTestPlusargsTwoUseDiffArg.test1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 481,
+                  "startLine": 20,
+                  "startColumn": 7,
+                  "endLine": 20,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 833,
+                    "endByte": 892,
+                    "startLine": 34,
+                    "startColumn": 1,
+                    "endLine": 34,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.test1.v.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.test1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test1.v.out",
+                  "sysTestPlusargsTwoUseDiffArg.test1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 488,
+                  "endByte": 523,
+                  "startLine": 21,
+                  "startColumn": 7,
+                  "endLine": 21,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 833,
+                    "endByte": 892,
+                    "startLine": 34,
+                    "startColumn": 1,
+                    "endLine": 34,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseDiffArg-3",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [
+                "+llo"
+              ],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 301,
+                  "startLine": 13,
+                  "startColumn": 7,
+                  "endLine": 13,
+                  "endColumn": 35
+                },
+                "expansion": [
+                  {
+                    "startByte": 893,
+                    "endByte": 952,
+                    "startLine": 35,
+                    "startColumn": 1,
+                    "endLine": 35,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseDiffArg.out",
+              "destination": "sysTestPlusargsTwoUseDiffArg.test2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 337,
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 893,
+                    "endByte": 952,
+                    "startLine": 35,
+                    "startColumn": 1,
+                    "endLine": 35,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.test2.c.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.test2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test2.c.out",
+                  "sysTestPlusargsTwoUseDiffArg.test2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 379,
+                  "startLine": 15,
+                  "startColumn": 7,
+                  "endLine": 15,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 893,
+                    "endByte": 952,
+                    "startLine": 35,
+                    "startColumn": 1,
+                    "endLine": 35,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseDiffArg-4",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [
+                "+llo"
+              ],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 416,
+                  "endByte": 445,
+                  "startLine": 19,
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 893,
+                    "endByte": 952,
+                    "startLine": 35,
+                    "startColumn": 1,
+                    "endLine": 35,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseDiffArg.out",
+              "destination": "sysTestPlusargsTwoUseDiffArg.test2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 481,
+                  "startLine": 20,
+                  "startColumn": 7,
+                  "endLine": 20,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 893,
+                    "endByte": 952,
+                    "startLine": 35,
+                    "startColumn": 1,
+                    "endLine": 35,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.test2.v.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.test2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test2.v.out",
+                  "sysTestPlusargsTwoUseDiffArg.test2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 488,
+                  "endByte": 523,
+                  "startLine": 21,
+                  "startColumn": 7,
+                  "endLine": 21,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 893,
+                    "endByte": 952,
+                    "startLine": 35,
+                    "startColumn": 1,
+                    "endLine": 35,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseDiffArg-5",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [
+                "+He",
+                "+llo"
+              ],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.cexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 273,
+                  "endByte": 301,
+                  "startLine": 13,
+                  "startColumn": 7,
+                  "endLine": 13,
+                  "endColumn": 35
+                },
+                "expansion": [
+                  {
+                    "startByte": 953,
+                    "endByte": 1012,
+                    "startLine": 36,
+                    "startColumn": 1,
+                    "endLine": 36,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseDiffArg.out",
+              "destination": "sysTestPlusargsTwoUseDiffArg.test3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 337,
+                  "startLine": 14,
+                  "startColumn": 7,
+                  "endLine": 14,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 953,
+                    "endByte": 1012,
+                    "startLine": 36,
+                    "startColumn": 1,
+                    "endLine": 36,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.test3.c.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.test3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test3.c.out",
+                  "sysTestPlusargsTwoUseDiffArg.test3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 379,
+                  "startLine": 15,
+                  "startColumn": 7,
+                  "endLine": 15,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 953,
+                    "endByte": 1012,
+                    "startLine": 36,
+                    "startColumn": 1,
+                    "endLine": 36,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestPlusargsTwoUseDiffArg-6",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestPlusargsTwoUseDiffArg",
+              "args": [
+                "+He",
+                "+llo"
+              ],
+              "stdout": "sysTestPlusargsTwoUseDiffArg.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.vexe"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 416,
+                  "endByte": 445,
+                  "startLine": 19,
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 953,
+                    "endByte": 1012,
+                    "startLine": 36,
+                    "startColumn": 1,
+                    "endLine": 36,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysTestPlusargsTwoUseDiffArg.out",
+              "destination": "sysTestPlusargsTwoUseDiffArg.test3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ],
+                "outputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysTestPlusargsTwoUseDiffArg.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 481,
+                  "startLine": 20,
+                  "startColumn": 7,
+                  "endLine": 20,
+                  "endColumn": 36
+                },
+                "expansion": [
+                  {
+                    "startByte": 953,
+                    "endByte": 1012,
+                    "startLine": 36,
+                    "startColumn": 1,
+                    "endLine": 36,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestPlusargsTwoUseDiffArg.test3.v.out",
+              "expected": "sysTestPlusargsTwoUseDiffArg.test3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestPlusargsTwoUseDiffArg.test3.v.out",
+                  "sysTestPlusargsTwoUseDiffArg.test3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 488,
+                  "endByte": 523,
+                  "startLine": 21,
+                  "startColumn": 7,
+                  "endLine": 21,
+                  "endColumn": 42
+                },
+                "expansion": [
+                  {
+                    "startByte": 953,
+                    "endByte": 1012,
+                    "startLine": 36,
+                    "startColumn": 1,
+                    "endLine": 36,
+                    "endColumn": 60
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

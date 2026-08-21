@@ -1,0 +1,897 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/Maxtree/maxtree",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/Maxtree/maxtree.exp",
+    "sha256": "cf63d56323e04e5e128aca3ec0f19bca3346d04328c99dfad6867c449afced70"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/Maxtree",
+  "fixtures": [
+    {
+      "path": "MaxTree.bsv",
+      "sha256": "e94bd6cd1a053a4c9c169506c13cff4b8770bfac86b32f0d526efe3a07bfd470",
+      "role": "source"
+    },
+    {
+      "path": "TestMaxTree.bsv",
+      "sha256": "441c667a8827a3ec2981252e12c92aa9722e8dff87f2affbcf7da79950645389",
+      "role": "source"
+    },
+    {
+      "path": "TestPush.bsv",
+      "sha256": "012a6bb51b0ada5192edbd2a944475525cbcfad1e5161ce01b8893006a44c0dd",
+      "role": "source"
+    },
+    {
+      "path": "sys_2q.out.expected",
+      "sha256": "f5d20d9cdc2b09200aa71026bbb38c4a43723f2f0707479d2414830593b4a030",
+      "role": "golden"
+    },
+    {
+      "path": "sys_2q.v.out.expected",
+      "sha256": "4463903d38d31fb1c4d6e2c38449ad6840e09cff58617058ddb05a5e97e09933",
+      "role": "golden"
+    },
+    {
+      "path": "sys_fifo.out.expected",
+      "sha256": "e47e5881ae38227ed36945af7f59351f51f0a12fb7cc308ec81412811596e272",
+      "role": "golden"
+    },
+    {
+      "path": "sys_fifo.v.out.expected",
+      "sha256": "8991d354dc4b4b0f5c5866ac26817ca2eec782cfbc8d75b7f24731675b16d3c6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sys_fifo",
+      "resource": "heavy",
+      "fixtures": [
+        "TestPush.bsv",
+        "sys_fifo.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sys_fifo",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestPush.bsv",
+              "mode": "verilog",
+              "module": "sys_fifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestPush.bsv"
+                ],
+                "outputs": [
+                  "TestPush.bo",
+                  "TestPush.bsv.bsc-vcomp-out",
+                  "mktestpush_fifo.v",
+                  "sys_fifo.v",
+                  "sys_fifo_loopy.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 525,
+                  "endByte": 610,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sys_fifo",
+                "mktestpush_fifo"
+              ],
+              "top": "sys_fifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.v",
+                  "mktestpush_fifo.v"
+                ],
+                "outputs": [
+                  "sys_fifo.bsc-vcomp-out",
+                  "sys_fifo.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 525,
+                  "endByte": 610,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sys_fifo",
+              "args": [],
+              "stdout": "sys_fifo.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.vexe"
+                ],
+                "outputs": [
+                  "sys_fifo.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 525,
+                  "endByte": 610,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sys_fifo.v.out",
+              "expected": "sys_fifo.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.v.out",
+                  "sys_fifo.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 525,
+                  "endByte": 610,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sys_fifo",
+              "args": [],
+              "stdout": "sys_fifo.v-vcd.out",
+              "vcd": "sys_fifo.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.vexe"
+                ],
+                "outputs": [
+                  "sys_fifo.v-vcd.out",
+                  "sys_fifo.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 525,
+                  "endByte": 610,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sys_fifo.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 525,
+                  "endByte": 610,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sys_fifo-2",
+      "resource": "heavy",
+      "fixtures": [
+        "TestPush.bsv",
+        "sys_fifo.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sys_fifo",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestPush.bsv",
+              "mode": "bluesim",
+              "module": "sys_fifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestPush.bsv"
+                ],
+                "outputs": [
+                  "TestPush.bo",
+                  "TestPush.bsv.bsc-ccomp-out",
+                  "mktestpush_fifo.ba",
+                  "sys_fifo.ba",
+                  "sys_fifo_loopy.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sys_fifo",
+                "mktestpush_fifo"
+              ],
+              "top": "sys_fifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.ba",
+                  "mktestpush_fifo.ba"
+                ],
+                "outputs": [
+                  "sys_fifo.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sys_fifo.cexe",
+                    "sys_fifo.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sys_fifo",
+              "args": [],
+              "stdout": "sys_fifo.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.cexe"
+                ],
+                "outputs": [
+                  "sys_fifo.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sys_fifo.c.out",
+              "expected": "sys_fifo.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.c.out",
+                  "sys_fifo.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sys_fifo",
+              "args": [],
+              "stdout": "sys_fifo.c-vcd.out",
+              "vcd": "sys_fifo.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.cexe"
+                ],
+                "outputs": [
+                  "sys_fifo.c-vcd.out",
+                  "sys_fifo.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sys_fifo.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sys_fifo.c-vcd.out",
+              "expected": "sys_fifo.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sys_fifo.c-vcd.out",
+                  "sys_fifo.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 611,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sys_2q",
+      "resource": "heavy",
+      "fixtures": [
+        "MaxTree.bsv",
+        "TestMaxTree.bsv",
+        "sys_2q.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sys_2q",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestMaxTree.bsv",
+              "mode": "verilog",
+              "module": "sys_2q",
+              "args": [
+                "-let-gen"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TestMaxTree.bsv"
+                ],
+                "outputs": [
+                  "TestMaxTree.bo",
+                  "TestMaxTree.bsv.bsc-vcomp-out",
+                  "mkMaxTree16_p0.v",
+                  "mkMaxTree8_2q.v",
+                  "mkMaxTree8_push.v",
+                  "sys_2q.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 983,
+                  "endByte": 1081,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sys_2q",
+                "mkMaxTree8_2q"
+              ],
+              "top": "sys_2q",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.v",
+                  "mkMaxTree8_2q.v"
+                ],
+                "outputs": [
+                  "sys_2q.bsc-vcomp-out",
+                  "sys_2q.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 983,
+                  "endByte": 1081,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sys_2q",
+              "args": [],
+              "stdout": "sys_2q.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.vexe"
+                ],
+                "outputs": [
+                  "sys_2q.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 983,
+                  "endByte": 1081,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sys_2q.v.out",
+              "expected": "sys_2q.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.v.out",
+                  "sys_2q.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 983,
+                  "endByte": 1081,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sys_2q",
+              "args": [],
+              "stdout": "sys_2q.v-vcd.out",
+              "vcd": "sys_2q.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.vexe"
+                ],
+                "outputs": [
+                  "sys_2q.v-vcd.out",
+                  "sys_2q.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 983,
+                  "endByte": 1081,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sys_2q.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 983,
+                  "endByte": 1081,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 99
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sys_2q-2",
+      "resource": "heavy",
+      "fixtures": [
+        "MaxTree.bsv",
+        "TestMaxTree.bsv",
+        "sys_2q.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sys_2q",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestMaxTree.bsv",
+              "mode": "bluesim",
+              "module": "sys_2q",
+              "args": [
+                "-let-gen"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TestMaxTree.bsv"
+                ],
+                "outputs": [
+                  "TestMaxTree.bo",
+                  "TestMaxTree.bsv.bsc-ccomp-out",
+                  "mkMaxTree16_p0.ba",
+                  "mkMaxTree8_2q.ba",
+                  "mkMaxTree8_push.ba",
+                  "sys_2q.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sys_2q",
+                "mkMaxTree8_2q"
+              ],
+              "top": "sys_2q",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.ba",
+                  "mkMaxTree8_2q.ba"
+                ],
+                "outputs": [
+                  "sys_2q.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sys_2q.cexe",
+                    "sys_2q.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sys_2q",
+              "args": [],
+              "stdout": "sys_2q.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.cexe"
+                ],
+                "outputs": [
+                  "sys_2q.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sys_2q.c.out",
+              "expected": "sys_2q.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.c.out",
+                  "sys_2q.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sys_2q",
+              "args": [],
+              "stdout": "sys_2q.c-vcd.out",
+              "vcd": "sys_2q.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.cexe"
+                ],
+                "outputs": [
+                  "sys_2q.c-vcd.out",
+                  "sys_2q.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sys_2q.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sys_2q.c-vcd.out",
+              "expected": "sys_2q.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sys_2q.c-vcd.out",
+                  "sys_2q.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1082,
+                  "endByte": 1155,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

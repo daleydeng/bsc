@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b518/b518",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b518/b518.exp",
+    "sha256": "e47abff24f602d03ba99ce7ebb944cb6a3b5e305d53cf98eb56fdbbcebaa5e51"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b518",
+  "fixtures": [
+    {
+      "path": "MethodUrg.bsv",
+      "sha256": "4ab77ca1c06fd8091e94393be629d60f1a41b81a4b4d0802b51162552da2ef5e",
+      "role": "source"
+    },
+    {
+      "path": "MethodUrg.bsv.bsc-sched-out.expected",
+      "sha256": "db5f8ed43ecc6b7e544093976f752d21bc79af10054b79f9ad13405ac0d92302",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MethodUrg",
+      "resource": "normal",
+      "fixtures": [
+        "MethodUrg.bsv",
+        "MethodUrg.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodUrg",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodUrg.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MethodUrg.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodUrg.bsv"
+                ],
+                "outputs": [
+                  "MethodUrg.bo",
+                  "MethodUrg.bsv.bsc-sched-out",
+                  "mkTestUrg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MethodUrg.bsv.bsc-sched-out",
+              "expected": "MethodUrg.bsv.bsc-sched-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MethodUrg.bsv.bsc-sched-out",
+                  "MethodUrg.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 63,
+                  "endByte": 103,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

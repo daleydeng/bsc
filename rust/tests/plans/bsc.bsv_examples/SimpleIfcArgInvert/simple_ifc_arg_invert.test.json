@@ -1,0 +1,873 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/SimpleIfcArgInvert/simple_ifc_arg_invert",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/SimpleIfcArgInvert/simple_ifc_arg_invert.exp",
+    "sha256": "1bb096ff9a562f40f3a94f83c75b72ffd72532d11065d10b9fb682b76d739948"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/SimpleIfcArgInvert",
+  "fixtures": [
+    {
+      "path": "Common.bsv",
+      "sha256": "5abb83d2552f6acd81f54a541ace4cbf809c4512895d58d178ca2d839bc1fd51",
+      "role": "source"
+    },
+    {
+      "path": "Proc1.bsv",
+      "sha256": "41619db6c30803873bdf8847d0a1bcd0429d49606956304267f5ab0ed0922287",
+      "role": "source"
+    },
+    {
+      "path": "Proc2.bsv",
+      "sha256": "51781655a08303a5d23965993e7588d0074a0765da8cd14da3ed48cef024312f",
+      "role": "source"
+    },
+    {
+      "path": "proc.c.out.expected",
+      "sha256": "c075e4f7d8e9804ea86909c1d6d9dd037a9b8fda42c461eafe80fe186cab8506",
+      "role": "golden"
+    },
+    {
+      "path": "proc.v.out.expected",
+      "sha256": "1fd0e27d0fc14f5048ca687d433a46f8fb390d8080edf3d3b9f823b8d2c4c613",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkProc1_TB",
+      "resource": "heavy",
+      "fixtures": [
+        "Common.bsv",
+        "Proc1.bsv",
+        "proc.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkProc1_TB",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Proc1.bsv",
+              "mode": "verilog",
+              "module": "mkProc1_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Proc1.bsv"
+                ],
+                "outputs": [
+                  "Proc1.bo",
+                  "Proc1.bsv.bsc-vcomp-out",
+                  "mkProc1_TB.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 113,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkProc1_TB"
+              ],
+              "top": "mkProc1_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.v"
+                ],
+                "outputs": [
+                  "mkProc1_TB.bsc-vcomp-out",
+                  "mkProc1_TB.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 113,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkProc1_TB",
+              "args": [],
+              "stdout": "mkProc1_TB.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.vexe"
+                ],
+                "outputs": [
+                  "mkProc1_TB.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 113,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkProc1_TB.v.out",
+              "expected": "proc.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.v.out",
+                  "proc.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 113,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkProc1_TB",
+              "args": [],
+              "stdout": "mkProc1_TB.v-vcd.out",
+              "vcd": "mkProc1_TB.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.vexe"
+                ],
+                "outputs": [
+                  "mkProc1_TB.v-vcd.out",
+                  "mkProc1_TB.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 113,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkProc1_TB.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 113,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkProc1_TB-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Common.bsv",
+        "Proc1.bsv",
+        "proc.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkProc1_TB",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Proc1.bsv",
+              "mode": "bluesim",
+              "module": "mkProc1_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Proc1.bsv"
+                ],
+                "outputs": [
+                  "Proc1.bo",
+                  "Proc1.bsv.bsc-ccomp-out",
+                  "mkProc1_TB.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkProc1_TB"
+              ],
+              "top": "mkProc1_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.ba"
+                ],
+                "outputs": [
+                  "mkProc1_TB.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkProc1_TB.cexe",
+                    "mkProc1_TB.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkProc1_TB",
+              "args": [],
+              "stdout": "mkProc1_TB.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.cexe"
+                ],
+                "outputs": [
+                  "mkProc1_TB.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkProc1_TB.c.out",
+              "expected": "proc.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.c.out",
+                  "proc.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkProc1_TB",
+              "args": [],
+              "stdout": "mkProc1_TB.c-vcd.out",
+              "vcd": "mkProc1_TB.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.cexe"
+                ],
+                "outputs": [
+                  "mkProc1_TB.c-vcd.out",
+                  "mkProc1_TB.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkProc1_TB.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkProc1_TB.c-vcd.out",
+              "expected": "mkProc1_TB.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkProc1_TB.c-vcd.out",
+                  "mkProc1_TB.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 175,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkProc2_TB",
+      "resource": "heavy",
+      "fixtures": [
+        "Common.bsv",
+        "Proc2.bsv",
+        "proc.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkProc2_TB",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Proc2.bsv",
+              "mode": "verilog",
+              "module": "mkProc2_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Proc2.bsv"
+                ],
+                "outputs": [
+                  "Proc2.bo",
+                  "Proc2.bsv.bsc-vcomp-out",
+                  "mkProc2.v",
+                  "mkProc2_TB.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 176,
+                  "endByte": 245,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkProc2_TB",
+                "mkProc2"
+              ],
+              "top": "mkProc2_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.v",
+                  "mkProc2.v"
+                ],
+                "outputs": [
+                  "mkProc2_TB.bsc-vcomp-out",
+                  "mkProc2_TB.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 176,
+                  "endByte": 245,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkProc2_TB",
+              "args": [],
+              "stdout": "mkProc2_TB.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.vexe"
+                ],
+                "outputs": [
+                  "mkProc2_TB.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 176,
+                  "endByte": 245,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkProc2_TB.v.out",
+              "expected": "proc.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.v.out",
+                  "proc.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 176,
+                  "endByte": 245,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkProc2_TB",
+              "args": [],
+              "stdout": "mkProc2_TB.v-vcd.out",
+              "vcd": "mkProc2_TB.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.vexe"
+                ],
+                "outputs": [
+                  "mkProc2_TB.v-vcd.out",
+                  "mkProc2_TB.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 176,
+                  "endByte": 245,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkProc2_TB.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 176,
+                  "endByte": 245,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkProc2_TB-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Common.bsv",
+        "Proc2.bsv",
+        "proc.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkProc2_TB",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Proc2.bsv",
+              "mode": "bluesim",
+              "module": "mkProc2_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Proc2.bsv"
+                ],
+                "outputs": [
+                  "Proc2.bo",
+                  "Proc2.bsv.bsc-ccomp-out",
+                  "mkProc2.ba",
+                  "mkProc2_TB.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkProc2_TB",
+                "mkProc2"
+              ],
+              "top": "mkProc2_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.ba",
+                  "mkProc2.ba"
+                ],
+                "outputs": [
+                  "mkProc2_TB.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkProc2_TB.cexe",
+                    "mkProc2_TB.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkProc2_TB",
+              "args": [],
+              "stdout": "mkProc2_TB.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.cexe"
+                ],
+                "outputs": [
+                  "mkProc2_TB.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkProc2_TB.c.out",
+              "expected": "proc.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.c.out",
+                  "proc.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkProc2_TB",
+              "args": [],
+              "stdout": "mkProc2_TB.c-vcd.out",
+              "vcd": "mkProc2_TB.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.cexe"
+                ],
+                "outputs": [
+                  "mkProc2_TB.c-vcd.out",
+                  "mkProc2_TB.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkProc2_TB.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkProc2_TB.c-vcd.out",
+              "expected": "mkProc2_TB.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkProc2_TB.c-vcd.out",
+                  "mkProc2_TB.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 312,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 67
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

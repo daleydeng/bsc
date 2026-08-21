@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/parAuto/parAuto",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/parAuto/parAuto.exp",
+    "sha256": "f33174836004c04f5ec49c25c57ee6909eb2bbe1e06759e3327df13ae188f61a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/parAuto",
+  "fixtures": [
+    {
+      "path": "parAuto.bsv",
+      "sha256": "f992b8285ec35016fb176daac8fe0655449ec65cf2109e6fe126121e18bf0f23",
+      "role": "source"
+    },
+    {
+      "path": "parAuto.out.expected",
+      "sha256": "3bea152f3e873bf675e8b1ef192714ac4451256125ac3a18e7e4431836d54d30",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-parAuto",
+      "resource": "heavy",
+      "fixtures": [
+        "parAuto.bsv",
+        "parAuto.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "parAuto",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "parAuto.bsv",
+              "mode": "shared_elaboration",
+              "module": "parAuto",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "parAuto.bsv"
+                ],
+                "outputs": [
+                  "parAuto.ba",
+                  "parAuto.bo",
+                  "parAuto.bsv.bsc-vcomp-out",
+                  "parAuto.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "parAuto"
+              ],
+              "top": "parAuto",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "parAuto.v"
+                ],
+                "outputs": [
+                  "parAuto.bsc-vcomp-out",
+                  "parAuto.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "parAuto",
+              "args": [],
+              "stdout": "parAuto.v.out",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.vexe"
+                ],
+                "outputs": [
+                  "parAuto.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "parAuto.v.out",
+              "expected": "parAuto.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.v.out",
+                  "parAuto.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "parAuto",
+              "args": [],
+              "stdout": "parAuto.v-vcd.out",
+              "vcd": "parAuto.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.vexe"
+                ],
+                "outputs": [
+                  "parAuto.v-vcd.out",
+                  "parAuto.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "parAuto.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "parAuto"
+              ],
+              "top": "parAuto",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "parAuto.ba"
+                ],
+                "outputs": [
+                  "parAuto.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "parAuto.cexe",
+                    "parAuto.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "parAuto",
+              "args": [],
+              "stdout": "parAuto.c.out",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.cexe"
+                ],
+                "outputs": [
+                  "parAuto.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "parAuto.c.out",
+              "expected": "parAuto.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.c.out",
+                  "parAuto.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "parAuto",
+              "args": [],
+              "stdout": "parAuto.c-vcd.out",
+              "vcd": "parAuto.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.cexe"
+                ],
+                "outputs": [
+                  "parAuto.c-vcd.out",
+                  "parAuto.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "parAuto.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "parAuto.c-vcd.out",
+              "expected": "parAuto.c.out",
+              "artifacts": {
+                "inputs": [
+                  "parAuto.c-vcd.out",
+                  "parAuto.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 63,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

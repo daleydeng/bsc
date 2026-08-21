@@ -1,0 +1,1874 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/ConfigReg/ConfigReg",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/ConfigReg/ConfigReg.exp",
+    "sha256": "78e16475c8a16a2b85747b935ce7ff2865d7f90a3f88c6237e086c22416f19ce"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/ConfigReg",
+  "fixtures": [
+    {
+      "path": "MkConfigReg.bsv",
+      "sha256": "2d5a170881c42418e2f331083b46ae3afa95704a0191d9a4fb0a00b2a921e3c4",
+      "role": "source"
+    },
+    {
+      "path": "MkConfigRegU.bsv",
+      "sha256": "db5b74234946ef57f06fe6335df47681943030d37e760a1af562da0fbed71646",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_MkConfigReg.out.expected",
+      "sha256": "afefffde16ac8d67fd8ec873ce090777bbb5ca1ba9d6992a248f7000f6b0d7c8",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_MkConfigRegU.out.expected",
+      "sha256": "fe29372a299acafa3053b364922b6c679c3a952fc78ab527d7d21802b9e3a577",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "stateful-simulation-simulation-mkTestbench_MkConfigReg",
+      "resource": "heavy",
+      "fixtures": [
+        "MkConfigReg.bsv",
+        "mkTestbench_MkConfigReg.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkConfigReg",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkConfigReg.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkConfigReg",
+              "args": [
+                "-no-inline-reg"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "MkConfigReg.bsv"
+                ],
+                "outputs": [
+                  "MkConfigReg.bo",
+                  "MkConfigReg.bsv.bsc-vcomp-out",
+                  "mkDesign_MkConfigReg.ba",
+                  "mkDesign_MkConfigReg.v",
+                  "mkTestbench_MkConfigReg.ba",
+                  "mkTestbench_MkConfigReg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkConfigReg",
+                "mkDesign_MkConfigReg"
+              ],
+              "top": "mkTestbench_MkConfigReg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v",
+                  "mkDesign_MkConfigReg.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.bsc-vcomp-out",
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigReg",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigReg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigReg.v.out",
+              "expected": "mkTestbench_MkConfigReg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v.out",
+                  "mkTestbench_MkConfigReg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigReg",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigReg.v-vcd.out",
+              "vcd": "mkTestbench_MkConfigReg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v-vcd.out",
+                  "mkTestbench_MkConfigReg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkConfigReg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkConfigReg",
+                "mkDesign_MkConfigReg"
+              ],
+              "top": "mkTestbench_MkConfigReg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.ba",
+                  "mkDesign_MkConfigReg.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkConfigReg.cexe",
+                    "mkTestbench_MkConfigReg.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkConfigReg",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigReg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigReg.c.out",
+              "expected": "mkTestbench_MkConfigReg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.c.out",
+                  "mkTestbench_MkConfigReg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkConfigReg",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigReg.c-vcd.out",
+              "vcd": "mkTestbench_MkConfigReg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.c-vcd.out",
+                  "mkTestbench_MkConfigReg.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkConfigReg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigReg.c-vcd.out",
+              "expected": "mkTestbench_MkConfigReg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.c-vcd.out",
+                  "mkTestbench_MkConfigReg.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 133,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "MkConfigReg.bsv.bsc-vcomp-out",
+              "destination": "MkConfigReg.bsv.bsc-vcomp-out.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "MkConfigReg.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "MkConfigReg.bsv.bsc-vcomp-out.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 161,
+                  "endByte": 239,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.v",
+              "destination": "mkTestbench_MkConfigReg.v.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 240,
+                  "endByte": 310,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkDesign_MkConfigReg.v",
+              "destination": "mkDesign_MkConfigReg.v.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign_MkConfigReg.v"
+                ],
+                "outputs": [
+                  "mkDesign_MkConfigReg.v.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 375,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "state-copy",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.bsc-vcomp-out",
+              "destination": "mkTestbench_MkConfigReg.bsc-vcomp-out.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.bsc-vcomp-out.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 376,
+                  "endByte": 470,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "state-copy-2",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.vexe",
+              "destination": "mkTestbench_MkConfigReg.vexe.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.vexe.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 547,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 77
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "state-copy-3",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.v.out",
+              "destination": "mkTestbench_MkConfigReg.v.out.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v.out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v.out.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 548,
+                  "endByte": 626,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mkTestbench_MkConfigReg-2",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "MkConfigReg.bi",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "MkConfigReg.bi"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 649,
+                  "endByte": 669,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "MkConfigReg.bo",
+              "artifacts": {
+                "inputs": [
+                  "MkConfigReg.bo"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "MkConfigReg.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 670,
+                  "endByte": 690,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "MkConfigReg.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_MkConfigReg",
+              "args": [
+                "-inline-reg"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "MkConfigReg.bsv"
+                ],
+                "outputs": [
+                  "MkConfigReg.bo",
+                  "MkConfigReg.bsv.bsc-vcomp-out",
+                  "mkDesign_MkConfigReg.v",
+                  "mkTestbench_MkConfigReg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 877,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 116
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkConfigReg",
+                "mkDesign_MkConfigReg"
+              ],
+              "top": "mkTestbench_MkConfigReg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v",
+                  "mkDesign_MkConfigReg.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.bsc-vcomp-out",
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 877,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 116
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigReg",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigReg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 877,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 116
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigReg.v.out",
+              "expected": "mkTestbench_MkConfigReg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v.out",
+                  "mkTestbench_MkConfigReg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 877,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 116
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigReg",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigReg.v-vcd.out",
+              "vcd": "mkTestbench_MkConfigReg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v-vcd.out",
+                  "mkTestbench_MkConfigReg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 877,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 116
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkConfigReg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 877,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 116
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "MkConfigReg.bsv.bsc-vcomp-out",
+              "destination": "MkConfigReg.bsv.bsc-vcomp-out.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "MkConfigReg.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "MkConfigReg.bsv.bsc-vcomp-out.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 905,
+                  "endByte": 980,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.v",
+              "destination": "mkTestbench_MkConfigReg.v.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 981,
+                  "endByte": 1048,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkDesign_MkConfigReg.v",
+              "destination": "mkDesign_MkConfigReg.v.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign_MkConfigReg.v"
+                ],
+                "outputs": [
+                  "mkDesign_MkConfigReg.v.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1049,
+                  "endByte": 1110,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.bsc-vcomp-out",
+              "destination": "mkTestbench_MkConfigReg.bsc-vcomp-out.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.bsc-vcomp-out.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1111,
+                  "endByte": 1202,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 92
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.vexe",
+              "destination": "mkTestbench_MkConfigReg.vexe.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.vexe.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1203,
+                  "endByte": 1276,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigReg.v.out",
+              "destination": "mkTestbench_MkConfigReg.v.out.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigReg.v.out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigReg.v.out.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1277,
+                  "endByte": 1352,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stateful-simulation-simulation-mkTestbench_MkConfigRegU",
+      "resource": "heavy",
+      "fixtures": [
+        "MkConfigRegU.bsv",
+        "mkTestbench_MkConfigRegU.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkConfigRegU",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkConfigRegU.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkConfigRegU",
+              "args": [
+                "-no-inline-reg"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "MkConfigRegU.bsv"
+                ],
+                "outputs": [
+                  "MkConfigRegU.bo",
+                  "MkConfigRegU.bsv.bsc-vcomp-out",
+                  "mkDesign_MkConfigRegU.ba",
+                  "mkDesign_MkConfigRegU.v",
+                  "mkTestbench_MkConfigRegU.ba",
+                  "mkTestbench_MkConfigRegU.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkConfigRegU",
+                "mkDesign_MkConfigRegU"
+              ],
+              "top": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v",
+                  "mkDesign_MkConfigRegU.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.bsc-vcomp-out",
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigRegU.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigRegU.v.out",
+              "expected": "mkTestbench_MkConfigRegU.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v.out",
+                  "mkTestbench_MkConfigRegU.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigRegU.v-vcd.out",
+              "vcd": "mkTestbench_MkConfigRegU.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v-vcd.out",
+                  "mkTestbench_MkConfigRegU.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkConfigRegU.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkConfigRegU",
+                "mkDesign_MkConfigRegU"
+              ],
+              "top": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.ba",
+                  "mkDesign_MkConfigRegU.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkConfigRegU.cexe",
+                    "mkTestbench_MkConfigRegU.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigRegU.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigRegU.c.out",
+              "expected": "mkTestbench_MkConfigRegU.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.c.out",
+                  "mkTestbench_MkConfigRegU.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigRegU.c-vcd.out",
+              "vcd": "mkTestbench_MkConfigRegU.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.c-vcd.out",
+                  "mkTestbench_MkConfigRegU.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkConfigRegU.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigRegU.c-vcd.out",
+              "expected": "mkTestbench_MkConfigRegU.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.c-vcd.out",
+                  "mkTestbench_MkConfigRegU.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1383,
+                  "endByte": 1491,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "MkConfigRegU.bsv.bsc-vcomp-out",
+              "destination": "MkConfigRegU.bsv.bsc-vcomp-out.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "MkConfigRegU.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "MkConfigRegU.bsv.bsc-vcomp-out.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1519,
+                  "endByte": 1599,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.v",
+              "destination": "mkTestbench_MkConfigRegU.v.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1600,
+                  "endByte": 1672,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkDesign_MkConfigRegU.v",
+              "destination": "mkDesign_MkConfigRegU.v.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign_MkConfigRegU.v"
+                ],
+                "outputs": [
+                  "mkDesign_MkConfigRegU.v.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1673,
+                  "endByte": 1739,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 67
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "state-copy",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.bsc-vcomp-out",
+              "destination": "mkTestbench_MkConfigRegU.bsc-vcomp-out.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.bsc-vcomp-out.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1740,
+                  "endByte": 1836,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 97
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "state-copy-2",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.vexe",
+              "destination": "mkTestbench_MkConfigRegU.vexe.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.vexe.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1837,
+                  "endByte": 1915,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "state-copy-3",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.v.out",
+              "destination": "mkTestbench_MkConfigRegU.v.out.no-inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v.out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v.out.no-inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1916,
+                  "endByte": 1996,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 81
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mkTestbench_MkConfigRegU-2",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "MkConfigRegU.bi",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "MkConfigRegU.bi"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2019,
+                  "endByte": 2040,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 41,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "MkConfigRegU.bo",
+              "artifacts": {
+                "inputs": [
+                  "MkConfigRegU.bo"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "MkConfigRegU.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2041,
+                  "endByte": 2062,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "MkConfigRegU.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_MkConfigRegU",
+              "args": [
+                "-inline-reg"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "MkConfigRegU.bsv"
+                ],
+                "outputs": [
+                  "MkConfigRegU.bo",
+                  "MkConfigRegU.bsv.bsc-vcomp-out",
+                  "mkDesign_MkConfigRegU.v",
+                  "mkTestbench_MkConfigRegU.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2134,
+                  "endByte": 2252,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkConfigRegU",
+                "mkDesign_MkConfigRegU"
+              ],
+              "top": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v",
+                  "mkDesign_MkConfigRegU.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.bsc-vcomp-out",
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2134,
+                  "endByte": 2252,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigRegU.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2134,
+                  "endByte": 2252,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkConfigRegU.v.out",
+              "expected": "mkTestbench_MkConfigRegU.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v.out",
+                  "mkTestbench_MkConfigRegU.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2134,
+                  "endByte": 2252,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkConfigRegU",
+              "args": [],
+              "stdout": "mkTestbench_MkConfigRegU.v-vcd.out",
+              "vcd": "mkTestbench_MkConfigRegU.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v-vcd.out",
+                  "mkTestbench_MkConfigRegU.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2134,
+                  "endByte": 2252,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkConfigRegU.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2134,
+                  "endByte": 2252,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 119
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "MkConfigRegU.bsv.bsc-vcomp-out",
+              "destination": "MkConfigRegU.bsv.bsc-vcomp-out.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "MkConfigRegU.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "MkConfigRegU.bsv.bsc-vcomp-out.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2280,
+                  "endByte": 2357,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.v",
+              "destination": "mkTestbench_MkConfigRegU.v.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2358,
+                  "endByte": 2427,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkDesign_MkConfigRegU.v",
+              "destination": "mkDesign_MkConfigRegU.v.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign_MkConfigRegU.v"
+                ],
+                "outputs": [
+                  "mkDesign_MkConfigRegU.v.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2428,
+                  "endByte": 2491,
+                  "startLine": 50,
+                  "startColumn": 1,
+                  "endLine": 50,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.bsc-vcomp-out",
+              "destination": "mkTestbench_MkConfigRegU.bsc-vcomp-out.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.bsc-vcomp-out.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2492,
+                  "endByte": 2585,
+                  "startLine": 51,
+                  "startColumn": 1,
+                  "endLine": 51,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.vexe",
+              "destination": "mkTestbench_MkConfigRegU.vexe.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.vexe.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2586,
+                  "endByte": 2661,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkTestbench_MkConfigRegU.v.out",
+              "destination": "mkTestbench_MkConfigRegU.v.out.inline-reg",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkConfigRegU.v.out"
+                ],
+                "outputs": [
+                  "mkTestbench_MkConfigRegU.v.out.inline-reg"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2662,
+                  "endByte": 2739,
+                  "startLine": 53,
+                  "startColumn": 1,
+                  "endLine": 53,
+                  "endColumn": 78
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1777 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/instances/incoherent/incoherent",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/instances/incoherent/incoherent.exp",
+    "sha256": "7176345cd5392440d4fb306214e804ac8774068017ed240f276ff807b58fa5bd"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/instances/incoherent",
+  "fixtures": [
+    {
+      "path": "IncoherentBad.bs",
+      "sha256": "e0d3624aa45ee5bce221e961f6a7d71385e73d17f58f46b82d73c45aba73ee33",
+      "role": "source"
+    },
+    {
+      "path": "IncoherentFlag.bs",
+      "sha256": "3b041b8cfcf495b5ba0e2acfc5f03cca42eb0d2e9fe4b5f322d881d6a4d5419e",
+      "role": "source"
+    },
+    {
+      "path": "IncoherentOK.bs",
+      "sha256": "4e0cd45a557e7de028b85fca524c972292e84aa859790639cc5bdc645af690e4",
+      "role": "source"
+    },
+    {
+      "path": "IncoherentOrder.bs",
+      "sha256": "e79eb1a1dfb35f0a9bc4553ff69a1401abd9192a7f0c99ec640501f8838f79c1",
+      "role": "source"
+    },
+    {
+      "path": "IncoherentTwoLevel.bs",
+      "sha256": "352d42873c61472b7b062e29572cea1b4903d65cb1b2f65d0be4253e56b7e601",
+      "role": "source"
+    },
+    {
+      "path": "sysIncoherentOrder.out.expected",
+      "sha256": "451d660bc5f37a981539cf07c4c6a182693a7d165b4589ecb1165a72555ff90a",
+      "role": "golden"
+    },
+    {
+      "path": "sysIncoherentTwoLevel.out.expected",
+      "sha256": "bf80fd9a32a1b0be43b13ca978a6ed738e25c4c119ea2d03cc2c4f15d022e514",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-IncoherentOK",
+      "resource": "normal",
+      "fixtures": [
+        "IncoherentOK.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IncoherentOK",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IncoherentOK.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IncoherentOK.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "IncoherentOK.bs"
+                ],
+                "outputs": [
+                  "IncoherentOK.bs.bsc-out",
+                  "IncoherentOK.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 28,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-IncoherentBad",
+      "resource": "normal",
+      "fixtures": [
+        "IncoherentBad.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IncoherentBad",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IncoherentBad.bs",
+              "mode": "frontend",
+              "args": [
+                "-incoherent-instance-matches"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "IncoherentBad.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "IncoherentBad.bs"
+                ],
+                "outputs": [
+                  "IncoherentBad.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 29,
+                  "endByte": 103,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "IncoherentBad.bs.bsc-out",
+              "kind": "error",
+              "code": "T0030",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncoherentBad.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 29,
+                  "endByte": 103,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 75
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-IncoherentFlag",
+      "resource": "normal",
+      "fixtures": [
+        "IncoherentFlag.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IncoherentFlag",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IncoherentFlag.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "IncoherentFlag.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "IncoherentFlag.bs"
+                ],
+                "outputs": [
+                  "IncoherentFlag.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 146,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "IncoherentFlag.bs.bsc-out",
+              "kind": "error",
+              "code": "T0030",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncoherentFlag.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 146,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-IncoherentFlag",
+      "resource": "normal",
+      "fixtures": [
+        "IncoherentFlag.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IncoherentFlag",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IncoherentFlag.bs",
+              "mode": "frontend",
+              "args": [
+                "-incoherent-instance-matches"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IncoherentFlag.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "IncoherentFlag.bs"
+                ],
+                "outputs": [
+                  "IncoherentFlag.bs.bsc-out",
+                  "IncoherentFlag.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 147,
+                  "endByte": 224,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "IncoherentFlag.bs.bsc-out",
+              "kind": "warning",
+              "code": "T0126",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "IncoherentFlag.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 147,
+                  "endByte": 224,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 78
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysIncoherentOrder",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentOrder.bs",
+        "sysIncoherentOrder.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncoherentOrder",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncoherentOrder.bs",
+              "mode": "shared_elaboration",
+              "module": "sysIncoherentOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IncoherentOrder.bs"
+                ],
+                "outputs": [
+                  "IncoherentOrder.bo",
+                  "IncoherentOrder.bs.bsc-vcomp-out",
+                  "sysIncoherentOrder.ba",
+                  "sysIncoherentOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncoherentOrder"
+              ],
+              "top": "sysIncoherentOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.v"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.bsc-vcomp-out",
+                  "sysIncoherentOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentOrder.v.out",
+              "expected": "sysIncoherentOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.v.out",
+                  "sysIncoherentOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.v-vcd.out",
+              "vcd": "sysIncoherentOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.v-vcd.out",
+                  "sysIncoherentOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncoherentOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncoherentOrder"
+              ],
+              "top": "sysIncoherentOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.ba"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncoherentOrder.cexe",
+                    "sysIncoherentOrder.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentOrder.c.out",
+              "expected": "sysIncoherentOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.c.out",
+                  "sysIncoherentOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.c-vcd.out",
+              "vcd": "sysIncoherentOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.c-vcd.out",
+                  "sysIncoherentOrder.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncoherentOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentOrder.c-vcd.out",
+              "expected": "sysIncoherentOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.c-vcd.out",
+                  "sysIncoherentOrder.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 505,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysIncoherentOrder-2",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentOrder.bs",
+        "sysIncoherentOrder.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncoherentOrder",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncoherentOrder.bs",
+              "mode": "shared_elaboration",
+              "module": "sysIncoherentOrder",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "IncoherentOrder.bs"
+                ],
+                "outputs": [
+                  "IncoherentOrder.bo",
+                  "IncoherentOrder.bs.bsc-vcomp-out",
+                  "sysIncoherentOrder.ba",
+                  "sysIncoherentOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncoherentOrder"
+              ],
+              "top": "sysIncoherentOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.v"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.bsc-vcomp-out",
+                  "sysIncoherentOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentOrder.v.out",
+              "expected": "sysIncoherentOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.v.out",
+                  "sysIncoherentOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.v-vcd.out",
+              "vcd": "sysIncoherentOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.v-vcd.out",
+                  "sysIncoherentOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncoherentOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncoherentOrder"
+              ],
+              "top": "sysIncoherentOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.ba"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncoherentOrder.cexe",
+                    "sysIncoherentOrder.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentOrder.c.out",
+              "expected": "sysIncoherentOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.c.out",
+                  "sysIncoherentOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentOrder",
+              "args": [],
+              "stdout": "sysIncoherentOrder.c-vcd.out",
+              "vcd": "sysIncoherentOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentOrder.c-vcd.out",
+                  "sysIncoherentOrder.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncoherentOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentOrder.c-vcd.out",
+              "expected": "sysIncoherentOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentOrder.c-vcd.out",
+                  "sysIncoherentOrder.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 561,
+                  "endByte": 663,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 103
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysIncoherentTwoLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentTwoLevel.bs",
+        "sysIncoherentTwoLevel.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncoherentTwoLevel",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncoherentTwoLevel.bs",
+              "mode": "shared_elaboration",
+              "module": "sysIncoherentTwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IncoherentTwoLevel.bs"
+                ],
+                "outputs": [
+                  "IncoherentTwoLevel.bo",
+                  "IncoherentTwoLevel.bs.bsc-vcomp-out",
+                  "sysIncoherentTwoLevel.ba",
+                  "sysIncoherentTwoLevel.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncoherentTwoLevel"
+              ],
+              "top": "sysIncoherentTwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.v"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.bsc-vcomp-out",
+                  "sysIncoherentTwoLevel.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentTwoLevel.v.out",
+              "expected": "sysIncoherentTwoLevel.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.v.out",
+                  "sysIncoherentTwoLevel.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.v-vcd.out",
+              "vcd": "sysIncoherentTwoLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.v-vcd.out",
+                  "sysIncoherentTwoLevel.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncoherentTwoLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncoherentTwoLevel"
+              ],
+              "top": "sysIncoherentTwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.ba"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncoherentTwoLevel.cexe",
+                    "sysIncoherentTwoLevel.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentTwoLevel.c.out",
+              "expected": "sysIncoherentTwoLevel.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.c.out",
+                  "sysIncoherentTwoLevel.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.c-vcd.out",
+              "vcd": "sysIncoherentTwoLevel.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.c-vcd.out",
+                  "sysIncoherentTwoLevel.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncoherentTwoLevel.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentTwoLevel.c-vcd.out",
+              "expected": "sysIncoherentTwoLevel.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.c-vcd.out",
+                  "sysIncoherentTwoLevel.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 891,
+                  "endByte": 956,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 66
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysIncoherentTwoLevel-2",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentTwoLevel.bs",
+        "sysIncoherentTwoLevel.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIncoherentTwoLevel",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IncoherentTwoLevel.bs",
+              "mode": "shared_elaboration",
+              "module": "sysIncoherentTwoLevel",
+              "args": [
+                "-legacy-inst-index"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "IncoherentTwoLevel.bs"
+                ],
+                "outputs": [
+                  "IncoherentTwoLevel.bo",
+                  "IncoherentTwoLevel.bs.bsc-vcomp-out",
+                  "sysIncoherentTwoLevel.ba",
+                  "sysIncoherentTwoLevel.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIncoherentTwoLevel"
+              ],
+              "top": "sysIncoherentTwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.v"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.bsc-vcomp-out",
+                  "sysIncoherentTwoLevel.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentTwoLevel.v.out",
+              "expected": "sysIncoherentTwoLevel.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.v.out",
+                  "sysIncoherentTwoLevel.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.v-vcd.out",
+              "vcd": "sysIncoherentTwoLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.vexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.v-vcd.out",
+                  "sysIncoherentTwoLevel.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIncoherentTwoLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIncoherentTwoLevel"
+              ],
+              "top": "sysIncoherentTwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.ba"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIncoherentTwoLevel.cexe",
+                    "sysIncoherentTwoLevel.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentTwoLevel.c.out",
+              "expected": "sysIncoherentTwoLevel.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.c.out",
+                  "sysIncoherentTwoLevel.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIncoherentTwoLevel",
+              "args": [],
+              "stdout": "sysIncoherentTwoLevel.c-vcd.out",
+              "vcd": "sysIncoherentTwoLevel.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.cexe"
+                ],
+                "outputs": [
+                  "sysIncoherentTwoLevel.c-vcd.out",
+                  "sysIncoherentTwoLevel.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIncoherentTwoLevel.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIncoherentTwoLevel.c-vcd.out",
+              "expected": "sysIncoherentTwoLevel.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIncoherentTwoLevel.c-vcd.out",
+                  "sysIncoherentTwoLevel.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 957,
+                  "endByte": 1065,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 109
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

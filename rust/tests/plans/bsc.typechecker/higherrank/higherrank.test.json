@@ -1,0 +1,1223 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/higherrank/higherrank",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/higherrank/higherrank.exp",
+    "sha256": "593292c91b912719499bbfc503a27c732f6259e54b20e6acb7cae97deece162d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/higherrank",
+  "fixtures": [
+    {
+      "path": "DeepSeqCond.bs",
+      "sha256": "7962b4c08600abecbb60b33775a139362b11da09a8fead1919727645ed0221cb",
+      "role": "source"
+    },
+    {
+      "path": "HigherRank.bs",
+      "sha256": "232bc2ec0c71c35be821fb7acf751e4a280e5461299806c9398054df49c5b6fc",
+      "role": "source"
+    },
+    {
+      "path": "Undefined.bs",
+      "sha256": "2db1b4d22cd8ad3f7c925c9cc708ba4bf8467a0e351d29a17c48ae34aa1c0524",
+      "role": "source"
+    },
+    {
+      "path": "Uninitialized.bs",
+      "sha256": "947966c460adbe1c12a1c8f701b19f481c2b2593c9a1faa471af395a12d64d2c",
+      "role": "source"
+    },
+    {
+      "path": "Uninitialized.bs.bsc-vcomp-out.expected",
+      "sha256": "56599c426d0cdb050af8b5abaf77306a9355ec4518b217b9564bfbf4257a095e",
+      "role": "golden"
+    },
+    {
+      "path": "UninitializedStruct.bs",
+      "sha256": "bd4c3a4929b2aa37e56199b9ade3750c440025295f445ed124dac2fe542fabc9",
+      "role": "source"
+    },
+    {
+      "path": "UninitializedStruct.bs.bsc-vcomp-out.expected",
+      "sha256": "2685562f78f513c920bd30c9c95413ed154066b5e6a8fe2bc10ff6916e2002ee",
+      "role": "golden"
+    },
+    {
+      "path": "UninitializedStructBSV.bsv",
+      "sha256": "f83aa079f05e90e0aa12387b051e26ab5610d3dc0d07df8fb6952230175a29c1",
+      "role": "source"
+    },
+    {
+      "path": "sysDeepSeqCond.out.expected",
+      "sha256": "b953f6ed7cc391189ae7e33c927b68a142bf30f4f599b1c64a179c07c5532fcd",
+      "role": "golden"
+    },
+    {
+      "path": "sysHigherRank.out.expected",
+      "sha256": "11a2c1491c6594852b1eeffe27416e2ea0b333a1fcdf720a74695a121e89e3ce",
+      "role": "golden"
+    },
+    {
+      "path": "sysUndefined.out.expected",
+      "sha256": "646c449d40da9fc815c2f31de64374981113f2e9d24d3056dc9e9e93d3a9e914",
+      "role": "golden"
+    },
+    {
+      "path": "sysUninitializedStructBSV.out.expected",
+      "sha256": "4a2397e4753ab4995d9278e56a79c1fa0d802d06774b614f8b5b1e5adf7a3643",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysHigherRank",
+      "resource": "heavy",
+      "fixtures": [
+        "HigherRank.bs",
+        "sysHigherRank.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysHigherRank",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "HigherRank.bs",
+              "mode": "verilog",
+              "module": "sysHigherRank",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "HigherRank.bs"
+                ],
+                "outputs": [
+                  "HigherRank.bo",
+                  "HigherRank.bs.bsc-vcomp-out",
+                  "sysHigherRank.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 40,
+                  "endByte": 65,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHigherRank"
+              ],
+              "top": "sysHigherRank",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysHigherRank.v"
+                ],
+                "outputs": [
+                  "sysHigherRank.bsc-vcomp-out",
+                  "sysHigherRank.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 40,
+                  "endByte": 65,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysHigherRank",
+              "args": [],
+              "stdout": "sysHigherRank.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysHigherRank.vexe"
+                ],
+                "outputs": [
+                  "sysHigherRank.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 40,
+                  "endByte": 65,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysHigherRank.v.out",
+              "expected": "sysHigherRank.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysHigherRank.v.out",
+                  "sysHigherRank.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 40,
+                  "endByte": 65,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysHigherRank",
+              "args": [],
+              "stdout": "sysHigherRank.v-vcd.out",
+              "vcd": "sysHigherRank.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysHigherRank.vexe"
+                ],
+                "outputs": [
+                  "sysHigherRank.v-vcd.out",
+                  "sysHigherRank.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 40,
+                  "endByte": 65,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysHigherRank.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysHigherRank.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 40,
+                  "endByte": 65,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysUndefined",
+      "resource": "heavy",
+      "fixtures": [
+        "Undefined.bs",
+        "sysUndefined.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysUndefined",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Undefined.bs",
+              "mode": "verilog",
+              "module": "sysUndefined",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Undefined.bs"
+                ],
+                "outputs": [
+                  "Undefined.bo",
+                  "Undefined.bs.bsc-vcomp-out",
+                  "sysUndefined.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 90,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUndefined"
+              ],
+              "top": "sysUndefined",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndefined.v"
+                ],
+                "outputs": [
+                  "sysUndefined.bsc-vcomp-out",
+                  "sysUndefined.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 90,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndefined",
+              "args": [],
+              "stdout": "sysUndefined.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndefined.vexe"
+                ],
+                "outputs": [
+                  "sysUndefined.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 90,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndefined.v.out",
+              "expected": "sysUndefined.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUndefined.v.out",
+                  "sysUndefined.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 90,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndefined",
+              "args": [],
+              "stdout": "sysUndefined.v-vcd.out",
+              "vcd": "sysUndefined.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndefined.vexe"
+                ],
+                "outputs": [
+                  "sysUndefined.v-vcd.out",
+                  "sysUndefined.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 90,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysUndefined.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndefined.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 90,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDeepSeqCond",
+      "resource": "heavy",
+      "fixtures": [
+        "DeepSeqCond.bs",
+        "sysDeepSeqCond.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDeepSeqCond",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DeepSeqCond.bs",
+              "mode": "verilog",
+              "module": "sysDeepSeqCond",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DeepSeqCond.bs"
+                ],
+                "outputs": [
+                  "DeepSeqCond.bo",
+                  "DeepSeqCond.bs.bsc-vcomp-out",
+                  "sysDeepSeqCond.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 117,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDeepSeqCond"
+              ],
+              "top": "sysDeepSeqCond",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDeepSeqCond.v"
+                ],
+                "outputs": [
+                  "sysDeepSeqCond.bsc-vcomp-out",
+                  "sysDeepSeqCond.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 117,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDeepSeqCond",
+              "args": [],
+              "stdout": "sysDeepSeqCond.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDeepSeqCond.vexe"
+                ],
+                "outputs": [
+                  "sysDeepSeqCond.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 117,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDeepSeqCond.v.out",
+              "expected": "sysDeepSeqCond.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDeepSeqCond.v.out",
+                  "sysDeepSeqCond.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 117,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDeepSeqCond",
+              "args": [],
+              "stdout": "sysDeepSeqCond.v-vcd.out",
+              "vcd": "sysDeepSeqCond.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDeepSeqCond.vexe"
+                ],
+                "outputs": [
+                  "sysDeepSeqCond.v-vcd.out",
+                  "sysDeepSeqCond.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 117,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDeepSeqCond.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDeepSeqCond.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 117,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-Uninitialized",
+      "resource": "normal",
+      "fixtures": [
+        "Uninitialized.bs",
+        "Uninitialized.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Uninitialized",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Uninitialized.bs",
+              "mode": "verilog",
+              "module": "sysUninitialized",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Uninitialized.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Uninitialized.bs"
+                ],
+                "outputs": [
+                  "Uninitialized.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 215,
+                  "endByte": 283,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Uninitialized.bs.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0028",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Uninitialized.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 215,
+                  "endByte": 283,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Uninitialized.bs.bsc-vcomp-out",
+              "expected": "Uninitialized.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Uninitialized.bs.bsc-vcomp-out",
+                  "Uninitialized.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 284,
+                  "endByte": 327,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-UninitializedStruct",
+      "resource": "normal",
+      "fixtures": [
+        "UninitializedStruct.bs",
+        "UninitializedStruct.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UninitializedStruct",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UninitializedStruct.bs",
+              "mode": "verilog",
+              "module": "sysUninitializedStruct",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "UninitializedStruct.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UninitializedStruct.bs"
+                ],
+                "outputs": [
+                  "UninitializedStruct.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 449,
+                  "endByte": 529,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "UninitializedStruct.bs.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0028",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "UninitializedStruct.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 449,
+                  "endByte": 529,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 81
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "UninitializedStruct.bs.bsc-vcomp-out",
+              "expected": "UninitializedStruct.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "UninitializedStruct.bs.bsc-vcomp-out",
+                  "UninitializedStruct.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 530,
+                  "endByte": 579,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysUninitializedStructBSV",
+      "resource": "heavy",
+      "fixtures": [
+        "UninitializedStruct.bs",
+        "UninitializedStructBSV.bsv",
+        "sysUninitializedStructBSV.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysUninitializedStructBSV",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "UninitializedStructBSV.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysUninitializedStructBSV",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "UninitializedStructBSV.bsv"
+                ],
+                "outputs": [
+                  "UninitializedStructBSV.bo",
+                  "UninitializedStructBSV.bsv.bsc-vcomp-out",
+                  "sysUninitializedStructBSV.ba",
+                  "sysUninitializedStructBSV.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUninitializedStructBSV"
+              ],
+              "top": "sysUninitializedStructBSV",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.v"
+                ],
+                "outputs": [
+                  "sysUninitializedStructBSV.bsc-vcomp-out",
+                  "sysUninitializedStructBSV.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUninitializedStructBSV",
+              "args": [],
+              "stdout": "sysUninitializedStructBSV.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.vexe"
+                ],
+                "outputs": [
+                  "sysUninitializedStructBSV.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUninitializedStructBSV.v.out",
+              "expected": "sysUninitializedStructBSV.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.v.out",
+                  "sysUninitializedStructBSV.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUninitializedStructBSV",
+              "args": [],
+              "stdout": "sysUninitializedStructBSV.v-vcd.out",
+              "vcd": "sysUninitializedStructBSV.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.vexe"
+                ],
+                "outputs": [
+                  "sysUninitializedStructBSV.v-vcd.out",
+                  "sysUninitializedStructBSV.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysUninitializedStructBSV.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysUninitializedStructBSV"
+              ],
+              "top": "sysUninitializedStructBSV",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.ba"
+                ],
+                "outputs": [
+                  "sysUninitializedStructBSV.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysUninitializedStructBSV.cexe",
+                    "sysUninitializedStructBSV.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUninitializedStructBSV",
+              "args": [],
+              "stdout": "sysUninitializedStructBSV.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.cexe"
+                ],
+                "outputs": [
+                  "sysUninitializedStructBSV.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUninitializedStructBSV.c.out",
+              "expected": "sysUninitializedStructBSV.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.c.out",
+                  "sysUninitializedStructBSV.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUninitializedStructBSV",
+              "args": [],
+              "stdout": "sysUninitializedStructBSV.c-vcd.out",
+              "vcd": "sysUninitializedStructBSV.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.cexe"
+                ],
+                "outputs": [
+                  "sysUninitializedStructBSV.c-vcd.out",
+                  "sysUninitializedStructBSV.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysUninitializedStructBSV.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUninitializedStructBSV.c-vcd.out",
+              "expected": "sysUninitializedStructBSV.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUninitializedStructBSV.c-vcd.out",
+                  "sysUninitializedStructBSV.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 657,
+                  "endByte": 695,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,568 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/kind/inferkinds/inferkinds",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/kind/inferkinds/inferkinds.exp",
+    "sha256": "47965567c0f5eebc3e10962664da0cd377edaa2e6ea0ab28a49a3a893f01f3c6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/kind/inferkinds",
+  "fixtures": [
+    {
+      "path": "ClassPartialKind.bsv",
+      "sha256": "d055cd0ce3607e5a479a4d7fdb5c08915172812223fe0b5462137ade70c9e8b2",
+      "role": "source"
+    },
+    {
+      "path": "InterfaceGroundedIncorrectly.bsv",
+      "sha256": "baa420ff98f25e6bad0ef4bea14fc344a11c085ecad41bb40a7d0326483834ad",
+      "role": "source"
+    },
+    {
+      "path": "InterfaceInferedFromTypedef.bsv",
+      "sha256": "4d410dbff0750f5df3cef45c82e6fcbe8e10aaab552d2cd053904c824cfec899",
+      "role": "source"
+    },
+    {
+      "path": "InterfacePartialKind.bsv",
+      "sha256": "c171a52d2078ccd00ba66383318cec9c54ac9d2af24e83968849beabc385f32c",
+      "role": "source"
+    },
+    {
+      "path": "InterfacePartialKindManyParams.bsv",
+      "sha256": "fbd91101b103f8e8c7cef78cbc5875037af5f60306620dd8b3d42fcfaf37e6dc",
+      "role": "source"
+    },
+    {
+      "path": "InterfaceWrongPartialKind.bsv",
+      "sha256": "f5f469d64ec54eff4209b5b55de8edaee584aa943fd7e782fde5936c2df5e40d",
+      "role": "source"
+    },
+    {
+      "path": "SubUnionSubStructPartialKind.bsv",
+      "sha256": "d241f0715152284637a8ca02852989ecfd9ca0232f4eecb63d6e79945b22ffb4",
+      "role": "source"
+    },
+    {
+      "path": "TypeAliasShadow.bsv",
+      "sha256": "535e98e04d821b77adbc697109adc80370624aa2cb8664b6785be95e1d06c4ab",
+      "role": "source"
+    },
+    {
+      "path": "TypedefNumericResult.bsv",
+      "sha256": "545cc10a6e226f92aa1f68340ba563e0c7c4a04054f743adf49391ce178f13c7",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-InterfaceGroundedIncorrectly",
+      "resource": "normal",
+      "fixtures": [
+        "InterfaceGroundedIncorrectly.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InterfaceGroundedIncorrectly",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InterfaceGroundedIncorrectly.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "InterfaceGroundedIncorrectly.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "InterfaceGroundedIncorrectly.bsv"
+                ],
+                "outputs": [
+                  "InterfaceGroundedIncorrectly.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 407,
+                  "endByte": 464,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "InterfaceGroundedIncorrectly.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0027",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "InterfaceGroundedIncorrectly.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 407,
+                  "endByte": 464,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-InterfaceInferedFromTypedef",
+      "resource": "normal",
+      "fixtures": [
+        "InterfaceInferedFromTypedef.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InterfaceInferedFromTypedef",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InterfaceInferedFromTypedef.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InterfaceInferedFromTypedef.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "InterfaceInferedFromTypedef.bsv"
+                ],
+                "outputs": [
+                  "InterfaceInferedFromTypedef.bsv.bsc-out",
+                  "InterfaceInferedFromTypedef.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 569,
+                  "endByte": 613,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-InterfacePartialKind",
+      "resource": "normal",
+      "fixtures": [
+        "InterfacePartialKind.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InterfacePartialKind",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InterfacePartialKind.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InterfacePartialKind.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "InterfacePartialKind.bsv"
+                ],
+                "outputs": [
+                  "InterfacePartialKind.bsv.bsc-out",
+                  "InterfacePartialKind.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 741,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-InterfaceWrongPartialKind",
+      "resource": "normal",
+      "fixtures": [
+        "InterfaceWrongPartialKind.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InterfaceWrongPartialKind",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InterfaceWrongPartialKind.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "InterfaceWrongPartialKind.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "InterfaceWrongPartialKind.bsv"
+                ],
+                "outputs": [
+                  "InterfaceWrongPartialKind.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 847,
+                  "endByte": 901,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "InterfaceWrongPartialKind.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0026",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "InterfaceWrongPartialKind.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 847,
+                  "endByte": 901,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-InterfacePartialKindManyParams",
+      "resource": "normal",
+      "fixtures": [
+        "InterfacePartialKindManyParams.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InterfacePartialKindManyParams",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InterfacePartialKindManyParams.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InterfacePartialKindManyParams.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "InterfacePartialKindManyParams.bsv"
+                ],
+                "outputs": [
+                  "InterfacePartialKindManyParams.bsv.bsc-out",
+                  "InterfacePartialKindManyParams.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 958,
+                  "endByte": 1005,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-TypedefNumericResult",
+      "resource": "normal",
+      "fixtures": [
+        "TypedefNumericResult.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TypedefNumericResult",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TypedefNumericResult.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TypedefNumericResult.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TypedefNumericResult.bsv"
+                ],
+                "outputs": [
+                  "TypedefNumericResult.bsv.bsc-out",
+                  "TypedefNumericResult.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1108,
+                  "endByte": 1145,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-SubUnionSubStructPartialKind",
+      "resource": "normal",
+      "fixtures": [
+        "SubUnionSubStructPartialKind.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SubUnionSubStructPartialKind",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SubUnionSubStructPartialKind.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SubUnionSubStructPartialKind.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "SubUnionSubStructPartialKind.bsv"
+                ],
+                "outputs": [
+                  "SubUnionSubStructPartialKind.bsv.bsc-out",
+                  "SubUnionSubStructPartialKind.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1234,
+                  "endByte": 1279,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-ClassPartialKind",
+      "resource": "normal",
+      "fixtures": [
+        "ClassPartialKind.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ClassPartialKind",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ClassPartialKind.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ClassPartialKind.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ClassPartialKind.bsv"
+                ],
+                "outputs": [
+                  "ClassPartialKind.bsv.bsc-out",
+                  "ClassPartialKind.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1408,
+                  "endByte": 1441,
+                  "startLine": 47,
+                  "startColumn": 1,
+                  "endLine": 47,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-TypeAliasShadow",
+      "resource": "normal",
+      "fixtures": [
+        "TypeAliasShadow.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TypeAliasShadow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TypeAliasShadow.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TypeAliasShadow.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TypeAliasShadow.bsv"
+                ],
+                "outputs": [
+                  "TypeAliasShadow.bsv.bsc-out",
+                  "TypeAliasShadow.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1530,
+                  "endByte": 1562,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 54,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

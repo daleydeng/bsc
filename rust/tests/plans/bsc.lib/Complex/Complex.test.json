@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Complex/Complex",
+  "origin": {
+    "path": "testsuite/bsc.lib/Complex/Complex.exp",
+    "sha256": "bf3bac5d15546d9804c607855e7b844c5522cd60964ac268c45b40bd7162b1d7"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Complex",
+  "fixtures": [
+    {
+      "path": "CmplxSatAdd.bsv",
+      "sha256": "b5eb4c6ea83a8ce1402aeb3c28ac86b5eeb3da83a1d83e5e6159bd8a0682f524",
+      "role": "source"
+    },
+    {
+      "path": "CmplxTest.bsv",
+      "sha256": "bcd67164d8050076c44e3e116d1d55c26d7f238b6d99f6827a5abe89efaa19b3",
+      "role": "source"
+    },
+    {
+      "path": "sysCmplxSatAdd.out.expected",
+      "sha256": "b2bb3baf994db3b115e498923a085f44c9af22dea240265bbe5944e41ae8f5e9",
+      "role": "golden"
+    },
+    {
+      "path": "sysCmplxTest.out.expected",
+      "sha256": "04648c61ee9ba3a66181c293e8061ae1e02093f2b88932c239252068a54e9498",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysCmplxTest",
+      "resource": "heavy",
+      "fixtures": [
+        "CmplxTest.bsv",
+        "sysCmplxTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCmplxTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CmplxTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCmplxTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CmplxTest.bsv"
+                ],
+                "outputs": [
+                  "CmplxTest.bo",
+                  "CmplxTest.bsv.bsc-vcomp-out",
+                  "sysCmplxTest.ba",
+                  "sysCmplxTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCmplxTest"
+              ],
+              "top": "sysCmplxTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.v"
+                ],
+                "outputs": [
+                  "sysCmplxTest.bsc-vcomp-out",
+                  "sysCmplxTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCmplxTest",
+              "args": [],
+              "stdout": "sysCmplxTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.vexe"
+                ],
+                "outputs": [
+                  "sysCmplxTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCmplxTest.v.out",
+              "expected": "sysCmplxTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.v.out",
+                  "sysCmplxTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCmplxTest",
+              "args": [],
+              "stdout": "sysCmplxTest.v-vcd.out",
+              "vcd": "sysCmplxTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.vexe"
+                ],
+                "outputs": [
+                  "sysCmplxTest.v-vcd.out",
+                  "sysCmplxTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCmplxTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCmplxTest"
+              ],
+              "top": "sysCmplxTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.ba"
+                ],
+                "outputs": [
+                  "sysCmplxTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCmplxTest.cexe",
+                    "sysCmplxTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCmplxTest",
+              "args": [],
+              "stdout": "sysCmplxTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.cexe"
+                ],
+                "outputs": [
+                  "sysCmplxTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCmplxTest.c.out",
+              "expected": "sysCmplxTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.c.out",
+                  "sysCmplxTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCmplxTest",
+              "args": [],
+              "stdout": "sysCmplxTest.c-vcd.out",
+              "vcd": "sysCmplxTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.cexe"
+                ],
+                "outputs": [
+                  "sysCmplxTest.c-vcd.out",
+                  "sysCmplxTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCmplxTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCmplxTest.c-vcd.out",
+              "expected": "sysCmplxTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxTest.c-vcd.out",
+                  "sysCmplxTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 26,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysCmplxSatAdd",
+      "resource": "heavy",
+      "fixtures": [
+        "CmplxSatAdd.bsv",
+        "sysCmplxSatAdd.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCmplxSatAdd",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CmplxSatAdd.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCmplxSatAdd",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CmplxSatAdd.bsv"
+                ],
+                "outputs": [
+                  "CmplxSatAdd.bo",
+                  "CmplxSatAdd.bsv.bsc-vcomp-out",
+                  "sysCmplxSatAdd.ba",
+                  "sysCmplxSatAdd.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCmplxSatAdd"
+              ],
+              "top": "sysCmplxSatAdd",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.v"
+                ],
+                "outputs": [
+                  "sysCmplxSatAdd.bsc-vcomp-out",
+                  "sysCmplxSatAdd.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCmplxSatAdd",
+              "args": [],
+              "stdout": "sysCmplxSatAdd.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.vexe"
+                ],
+                "outputs": [
+                  "sysCmplxSatAdd.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCmplxSatAdd.v.out",
+              "expected": "sysCmplxSatAdd.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.v.out",
+                  "sysCmplxSatAdd.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCmplxSatAdd",
+              "args": [],
+              "stdout": "sysCmplxSatAdd.v-vcd.out",
+              "vcd": "sysCmplxSatAdd.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.vexe"
+                ],
+                "outputs": [
+                  "sysCmplxSatAdd.v-vcd.out",
+                  "sysCmplxSatAdd.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCmplxSatAdd.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCmplxSatAdd"
+              ],
+              "top": "sysCmplxSatAdd",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.ba"
+                ],
+                "outputs": [
+                  "sysCmplxSatAdd.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCmplxSatAdd.cexe",
+                    "sysCmplxSatAdd.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCmplxSatAdd",
+              "args": [],
+              "stdout": "sysCmplxSatAdd.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.cexe"
+                ],
+                "outputs": [
+                  "sysCmplxSatAdd.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCmplxSatAdd.c.out",
+              "expected": "sysCmplxSatAdd.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.c.out",
+                  "sysCmplxSatAdd.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCmplxSatAdd",
+              "args": [],
+              "stdout": "sysCmplxSatAdd.c-vcd.out",
+              "vcd": "sysCmplxSatAdd.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.cexe"
+                ],
+                "outputs": [
+                  "sysCmplxSatAdd.c-vcd.out",
+                  "sysCmplxSatAdd.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCmplxSatAdd.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCmplxSatAdd.c-vcd.out",
+              "expected": "sysCmplxSatAdd.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCmplxSatAdd.c-vcd.out",
+                  "sysCmplxSatAdd.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

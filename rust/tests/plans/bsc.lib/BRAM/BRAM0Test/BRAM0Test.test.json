@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/BRAM/BRAM0Test/BRAM0Test",
+  "origin": {
+    "path": "testsuite/bsc.lib/BRAM/BRAM0Test/BRAM0Test.exp",
+    "sha256": "dae966bb859e3d5f7e06f11e0bdebafdfd2aff00e02c7eca2d03c7380fb83027"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/BRAM/BRAM0Test",
+  "fixtures": [
+    {
+      "path": "BRAM0Test.bsv",
+      "sha256": "45461191390da9ef2d62f9650430a86888179f1ffd6bcd52149c778475b6fa5f",
+      "role": "source"
+    },
+    {
+      "path": "bram1.txt",
+      "sha256": "7ea9844ae84eccbf55e8330640865e36c43521e45a1baec24233327aab7e6595",
+      "role": "data"
+    },
+    {
+      "path": "bram2.txt",
+      "sha256": "aaa2e04b8643ae6874123f0741b6dd2852499cfcf9df122f1ce8c1533920f0a4",
+      "role": "data"
+    },
+    {
+      "path": "sysBRAM0Test.out.expected",
+      "sha256": "a8bc77361051c8bb2ef92cc454837c2b4d10f85f1e9261a936e34c2cc7f338ab",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBRAM0Test",
+      "resource": "heavy",
+      "fixtures": [
+        "BRAM0Test.bsv",
+        "bram1.txt",
+        "bram2.txt",
+        "sysBRAM0Test.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBRAM0Test",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "BRAM0Test.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBRAM0Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "BRAM0Test.bsv"
+                ],
+                "outputs": [
+                  "BRAM0Test.bo",
+                  "BRAM0Test.bsv.bsc-vcomp-out",
+                  "sysBRAM0Test.ba",
+                  "sysBRAM0Test.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBRAM0Test"
+              ],
+              "top": "sysBRAM0Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.v"
+                ],
+                "outputs": [
+                  "sysBRAM0Test.bsc-vcomp-out",
+                  "sysBRAM0Test.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAM0Test",
+              "args": [],
+              "stdout": "sysBRAM0Test.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.vexe"
+                ],
+                "outputs": [
+                  "sysBRAM0Test.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAM0Test.v.out",
+              "expected": "sysBRAM0Test.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.v.out",
+                  "sysBRAM0Test.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBRAM0Test",
+              "args": [],
+              "stdout": "sysBRAM0Test.v-vcd.out",
+              "vcd": "sysBRAM0Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.vexe"
+                ],
+                "outputs": [
+                  "sysBRAM0Test.v-vcd.out",
+                  "sysBRAM0Test.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBRAM0Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBRAM0Test"
+              ],
+              "top": "sysBRAM0Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.ba"
+                ],
+                "outputs": [
+                  "sysBRAM0Test.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBRAM0Test.cexe",
+                    "sysBRAM0Test.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAM0Test",
+              "args": [],
+              "stdout": "sysBRAM0Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.cexe"
+                ],
+                "outputs": [
+                  "sysBRAM0Test.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAM0Test.c.out",
+              "expected": "sysBRAM0Test.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.c.out",
+                  "sysBRAM0Test.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBRAM0Test",
+              "args": [],
+              "stdout": "sysBRAM0Test.c-vcd.out",
+              "vcd": "sysBRAM0Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.cexe"
+                ],
+                "outputs": [
+                  "sysBRAM0Test.c-vcd.out",
+                  "sysBRAM0Test.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBRAM0Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBRAM0Test.c-vcd.out",
+              "expected": "sysBRAM0Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBRAM0Test.c-vcd.out",
+                  "sysBRAM0Test.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,562 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/positivereset/simulation/simulation",
+  "origin": {
+    "path": "testsuite/bsc.verilog/positivereset/simulation/simulation.exp",
+    "sha256": "6b105b96e3e6598aca6f8f5d981dd3ea534ddfe7f36f2e7991ec701a728f8823"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/positivereset/simulation",
+  "fixtures": [
+    {
+      "path": "NoReset.bsv",
+      "sha256": "6505e27849c56a8c41a928fc728034f6eb1327f36517d327421351c9f93110d4",
+      "role": "source"
+    },
+    {
+      "path": "sysNoReset.out.expected",
+      "sha256": "ee424d9f2c5d092b59a3553060f0cfae0f45f2f8313f6bad79fe67a32f4d838a",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysNoReset",
+      "resource": "heavy",
+      "fixtures": [
+        "NoReset.bsv",
+        "sysNoReset.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysNoReset",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "NoReset.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysNoReset",
+              "args": [
+                "-reset-prefix",
+                "RESET_P",
+                "-D",
+                "BSV_POSITIVE_RESET"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "NoReset.bsv"
+                ],
+                "outputs": [
+                  "NoReset.bo",
+                  "NoReset.bsv.bsc-vcomp-out",
+                  "sysNoReset.ba",
+                  "sysNoReset.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysNoReset"
+              ],
+              "top": "sysNoReset",
+              "args": [
+                "-reset-prefix",
+                "RESET_P",
+                "-D",
+                "BSV_POSITIVE_RESET"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.v"
+                ],
+                "outputs": [
+                  "sysNoReset.bsc-vcomp-out",
+                  "sysNoReset.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNoReset",
+              "args": [],
+              "stdout": "sysNoReset.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.vexe"
+                ],
+                "outputs": [
+                  "sysNoReset.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNoReset.v.out",
+              "expected": "sysNoReset.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.v.out",
+                  "sysNoReset.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNoReset",
+              "args": [],
+              "stdout": "sysNoReset.v-vcd.out",
+              "vcd": "sysNoReset.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.vexe"
+                ],
+                "outputs": [
+                  "sysNoReset.v-vcd.out",
+                  "sysNoReset.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysNoReset.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysNoReset"
+              ],
+              "top": "sysNoReset",
+              "args": [
+                "-reset-prefix",
+                "RESET_P",
+                "-D",
+                "BSV_POSITIVE_RESET"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.ba"
+                ],
+                "outputs": [
+                  "sysNoReset.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysNoReset.cexe",
+                    "sysNoReset.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysNoReset",
+              "args": [],
+              "stdout": "sysNoReset.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.cexe"
+                ],
+                "outputs": [
+                  "sysNoReset.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNoReset.c.out",
+              "expected": "sysNoReset.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.c.out",
+                  "sysNoReset.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysNoReset",
+              "args": [],
+              "stdout": "sysNoReset.c-vcd.out",
+              "vcd": "sysNoReset.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.cexe"
+                ],
+                "outputs": [
+                  "sysNoReset.c-vcd.out",
+                  "sysNoReset.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysNoReset.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNoReset.c-vcd.out",
+              "expected": "sysNoReset.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.c-vcd.out",
+                  "sysNoReset.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 198,
+                  "endByte": 265,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysNoReset",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNoReset",
+              "args": [
+                "-reset-prefix",
+                "RESET_P",
+                "-D",
+                "BSV_POSITIVE_RESET"
+              ],
+              "stdout": "sysNoReset.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.vexe"
+                ],
+                "outputs": [
+                  "sysNoReset.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 325,
+                  "endByte": 359,
+                  "startLine": 14,
+                  "startColumn": 5,
+                  "endLine": 14,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "sysNoReset_veri.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "sysNoReset_veri.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 364,
+                  "endByte": 397,
+                  "startLine": 15,
+                  "startColumn": 5,
+                  "endLine": 15,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "sysNoReset_veri.vcd",
+              "checks": [
+                "main.top.RESET_P becomes 0 @2"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset_veri.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 555,
+                  "startLine": 18,
+                  "startColumn": 5,
+                  "endLine": 19,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysNoReset-2",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysNoReset",
+              "args": [
+                "-V",
+                "sysNoReset_sim.vcd"
+              ],
+              "stdout": "sysNoReset.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset.cexe"
+                ],
+                "outputs": [
+                  "sysNoReset.out",
+                  "sysNoReset_sim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 695,
+                  "endByte": 740,
+                  "startLine": 26,
+                  "startColumn": 5,
+                  "endLine": 26,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "sysNoReset_sim.vcd",
+              "checks": [
+                "main.top.RESET_P becomes 1 @5"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysNoReset_sim.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 830,
+                  "endByte": 930,
+                  "startLine": 30,
+                  "startColumn": 5,
+                  "endLine": 31,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID231/bugID231",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID231/bugID231.exp",
+    "sha256": "7531cd37593862145a7c8c79aca496285b699602a29eb01963bc1700c1c6292a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID231",
+  "fixtures": [
+    {
+      "path": "TestSyn.bs",
+      "sha256": "83e8db7233695d9084734bbe4ce6f6ae979555bca062c4d5cd10939c212319de",
+      "role": "source"
+    },
+    {
+      "path": "TestSyn.bs.bsc-vcomp-out.expected",
+      "sha256": "82b46da936792adc85f320796eb601f961b4da660fc0ecc9c9a5714d69de8a80",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-TestSyn",
+      "resource": "normal",
+      "fixtures": [
+        "TestSyn.bs",
+        "TestSyn.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestSyn",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestSyn.bs",
+              "mode": "verilog",
+              "module": "mkStack",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestSyn.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TestSyn.bs"
+                ],
+                "outputs": [
+                  "TestSyn.bo",
+                  "TestSyn.bs.bsc-vcomp-out",
+                  "mkStack.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 58,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "TestSyn.bs.bsc-vcomp-out",
+              "expected": "TestSyn.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "TestSyn.bs.bsc-vcomp-out",
+                  "TestSyn.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 59,
+                  "endByte": 96,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

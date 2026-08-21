@@ -1,0 +1,1128 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/mimo/mimo",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/mimo/mimo.exp",
+    "sha256": "bd81549da41db8ba68bca0972ec39425ec53da0866222cb4dd85590261052ea3"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/mimo",
+  "fixtures": [
+    {
+      "path": "Basic.bsv",
+      "sha256": "4ff548bbe1da787fb263a44ced8e765f5770d6dbccbee4541312fac7829f649d",
+      "role": "source"
+    },
+    {
+      "path": "TrafficBRAM.bsv",
+      "sha256": "cc5da8bd40332cbdf72f865b7b4a7efc8e9fe41175da36a3b2c9958fa20e57c0",
+      "role": "source"
+    },
+    {
+      "path": "TrafficREG.bsv",
+      "sha256": "4f57da9d4c305af2428f02bc567746680bba63ada7e20d7e4824e2315994145e",
+      "role": "source"
+    },
+    {
+      "path": "sysBasic.expected",
+      "sha256": "3bfd7d5782ff467add6e576cefb473cbd632d636db448ae4b43aa78cac1299d0",
+      "role": "golden"
+    },
+    {
+      "path": "sysTrafficBRAM.out.expected",
+      "sha256": "b2783bf59ab7ad40bf6af09510f8ff0e48a52a3537b4c6d27ab64bcfd2e1235d",
+      "role": "golden"
+    },
+    {
+      "path": "sysTrafficREG.out.expected",
+      "sha256": "675871622a71d8eff2bd8163c604a476d58099fc843312c5f7d8825be82113cb",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBasic",
+      "resource": "heavy",
+      "fixtures": [
+        "Basic.bsv",
+        "sysBasic.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBasic",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Basic.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysBasic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Basic.bsv"
+                ],
+                "outputs": [
+                  "Basic.bo",
+                  "Basic.bsv.bsc-vcomp-out",
+                  "sysBasic.ba",
+                  "sysBasic.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysBasic"
+              ],
+              "top": "sysBasic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.v"
+                ],
+                "outputs": [
+                  "sysBasic.bsc-vcomp-out",
+                  "sysBasic.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBasic",
+              "args": [],
+              "stdout": "sysBasic.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.vexe"
+                ],
+                "outputs": [
+                  "sysBasic.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBasic.v.out",
+              "expected": "sysBasic.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.v.out",
+                  "sysBasic.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysBasic",
+              "args": [],
+              "stdout": "sysBasic.v-vcd.out",
+              "vcd": "sysBasic.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.vexe"
+                ],
+                "outputs": [
+                  "sysBasic.v-vcd.out",
+                  "sysBasic.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysBasic.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBasic"
+              ],
+              "top": "sysBasic",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.ba"
+                ],
+                "outputs": [
+                  "sysBasic.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBasic.cexe",
+                    "sysBasic.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBasic",
+              "args": [],
+              "stdout": "sysBasic.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.cexe"
+                ],
+                "outputs": [
+                  "sysBasic.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBasic.c.out",
+              "expected": "sysBasic.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.c.out",
+                  "sysBasic.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBasic",
+              "args": [],
+              "stdout": "sysBasic.c-vcd.out",
+              "vcd": "sysBasic.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.cexe"
+                ],
+                "outputs": [
+                  "sysBasic.c-vcd.out",
+                  "sysBasic.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBasic.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBasic.c-vcd.out",
+              "expected": "sysBasic.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBasic.c-vcd.out",
+                  "sysBasic.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 39,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 40
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTrafficREG",
+      "resource": "heavy",
+      "fixtures": [
+        "TrafficREG.bsv",
+        "sysTrafficREG.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTrafficREG",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TrafficREG.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTrafficREG",
+              "args": [
+                "-no-aggressive-conditions"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TrafficREG.bsv"
+                ],
+                "outputs": [
+                  "TrafficREG.bo",
+                  "TrafficREG.bsv.bsc-vcomp-out",
+                  "sysTrafficREG.ba",
+                  "sysTrafficREG.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTrafficREG"
+              ],
+              "top": "sysTrafficREG",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.v"
+                ],
+                "outputs": [
+                  "sysTrafficREG.bsc-vcomp-out",
+                  "sysTrafficREG.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTrafficREG",
+              "args": [],
+              "stdout": "sysTrafficREG.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.vexe"
+                ],
+                "outputs": [
+                  "sysTrafficREG.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTrafficREG.v.out",
+              "expected": "sysTrafficREG.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.v.out",
+                  "sysTrafficREG.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTrafficREG",
+              "args": [],
+              "stdout": "sysTrafficREG.v-vcd.out",
+              "vcd": "sysTrafficREG.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.vexe"
+                ],
+                "outputs": [
+                  "sysTrafficREG.v-vcd.out",
+                  "sysTrafficREG.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTrafficREG.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTrafficREG"
+              ],
+              "top": "sysTrafficREG",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.ba"
+                ],
+                "outputs": [
+                  "sysTrafficREG.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTrafficREG.cexe",
+                    "sysTrafficREG.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTrafficREG",
+              "args": [],
+              "stdout": "sysTrafficREG.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.cexe"
+                ],
+                "outputs": [
+                  "sysTrafficREG.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTrafficREG.c.out",
+              "expected": "sysTrafficREG.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.c.out",
+                  "sysTrafficREG.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTrafficREG",
+              "args": [],
+              "stdout": "sysTrafficREG.c-vcd.out",
+              "vcd": "sysTrafficREG.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.cexe"
+                ],
+                "outputs": [
+                  "sysTrafficREG.c-vcd.out",
+                  "sysTrafficREG.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTrafficREG.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTrafficREG.c-vcd.out",
+              "expected": "sysTrafficREG.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficREG.c-vcd.out",
+                  "sysTrafficREG.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 240,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 74
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTrafficBRAM",
+      "resource": "heavy",
+      "fixtures": [
+        "TrafficBRAM.bsv",
+        "sysTrafficBRAM.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTrafficBRAM",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TrafficBRAM.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTrafficBRAM",
+              "args": [
+                "-no-aggressive-conditions"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TrafficBRAM.bsv"
+                ],
+                "outputs": [
+                  "TrafficBRAM.bo",
+                  "TrafficBRAM.bsv.bsc-vcomp-out",
+                  "sysTrafficBRAM.ba",
+                  "sysTrafficBRAM.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTrafficBRAM"
+              ],
+              "top": "sysTrafficBRAM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.v"
+                ],
+                "outputs": [
+                  "sysTrafficBRAM.bsc-vcomp-out",
+                  "sysTrafficBRAM.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTrafficBRAM",
+              "args": [],
+              "stdout": "sysTrafficBRAM.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.vexe"
+                ],
+                "outputs": [
+                  "sysTrafficBRAM.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTrafficBRAM.v.out",
+              "expected": "sysTrafficBRAM.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.v.out",
+                  "sysTrafficBRAM.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTrafficBRAM",
+              "args": [],
+              "stdout": "sysTrafficBRAM.v-vcd.out",
+              "vcd": "sysTrafficBRAM.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.vexe"
+                ],
+                "outputs": [
+                  "sysTrafficBRAM.v-vcd.out",
+                  "sysTrafficBRAM.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTrafficBRAM.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTrafficBRAM"
+              ],
+              "top": "sysTrafficBRAM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.ba"
+                ],
+                "outputs": [
+                  "sysTrafficBRAM.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTrafficBRAM.cexe",
+                    "sysTrafficBRAM.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTrafficBRAM",
+              "args": [],
+              "stdout": "sysTrafficBRAM.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.cexe"
+                ],
+                "outputs": [
+                  "sysTrafficBRAM.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTrafficBRAM.c.out",
+              "expected": "sysTrafficBRAM.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.c.out",
+                  "sysTrafficBRAM.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTrafficBRAM",
+              "args": [],
+              "stdout": "sysTrafficBRAM.c-vcd.out",
+              "vcd": "sysTrafficBRAM.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.cexe"
+                ],
+                "outputs": [
+                  "sysTrafficBRAM.c-vcd.out",
+                  "sysTrafficBRAM.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTrafficBRAM.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTrafficBRAM.c-vcd.out",
+              "expected": "sysTrafficBRAM.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTrafficBRAM.c-vcd.out",
+                  "sysTrafficBRAM.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 315,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 75
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

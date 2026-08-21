@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.names/portRenaming/paths/portnames",
+  "origin": {
+    "path": "testsuite/bsc.names/portRenaming/paths/portnames.exp",
+    "sha256": "6d9dcb2bdf6406d79988a1658e849ed25b1b508dadf32abe55310ec22c4d66e3"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.names/portRenaming/paths",
+  "fixtures": [
+    {
+      "path": "PathTest.bsv",
+      "sha256": "bf19e7d1483083438a5a20784356393cceb1711f1b60f266b9957cac647e764d",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-PathTest",
+      "resource": "normal",
+      "fixtures": [
+        "PathTest.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PathTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PathTest.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PathTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PathTest.bsv"
+                ],
+                "outputs": [
+                  "PathTest.bo",
+                  "PathTest.bsv.bsc-vcomp-out",
+                  "mkPathTestSub.v",
+                  "mkPathTestTop.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 159,
+                  "endByte": 192,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkPathTestSub.v",
+              "pattern": "\n// Combinational paths from inputs to outputs:\n//   \\(put_x, EN_put\\) -> req_info\n//   EN_put -> req\n",
+              "artifacts": {
+                "inputs": [
+                  "mkPathTestSub.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 193,
+                  "endByte": 325,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 2
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkPathTestTop.v",
+              "pattern": "\n// Combinational paths from inputs to outputs:\n//   \\(put_x, EN_put\\) -> req_info\n//   EN_put -> req\n",
+              "artifacts": {
+                "inputs": [
+                  "mkPathTestTop.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 380,
+                  "endByte": 512,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

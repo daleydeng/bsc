@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/to_systemc/multiple_models/gcd/gcd",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/to_systemc/multiple_models/gcd/gcd.exp",
+    "sha256": "8a058f74eb9245dc137d0e60ac794cab15b566e95374a3050dc865af31876905"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/to_systemc/multiple_models/gcd",
+  "fixtures": [
+    {
+      "path": "GCD.bsv",
+      "sha256": "c4eb1da0b7e2392e27729bfa3caff03d82c32787cd6ccaa49e6e77d47d61b8ad",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "8d6995753343ab2095fa8946f28f20668d309754c550da068653b3a847e4648f",
+      "role": "source"
+    },
+    {
+      "path": "top.out.expected",
+      "sha256": "96ed2d533969731409446be0941c8b63aafb2859937309743913c8ec1213e1b3",
+      "role": "golden"
+    },
+    {
+      "path": "top.sc",
+      "sha256": "8b66173437169b58d1549e75fa934d89daf2ee8b21f436701e321b88081d2863",
+      "role": "data"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "systemc-workflow-top",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv",
+        "top.out.expected",
+        "top.sc"
+      ],
+      "requires": [
+        "bluesim",
+        "system_c"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "systemc-run",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GCD.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GCD.bsv"
+                ],
+                "outputs": [
+                  "GCD.bsv.bsc-ccomp-out",
+                  "GCD.bo",
+                  "mkGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 74,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "mkGCD.ba"
+              ],
+              "top": "mkGCD",
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.ba"
+                ],
+                "outputs": [
+                  "mkGCD.bsc-ccomp-out",
+                  "mkGCD.o",
+                  "mkGCD_systemc.o",
+                  "model_mkGCD.o"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 117,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bsv.bsc-ccomp-out",
+                  "TbGCD.bo",
+                  "mkTbGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 119,
+                  "endByte": 148,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "mkTbGCD.ba"
+              ],
+              "top": "mkTbGCD",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.ba"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out",
+                  "mkTbGCD.o",
+                  "mkTbGCD_systemc.o",
+                  "model_mkTbGCD.o"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 149,
+                  "endByte": 195,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "systemc.cxx_link",
+              "executable": "top",
+              "sources": [
+                "top.sc"
+              ],
+              "topModules": [
+                "mkTbGCD",
+                "mkGCD"
+              ],
+              "otherModules": [],
+              "defines": [],
+              "artifacts": {
+                "inputs": [
+                  "top.sc",
+                  "mkTbGCD.o",
+                  "mkTbGCD_systemc.o",
+                  "mkGCD.o",
+                  "mkGCD_systemc.o",
+                  "model_mkTbGCD.o",
+                  "model_mkGCD.o"
+                ],
+                "outputs": [
+                  "top.syscexe",
+                  "top.cxx-comp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 197,
+                  "endByte": 253,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "systemc.run",
+              "executable": "top",
+              "stdout": "top.out",
+              "sortOutput": false,
+              "artifacts": {
+                "inputs": [
+                  "top.syscexe"
+                ],
+                "outputs": [
+                  "top.out",
+                  "top.raw.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 281,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "top.out",
+              "expected": "top.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "top.out",
+                  "top.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 281,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

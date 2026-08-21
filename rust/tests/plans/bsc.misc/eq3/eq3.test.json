@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.misc/eq3/eq3",
+  "origin": {
+    "path": "testsuite/bsc.misc/eq3/eq3.exp",
+    "sha256": "1008ecd3dcc7342182a8601aa67a583ae96994a95a9d7b779d247773697918b2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.misc/eq3",
+  "fixtures": [
+    {
+      "path": "EQ3.bs",
+      "sha256": "e0a2e1d3b182256e40f428af0bca1c4a56c195f0a73be441c9e472c017ff9056",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-EQ3",
+      "resource": "normal",
+      "fixtures": [
+        "EQ3.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EQ3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EQ3.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "EQ3.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EQ3.bs"
+                ],
+                "outputs": [
+                  "EQ3.bo",
+                  "EQ3.bs.bsc-vcomp-out",
+                  "mkEQ3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 61,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkEQ3.v",
+              "text": "===",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkEQ3.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 5,
+                  "endLine": 5,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkEQ3.v",
+              "text": "!==",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkEQ3.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 149,
+                  "endByte": 179,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 6,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkEQ3",
+      "resource": "heavy",
+      "fixtures": [
+        "EQ3.bs"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkEQ3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "EQ3.bs",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "EQ3.bs"
+                ],
+                "outputs": [
+                  "EQ3.bo",
+                  "EQ3.bs.bsc-ccomp-out",
+                  "mkEQ3.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 183,
+                  "endByte": 209,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkEQ3",
+              "args": [],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkEQ3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkEQ3.cexe",
+                    "mkEQ3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 210,
+                  "endByte": 236,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

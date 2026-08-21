@@ -1,0 +1,2510 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/parameters/parameters",
+  "origin": {
+    "path": "testsuite/bsc.verilog/parameters/parameters.exp",
+    "sha256": "e6d1b4d76725418914a28e6424624f348260a635bfa3a03c86dbe02f19be4174"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/parameters",
+  "fixtures": [
+    {
+      "path": "ModulePort_WithStaticValue_TopLevel.bsv",
+      "sha256": "67e982fb92e1e36fa739a772ae027368238ebf64bd8effe6dbeb69a9c81edbd7",
+      "role": "source"
+    },
+    {
+      "path": "ModulePort_WithStaticValue_TwoLevel.bsv",
+      "sha256": "233e2ed0428f5aeddf6c072700179f601599f180ce0b280c21c40329e0e0e668",
+      "role": "source"
+    },
+    {
+      "path": "ParamExpr_Param.bsv",
+      "sha256": "aed0548311eb32735eb97c4548fedabe22c9534161c3e69f8635e20fe0f5a555",
+      "role": "source"
+    },
+    {
+      "path": "ParamExpr_Port.bsv",
+      "sha256": "1d065fd49afa68d61f58f72e1d48e01e0cefdc9850978f0c96eb31eb4fbdfd9d",
+      "role": "source"
+    },
+    {
+      "path": "ParamExpr_SubmodPort.bsv",
+      "sha256": "d46bc7c8cde4011c13d6eee8aadfc57a6ce1adf7d1de796f8b449cfc8fd6af7b",
+      "role": "source"
+    },
+    {
+      "path": "ParamSize.bsv",
+      "sha256": "341e0a74c6c5010a17fa35682a57ccbd7503a6855446ff68027ecf87de0fa24b",
+      "role": "source"
+    },
+    {
+      "path": "ParamSizeDefault.bsv",
+      "sha256": "3d26709de73a98eeee9a1225fd3fba998ebd4c372f9243a38e2b2042c6d747da",
+      "role": "source"
+    },
+    {
+      "path": "ParamTest.bsv",
+      "sha256": "3dcf1b78e3838fcab457363803af498e7d46b8dbd5b2aa53b7c9454afc3169b2",
+      "role": "source"
+    },
+    {
+      "path": "PortExpr_SubmodPort.bsv",
+      "sha256": "8741baef77090fdb6f5a81361f393031c672e6ddd27bb00f6e3ee3b316526b54",
+      "role": "source"
+    },
+    {
+      "path": "sysModulePort_WithStaticValue_TopLevel.v.out.expected",
+      "sha256": "10e3b9cc8e9b459a997bd36f0f78f234520989510575a415b606a74040b2da5d",
+      "role": "golden"
+    },
+    {
+      "path": "sysModulePort_WithStaticValue_TwoLevel.out.expected",
+      "sha256": "8145ffb7ae49189a29786d78eb695e736fcb0834b0d93195ad8137160ca8b4a9",
+      "role": "golden"
+    },
+    {
+      "path": "sysParamExpr_Param.out.expected",
+      "sha256": "8145ffb7ae49189a29786d78eb695e736fcb0834b0d93195ad8137160ca8b4a9",
+      "role": "golden"
+    },
+    {
+      "path": "sysParamSize.out.expected",
+      "sha256": "a69568f2e9e64c316a6c5c9bf0b45aabdf79a6f0e82e52766cc9d7d4a369d88f",
+      "role": "golden"
+    },
+    {
+      "path": "sysParamSizeDefault.out.expected",
+      "sha256": "01814473dd49b78bec6b8541f3f7a58c8c2488dea6408951121cd5df8766eb6d",
+      "role": "golden"
+    },
+    {
+      "path": "sysParamTest.out.expected",
+      "sha256": "69083c539679374bf9709c588b41128f005d406ecefe53e8c11d52d161e9a944",
+      "role": "golden"
+    },
+    {
+      "path": "tbParamSize.v",
+      "sha256": "6905e50c521093f0d2d4c1fc559230462fd3329148392777c0a7111aca723356",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysParamTest",
+      "resource": "heavy",
+      "fixtures": [
+        "ParamTest.bsv",
+        "sysParamTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysParamTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ParamTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysParamTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ParamTest.bsv"
+                ],
+                "outputs": [
+                  "ParamTest.bo",
+                  "ParamTest.bsv.bsc-vcomp-out",
+                  "mkParamTestSub.ba",
+                  "mkParamTestSub.v",
+                  "sysParamTest.ba",
+                  "sysParamTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamTest",
+                "mkParamTestSub"
+              ],
+              "top": "sysParamTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.v",
+                  "mkParamTestSub.v"
+                ],
+                "outputs": [
+                  "sysParamTest.bsc-vcomp-out",
+                  "sysParamTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamTest",
+              "args": [],
+              "stdout": "sysParamTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.vexe"
+                ],
+                "outputs": [
+                  "sysParamTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamTest.v.out",
+              "expected": "sysParamTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.v.out",
+                  "sysParamTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamTest",
+              "args": [],
+              "stdout": "sysParamTest.v-vcd.out",
+              "vcd": "sysParamTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.vexe"
+                ],
+                "outputs": [
+                  "sysParamTest.v-vcd.out",
+                  "sysParamTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysParamTest",
+                "mkParamTestSub"
+              ],
+              "top": "sysParamTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.ba",
+                  "mkParamTestSub.ba"
+                ],
+                "outputs": [
+                  "sysParamTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysParamTest.cexe",
+                    "sysParamTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysParamTest",
+              "args": [],
+              "stdout": "sysParamTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.cexe"
+                ],
+                "outputs": [
+                  "sysParamTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamTest.c.out",
+              "expected": "sysParamTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.c.out",
+                  "sysParamTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysParamTest",
+              "args": [],
+              "stdout": "sysParamTest.c-vcd.out",
+              "vcd": "sysParamTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.cexe"
+                ],
+                "outputs": [
+                  "sysParamTest.c-vcd.out",
+                  "sysParamTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysParamTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamTest.c-vcd.out",
+              "expected": "sysParamTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamTest.c-vcd.out",
+                  "sysParamTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 205,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-PortExpr_SubmodPort",
+      "resource": "normal",
+      "fixtures": [
+        "PortExpr_SubmodPort.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PortExpr_SubmodPort",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PortExpr_SubmodPort.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PortExpr_SubmodPort.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PortExpr_SubmodPort.bsv"
+                ],
+                "outputs": [
+                  "PortExpr_SubmodPort.bo",
+                  "PortExpr_SubmodPort.bsv.bsc-vcomp-out",
+                  "mkPortExpr_SubmodPort.v",
+                  "mkPortExpr_SubmodPort_Sub.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 370,
+                  "endByte": 414,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-PortExpr_SubmodPort",
+      "resource": "normal",
+      "fixtures": [
+        "PortExpr_SubmodPort.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PortExpr_SubmodPort",
+          "operations": [
+            {
+              "op": "fs.touch",
+              "path": "PortExpr_SubmodPort.bsv",
+              "artifacts": {
+                "inputs": [
+                  "PortExpr_SubmodPort.bsv"
+                ],
+                "outputs": [
+                  "PortExpr_SubmodPort.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 449,
+                  "endByte": 478,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "PortExpr_SubmodPort.bsv",
+              "mode": "bluesim_object",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "PortExpr_SubmodPort.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PortExpr_SubmodPort.bsv"
+                ],
+                "outputs": [
+                  "PortExpr_SubmodPort.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 479,
+                  "endByte": 534,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "PortExpr_SubmodPort.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0058",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "PortExpr_SubmodPort.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 479,
+                  "endByte": 534,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysModulePort_WithStaticValue_TwoLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "ModulePort_WithStaticValue_TwoLevel.bsv",
+        "sysModulePort_WithStaticValue_TwoLevel.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysModulePort_WithStaticValue_TwoLevel",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ModulePort_WithStaticValue_TwoLevel.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ModulePort_WithStaticValue_TwoLevel.bsv"
+                ],
+                "outputs": [
+                  "ModulePort_WithStaticValue_TwoLevel.bo",
+                  "ModulePort_WithStaticValue_TwoLevel.bsv.bsc-vcomp-out",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub1.ba",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub1.v",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub2.ba",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub2.v",
+                  "sysModulePort_WithStaticValue_TwoLevel.ba",
+                  "sysModulePort_WithStaticValue_TwoLevel.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysModulePort_WithStaticValue_TwoLevel",
+                "mkModulePort_WithStaticValue_TwoLevel_Sub1",
+                "mkModulePort_WithStaticValue_TwoLevel_Sub2"
+              ],
+              "top": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.v",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub1.v",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub2.v"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.bsc-vcomp-out",
+                  "sysModulePort_WithStaticValue_TwoLevel.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "stdout": "sysModulePort_WithStaticValue_TwoLevel.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.vexe"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysModulePort_WithStaticValue_TwoLevel.v.out",
+              "expected": "sysModulePort_WithStaticValue_TwoLevel.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.v.out",
+                  "sysModulePort_WithStaticValue_TwoLevel.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "stdout": "sysModulePort_WithStaticValue_TwoLevel.v-vcd.out",
+              "vcd": "sysModulePort_WithStaticValue_TwoLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.vexe"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.v-vcd.out",
+                  "sysModulePort_WithStaticValue_TwoLevel.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysModulePort_WithStaticValue_TwoLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysModulePort_WithStaticValue_TwoLevel",
+                "mkModulePort_WithStaticValue_TwoLevel_Sub1",
+                "mkModulePort_WithStaticValue_TwoLevel_Sub2"
+              ],
+              "top": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.ba",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub1.ba",
+                  "mkModulePort_WithStaticValue_TwoLevel_Sub2.ba"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysModulePort_WithStaticValue_TwoLevel.cexe",
+                    "sysModulePort_WithStaticValue_TwoLevel.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "stdout": "sysModulePort_WithStaticValue_TwoLevel.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.cexe"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysModulePort_WithStaticValue_TwoLevel.c.out",
+              "expected": "sysModulePort_WithStaticValue_TwoLevel.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.c.out",
+                  "sysModulePort_WithStaticValue_TwoLevel.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysModulePort_WithStaticValue_TwoLevel",
+              "args": [],
+              "stdout": "sysModulePort_WithStaticValue_TwoLevel.c-vcd.out",
+              "vcd": "sysModulePort_WithStaticValue_TwoLevel.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.cexe"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.c-vcd.out",
+                  "sysModulePort_WithStaticValue_TwoLevel.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysModulePort_WithStaticValue_TwoLevel.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysModulePort_WithStaticValue_TwoLevel.c-vcd.out",
+              "expected": "sysModulePort_WithStaticValue_TwoLevel.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.c-vcd.out",
+                  "sysModulePort_WithStaticValue_TwoLevel.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 665,
+                  "endByte": 824,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysModulePort_WithStaticValue_TwoLevel.bsc-ccomp-out",
+              "text": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TwoLevel.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 880,
+                  "endByte": 965,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 16
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysModulePort_WithStaticValue_TopLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "ModulePort_WithStaticValue_TopLevel.bsv",
+        "sysModulePort_WithStaticValue_TopLevel.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysModulePort_WithStaticValue_TopLevel",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ModulePort_WithStaticValue_TopLevel.bsv",
+              "mode": "verilog",
+              "module": "sysModulePort_WithStaticValue_TopLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ModulePort_WithStaticValue_TopLevel.bsv"
+                ],
+                "outputs": [
+                  "ModulePort_WithStaticValue_TopLevel.bo",
+                  "ModulePort_WithStaticValue_TopLevel.bsv.bsc-vcomp-out",
+                  "sysModulePort_WithStaticValue_TopLevel.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1079,
+                  "endByte": 1193,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysModulePort_WithStaticValue_TopLevel"
+              ],
+              "top": "sysModulePort_WithStaticValue_TopLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.v"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.bsc-vcomp-out",
+                  "sysModulePort_WithStaticValue_TopLevel.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1079,
+                  "endByte": 1193,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysModulePort_WithStaticValue_TopLevel",
+              "args": [],
+              "stdout": "sysModulePort_WithStaticValue_TopLevel.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.vexe"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1079,
+                  "endByte": 1193,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysModulePort_WithStaticValue_TopLevel.v.out",
+              "expected": "sysModulePort_WithStaticValue_TopLevel.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.v.out",
+                  "sysModulePort_WithStaticValue_TopLevel.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1079,
+                  "endByte": 1193,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysModulePort_WithStaticValue_TopLevel",
+              "args": [],
+              "stdout": "sysModulePort_WithStaticValue_TopLevel.v-vcd.out",
+              "vcd": "sysModulePort_WithStaticValue_TopLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.vexe"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.v-vcd.out",
+                  "sysModulePort_WithStaticValue_TopLevel.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1079,
+                  "endByte": 1193,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysModulePort_WithStaticValue_TopLevel.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1079,
+                  "endByte": 1193,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-ParamExpr_Port",
+      "resource": "normal",
+      "fixtures": [
+        "ParamExpr_Port.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ParamExpr_Port",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ParamExpr_Port.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ParamExpr_Port.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ParamExpr_Port.bsv"
+                ],
+                "outputs": [
+                  "ParamExpr_Port.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1647,
+                  "endByte": 1698,
+                  "startLine": 51,
+                  "startColumn": 1,
+                  "endLine": 51,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ParamExpr_Port.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0053",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ParamExpr_Port.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1647,
+                  "endByte": 1698,
+                  "startLine": 51,
+                  "startColumn": 1,
+                  "endLine": 51,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysParamExpr_Param",
+      "resource": "heavy",
+      "fixtures": [
+        "ParamExpr_Param.bsv",
+        "sysParamExpr_Param.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysParamExpr_Param",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ParamExpr_Param.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysParamExpr_Param",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ParamExpr_Param.bsv"
+                ],
+                "outputs": [
+                  "ParamExpr_Param.bo",
+                  "ParamExpr_Param.bsv.bsc-vcomp-out",
+                  "mkParamExpr_Param_Sub1.ba",
+                  "mkParamExpr_Param_Sub1.v",
+                  "mkParamExpr_Param_Sub2.ba",
+                  "mkParamExpr_Param_Sub2.v",
+                  "sysParamExpr_Param.ba",
+                  "sysParamExpr_Param.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamExpr_Param",
+                "mkParamExpr_Param_Sub1",
+                "mkParamExpr_Param_Sub2"
+              ],
+              "top": "sysParamExpr_Param",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.v",
+                  "mkParamExpr_Param_Sub1.v",
+                  "mkParamExpr_Param_Sub2.v"
+                ],
+                "outputs": [
+                  "sysParamExpr_Param.bsc-vcomp-out",
+                  "sysParamExpr_Param.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamExpr_Param",
+              "args": [],
+              "stdout": "sysParamExpr_Param.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.vexe"
+                ],
+                "outputs": [
+                  "sysParamExpr_Param.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamExpr_Param.v.out",
+              "expected": "sysParamExpr_Param.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.v.out",
+                  "sysParamExpr_Param.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamExpr_Param",
+              "args": [],
+              "stdout": "sysParamExpr_Param.v-vcd.out",
+              "vcd": "sysParamExpr_Param.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.vexe"
+                ],
+                "outputs": [
+                  "sysParamExpr_Param.v-vcd.out",
+                  "sysParamExpr_Param.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamExpr_Param.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysParamExpr_Param",
+                "mkParamExpr_Param_Sub1",
+                "mkParamExpr_Param_Sub2"
+              ],
+              "top": "sysParamExpr_Param",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.ba",
+                  "mkParamExpr_Param_Sub1.ba",
+                  "mkParamExpr_Param_Sub2.ba"
+                ],
+                "outputs": [
+                  "sysParamExpr_Param.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysParamExpr_Param.cexe",
+                    "sysParamExpr_Param.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysParamExpr_Param",
+              "args": [],
+              "stdout": "sysParamExpr_Param.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.cexe"
+                ],
+                "outputs": [
+                  "sysParamExpr_Param.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamExpr_Param.c.out",
+              "expected": "sysParamExpr_Param.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.c.out",
+                  "sysParamExpr_Param.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysParamExpr_Param",
+              "args": [],
+              "stdout": "sysParamExpr_Param.c-vcd.out",
+              "vcd": "sysParamExpr_Param.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.cexe"
+                ],
+                "outputs": [
+                  "sysParamExpr_Param.c-vcd.out",
+                  "sysParamExpr_Param.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysParamExpr_Param.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamExpr_Param.c-vcd.out",
+              "expected": "sysParamExpr_Param.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamExpr_Param.c-vcd.out",
+                  "sysParamExpr_Param.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1882,
+                  "endByte": 1976,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkParamExpr_Param_Sub1.v",
+              "pattern": "parameter \\[0 : 0\\] foo = 1'b0;",
+              "artifacts": {
+                "inputs": [
+                  "mkParamExpr_Param_Sub1.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2044,
+                  "endByte": 2118,
+                  "startLine": 61,
+                  "startColumn": 5,
+                  "endLine": 61,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-11-ParamExpr_SubmodPort",
+      "resource": "normal",
+      "fixtures": [
+        "ParamExpr_SubmodPort.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ParamExpr_SubmodPort",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ParamExpr_SubmodPort.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ParamExpr_SubmodPort.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ParamExpr_SubmodPort.bsv"
+                ],
+                "outputs": [
+                  "ParamExpr_SubmodPort.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2159,
+                  "endByte": 2216,
+                  "startLine": 65,
+                  "startColumn": 1,
+                  "endLine": 65,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ParamExpr_SubmodPort.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0053",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ParamExpr_SubmodPort.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2159,
+                  "endByte": 2216,
+                  "startLine": 65,
+                  "startColumn": 1,
+                  "endLine": 65,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysModulePort_WithStaticValue_TopLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "ModulePort_WithStaticValue_TopLevel.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysModulePort_WithStaticValue_TopLevel",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ModulePort_WithStaticValue_TopLevel.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ModulePort_WithStaticValue_TopLevel.bsv"
+                ],
+                "outputs": [
+                  "ModulePort_WithStaticValue_TopLevel.bo",
+                  "ModulePort_WithStaticValue_TopLevel.bsv.bsc-ccomp-out",
+                  "sysModulePort_WithStaticValue_TopLevel.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1293,
+                  "endByte": 1352,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysModulePort_WithStaticValue_TopLevel.ba"
+              ],
+              "top": "sysModulePort_WithStaticValue_TopLevel",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.ba"
+                ],
+                "outputs": [
+                  "sysModulePort_WithStaticValue_TopLevel.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysModulePort_WithStaticValue_TopLevel.cexe",
+                    "sysModulePort_WithStaticValue_TopLevel.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream unannotated known failure"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1353,
+                  "endByte": 1461,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verilog-workflow-2-tbParamSize",
+      "resource": "heavy",
+      "fixtures": [
+        "ParamSize.bsv",
+        "ParamSizeDefault.bsv",
+        "sysParamSize.out.expected",
+        "sysParamSizeDefault.out.expected",
+        "tbParamSize.v"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysParamSize",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ParamSize.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysParamSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ParamSize.bsv"
+                ],
+                "outputs": [
+                  "ParamSize.bo",
+                  "ParamSize.bsv.bsc-vcomp-out",
+                  "mkParamSize_Sub.ba",
+                  "mkParamSize_Sub.v",
+                  "sysParamSize.ba",
+                  "sysParamSize.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamSize"
+              ],
+              "top": "sysParamSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.v"
+                ],
+                "outputs": [
+                  "sysParamSize.bsc-vcomp-out",
+                  "sysParamSize.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamSize",
+              "args": [],
+              "stdout": "sysParamSize.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.vexe"
+                ],
+                "outputs": [
+                  "sysParamSize.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamSize.v.out",
+              "expected": "sysParamSize.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.v.out",
+                  "sysParamSize.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamSize",
+              "args": [],
+              "stdout": "sysParamSize.v-vcd.out",
+              "vcd": "sysParamSize.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.vexe"
+                ],
+                "outputs": [
+                  "sysParamSize.v-vcd.out",
+                  "sysParamSize.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamSize.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysParamSize"
+              ],
+              "top": "sysParamSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.ba"
+                ],
+                "outputs": [
+                  "sysParamSize.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysParamSize.cexe",
+                    "sysParamSize.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysParamSize",
+              "args": [],
+              "stdout": "sysParamSize.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.cexe"
+                ],
+                "outputs": [
+                  "sysParamSize.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamSize.c.out",
+              "expected": "sysParamSize.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.c.out",
+                  "sysParamSize.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysParamSize",
+              "args": [],
+              "stdout": "sysParamSize.c-vcd.out",
+              "vcd": "sysParamSize.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.cexe"
+                ],
+                "outputs": [
+                  "sysParamSize.c-vcd.out",
+                  "sysParamSize.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysParamSize.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamSize.c-vcd.out",
+              "expected": "sysParamSize.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSize.c-vcd.out",
+                  "sysParamSize.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2751,
+                  "endByte": 2776,
+                  "startLine": 88,
+                  "startColumn": 1,
+                  "endLine": 88,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "sysParamSizeDefault",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ParamSizeDefault.bsv",
+              "mode": "verilog",
+              "module": "sysParamSizeDefault",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ParamSizeDefault.bsv"
+                ],
+                "outputs": [
+                  "ParamSizeDefault.bo",
+                  "ParamSizeDefault.bsv.bsc-vcomp-out",
+                  "sysParamSizeDefault.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2935,
+                  "endByte": 2970,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysParamSizeDefault"
+              ],
+              "top": "sysParamSizeDefault",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysParamSizeDefault.v"
+                ],
+                "outputs": [
+                  "sysParamSizeDefault.bsc-vcomp-out",
+                  "sysParamSizeDefault.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2935,
+                  "endByte": 2970,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamSizeDefault",
+              "args": [],
+              "stdout": "sysParamSizeDefault.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSizeDefault.vexe"
+                ],
+                "outputs": [
+                  "sysParamSizeDefault.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2935,
+                  "endByte": 2970,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysParamSizeDefault.v.out",
+              "expected": "sysParamSizeDefault.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSizeDefault.v.out",
+                  "sysParamSizeDefault.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2935,
+                  "endByte": 2970,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysParamSizeDefault",
+              "args": [],
+              "stdout": "sysParamSizeDefault.v-vcd.out",
+              "vcd": "sysParamSizeDefault.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSizeDefault.vexe"
+                ],
+                "outputs": [
+                  "sysParamSizeDefault.v-vcd.out",
+                  "sysParamSizeDefault.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2935,
+                  "endByte": 2970,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysParamSizeDefault.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysParamSizeDefault.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2935,
+                  "endByte": 2970,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "verilog-link-tbParamSize",
+          "operations": [
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "tbParamSize.v",
+                "mkParamSize_Sub.v"
+              ],
+              "top": "tbParamSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "tbParamSize.v",
+                  "mkParamSize_Sub.v"
+                ],
+                "outputs": [
+                  "tbParamSize.bsc-vcomp-out",
+                  "tbParamSize.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3195,
+                  "endByte": 3258,
+                  "startLine": 99,
+                  "startColumn": 5,
+                  "endLine": 99,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "tbParamSize",
+              "args": [],
+              "stdout": "tbParamSize.out",
+              "artifacts": {
+                "inputs": [
+                  "tbParamSize.vexe"
+                ],
+                "outputs": [
+                  "tbParamSize.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3263,
+                  "endByte": 3286,
+                  "startLine": 100,
+                  "startColumn": 5,
+                  "endLine": 100,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "tbParamSize.out",
+              "destination": "tbParamSize.v.out",
+              "artifacts": {
+                "inputs": [
+                  "tbParamSize.out"
+                ],
+                "outputs": [
+                  "tbParamSize.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "tbParamSize.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3291,
+                  "endByte": 3329,
+                  "startLine": 101,
+                  "startColumn": 5,
+                  "endLine": 101,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "tbParamSize.v.out",
+              "expected": "sysParamSize.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "tbParamSize.v.out",
+                  "sysParamSize.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3334,
+                  "endByte": 3401,
+                  "startLine": 102,
+                  "startColumn": 5,
+                  "endLine": 102,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

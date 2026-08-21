@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluetcl/hierarchy/hierarchy",
+  "origin": {
+    "path": "testsuite/bsc.bluetcl/hierarchy/hierarchy.exp",
+    "sha256": "091aee83fb4647a00c0078ae06f6a3c11950ef7ed8a07828c1294c061e17d7a8"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluetcl/hierarchy",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "8abb3385a112bbc9315fc0bbdeab27559e6f5a99d694a1614c0c66c33a2a6d60",
+      "role": "source"
+    },
+    {
+      "path": "Design.tcl",
+      "sha256": "f4e637bee398795199da536011b82a15a7ed29d7ed0435843474599cf709cffa",
+      "role": "script"
+    },
+    {
+      "path": "Design.tcl.bluetcl-bh-out.expected",
+      "sha256": "88d170dc303d8d61492ee144099a5acf83e86b09300bd81098d6d46100c5394a",
+      "role": "golden"
+    },
+    {
+      "path": "Design.tcl.bluetcl-out.expected",
+      "sha256": "9e2a6ab6931e8fe93cbd3ee94c23a74acf41abca99c4d4125c8c3a653b6bc0d1",
+      "role": "golden"
+    },
+    {
+      "path": "Example.bsv",
+      "sha256": "1f16cb0815b06c976bffd8d797c7d43233d9ab547fb01d5e30170bf8aab49e5c",
+      "role": "source"
+    },
+    {
+      "path": "Example.tcl",
+      "sha256": "5f13708ade622417c67d777aeaabb500db3390157c9607f4902efe886c8f65b2",
+      "role": "script"
+    },
+    {
+      "path": "Example.tcl.bluetcl-bh-out.expected",
+      "sha256": "be76851f845b264b4e94f6523187348028cee733cd0f26ba012e0e6d494a159d",
+      "role": "golden"
+    },
+    {
+      "path": "Example.tcl.bluetcl-out.expected",
+      "sha256": "a8f55b328f0b2253efd576ed3f80a5be979b60e0adf6c93837bc117863646d88",
+      "role": "golden"
+    },
+    {
+      "path": "Zow.bsv",
+      "sha256": "08c896c5e27c8491cf7a15a5d100fe298c3e187e33cb739a3542a01f1085505e",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bsc-compile-bluetcl",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "Design.tcl",
+        "Design.tcl.bluetcl-bh-out.expected",
+        "Design.tcl.bluetcl-out.expected",
+        "Example.bsv",
+        "Example.tcl",
+        "Example.tcl.bluetcl-bh-out.expected",
+        "Example.tcl.bluetcl-out.expected",
+        "Zow.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "bluetcl"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-bsc-compile-bluetcl",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bsv",
+              "mode": "frontend",
+              "args": [
+                "-u",
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "Design.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bsv.bsc-out",
+                  "mkDesign.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 58,
+                  "endByte": 100,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Example.bsv",
+              "mode": "frontend",
+              "args": [
+                "-u",
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "Example.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Example.bsv"
+                ],
+                "outputs": [
+                  "Example.bsv.bsc-out",
+                  "mkExample.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 101,
+                  "endByte": 144,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "Design.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "mkDesign.ba"
+              ],
+              "stdout": "Design.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.tcl",
+                  "mkDesign.ba"
+                ],
+                "outputs": [
+                  "Design.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 166,
+                  "endByte": 243,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "Design.tcl.bluetcl-out",
+              "expected": "Design.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output",
+                "bluetcl_libraries"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Design.tcl.bluetcl-out",
+                  "Design.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 166,
+                  "endByte": 243,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "Design.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "mkDesign.ba"
+              ],
+              "stdout": "Design.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.tcl",
+                  "mkDesign.ba"
+                ],
+                "outputs": [
+                  "Design.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 166,
+                  "endByte": 243,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "Design.tcl.bluetcl-bh-out",
+              "expected": "Design.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output",
+                "bluetcl_libraries"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Design.tcl.bluetcl-bh-out",
+                  "Design.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 166,
+                  "endByte": 243,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "Example.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "mkExample.ba"
+              ],
+              "stdout": "Example.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "Example.tcl",
+                  "mkExample.ba"
+                ],
+                "outputs": [
+                  "Example.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 244,
+                  "endByte": 323,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "Example.tcl.bluetcl-out",
+              "expected": "Example.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output",
+                "bluetcl_libraries"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Example.tcl.bluetcl-out",
+                  "Example.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 244,
+                  "endByte": 323,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "Example.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "mkExample.ba"
+              ],
+              "stdout": "Example.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "Example.tcl",
+                  "mkExample.ba"
+                ],
+                "outputs": [
+                  "Example.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 244,
+                  "endByte": 323,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "Example.tcl.bluetcl-bh-out",
+              "expected": "Example.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output",
+                "bluetcl_libraries"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Example.tcl.bluetcl-bh-out",
+                  "Example.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 244,
+                  "endByte": 323,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

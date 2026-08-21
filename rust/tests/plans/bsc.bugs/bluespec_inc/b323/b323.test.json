@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b323/b323",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b323/b323.exp",
+    "sha256": "9e92c8cbc2b5e85db50a83937709b5f46b135a0ed5c482766ebbf14fd9c0fd58"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b323",
+  "fixtures": [
+    {
+      "path": "Test.bsv",
+      "sha256": "9258bc396ac7153fee301283a6cbe8944f8df6805a08dc2aeed1702cfdaeab41",
+      "role": "source"
+    },
+    {
+      "path": "Test.bsv.bsc-sched-out.expected",
+      "sha256": "c084f87a34d6e83b758382ed1ff19c12f1fb8a4d255858c66330d41971ae1093",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "Test.bsv",
+        "Test.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bo",
+                  "Test.bsv.bsc-sched-out",
+                  "mkFoo.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 20,
+                  "endByte": 58,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Test.bsv.bsc-sched-out",
+              "expected": "Test.bsv.bsc-sched-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv.bsc-sched-out",
+                  "Test.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 59,
+                  "endByte": 94,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

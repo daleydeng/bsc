@@ -1,0 +1,800 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b690/b690",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b690/b690.exp",
+    "sha256": "02548cce1ceaa1dc070102d0e6441f2b3ee918c72db47111a82e569303d5bb4d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b690",
+  "fixtures": [
+    {
+      "path": "AlwaysEnabledOnMethods.bsv",
+      "sha256": "235afdb398e52cc20d31164686d0b5b1f980b11bb6fd71683dc74b15fdcf7ba4",
+      "role": "source"
+    },
+    {
+      "path": "AlwaysReadyOnMethods.bsv",
+      "sha256": "21ee6ca0210c1e939f6e356ab06d285ab58ef0e338fbde9ffa30b2a53009e8ce",
+      "role": "source"
+    },
+    {
+      "path": "DifferentPragmasSameInterface.bsv",
+      "sha256": "273a2fde6c166b290c82d170e39420ef573d59393d9d43807ec158fcefd0c06e",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-AlwaysReadyOnMethods",
+      "resource": "normal",
+      "fixtures": [
+        "AlwaysReadyOnMethods.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AlwaysReadyOnMethods",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AlwaysReadyOnMethods.bsv",
+              "mode": "verilog",
+              "module": "mkARTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AlwaysReadyOnMethods.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AlwaysReadyOnMethods.bsv"
+                ],
+                "outputs": [
+                  "AlwaysReadyOnMethods.bo",
+                  "AlwaysReadyOnMethods.bsv.bsc-vcomp-out",
+                  "mkARTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 76,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkARTest.v",
+              "text": "RDY_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkARTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 120,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkARTest.v",
+              "text": "RDY_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkARTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 121,
+                  "endByte": 172,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkARTest.v",
+              "text": "RDY_the_reg__read",
+              "artifacts": {
+                "inputs": [
+                  "mkARTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 173,
+                  "endByte": 215,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkARTest.v",
+              "text": "EN_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkARTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 250,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkARTest.v",
+              "text": "EN_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkARTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 251,
+                  "endByte": 293,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-AlwaysEnabledOnMethods",
+      "resource": "normal",
+      "fixtures": [
+        "AlwaysEnabledOnMethods.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AlwaysEnabledOnMethods",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AlwaysEnabledOnMethods.bsv",
+              "mode": "verilog",
+              "module": "mkAETest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AlwaysEnabledOnMethods.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AlwaysEnabledOnMethods.bsv"
+                ],
+                "outputs": [
+                  "AlwaysEnabledOnMethods.bo",
+                  "AlwaysEnabledOnMethods.bsv.bsc-vcomp-out",
+                  "mkAEFoo.v",
+                  "mkAETest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 414,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkAEFoo.v",
+              "text": "EN_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkAEFoo.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 415,
+                  "endByte": 464,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkAEFoo.v",
+              "text": "RDY_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkAEFoo.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 465,
+                  "endByte": 515,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkAEFoo.v",
+              "text": "RDY_the_reg__read",
+              "artifacts": {
+                "inputs": [
+                  "mkAEFoo.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 516,
+                  "endByte": 557,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkAEFoo.v",
+              "text": "RDY_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkAEFoo.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 558,
+                  "endByte": 592,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkAEFoo.v",
+              "text": "EN_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkAEFoo.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 593,
+                  "endByte": 626,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkAETest.v",
+              "text": "EN_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkAETest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 627,
+                  "endByte": 677,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkAETest.v",
+              "text": "RDY_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkAETest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 678,
+                  "endByte": 729,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkAETest.v",
+              "text": "RDY_the_reg__read",
+              "artifacts": {
+                "inputs": [
+                  "mkAETest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 772,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkAETest.v",
+              "text": "RDY_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkAETest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 773,
+                  "endByte": 808,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkAETest.v",
+              "text": "EN_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkAETest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 809,
+                  "endByte": 843,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-DifferentPragmasSameInterface",
+      "resource": "normal",
+      "fixtures": [
+        "DifferentPragmasSameInterface.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DifferentPragmasSameInterface",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DifferentPragmasSameInterface.bsv",
+              "mode": "verilog",
+              "module": "mkDiffTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DifferentPragmasSameInterface.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DifferentPragmasSameInterface.bsv"
+                ],
+                "outputs": [
+                  "DifferentPragmasSameInterface.bo",
+                  "DifferentPragmasSameInterface.bsv.bsc-vcomp-out",
+                  "mkDiffAE.v",
+                  "mkDiffAR.v",
+                  "mkDiffTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 846,
+                  "endByte": 911,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkDiffAE.v",
+              "text": "EN_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAE.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 912,
+                  "endByte": 962,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkDiffAE.v",
+              "text": "RDY_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAE.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 963,
+                  "endByte": 1014,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkDiffAE.v",
+              "text": "RDY_the_reg__read",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAE.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1015,
+                  "endByte": 1057,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkDiffAE.v",
+              "text": "RDY_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAE.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1058,
+                  "endByte": 1093,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkDiffAE.v",
+              "text": "EN_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAE.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1094,
+                  "endByte": 1128,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkDiffAR.v",
+              "text": "RDY_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAR.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1129,
+                  "endByte": 1172,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "mkDiffAR.v",
+              "text": "RDY_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAR.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1224,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkDiffAR.v",
+              "text": "RDY_the_reg__read",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAR.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1225,
+                  "endByte": 1267,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkDiffAR.v",
+              "text": "EN_do_foo",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAR.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1268,
+                  "endByte": 1302,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkDiffAR.v",
+              "text": "EN_the_reg__write",
+              "artifacts": {
+                "inputs": [
+                  "mkDiffAR.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1303,
+                  "endByte": 1345,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

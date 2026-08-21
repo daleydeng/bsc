@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.mcd/MakeClock/MakeClock",
+  "origin": {
+    "path": "testsuite/bsc.mcd/MakeClock/MakeClock.exp",
+    "sha256": "1228396947a9ebe8ad8528f6de75dd9de70ea93f54840df312d75b80f1da0fed"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.mcd/MakeClock",
+  "fixtures": [
+    {
+      "path": "MakeClockTest.bsv",
+      "sha256": "79ae696f7f89e97c68d755431271f34488920280c4fe8e0e65f1db18a3b27506",
+      "role": "source"
+    },
+    {
+      "path": "sysMakeClockTest.out.expected",
+      "sha256": "bfa48e0fc6e99364168e3a1c5ec38433a3365ef4a7674b0753f879d45de53280",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysMakeClockTest",
+      "resource": "heavy",
+      "fixtures": [
+        "MakeClockTest.bsv",
+        "sysMakeClockTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMakeClockTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MakeClockTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysMakeClockTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "MakeClockTest.bsv"
+                ],
+                "outputs": [
+                  "MakeClockTest.bo",
+                  "MakeClockTest.bsv.bsc-vcomp-out",
+                  "sysMakeClockTest.ba",
+                  "sysMakeClockTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMakeClockTest"
+              ],
+              "top": "sysMakeClockTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.v"
+                ],
+                "outputs": [
+                  "sysMakeClockTest.bsc-vcomp-out",
+                  "sysMakeClockTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMakeClockTest",
+              "args": [],
+              "stdout": "sysMakeClockTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.vexe"
+                ],
+                "outputs": [
+                  "sysMakeClockTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMakeClockTest.v.out",
+              "expected": "sysMakeClockTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.v.out",
+                  "sysMakeClockTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMakeClockTest",
+              "args": [],
+              "stdout": "sysMakeClockTest.v-vcd.out",
+              "vcd": "sysMakeClockTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.vexe"
+                ],
+                "outputs": [
+                  "sysMakeClockTest.v-vcd.out",
+                  "sysMakeClockTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMakeClockTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMakeClockTest"
+              ],
+              "top": "sysMakeClockTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.ba"
+                ],
+                "outputs": [
+                  "sysMakeClockTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMakeClockTest.cexe",
+                    "sysMakeClockTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMakeClockTest",
+              "args": [],
+              "stdout": "sysMakeClockTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.cexe"
+                ],
+                "outputs": [
+                  "sysMakeClockTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMakeClockTest.c.out",
+              "expected": "sysMakeClockTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.c.out",
+                  "sysMakeClockTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMakeClockTest",
+              "args": [],
+              "stdout": "sysMakeClockTest.c-vcd.out",
+              "vcd": "sysMakeClockTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.cexe"
+                ],
+                "outputs": [
+                  "sysMakeClockTest.c-vcd.out",
+                  "sysMakeClockTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMakeClockTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMakeClockTest.c-vcd.out",
+              "expected": "sysMakeClockTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMakeClockTest.c-vcd.out",
+                  "sysMakeClockTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 255,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 61
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

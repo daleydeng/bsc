@@ -1,0 +1,1295 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/tasks/time/time",
+  "origin": {
+    "path": "testsuite/bsc.verilog/tasks/time/time.exp",
+    "sha256": "d52ee65f56a7298c84930175a928e4885d85fdad5fb9ffa94563b940ab84de1a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/tasks/time",
+  "fixtures": [
+    {
+      "path": "DisplayTime.bsv",
+      "sha256": "13198b0446b1e32e1efc2c4024ea2de6a85c382c5aaa3dd0c643505a1252b767",
+      "role": "source"
+    },
+    {
+      "path": "PrintTime.bsv",
+      "sha256": "cdc52d6abf9954caa88fbc8243946243440ebd8f4c365c5ed9464b67758b736a",
+      "role": "source"
+    },
+    {
+      "path": "RegTime.bsv",
+      "sha256": "ede582d7a03ffb1f3660a3398f05171c9ebe69851398092ed2bcb12e4764bf4e",
+      "role": "source"
+    },
+    {
+      "path": "sysDisplayTime.out.expected",
+      "sha256": "d71e2c70143771651de5a088133968d8d6bea73b014678a063c877db3227691e",
+      "role": "golden"
+    },
+    {
+      "path": "sysDisplayTime.v.out.expected",
+      "sha256": "548d3cbd8bb0e48b49ddd33eb46f7a41ecbc028ea67f07fbf2d5fd4e3b8b6c8b",
+      "role": "golden"
+    },
+    {
+      "path": "sysPrintTime.out.expected",
+      "sha256": "063e2ff17d1950e5e56c7485ff738bd6d5978f71c127cf061f719611248c6a6c",
+      "role": "golden"
+    },
+    {
+      "path": "sysPrintTime.v.out.expected",
+      "sha256": "2f0bd1777de635b24bfeb6f545622057ef2747c0edeb3eb6746817be50a35b08",
+      "role": "golden"
+    },
+    {
+      "path": "sysRegTime.out.expected",
+      "sha256": "2316e5ea797f90d25cd42aab426e5924d76ecef80c65e7267e6801a9f35ec8a4",
+      "role": "golden"
+    },
+    {
+      "path": "sysRegTime.v.out.expected",
+      "sha256": "64a180fe09f8b5d4aa15c1927a5e0911b65987320b8076804c816d0c5ac507b8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysPrintTime",
+      "resource": "heavy",
+      "fixtures": [
+        "PrintTime.bsv",
+        "sysPrintTime.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysPrintTime",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "PrintTime.bsv",
+              "mode": "verilog",
+              "module": "sysPrintTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "PrintTime.bsv"
+                ],
+                "outputs": [
+                  "PrintTime.bo",
+                  "PrintTime.bsv.bsc-vcomp-out",
+                  "sysPrintTime.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 310,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysPrintTime"
+              ],
+              "top": "sysPrintTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.v"
+                ],
+                "outputs": [
+                  "sysPrintTime.bsc-vcomp-out",
+                  "sysPrintTime.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 310,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysPrintTime",
+              "args": [],
+              "stdout": "sysPrintTime.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.vexe"
+                ],
+                "outputs": [
+                  "sysPrintTime.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 310,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPrintTime.v.out",
+              "expected": "sysPrintTime.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.v.out",
+                  "sysPrintTime.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 310,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysPrintTime",
+              "args": [],
+              "stdout": "sysPrintTime.v-vcd.out",
+              "vcd": "sysPrintTime.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.vexe"
+                ],
+                "outputs": [
+                  "sysPrintTime.v-vcd.out",
+                  "sysPrintTime.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 310,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysPrintTime.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 310,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysPrintTime-2",
+      "resource": "heavy",
+      "fixtures": [
+        "PrintTime.bsv",
+        "sysPrintTime.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysPrintTime",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "PrintTime.bsv",
+              "mode": "bluesim",
+              "module": "sysPrintTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "PrintTime.bsv"
+                ],
+                "outputs": [
+                  "PrintTime.bo",
+                  "PrintTime.bsv.bsc-ccomp-out",
+                  "sysPrintTime.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysPrintTime"
+              ],
+              "top": "sysPrintTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.ba"
+                ],
+                "outputs": [
+                  "sysPrintTime.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysPrintTime.cexe",
+                    "sysPrintTime.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysPrintTime",
+              "args": [],
+              "stdout": "sysPrintTime.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.cexe"
+                ],
+                "outputs": [
+                  "sysPrintTime.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPrintTime.c.out",
+              "expected": "sysPrintTime.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.c.out",
+                  "sysPrintTime.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysPrintTime",
+              "args": [],
+              "stdout": "sysPrintTime.c-vcd.out",
+              "vcd": "sysPrintTime.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.cexe"
+                ],
+                "outputs": [
+                  "sysPrintTime.c-vcd.out",
+                  "sysPrintTime.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysPrintTime.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPrintTime.c-vcd.out",
+              "expected": "sysPrintTime.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintTime.c-vcd.out",
+                  "sysPrintTime.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 336,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDisplayTime",
+      "resource": "heavy",
+      "fixtures": [
+        "DisplayTime.bsv",
+        "sysDisplayTime.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDisplayTime",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DisplayTime.bsv",
+              "mode": "verilog",
+              "module": "sysDisplayTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DisplayTime.bsv"
+                ],
+                "outputs": [
+                  "DisplayTime.bo",
+                  "DisplayTime.bsv.bsc-vcomp-out",
+                  "sysDisplayTime.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 399,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDisplayTime"
+              ],
+              "top": "sysDisplayTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.v"
+                ],
+                "outputs": [
+                  "sysDisplayTime.bsc-vcomp-out",
+                  "sysDisplayTime.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 399,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDisplayTime",
+              "args": [],
+              "stdout": "sysDisplayTime.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.vexe"
+                ],
+                "outputs": [
+                  "sysDisplayTime.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 399,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDisplayTime.v.out",
+              "expected": "sysDisplayTime.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.v.out",
+                  "sysDisplayTime.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 399,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDisplayTime",
+              "args": [],
+              "stdout": "sysDisplayTime.v-vcd.out",
+              "vcd": "sysDisplayTime.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.vexe"
+                ],
+                "outputs": [
+                  "sysDisplayTime.v-vcd.out",
+                  "sysDisplayTime.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 399,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDisplayTime.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 399,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 61
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDisplayTime-2",
+      "resource": "heavy",
+      "fixtures": [
+        "DisplayTime.bsv",
+        "sysDisplayTime.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDisplayTime",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DisplayTime.bsv",
+              "mode": "bluesim",
+              "module": "sysDisplayTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DisplayTime.bsv"
+                ],
+                "outputs": [
+                  "DisplayTime.bo",
+                  "DisplayTime.bsv.bsc-ccomp-out",
+                  "sysDisplayTime.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDisplayTime"
+              ],
+              "top": "sysDisplayTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.ba"
+                ],
+                "outputs": [
+                  "sysDisplayTime.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDisplayTime.cexe",
+                    "sysDisplayTime.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDisplayTime",
+              "args": [],
+              "stdout": "sysDisplayTime.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.cexe"
+                ],
+                "outputs": [
+                  "sysDisplayTime.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDisplayTime.c.out",
+              "expected": "sysDisplayTime.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.c.out",
+                  "sysDisplayTime.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDisplayTime",
+              "args": [],
+              "stdout": "sysDisplayTime.c-vcd.out",
+              "vcd": "sysDisplayTime.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.cexe"
+                ],
+                "outputs": [
+                  "sysDisplayTime.c-vcd.out",
+                  "sysDisplayTime.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDisplayTime.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDisplayTime.c-vcd.out",
+              "expected": "sysDisplayTime.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDisplayTime.c-vcd.out",
+                  "sysDisplayTime.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 400,
+                  "endByte": 427,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRegTime",
+      "resource": "heavy",
+      "fixtures": [
+        "RegTime.bsv",
+        "sysRegTime.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRegTime",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RegTime.bsv",
+              "mode": "verilog",
+              "module": "sysRegTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RegTime.bsv"
+                ],
+                "outputs": [
+                  "RegTime.bo",
+                  "RegTime.bsv.bsc-vcomp-out",
+                  "sysRegTime.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 429,
+                  "endByte": 481,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRegTime"
+              ],
+              "top": "sysRegTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.v"
+                ],
+                "outputs": [
+                  "sysRegTime.bsc-vcomp-out",
+                  "sysRegTime.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 429,
+                  "endByte": 481,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRegTime",
+              "args": [],
+              "stdout": "sysRegTime.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.vexe"
+                ],
+                "outputs": [
+                  "sysRegTime.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 429,
+                  "endByte": 481,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRegTime.v.out",
+              "expected": "sysRegTime.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.v.out",
+                  "sysRegTime.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 429,
+                  "endByte": 481,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRegTime",
+              "args": [],
+              "stdout": "sysRegTime.v-vcd.out",
+              "vcd": "sysRegTime.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.vexe"
+                ],
+                "outputs": [
+                  "sysRegTime.v-vcd.out",
+                  "sysRegTime.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 429,
+                  "endByte": 481,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRegTime.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 429,
+                  "endByte": 481,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysRegTime-2",
+      "resource": "heavy",
+      "fixtures": [
+        "RegTime.bsv",
+        "sysRegTime.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRegTime",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RegTime.bsv",
+              "mode": "bluesim",
+              "module": "sysRegTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RegTime.bsv"
+                ],
+                "outputs": [
+                  "RegTime.bo",
+                  "RegTime.bsv.bsc-ccomp-out",
+                  "sysRegTime.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRegTime"
+              ],
+              "top": "sysRegTime",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.ba"
+                ],
+                "outputs": [
+                  "sysRegTime.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRegTime.cexe",
+                    "sysRegTime.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRegTime",
+              "args": [],
+              "stdout": "sysRegTime.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.cexe"
+                ],
+                "outputs": [
+                  "sysRegTime.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRegTime.c.out",
+              "expected": "sysRegTime.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.c.out",
+                  "sysRegTime.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRegTime",
+              "args": [],
+              "stdout": "sysRegTime.c-vcd.out",
+              "vcd": "sysRegTime.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.cexe"
+                ],
+                "outputs": [
+                  "sysRegTime.c-vcd.out",
+                  "sysRegTime.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRegTime.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRegTime.c-vcd.out",
+              "expected": "sysRegTime.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRegTime.c-vcd.out",
+                  "sysRegTime.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 482,
+                  "endByte": 505,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

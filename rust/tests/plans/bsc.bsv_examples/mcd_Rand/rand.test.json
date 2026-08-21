@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/mcd_Rand/rand",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/mcd_Rand/rand.exp",
+    "sha256": "98c81fa5dd1ebe50ee97f2c6e49f6de6ede3bbeeea6e87145f14cc46302a8f88"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/mcd_Rand",
+  "fixtures": [
+    {
+      "path": "RandGen.bsv",
+      "sha256": "13b58c98e2ce1c8849a3da50dfa059a2bb1157cfc5707cf404d9a41747751d1b",
+      "role": "source"
+    },
+    {
+      "path": "RandGlobal.bsv",
+      "sha256": "9a56879dd986272ded7ee0de7b785eeb3c88f0e09f6301057b511a7cf5b5a08a",
+      "role": "source"
+    },
+    {
+      "path": "RandTop5.bsv",
+      "sha256": "52081d7ce08f08be1f37cc4717ff8a4640788912c4d511045cfb1a58ba499e26",
+      "role": "source"
+    },
+    {
+      "path": "RandUser1.bsv",
+      "sha256": "30d33fb24095b64ae717a381b2f2462424024f63d1003ce289a90a07d67797e4",
+      "role": "source"
+    },
+    {
+      "path": "RandUser2.bsv",
+      "sha256": "855bf6eaac46f3bba2c12b2a94916925f1e90a841aa8601c6478e86eec27b126",
+      "role": "source"
+    },
+    {
+      "path": "Top.bsv",
+      "sha256": "686102caa774ab94e90052b0eef57d018cf399a7aa05fd404c3a4d5ec5e90fec",
+      "role": "source"
+    },
+    {
+      "path": "mkTop.out.expected",
+      "sha256": "e415385334cb2c253d0000c7215a58d821fa0181e8471216cd37b12894860e55",
+      "role": "golden"
+    },
+    {
+      "path": "mkTop.v.out.expected",
+      "sha256": "7a1becc5ec163cc86410fc1e9a685a48b157167caa28c8f6202adf9f93c7755d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTop",
+      "resource": "heavy",
+      "fixtures": [
+        "RandGen.bsv",
+        "RandGlobal.bsv",
+        "RandTop5.bsv",
+        "RandUser1.bsv",
+        "RandUser2.bsv",
+        "Top.bsv",
+        "mkTop.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTop",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Top.bsv",
+              "mode": "bluesim",
+              "module": "mkTop",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bo",
+                  "Top.bsv.bsc-ccomp-out",
+                  "mkRandTop.ba",
+                  "mkTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTop",
+                "mkRandTop"
+              ],
+              "top": "mkTop",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTop.ba",
+                  "mkRandTop.ba"
+                ],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cexe"
+                ],
+                "outputs": [
+                  "mkTop.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTop.c.out",
+              "expected": "mkTop.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.c.out",
+                  "mkTop.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.c-vcd.out",
+              "vcd": "mkTop.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cexe"
+                ],
+                "outputs": [
+                  "mkTop.c-vcd.out",
+                  "mkTop.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTop.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTop.c-vcd.out",
+              "expected": "mkTop.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.c-vcd.out",
+                  "mkTop.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 153,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 77
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTop-2",
+      "resource": "heavy",
+      "fixtures": [
+        "RandGen.bsv",
+        "RandGlobal.bsv",
+        "RandTop5.bsv",
+        "RandUser1.bsv",
+        "RandUser2.bsv",
+        "Top.bsv",
+        "mkTop.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTop",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Top.bsv",
+              "mode": "verilog",
+              "module": "mkTop",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bo",
+                  "Top.bsv.bsc-vcomp-out",
+                  "mkRandTop.v",
+                  "mkTop.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 308,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTop",
+                "mkRandTop"
+              ],
+              "top": "mkTop",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTop.v",
+                  "mkRandTop.v"
+                ],
+                "outputs": [
+                  "mkTop.bsc-vcomp-out",
+                  "mkTop.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 308,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.vexe"
+                ],
+                "outputs": [
+                  "mkTop.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 308,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTop.v.out",
+              "expected": "mkTop.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.v.out",
+                  "mkTop.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 308,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.v-vcd.out",
+              "vcd": "mkTop.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.vexe"
+                ],
+                "outputs": [
+                  "mkTop.v-vcd.out",
+                  "mkTop.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 308,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 101
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTop.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 308,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 101
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

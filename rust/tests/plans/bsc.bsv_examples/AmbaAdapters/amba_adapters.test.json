@@ -1,0 +1,906 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/AmbaAdapters/amba_adapters",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/AmbaAdapters/amba_adapters.exp",
+    "sha256": "22433a23332b292a9bc37c3da2b62ff1bbb1b0500214331855451769d3c1b32a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/AmbaAdapters",
+  "fixtures": [
+    {
+      "path": "AmbaAdapters.bsv",
+      "sha256": "5123e4d0c985038be1f21aa767d61ee495d498bac26948244c1d12c1c444c3da",
+      "role": "source"
+    },
+    {
+      "path": "Buses.bsv",
+      "sha256": "0e702ec2d615c4c2e88bafaf6da35462a9d3cf540260fc7c226a7974e4d8c5e4",
+      "role": "source"
+    },
+    {
+      "path": "DMA.bsv",
+      "sha256": "1fc63c21c696d6924e915da1337ec7c861e924a3c4665669c8d2d5174ad69b68",
+      "role": "source"
+    },
+    {
+      "path": "DMA_Envir.bsv",
+      "sha256": "f4c5e615e98a7049718f483befca450011a5f77df72244cc3a2759b66054969f",
+      "role": "source"
+    },
+    {
+      "path": "Interfaces.bsv",
+      "sha256": "0d7e35519c38a2764623a0bba35faafec071942431f1293d22ad823255c87071",
+      "role": "source"
+    },
+    {
+      "path": "Masters.bsv",
+      "sha256": "3e05393ac21e4d0d56ecc1bf4144861864f8717901ba4673a2f3e8c104c95d85",
+      "role": "source"
+    },
+    {
+      "path": "Slaves.bsv",
+      "sha256": "c60eb4e959fcaf382de4c3a1071047f08e235541c884e3c8e607ad469f59ac87",
+      "role": "source"
+    },
+    {
+      "path": "TBbaseline.bsv",
+      "sha256": "a955ce99cb64adc6b5368f0bf514e7cdc9ab69ff848741009aa656fa03cff3da",
+      "role": "source"
+    },
+    {
+      "path": "sysDMA.out.expected",
+      "sha256": "fadb30c1a62f58ba4823ae519e9498091c3bd82127c9cb06a81853c13f81d870",
+      "role": "golden"
+    },
+    {
+      "path": "sysDMA.v.out.expected",
+      "sha256": "c78472ef80e7e74b56730eb5d3670dfc8a48466de425b6a0d4815f5fe1b90ec6",
+      "role": "golden"
+    },
+    {
+      "path": "sysM1_25.out.expected",
+      "sha256": "a999ca05885b691c588e93d2fe53af14d806c0a1255593b40af7bc7176566261",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysDMA",
+      "resource": "heavy",
+      "fixtures": [
+        "AmbaAdapters.bsv",
+        "Buses.bsv",
+        "DMA.bsv",
+        "DMA_Envir.bsv",
+        "Interfaces.bsv",
+        "Masters.bsv",
+        "Slaves.bsv",
+        "sysDMA.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDMA",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DMA_Envir.bsv",
+              "mode": "verilog",
+              "module": "sysDMA",
+              "args": [
+                "-keep-fires",
+                "-relax-method-earliness"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DMA_Envir.bsv"
+                ],
+                "outputs": [
+                  "DMA_Envir.bo",
+                  "DMA_Envir.bsv.bsc-vcomp-out",
+                  "defaultSlave.v",
+                  "mkDMA.v",
+                  "mkSink.v",
+                  "mkSlaveRx.v",
+                  "mkSlaveTx.v",
+                  "mkSource.v",
+                  "sysDMA.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 453,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDMA",
+                "mkDMA",
+                "mkSlaveRx",
+                "mkSlaveTx",
+                "defaultSlave"
+              ],
+              "top": "sysDMA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.v",
+                  "mkDMA.v",
+                  "mkSlaveRx.v",
+                  "mkSlaveTx.v",
+                  "defaultSlave.v"
+                ],
+                "outputs": [
+                  "sysDMA.bsc-vcomp-out",
+                  "sysDMA.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 453,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDMA",
+              "args": [],
+              "stdout": "sysDMA.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.vexe"
+                ],
+                "outputs": [
+                  "sysDMA.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 453,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDMA.v.out",
+              "expected": "sysDMA.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.v.out",
+                  "sysDMA.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 453,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDMA",
+              "args": [],
+              "stdout": "sysDMA.v-vcd.out",
+              "vcd": "sysDMA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.vexe"
+                ],
+                "outputs": [
+                  "sysDMA.v-vcd.out",
+                  "sysDMA.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 453,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDMA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 453,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 95
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDMA-2",
+      "resource": "heavy",
+      "fixtures": [
+        "AmbaAdapters.bsv",
+        "Buses.bsv",
+        "DMA.bsv",
+        "DMA_Envir.bsv",
+        "Interfaces.bsv",
+        "Masters.bsv",
+        "Slaves.bsv",
+        "sysDMA.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDMA",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DMA_Envir.bsv",
+              "mode": "bluesim",
+              "module": "sysDMA",
+              "args": [
+                "-keep-fires",
+                "-relax-method-earliness"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DMA_Envir.bsv"
+                ],
+                "outputs": [
+                  "DMA_Envir.bo",
+                  "DMA_Envir.bsv.bsc-ccomp-out",
+                  "defaultSlave.ba",
+                  "mkDMA.ba",
+                  "mkSink.ba",
+                  "mkSlaveRx.ba",
+                  "mkSlaveTx.ba",
+                  "mkSource.ba",
+                  "sysDMA.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDMA",
+                "mkDMA",
+                "mkSlaveRx",
+                "mkSlaveTx",
+                "defaultSlave"
+              ],
+              "top": "sysDMA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.ba",
+                  "mkDMA.ba",
+                  "mkSlaveRx.ba",
+                  "mkSlaveTx.ba",
+                  "defaultSlave.ba"
+                ],
+                "outputs": [
+                  "sysDMA.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDMA.cexe",
+                    "sysDMA.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDMA",
+              "args": [],
+              "stdout": "sysDMA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.cexe"
+                ],
+                "outputs": [
+                  "sysDMA.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDMA.c.out",
+              "expected": "sysDMA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.c.out",
+                  "sysDMA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDMA",
+              "args": [],
+              "stdout": "sysDMA.c-vcd.out",
+              "vcd": "sysDMA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.cexe"
+                ],
+                "outputs": [
+                  "sysDMA.c-vcd.out",
+                  "sysDMA.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDMA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDMA.c-vcd.out",
+              "expected": "sysDMA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDMA.c-vcd.out",
+                  "sysDMA.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 529,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysM1_25",
+      "resource": "heavy",
+      "fixtures": [
+        "AmbaAdapters.bsv",
+        "Buses.bsv",
+        "Interfaces.bsv",
+        "Masters.bsv",
+        "Slaves.bsv",
+        "TBbaseline.bsv",
+        "sysM1_25.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysM1_25",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TBbaseline.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysM1_25",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TBbaseline.bsv"
+                ],
+                "outputs": [
+                  "TBbaseline.bo",
+                  "TBbaseline.bsv.bsc-vcomp-out",
+                  "defaultSlave.ba",
+                  "defaultSlave.v",
+                  "mkSink.ba",
+                  "mkSink.v",
+                  "mkSlaveRx.ba",
+                  "mkSlaveRx.v",
+                  "mkSlaveTx.ba",
+                  "mkSlaveTx.v",
+                  "mkSource.ba",
+                  "mkSource.v",
+                  "sysM1_25.ba",
+                  "sysM1_25.v",
+                  "sysM1_50.ba",
+                  "sysM1_50.v",
+                  "sysM1_75.ba",
+                  "sysM1_75.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysM1_25"
+              ],
+              "top": "sysM1_25",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.v"
+                ],
+                "outputs": [
+                  "sysM1_25.bsc-vcomp-out",
+                  "sysM1_25.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.vexe"
+                ],
+                "outputs": [
+                  "sysM1_25.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysM1_25.v.out",
+              "expected": "sysM1_25.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.v.out",
+                  "sysM1_25.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.v-vcd.out",
+              "vcd": "sysM1_25.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.vexe"
+                ],
+                "outputs": [
+                  "sysM1_25.v-vcd.out",
+                  "sysM1_25.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysM1_25.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysM1_25"
+              ],
+              "top": "sysM1_25",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.ba"
+                ],
+                "outputs": [
+                  "sysM1_25.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysM1_25.cexe",
+                    "sysM1_25.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.cexe"
+                ],
+                "outputs": [
+                  "sysM1_25.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysM1_25.c.out",
+              "expected": "sysM1_25.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.c.out",
+                  "sysM1_25.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.c-vcd.out",
+              "vcd": "sysM1_25.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.cexe"
+                ],
+                "outputs": [
+                  "sysM1_25.c-vcd.out",
+                  "sysM1_25.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysM1_25.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysM1_25.c-vcd.out",
+              "expected": "sysM1_25.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.c-vcd.out",
+                  "sysM1_25.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 567,
+                  "endByte": 611,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

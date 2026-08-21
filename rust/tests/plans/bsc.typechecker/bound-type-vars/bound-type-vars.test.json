@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/bound-type-vars/bound-type-vars",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/bound-type-vars/bound-type-vars.exp",
+    "sha256": "762d88ed310902af5058701bc389caad2d70776bb9a1f44cce405f7c5e8c3b34"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/bound-type-vars",
+  "fixtures": [
+    {
+      "path": "BoundVarSubstitution.bsv",
+      "sha256": "a1131deded6394e74a1ffa3278694a1f49ee2d4e3ce10e0080896805f62cfd2a",
+      "role": "source"
+    },
+    {
+      "path": "ImpliedByFundeps.bsv",
+      "sha256": "917b749f5952589b3b60dd3ee8f9f2bbba3dccc956b6eccc6750d10afa6cff87",
+      "role": "source"
+    },
+    {
+      "path": "KindMismatchExplExpl.bs",
+      "sha256": "6b38cfab8835745ffb81657a260d4ed462e3bd4bbe6e45aafdf4a9508902607f",
+      "role": "source"
+    },
+    {
+      "path": "KindMismatchExplHas.bs",
+      "sha256": "280a1db9baa3416fa3165b05a326348a2dd1300a1d5d6414cc138d4d604cfb4d",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-KindMismatchExplExpl",
+      "resource": "normal",
+      "fixtures": [
+        "KindMismatchExplExpl.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-KindMismatchExplExpl",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "KindMismatchExplExpl.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "KindMismatchExplExpl.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "KindMismatchExplExpl.bs"
+                ],
+                "outputs": [
+                  "KindMismatchExplExpl.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 95,
+                  "endByte": 143,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "KindMismatchExplExpl.bs.bsc-out",
+              "kind": "error",
+              "code": "T0027",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "KindMismatchExplExpl.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 95,
+                  "endByte": 143,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-KindMismatchExplHas",
+      "resource": "normal",
+      "fixtures": [
+        "KindMismatchExplHas.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-KindMismatchExplHas",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "KindMismatchExplHas.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "KindMismatchExplHas.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "KindMismatchExplHas.bs"
+                ],
+                "outputs": [
+                  "KindMismatchExplHas.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 144,
+                  "endByte": 191,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "KindMismatchExplHas.bs.bsc-out",
+              "kind": "error",
+              "code": "T0027",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "KindMismatchExplHas.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 144,
+                  "endByte": 191,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-ImpliedByFundeps",
+      "resource": "normal",
+      "fixtures": [
+        "ImpliedByFundeps.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ImpliedByFundeps",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ImpliedByFundeps.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ImpliedByFundeps.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ImpliedByFundeps.bsv"
+                ],
+                "outputs": [
+                  "ImpliedByFundeps.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 357,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ImpliedByFundeps.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0030",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ImpliedByFundeps.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 357,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-BoundVarSubstitution",
+      "resource": "normal",
+      "fixtures": [
+        "BoundVarSubstitution.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-BoundVarSubstitution",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "BoundVarSubstitution.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "BoundVarSubstitution.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "BoundVarSubstitution.bsv"
+                ],
+                "outputs": [
+                  "BoundVarSubstitution.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 459,
+                  "endByte": 510,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "BoundVarSubstitution.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0030",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "BoundVarSubstitution.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 459,
+                  "endByte": 510,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "BoundVarSubstitution.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0029",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "BoundVarSubstitution.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 553,
+                  "endByte": 621,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 69
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,983 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/parameters/real/real_param",
+  "origin": {
+    "path": "testsuite/bsc.verilog/parameters/real/real_param.exp",
+    "sha256": "cdff5ed1d336dc964d27b84a92d15ba3af0a4111898afe8b2d3cd161d113215d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/parameters/real",
+  "fixtures": [
+    {
+      "path": "DisplayReal.v",
+      "sha256": "df867c0914f62ff1645234e1b67e1241c7670da71f42fd96a881ac755430daad",
+      "role": "source"
+    },
+    {
+      "path": "RealParamErr1.bsv",
+      "sha256": "3e881aadcc5c654b46065f9c60ecd9b9824b6f508182b229d884c155d3b3d3b1",
+      "role": "source"
+    },
+    {
+      "path": "RealParamErr2.bsv",
+      "sha256": "dd25240a821b2f87b915f882998957048bbeed76c971ded489ef66e191dbffc2",
+      "role": "source"
+    },
+    {
+      "path": "SimpleRealImport.bsv",
+      "sha256": "44bad40348729451cad2c3d215970c44b771ae893d782d102c44a66ec63de73f",
+      "role": "source"
+    },
+    {
+      "path": "TwoLevelReal.bsv",
+      "sha256": "b7a5337bf3e8b9e243a1c8d97b879aba4229382d18f207218a5bafb3ef29f7c0",
+      "role": "source"
+    },
+    {
+      "path": "TwoLevelReal2.bsv",
+      "sha256": "bcd63518a54516025b5638d9db573c12e086dcbe0a03190e5e9811c8cbb73568",
+      "role": "source"
+    },
+    {
+      "path": "sysSimpleRealImport.out.expected",
+      "sha256": "040f8f590b9de5b7174d7a32e86582ff4df75624177bee155f92f3054bc09311",
+      "role": "golden"
+    },
+    {
+      "path": "sysTwoLevelReal.out.expected",
+      "sha256": "548b1a6114fd93067315e102a4a5efbf8e5771368675ea606e50ca2fdb175ecf",
+      "role": "golden"
+    },
+    {
+      "path": "sysTwoLevelReal2.out.expected",
+      "sha256": "e9da37186fb5898c6e3877e8b0929c54fd3e8576ca04b7eae063f62652f8fe5d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysSimpleRealImport",
+      "resource": "heavy",
+      "fixtures": [
+        "DisplayReal.v",
+        "SimpleRealImport.bsv",
+        "sysSimpleRealImport.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSimpleRealImport",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SimpleRealImport.bsv",
+              "mode": "verilog",
+              "module": "sysSimpleRealImport",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SimpleRealImport.bsv"
+                ],
+                "outputs": [
+                  "DisplayReal.v",
+                  "SimpleRealImport.bo",
+                  "SimpleRealImport.bsv.bsc-vcomp-out",
+                  "sysSimpleRealImport.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSimpleRealImport",
+                "DisplayReal"
+              ],
+              "top": "sysSimpleRealImport",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleRealImport.v",
+                  "DisplayReal.v"
+                ],
+                "outputs": [
+                  "sysSimpleRealImport.bsc-vcomp-out",
+                  "sysSimpleRealImport.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSimpleRealImport",
+              "args": [],
+              "stdout": "sysSimpleRealImport.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleRealImport.vexe"
+                ],
+                "outputs": [
+                  "sysSimpleRealImport.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSimpleRealImport.v.out",
+              "expected": "sysSimpleRealImport.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleRealImport.v.out",
+                  "sysSimpleRealImport.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSimpleRealImport",
+              "args": [],
+              "stdout": "sysSimpleRealImport.v-vcd.out",
+              "vcd": "sysSimpleRealImport.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleRealImport.vexe"
+                ],
+                "outputs": [
+                  "sysSimpleRealImport.v-vcd.out",
+                  "sysSimpleRealImport.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSimpleRealImport.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleRealImport.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTwoLevelReal",
+      "resource": "heavy",
+      "fixtures": [
+        "DisplayReal.v",
+        "TwoLevelReal.bsv",
+        "sysTwoLevelReal.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTwoLevelReal",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TwoLevelReal.bsv",
+              "mode": "verilog",
+              "module": "sysTwoLevelReal",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TwoLevelReal.bsv"
+                ],
+                "outputs": [
+                  "DisplayReal.v",
+                  "TwoLevelReal.bo",
+                  "TwoLevelReal.bsv.bsc-vcomp-out",
+                  "mkRealPassThrough.v",
+                  "sysTwoLevelReal.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 127,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTwoLevelReal",
+                "DisplayReal",
+                "mkRealPassThrough"
+              ],
+              "top": "sysTwoLevelReal",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal.v",
+                  "DisplayReal.v",
+                  "mkRealPassThrough.v"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal.bsc-vcomp-out",
+                  "sysTwoLevelReal.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 127,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTwoLevelReal",
+              "args": [],
+              "stdout": "sysTwoLevelReal.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal.vexe"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 127,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoLevelReal.v.out",
+              "expected": "sysTwoLevelReal.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal.v.out",
+                  "sysTwoLevelReal.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 127,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTwoLevelReal",
+              "args": [],
+              "stdout": "sysTwoLevelReal.v-vcd.out",
+              "vcd": "sysTwoLevelReal.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal.vexe"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal.v-vcd.out",
+                  "sysTwoLevelReal.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 127,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTwoLevelReal.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 127,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "mkRealPassThrough.v",
+              "text": "r = 0.0;",
+              "artifacts": {
+                "inputs": [
+                  "mkRealPassThrough.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 245,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-RealParamErr1",
+      "resource": "normal",
+      "fixtures": [
+        "RealParamErr1.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RealParamErr1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RealParamErr1.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "RealParamErr1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RealParamErr1.bsv"
+                ],
+                "outputs": [
+                  "RealParamErr1.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 352,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "RealParamErr1.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0120",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "RealParamErr1.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 352,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-RealParamErr2",
+      "resource": "normal",
+      "fixtures": [
+        "DisplayReal.v",
+        "RealParamErr2.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RealParamErr2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RealParamErr2.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "RealParamErr2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RealParamErr2.bsv"
+                ],
+                "outputs": [
+                  "RealParamErr2.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 471,
+                  "endByte": 509,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTwoLevelReal2",
+      "resource": "heavy",
+      "fixtures": [
+        "TwoLevelReal2.bsv",
+        "sysTwoLevelReal2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTwoLevelReal2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TwoLevelReal2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTwoLevelReal2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TwoLevelReal2.bsv"
+                ],
+                "outputs": [
+                  "TwoLevelReal2.bo",
+                  "TwoLevelReal2.bsv.bsc-vcomp-out",
+                  "bsvDisplayReal.ba",
+                  "bsvDisplayReal.v",
+                  "mkRealPassThrough2.ba",
+                  "mkRealPassThrough2.v",
+                  "sysTwoLevelReal2.ba",
+                  "sysTwoLevelReal2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTwoLevelReal2",
+                "bsvDisplayReal",
+                "mkRealPassThrough2"
+              ],
+              "top": "sysTwoLevelReal2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.v",
+                  "bsvDisplayReal.v",
+                  "mkRealPassThrough2.v"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal2.bsc-vcomp-out",
+                  "sysTwoLevelReal2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTwoLevelReal2",
+              "args": [],
+              "stdout": "sysTwoLevelReal2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.vexe"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoLevelReal2.v.out",
+              "expected": "sysTwoLevelReal2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.v.out",
+                  "sysTwoLevelReal2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTwoLevelReal2",
+              "args": [],
+              "stdout": "sysTwoLevelReal2.v-vcd.out",
+              "vcd": "sysTwoLevelReal2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.vexe"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal2.v-vcd.out",
+                  "sysTwoLevelReal2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTwoLevelReal2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTwoLevelReal2",
+                "bsvDisplayReal",
+                "mkRealPassThrough2"
+              ],
+              "top": "sysTwoLevelReal2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.ba",
+                  "bsvDisplayReal.ba",
+                  "mkRealPassThrough2.ba"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTwoLevelReal2.cexe",
+                    "sysTwoLevelReal2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTwoLevelReal2",
+              "args": [],
+              "stdout": "sysTwoLevelReal2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.cexe"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoLevelReal2.c.out",
+              "expected": "sysTwoLevelReal2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.c.out",
+                  "sysTwoLevelReal2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTwoLevelReal2",
+              "args": [],
+              "stdout": "sysTwoLevelReal2.c-vcd.out",
+              "vcd": "sysTwoLevelReal2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.cexe"
+                ],
+                "outputs": [
+                  "sysTwoLevelReal2.c-vcd.out",
+                  "sysTwoLevelReal2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTwoLevelReal2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoLevelReal2.c-vcd.out",
+              "expected": "sysTwoLevelReal2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoLevelReal2.c-vcd.out",
+                  "sysTwoLevelReal2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 584,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

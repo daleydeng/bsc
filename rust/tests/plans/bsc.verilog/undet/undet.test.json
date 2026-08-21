@@ -1,0 +1,1354 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/undet/undet",
+  "origin": {
+    "path": "testsuite/bsc.verilog/undet/undet.exp",
+    "sha256": "cad0136ad887c7339eef60ac8bf582e460aac089aeb791f9a065c4b3f113150e"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/undet",
+  "fixtures": [
+    {
+      "path": "MaybeMux.bsv",
+      "sha256": "507810cef3b752cbc3102dd292da27bc6c22e2415938f4bc0a0f50d6941e0546",
+      "role": "source"
+    },
+    {
+      "path": "Undet1.bs",
+      "sha256": "9d21df8c913be3b7e1e596e75775d118457907aa1bbc062cd50f6b5e8202954d",
+      "role": "source"
+    },
+    {
+      "path": "Undet2.bs",
+      "sha256": "8007bcb2db313e86b8fd92514a06b7da6d92018e8ed74f4dc08f536fab5a24de",
+      "role": "source"
+    },
+    {
+      "path": "Undet3.bs",
+      "sha256": "3070fc3d5c92662e58084479a26130d472f5188ac9d77494135925e5d00b8254",
+      "role": "source"
+    },
+    {
+      "path": "UndetComp.bs",
+      "sha256": "07806a070f1b86d6df080e266ef7908997c871186de9f2070569f7cd3310669b",
+      "role": "source"
+    },
+    {
+      "path": "UndetIf.bsv",
+      "sha256": "a7d87fb7268fc71452bd7aa7d0ea2a0b3cda49c99110b195f1f3a02cd828bcd2",
+      "role": "source"
+    },
+    {
+      "path": "sysUndet1.out.expected",
+      "sha256": "b026e9166ebd3330be7849cd40838e861f11e903db311cec7673873d15d081c4",
+      "role": "golden"
+    },
+    {
+      "path": "sysUndet2.out.expected",
+      "sha256": "73114eba660e33a475fcee3873c0ff75d2a7283010350501f5aa7b2264231c10",
+      "role": "golden"
+    },
+    {
+      "path": "sysUndet3.out.expected",
+      "sha256": "73114eba660e33a475fcee3873c0ff75d2a7283010350501f5aa7b2264231c10",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysUndet1",
+      "resource": "heavy",
+      "fixtures": [
+        "Undet1.bs",
+        "sysUndet1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysUndet1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Undet1.bs",
+              "mode": "shared_elaboration",
+              "module": "sysUndet1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Undet1.bs"
+                ],
+                "outputs": [
+                  "Undet1.bo",
+                  "Undet1.bs.bsc-vcomp-out",
+                  "sysUndet1.ba",
+                  "sysUndet1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUndet1"
+              ],
+              "top": "sysUndet1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.v"
+                ],
+                "outputs": [
+                  "sysUndet1.bsc-vcomp-out",
+                  "sysUndet1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndet1",
+              "args": [],
+              "stdout": "sysUndet1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.vexe"
+                ],
+                "outputs": [
+                  "sysUndet1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysUndet1.v.out",
+              "expected": "sysUndet1.out.expected",
+              "reason": "upstream bug 138",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.v.out",
+                  "sysUndet1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndet1",
+              "args": [],
+              "stdout": "sysUndet1.v-vcd.out",
+              "vcd": "sysUndet1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.vexe"
+                ],
+                "outputs": [
+                  "sysUndet1.v-vcd.out",
+                  "sysUndet1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysUndet1"
+              ],
+              "top": "sysUndet1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.ba"
+                ],
+                "outputs": [
+                  "sysUndet1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysUndet1.cexe",
+                    "sysUndet1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUndet1",
+              "args": [],
+              "stdout": "sysUndet1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.cexe"
+                ],
+                "outputs": [
+                  "sysUndet1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysUndet1.c.out",
+              "expected": "sysUndet1.out.expected",
+              "reason": "upstream bug 138",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.c.out",
+                  "sysUndet1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUndet1",
+              "args": [],
+              "stdout": "sysUndet1.c-vcd.out",
+              "vcd": "sysUndet1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.cexe"
+                ],
+                "outputs": [
+                  "sysUndet1.c-vcd.out",
+                  "sysUndet1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysUndet1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysUndet2",
+      "resource": "heavy",
+      "fixtures": [
+        "Undet2.bs",
+        "sysUndet2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysUndet2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Undet2.bs",
+              "mode": "shared_elaboration",
+              "module": "sysUndet2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Undet2.bs"
+                ],
+                "outputs": [
+                  "Undet2.bo",
+                  "Undet2.bs.bsc-vcomp-out",
+                  "sysUndet2.ba",
+                  "sysUndet2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUndet2"
+              ],
+              "top": "sysUndet2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.v"
+                ],
+                "outputs": [
+                  "sysUndet2.bsc-vcomp-out",
+                  "sysUndet2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndet2",
+              "args": [],
+              "stdout": "sysUndet2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.vexe"
+                ],
+                "outputs": [
+                  "sysUndet2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndet2.v.out",
+              "expected": "sysUndet2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.v.out",
+                  "sysUndet2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndet2",
+              "args": [],
+              "stdout": "sysUndet2.v-vcd.out",
+              "vcd": "sysUndet2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.vexe"
+                ],
+                "outputs": [
+                  "sysUndet2.v-vcd.out",
+                  "sysUndet2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysUndet2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysUndet2"
+              ],
+              "top": "sysUndet2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.ba"
+                ],
+                "outputs": [
+                  "sysUndet2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysUndet2.cexe",
+                    "sysUndet2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUndet2",
+              "args": [],
+              "stdout": "sysUndet2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.cexe"
+                ],
+                "outputs": [
+                  "sysUndet2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndet2.c.out",
+              "expected": "sysUndet2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.c.out",
+                  "sysUndet2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUndet2",
+              "args": [],
+              "stdout": "sysUndet2.c-vcd.out",
+              "vcd": "sysUndet2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.cexe"
+                ],
+                "outputs": [
+                  "sysUndet2.c-vcd.out",
+                  "sysUndet2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysUndet2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndet2.c-vcd.out",
+              "expected": "sysUndet2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet2.c-vcd.out",
+                  "sysUndet2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 48,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysUndet3",
+      "resource": "heavy",
+      "fixtures": [
+        "Undet3.bs",
+        "sysUndet3.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysUndet3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Undet3.bs",
+              "mode": "shared_elaboration",
+              "module": "sysUndet3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Undet3.bs"
+                ],
+                "outputs": [
+                  "Undet3.bo",
+                  "Undet3.bs.bsc-vcomp-out",
+                  "sysUndet3.ba",
+                  "sysUndet3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysUndet3"
+              ],
+              "top": "sysUndet3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.v"
+                ],
+                "outputs": [
+                  "sysUndet3.bsc-vcomp-out",
+                  "sysUndet3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndet3",
+              "args": [],
+              "stdout": "sysUndet3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.vexe"
+                ],
+                "outputs": [
+                  "sysUndet3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndet3.v.out",
+              "expected": "sysUndet3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.v.out",
+                  "sysUndet3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysUndet3",
+              "args": [],
+              "stdout": "sysUndet3.v-vcd.out",
+              "vcd": "sysUndet3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.vexe"
+                ],
+                "outputs": [
+                  "sysUndet3.v-vcd.out",
+                  "sysUndet3.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysUndet3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysUndet3"
+              ],
+              "top": "sysUndet3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.ba"
+                ],
+                "outputs": [
+                  "sysUndet3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysUndet3.cexe",
+                    "sysUndet3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUndet3",
+              "args": [],
+              "stdout": "sysUndet3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.cexe"
+                ],
+                "outputs": [
+                  "sysUndet3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndet3.c.out",
+              "expected": "sysUndet3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.c.out",
+                  "sysUndet3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysUndet3",
+              "args": [],
+              "stdout": "sysUndet3.c-vcd.out",
+              "vcd": "sysUndet3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.cexe"
+                ],
+                "outputs": [
+                  "sysUndet3.c-vcd.out",
+                  "sysUndet3.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysUndet3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUndet3.c-vcd.out",
+              "expected": "sysUndet3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysUndet3.c-vcd.out",
+                  "sysUndet3.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 49,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 19
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-MaybeMux",
+      "resource": "normal",
+      "fixtures": [
+        "MaybeMux.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MaybeMux",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MaybeMux.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MaybeMux.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MaybeMux.bsv"
+                ],
+                "outputs": [
+                  "MaybeMux.bo",
+                  "MaybeMux.bsv.bsc-vcomp-out",
+                  "sysMaybeMux.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 116,
+                  "endByte": 149,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysMaybeMux.v",
+              "pattern": "assign data\\$D_IN = b \\? data : incoming ;",
+              "artifacts": {
+                "inputs": [
+                  "sysMaybeMux.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 154,
+                  "endByte": 228,
+                  "startLine": 8,
+                  "startColumn": 5,
+                  "endLine": 8,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-UndetIf",
+      "resource": "normal",
+      "fixtures": [
+        "UndetIf.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UndetIf",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UndetIf.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UndetIf.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UndetIf.bsv"
+                ],
+                "outputs": [
+                  "UndetIf.bo",
+                  "UndetIf.bsv.bsc-vcomp-out",
+                  "sysUndetIf.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 234,
+                  "endByte": 266,
+                  "startLine": 10,
+                  "startColumn": 5,
+                  "endLine": 10,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysUndetIf.v",
+              "pattern": "assign d\\$D_IN = p2 \\? d : i ;",
+              "artifacts": {
+                "inputs": [
+                  "sysUndetIf.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 332,
+                  "startLine": 11,
+                  "startColumn": 5,
+                  "endLine": 11,
+                  "endColumn": 66
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-UndetComp",
+      "resource": "normal",
+      "fixtures": [
+        "UndetComp.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UndetComp",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UndetComp.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UndetComp.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UndetComp.bs"
+                ],
+                "outputs": [
+                  "UndetComp.bo",
+                  "UndetComp.bs.bsc-vcomp-out",
+                  "sysUndetComp.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 411,
+                  "endByte": 444,
+                  "startLine": 16,
+                  "startColumn": 5,
+                  "endLine": 16,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "sysUndetComp.v",
+              "text": "13'd",
+              "artifacts": {
+                "inputs": [
+                  "sysUndetComp.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 501,
+                  "endByte": 544,
+                  "startLine": 18,
+                  "startColumn": 5,
+                  "endLine": 18,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.text_absent",
+              "path": "sysUndetComp.v",
+              "text": "!=",
+              "artifacts": {
+                "inputs": [
+                  "sysUndetComp.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 683,
+                  "endByte": 724,
+                  "startLine": 22,
+                  "startColumn": 5,
+                  "endLine": 22,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Foldable/Foldable",
+  "origin": {
+    "path": "testsuite/bsc.lib/Foldable/Foldable.exp",
+    "sha256": "ad54526c737911f84137417a009b54581e5218d398391c46f6e0220a3e1634d7"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Foldable",
+  "fixtures": [
+    {
+      "path": "Foldable1Test.bs",
+      "sha256": "6382c9767dc8b51174e1159fbb682ee297a2ec4c327c1840f78391ee4981ce7a",
+      "role": "source"
+    },
+    {
+      "path": "FoldableTest.bs",
+      "sha256": "4d1b92ab1d543597469f70905bb68a1bcd8486c9869f04348e931d86bb44263b",
+      "role": "source"
+    },
+    {
+      "path": "sysFoldable1Test.out.expected",
+      "sha256": "a0f3dbf494ce40cc52fc85ae07b58179ad01c8aa1cdbe337fad54dc3e0dc13c5",
+      "role": "golden"
+    },
+    {
+      "path": "sysFoldableTest.out.expected",
+      "sha256": "457ce5e38a94e9b5162a8fdaadcfbc6a9ad3d2ccd3371e67357bdce2b152e54d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysFoldableTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FoldableTest.bs",
+        "sysFoldableTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFoldableTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FoldableTest.bs",
+              "mode": "shared_elaboration",
+              "module": "sysFoldableTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "FoldableTest.bs"
+                ],
+                "outputs": [
+                  "FoldableTest.bo",
+                  "FoldableTest.bs.bsc-vcomp-out",
+                  "sysFoldableTest.ba",
+                  "sysFoldableTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFoldableTest"
+              ],
+              "top": "sysFoldableTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.v"
+                ],
+                "outputs": [
+                  "sysFoldableTest.bsc-vcomp-out",
+                  "sysFoldableTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFoldableTest",
+              "args": [],
+              "stdout": "sysFoldableTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.vexe"
+                ],
+                "outputs": [
+                  "sysFoldableTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFoldableTest.v.out",
+              "expected": "sysFoldableTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.v.out",
+                  "sysFoldableTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFoldableTest",
+              "args": [],
+              "stdout": "sysFoldableTest.v-vcd.out",
+              "vcd": "sysFoldableTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.vexe"
+                ],
+                "outputs": [
+                  "sysFoldableTest.v-vcd.out",
+                  "sysFoldableTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFoldableTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFoldableTest"
+              ],
+              "top": "sysFoldableTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.ba"
+                ],
+                "outputs": [
+                  "sysFoldableTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFoldableTest.cexe",
+                    "sysFoldableTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFoldableTest",
+              "args": [],
+              "stdout": "sysFoldableTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.cexe"
+                ],
+                "outputs": [
+                  "sysFoldableTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFoldableTest.c.out",
+              "expected": "sysFoldableTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.c.out",
+                  "sysFoldableTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFoldableTest",
+              "args": [],
+              "stdout": "sysFoldableTest.c-vcd.out",
+              "vcd": "sysFoldableTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.cexe"
+                ],
+                "outputs": [
+                  "sysFoldableTest.c-vcd.out",
+                  "sysFoldableTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFoldableTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFoldableTest.c-vcd.out",
+              "expected": "sysFoldableTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldableTest.c-vcd.out",
+                  "sysFoldableTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 56,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysFoldable1Test",
+      "resource": "heavy",
+      "fixtures": [
+        "Foldable1Test.bs",
+        "sysFoldable1Test.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFoldable1Test",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Foldable1Test.bs",
+              "mode": "shared_elaboration",
+              "module": "sysFoldable1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Foldable1Test.bs"
+                ],
+                "outputs": [
+                  "Foldable1Test.bo",
+                  "Foldable1Test.bs.bsc-vcomp-out",
+                  "sysFoldable1Test.ba",
+                  "sysFoldable1Test.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFoldable1Test"
+              ],
+              "top": "sysFoldable1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.v"
+                ],
+                "outputs": [
+                  "sysFoldable1Test.bsc-vcomp-out",
+                  "sysFoldable1Test.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFoldable1Test",
+              "args": [],
+              "stdout": "sysFoldable1Test.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.vexe"
+                ],
+                "outputs": [
+                  "sysFoldable1Test.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFoldable1Test.v.out",
+              "expected": "sysFoldable1Test.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.v.out",
+                  "sysFoldable1Test.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFoldable1Test",
+              "args": [],
+              "stdout": "sysFoldable1Test.v-vcd.out",
+              "vcd": "sysFoldable1Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.vexe"
+                ],
+                "outputs": [
+                  "sysFoldable1Test.v-vcd.out",
+                  "sysFoldable1Test.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFoldable1Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFoldable1Test"
+              ],
+              "top": "sysFoldable1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.ba"
+                ],
+                "outputs": [
+                  "sysFoldable1Test.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFoldable1Test.cexe",
+                    "sysFoldable1Test.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFoldable1Test",
+              "args": [],
+              "stdout": "sysFoldable1Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.cexe"
+                ],
+                "outputs": [
+                  "sysFoldable1Test.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFoldable1Test.c.out",
+              "expected": "sysFoldable1Test.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.c.out",
+                  "sysFoldable1Test.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFoldable1Test",
+              "args": [],
+              "stdout": "sysFoldable1Test.c-vcd.out",
+              "vcd": "sysFoldable1Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.cexe"
+                ],
+                "outputs": [
+                  "sysFoldable1Test.c-vcd.out",
+                  "sysFoldable1Test.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFoldable1Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFoldable1Test.c-vcd.out",
+              "expected": "sysFoldable1Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFoldable1Test.c-vcd.out",
+                  "sysFoldable1Test.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 106,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

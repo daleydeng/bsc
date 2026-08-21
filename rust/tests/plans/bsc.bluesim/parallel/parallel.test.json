@@ -1,0 +1,837 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/parallel/parallel",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/parallel/parallel.exp",
+    "sha256": "851d3c0d4d05c77475cdd0954fa905fadf85fe8572c351e4aec83d235c172e37"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/parallel",
+  "fixtures": [
+    {
+      "path": "GCD.bsv",
+      "sha256": "a8e33b5279bfffedb503230ae3573cd8b5623adfda0182326f7f505dc9720894",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "8fdab810126961597e69fc63d798628e17538c6ac8aa00cdc61b847a1b177600",
+      "role": "source"
+    },
+    {
+      "path": "mkTbGCD.out.expected",
+      "sha256": "8ae1aba3246c4b1d8444768388bdb50518e337191a2baf079c0f257c908f391f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-sequence",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GCD.bsv",
+              "mode": "bluesim",
+              "module": "mkGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GCD.bsv"
+                ],
+                "outputs": [
+                  "GCD.bo",
+                  "GCD.bsv.bsc-ccomp-out",
+                  "mkGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 153,
+                  "endByte": 186,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkGCD",
+              "args": [
+                "-v",
+                "-parallel-sim-link",
+                "2"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkGCD.cexe",
+                    "mkGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 187,
+                  "endByte": 239,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkGCD.bsc-ccomp-out",
+              "pattern": "exec: make",
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 259,
+                  "endByte": 304,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkGCD.bsc-ccomp-out",
+              "text": "reuse",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 305,
+                  "endByte": 349,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkGCD.bsc-ccomp-out",
+              "text": "Bluesim object created:",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 350,
+                  "endByte": 412,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mkTbGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "bluesim",
+              "module": "mkTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-ccomp-out",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 453,
+                  "endByte": 490,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTbGCD",
+              "args": [
+                "-v",
+                "-parallel-sim-link",
+                "2"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 491,
+                  "endByte": 545,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTbGCD.bsc-ccomp-out",
+              "destination": "mkTbGCD-1.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputs": [
+                  "mkTbGCD-1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 616,
+                  "endByte": 666,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTbGCD-1.bsc-ccomp-out",
+              "pattern": "exec: make",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-1.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 717,
+                  "endByte": 766,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTbGCD-1.bsc-ccomp-out",
+              "text": "reuse",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-1.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 767,
+                  "endByte": 815,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTbGCD-1.bsc-ccomp-out",
+              "text": "Bluesim object created:",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-1.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 816,
+                  "endByte": 882,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTbGCD-1.bsc-ccomp-out",
+              "pattern": "Bluesim object created: mkTbGCD\\.",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-1.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 883,
+                  "endByte": 955,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTbGCD-1.bsc-ccomp-out",
+              "pattern": "Bluesim object created: model_mkTbGCD\\.",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-1.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1035,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mkTbGCD-2",
+          "operations": [
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTbGCD",
+              "args": [
+                "-v",
+                "-parallel-sim-link",
+                "2"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1070,
+                  "endByte": 1124,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTbGCD.bsc-ccomp-out",
+              "destination": "mkTbGCD-2.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputs": [
+                  "mkTbGCD-2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1158,
+                  "endByte": 1208,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTbGCD-2.bsc-ccomp-out",
+              "pattern": "exec: make",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-2.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1372,
+                  "endByte": 1421,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTbGCD-2.bsc-ccomp-out",
+              "text": "reuse",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-2.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1422,
+                  "endByte": 1470,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTbGCD-2.bsc-ccomp-out",
+              "text": "Bluesim object created:",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-2.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1471,
+                  "endByte": 1537,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTbGCD-2.bsc-ccomp-out",
+              "pattern": "Bluesim object created: model_mkTbGCD\\.",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD-2.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1538,
+                  "endByte": 1617,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTbGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv",
+        "mkTbGCD.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "non_windows"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTbGCD",
+          "operations": [
+            {
+              "op": "fs.mkdir",
+              "path": "dir:with,many;spec#ial=char%acters",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "dir:with,many;spec#ial=char%acters"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1962,
+                  "endByte": 1975,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 52,
+                  "endColumn": 14
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "bluesim",
+              "module": "mkTbGCD",
+              "args": [
+                "-simdir",
+                "dir:with,many;spec#ial=char%acters"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-ccomp-out",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTbGCD"
+              ],
+              "top": "mkTbGCD",
+              "args": [
+                "-simdir",
+                "dir:with,many;spec#ial=char%acters",
+                "-v",
+                "-parallel-sim-link",
+                "2"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.ba"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbGCD.c.out",
+              "expected": "mkTbGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.c.out",
+                  "mkTbGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.c-vcd.out",
+              "vcd": "mkTbGCD.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.c-vcd.out",
+                  "mkTbGCD.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTbGCD.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbGCD.c-vcd.out",
+              "expected": "mkTbGCD.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.c-vcd.out",
+                  "mkTbGCD.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1977,
+                  "endByte": 2109,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1690/b1690",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1690/b1690.exp",
+    "sha256": "8a4c19d634d6c713dbd926384afd8cf3e921a6ae22552909c567d07a3daa3068"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1690",
+  "fixtures": [
+    {
+      "path": "MutEx.bsv",
+      "sha256": "b3e49d53942937f85f9f7df325ffea06df8f6010e587f602124e896da7958694",
+      "role": "source"
+    },
+    {
+      "path": "MutEx.bsv.bsc-sched-out.expected",
+      "sha256": "98b56cb6b503d5b874345bc67c119dc48d5db9b80f35bedb75a0c329b38a8aec",
+      "role": "golden"
+    },
+    {
+      "path": "MutExBig.bsv",
+      "sha256": "90c8f0476327ee42d060ffbb00b17372755e0da912ff904ebe39e94af8bf7ef5",
+      "role": "source"
+    },
+    {
+      "path": "MutExBig.bsv.bsc-sched-out.expected",
+      "sha256": "cc5733605eb338bece8f145e5eb2bb1fc3c820c6b980321967f421e4654c16ad",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MutEx",
+      "resource": "normal",
+      "fixtures": [
+        "MutEx.bsv",
+        "MutEx.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MutEx",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MutEx.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MutEx.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "MutEx.bsv"
+                ],
+                "outputs": [
+                  "MutEx.bo",
+                  "MutEx.bsv.bsc-sched-out",
+                  "mkMutEx.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 24,
+                  "endByte": 63,
+                  "startLine": 3,
+                  "startColumn": 5,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MutEx.bsv.bsc-sched-out",
+              "expected": "MutEx.bsv.bsc-sched-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MutEx.bsv.bsc-sched-out",
+                  "MutEx.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 68,
+                  "endByte": 104,
+                  "startLine": 4,
+                  "startColumn": 5,
+                  "endLine": 4,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-MutExBig",
+      "resource": "normal",
+      "fixtures": [
+        "MutExBig.bsv",
+        "MutExBig.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MutExBig",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MutExBig.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MutExBig.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "MutExBig.bsv"
+                ],
+                "outputs": [
+                  "MutExBig.bo",
+                  "MutExBig.bsv.bsc-sched-out",
+                  "sysMutExBig.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 110,
+                  "endByte": 152,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 6,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MutExBig.bsv.bsc-sched-out",
+              "expected": "MutExBig.bsv.bsc-sched-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MutExBig.bsv.bsc-sched-out",
+                  "MutExBig.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 157,
+                  "endByte": 196,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

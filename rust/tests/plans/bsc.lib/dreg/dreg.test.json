@@ -1,0 +1,868 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/dreg/dreg",
+  "origin": {
+    "path": "testsuite/bsc.lib/dreg/dreg.exp",
+    "sha256": "d72f60e49e471f9d3e418778f0fad84e28cf6f85af5b218e8b913aebd8a8f8ce"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/dreg",
+  "fixtures": [
+    {
+      "path": "DRegTest0.bsv",
+      "sha256": "e71d0b41522ac3832953056ecfa90421ca0ea76a9fb40c53100d5a3d0aa52106",
+      "role": "source"
+    },
+    {
+      "path": "DRegTest1.bsv",
+      "sha256": "5d9c0352658e6265545d1dfd6519f8e4f0d94e5386b828ecaa8e232e1f9f4b75",
+      "role": "source"
+    },
+    {
+      "path": "sysDRegTest0.out.expected",
+      "sha256": "a5589811ca6989df24db4aede3b942837399eb42e0ba88a790936ced87d2b56d",
+      "role": "golden"
+    },
+    {
+      "path": "sysDRegTest0.v.out.expected",
+      "sha256": "d408b29b584b4d57a3b19df16a1e86d9daab319a9928a620d67bee67c0217787",
+      "role": "golden"
+    },
+    {
+      "path": "sysDRegTest1.out.expected",
+      "sha256": "d23674d4d046aad44dfcd84894d633713e294290aa32cc575ccf11a4482689f1",
+      "role": "golden"
+    },
+    {
+      "path": "sysDRegTest1.v.out.expected",
+      "sha256": "06096647abbaf9174c255ebb0f500fa0fde1d9f472f23a02a0db5fe85dc16eb8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysDRegTest0",
+      "resource": "heavy",
+      "fixtures": [
+        "DRegTest0.bsv",
+        "sysDRegTest0.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDRegTest0",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DRegTest0.bsv",
+              "mode": "verilog",
+              "module": "sysDRegTest0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DRegTest0.bsv"
+                ],
+                "outputs": [
+                  "DRegTest0.bo",
+                  "DRegTest0.bsv.bsc-vcomp-out",
+                  "sysDRegTest0.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 327,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDRegTest0"
+              ],
+              "top": "sysDRegTest0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.v"
+                ],
+                "outputs": [
+                  "sysDRegTest0.bsc-vcomp-out",
+                  "sysDRegTest0.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 327,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDRegTest0",
+              "args": [],
+              "stdout": "sysDRegTest0.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.vexe"
+                ],
+                "outputs": [
+                  "sysDRegTest0.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 327,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDRegTest0.v.out",
+              "expected": "sysDRegTest0.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.v.out",
+                  "sysDRegTest0.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 327,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDRegTest0",
+              "args": [],
+              "stdout": "sysDRegTest0.v-vcd.out",
+              "vcd": "sysDRegTest0.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.vexe"
+                ],
+                "outputs": [
+                  "sysDRegTest0.v-vcd.out",
+                  "sysDRegTest0.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 327,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDRegTest0.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 327,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDRegTest0-2",
+      "resource": "heavy",
+      "fixtures": [
+        "DRegTest0.bsv",
+        "sysDRegTest0.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDRegTest0",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DRegTest0.bsv",
+              "mode": "bluesim",
+              "module": "sysDRegTest0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DRegTest0.bsv"
+                ],
+                "outputs": [
+                  "DRegTest0.bo",
+                  "DRegTest0.bsv.bsc-ccomp-out",
+                  "sysDRegTest0.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDRegTest0"
+              ],
+              "top": "sysDRegTest0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.ba"
+                ],
+                "outputs": [
+                  "sysDRegTest0.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDRegTest0.cexe",
+                    "sysDRegTest0.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDRegTest0",
+              "args": [],
+              "stdout": "sysDRegTest0.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.cexe"
+                ],
+                "outputs": [
+                  "sysDRegTest0.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDRegTest0.c.out",
+              "expected": "sysDRegTest0.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.c.out",
+                  "sysDRegTest0.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDRegTest0",
+              "args": [],
+              "stdout": "sysDRegTest0.c-vcd.out",
+              "vcd": "sysDRegTest0.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.cexe"
+                ],
+                "outputs": [
+                  "sysDRegTest0.c-vcd.out",
+                  "sysDRegTest0.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDRegTest0.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDRegTest0.c-vcd.out",
+              "expected": "sysDRegTest0.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest0.c-vcd.out",
+                  "sysDRegTest0.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 328,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDRegTest1",
+      "resource": "heavy",
+      "fixtures": [
+        "DRegTest1.bsv",
+        "sysDRegTest1.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDRegTest1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DRegTest1.bsv",
+              "mode": "verilog",
+              "module": "sysDRegTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DRegTest1.bsv"
+                ],
+                "outputs": [
+                  "DRegTest1.bo",
+                  "DRegTest1.bsv.bsc-vcomp-out",
+                  "sysDRegTest1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 411,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDRegTest1"
+              ],
+              "top": "sysDRegTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.v"
+                ],
+                "outputs": [
+                  "sysDRegTest1.bsc-vcomp-out",
+                  "sysDRegTest1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 411,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDRegTest1",
+              "args": [],
+              "stdout": "sysDRegTest1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.vexe"
+                ],
+                "outputs": [
+                  "sysDRegTest1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 411,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDRegTest1.v.out",
+              "expected": "sysDRegTest1.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.v.out",
+                  "sysDRegTest1.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 411,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDRegTest1",
+              "args": [],
+              "stdout": "sysDRegTest1.v-vcd.out",
+              "vcd": "sysDRegTest1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.vexe"
+                ],
+                "outputs": [
+                  "sysDRegTest1.v-vcd.out",
+                  "sysDRegTest1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 411,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDRegTest1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 411,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDRegTest1-2",
+      "resource": "heavy",
+      "fixtures": [
+        "DRegTest1.bsv",
+        "sysDRegTest1.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDRegTest1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DRegTest1.bsv",
+              "mode": "bluesim",
+              "module": "sysDRegTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DRegTest1.bsv"
+                ],
+                "outputs": [
+                  "DRegTest1.bo",
+                  "DRegTest1.bsv.bsc-ccomp-out",
+                  "sysDRegTest1.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDRegTest1"
+              ],
+              "top": "sysDRegTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.ba"
+                ],
+                "outputs": [
+                  "sysDRegTest1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDRegTest1.cexe",
+                    "sysDRegTest1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDRegTest1",
+              "args": [],
+              "stdout": "sysDRegTest1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.cexe"
+                ],
+                "outputs": [
+                  "sysDRegTest1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDRegTest1.c.out",
+              "expected": "sysDRegTest1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.c.out",
+                  "sysDRegTest1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDRegTest1",
+              "args": [],
+              "stdout": "sysDRegTest1.c-vcd.out",
+              "vcd": "sysDRegTest1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.cexe"
+                ],
+                "outputs": [
+                  "sysDRegTest1.c-vcd.out",
+                  "sysDRegTest1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDRegTest1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDRegTest1.c-vcd.out",
+              "expected": "sysDRegTest1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDRegTest1.c-vcd.out",
+                  "sysDRegTest1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 412,
+                  "endByte": 437,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b893/b893",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b893/b893.exp",
+    "sha256": "c08524be3b72267b5f10a58a68e5f43b217ff1f742dab77ec97962a298cf9b60"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b893",
+  "fixtures": [
+    {
+      "path": "Bug893.bsv",
+      "sha256": "d8b10f22bdebc7a4c0b168465e1e7e05cd89919fa4cdb476176e485d096a8119",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Bug893",
+      "resource": "normal",
+      "fixtures": [
+        "Bug893.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug893",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug893.bsv",
+              "mode": "verilog",
+              "args": [
+                "-aggressive-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Bug893.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug893.bsv"
+                ],
+                "outputs": [
+                  "Bug893.bo",
+                  "Bug893.bsv.bsc-vcomp-out",
+                  "sysBug893.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 231,
+                  "endByte": 290,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 6,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysBug893.v",
+              "text": "assign RDY_get = r ? f1$EMPTY_N : f2$EMPTY_N ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysBug893.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 295,
+                  "endByte": 372,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 82
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

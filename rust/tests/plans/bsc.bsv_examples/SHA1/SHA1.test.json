@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/SHA1/SHA1",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/SHA1/SHA1.exp",
+    "sha256": "365368cfa125c75fe3f07caf736611ff570c06009011665752507b5d1ec3e9ce"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/SHA1",
+  "fixtures": [
+    {
+      "path": "KenSha1.bsv",
+      "sha256": "b50249b18b126379a71ccdaf063373061a205bc87996889d8dc91f040b36b06d",
+      "role": "source"
+    },
+    {
+      "path": "sysKenSha1.out.expected",
+      "sha256": "bdf203da404224912e0a72e0347caf7201cd9c20897c88662a3a8ba085dd360f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysKenSha1",
+      "resource": "heavy",
+      "fixtures": [
+        "KenSha1.bsv",
+        "sysKenSha1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysKenSha1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "KenSha1.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysKenSha1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "KenSha1.bsv"
+                ],
+                "outputs": [
+                  "KenSha1.bo",
+                  "KenSha1.bsv.bsc-vcomp-out",
+                  "sysKenSha1.ba",
+                  "sysKenSha1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysKenSha1"
+              ],
+              "top": "sysKenSha1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.v"
+                ],
+                "outputs": [
+                  "sysKenSha1.bsc-vcomp-out",
+                  "sysKenSha1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysKenSha1",
+              "args": [],
+              "stdout": "sysKenSha1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.vexe"
+                ],
+                "outputs": [
+                  "sysKenSha1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysKenSha1.v.out",
+              "expected": "sysKenSha1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.v.out",
+                  "sysKenSha1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysKenSha1",
+              "args": [],
+              "stdout": "sysKenSha1.v-vcd.out",
+              "vcd": "sysKenSha1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.vexe"
+                ],
+                "outputs": [
+                  "sysKenSha1.v-vcd.out",
+                  "sysKenSha1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysKenSha1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysKenSha1"
+              ],
+              "top": "sysKenSha1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.ba"
+                ],
+                "outputs": [
+                  "sysKenSha1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysKenSha1.cexe",
+                    "sysKenSha1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysKenSha1",
+              "args": [],
+              "stdout": "sysKenSha1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.cexe"
+                ],
+                "outputs": [
+                  "sysKenSha1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysKenSha1.c.out",
+              "expected": "sysKenSha1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.c.out",
+                  "sysKenSha1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysKenSha1",
+              "args": [],
+              "stdout": "sysKenSha1.c-vcd.out",
+              "vcd": "sysKenSha1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.cexe"
+                ],
+                "outputs": [
+                  "sysKenSha1.c-vcd.out",
+                  "sysKenSha1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysKenSha1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysKenSha1.c-vcd.out",
+              "expected": "sysKenSha1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysKenSha1.c-vcd.out",
+                  "sysKenSha1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 23,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

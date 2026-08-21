@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID133/bugID133",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID133/bugID133.exp",
+    "sha256": "e22250476a4d18242a37464526f4991084dcfecebe6ae6d0ad5b78b99f40863e"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID133",
+  "fixtures": [
+    {
+      "path": "Ambg.bs",
+      "sha256": "49fb0b9acdb82908497dcf37741582d1cf727da8722dfecf7cd7c645be67abc5",
+      "role": "source"
+    },
+    {
+      "path": "Ambg.bs.bsc-out.expected",
+      "sha256": "53c1785eed08a42a3430a8340f751bb829f973b48ff329957cce1ea89cfe8a6d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Ambg",
+      "resource": "normal",
+      "fixtures": [
+        "Ambg.bs",
+        "Ambg.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Ambg",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Ambg.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Ambg.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Ambg.bs"
+                ],
+                "outputs": [
+                  "Ambg.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Ambg.bs.bsc-out",
+              "expected": "Ambg.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Ambg.bs.bsc-out",
+                  "Ambg.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

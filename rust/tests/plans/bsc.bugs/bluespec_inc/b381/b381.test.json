@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b381/b381",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b381/b381.exp",
+    "sha256": "c925175c55b0b119e296b2f8b0c962f0788700fc9bfcb912deaedf52d46c885a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b381",
+  "fixtures": [
+    {
+      "path": "Converter.bs",
+      "sha256": "1323ebd9e53a03230b8934c3134865e59a517d54bd802d15fd62b30d691e83be",
+      "role": "source"
+    },
+    {
+      "path": "Converter2.bsv",
+      "sha256": "43eca769db9b3126f6943623cf439b0b9d663487d4a0545f1ece46cb7f4a33e7",
+      "role": "source"
+    },
+    {
+      "path": "YY.bsv",
+      "sha256": "b3d2ccfb4e8106cd1307e91b11db7adea1f2064699dd966ae9ef1dc117155f76",
+      "role": "source"
+    },
+    {
+      "path": "YY.bsv.bsc-vcomp-out.expected",
+      "sha256": "08b2da0cabe525bfb1731c9570caa9c5ca3ad29c8b3db54a711b17c71b5da565",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Converter",
+      "resource": "normal",
+      "fixtures": [
+        "Converter.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Converter",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Converter.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Converter.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Converter.bs"
+                ],
+                "outputs": [
+                  "Converter.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug bsc#282"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 128,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-YY",
+      "resource": "normal",
+      "fixtures": [
+        "Converter.bs",
+        "YY.bsv",
+        "YY.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-YY",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "YY.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "YY.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "YY.bsv"
+                ],
+                "outputs": [
+                  "YY.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 236,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "YY.bsv.bsc-vcomp-out",
+              "expected": "YY.bsv.bsc-vcomp-out.expected",
+              "normalizations": [
+                "compiler_banner_lines"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "YY.bsv.bsc-vcomp-out",
+                  "YY.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 299,
+                  "endByte": 370,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Converter2",
+      "resource": "normal",
+      "fixtures": [
+        "Converter2.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Converter2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Converter2.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Converter2.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Converter2.bsv"
+                ],
+                "outputs": [
+                  "Converter2.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 463,
+                  "endByte": 502,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Converter2.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0118",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Converter2.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 463,
+                  "endByte": 502,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 40
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

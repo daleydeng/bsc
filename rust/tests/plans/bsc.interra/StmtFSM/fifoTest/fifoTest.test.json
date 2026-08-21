@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/fifoTest/fifoTest",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/fifoTest/fifoTest.exp",
+    "sha256": "553b9d5dcac7870777768b9a785ac529a2535995f9b933f3733b69eb612788fc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/fifoTest",
+  "fixtures": [
+    {
+      "path": "fifoTest.bsv",
+      "sha256": "bab9e28da2465f787873af0422f7b7b9714fcfeaec0e44bf7160baebf43bbe91",
+      "role": "source"
+    },
+    {
+      "path": "fifoTest.out.expected",
+      "sha256": "729d28522400c2b7aec5f2db7bc7f50299884313bce9daaa79992367567fb326",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-fifoTest",
+      "resource": "heavy",
+      "fixtures": [
+        "fifoTest.bsv",
+        "fifoTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "fifoTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "fifoTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "fifoTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.bsv"
+                ],
+                "outputs": [
+                  "fifoTest.ba",
+                  "fifoTest.bo",
+                  "fifoTest.bsv.bsc-vcomp-out",
+                  "fifoTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "fifoTest"
+              ],
+              "top": "fifoTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.v"
+                ],
+                "outputs": [
+                  "fifoTest.bsc-vcomp-out",
+                  "fifoTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "fifoTest",
+              "args": [],
+              "stdout": "fifoTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.vexe"
+                ],
+                "outputs": [
+                  "fifoTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "fifoTest.v.out",
+              "expected": "fifoTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.v.out",
+                  "fifoTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "fifoTest",
+              "args": [],
+              "stdout": "fifoTest.v-vcd.out",
+              "vcd": "fifoTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.vexe"
+                ],
+                "outputs": [
+                  "fifoTest.v-vcd.out",
+                  "fifoTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "fifoTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "fifoTest"
+              ],
+              "top": "fifoTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.ba"
+                ],
+                "outputs": [
+                  "fifoTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "fifoTest.cexe",
+                    "fifoTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "fifoTest",
+              "args": [],
+              "stdout": "fifoTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.cexe"
+                ],
+                "outputs": [
+                  "fifoTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "fifoTest.c.out",
+              "expected": "fifoTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.c.out",
+                  "fifoTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "fifoTest",
+              "args": [],
+              "stdout": "fifoTest.c-vcd.out",
+              "vcd": "fifoTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.cexe"
+                ],
+                "outputs": [
+                  "fifoTest.c-vcd.out",
+                  "fifoTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "fifoTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "fifoTest.c-vcd.out",
+              "expected": "fifoTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "fifoTest.c-vcd.out",
+                  "fifoTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

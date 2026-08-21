@@ -1,0 +1,618 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/disjoint/disjoint",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/disjoint/disjoint.exp",
+    "sha256": "bdc3e56140ac8568f630ca80d2f5b2940ac517803fb839701ac40fcbde785b0f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/disjoint",
+  "fixtures": [
+    {
+      "path": "GCD_t1.bs",
+      "sha256": "d0424141df0a93460c74b5fec1e974141dafc12480f36a4ff56dd7a3d0d4142a",
+      "role": "source"
+    },
+    {
+      "path": "GCD_t1.bs.bsc-sched-out.expected",
+      "sha256": "99a85b843ead6ccb68bea057823a0a034f8bd5ce560de2f2b59c2a5a0312fd91",
+      "role": "golden"
+    },
+    {
+      "path": "ResourceOneRuleME.bs",
+      "sha256": "b5afacd5252cc27f4962255c9f623fc0ece85a23da50bd68b42140aa3495d15e",
+      "role": "source"
+    },
+    {
+      "path": "ResourceOneRuleMEbug.bs",
+      "sha256": "8e38d1c151c26f1b2187e741f429aa7d82f24529fdff7ecda791c9d33ab8c2ad",
+      "role": "source"
+    },
+    {
+      "path": "ResourceOneRuleb31Fixed.bs",
+      "sha256": "174d28231ded378455127ccb74779222bcf6c1dfb64321a4604eda3e7b9595d1",
+      "role": "source"
+    },
+    {
+      "path": "SharedPortsFIFO.bsv",
+      "sha256": "a3bbf34ab85d1feffb07e908e40bae9691359cfcd8d78d02f6310355361f01d9",
+      "role": "source"
+    },
+    {
+      "path": "SharedPortsFIFO.bsv.bsc-sched-out.expected",
+      "sha256": "39b56d08583afb1e60e134c23f2a539e417034b165bf4e025cc9c28c0616d7a0",
+      "role": "golden"
+    },
+    {
+      "path": "SharedPortsInArg.bsv",
+      "sha256": "b5bb6193ea21ff951bb0d954ba5e9c0a88f0ce5f94a7c77d971fe03401fcd568",
+      "role": "source"
+    },
+    {
+      "path": "SharedPortsRegFile.bsv",
+      "sha256": "f38c7a9f877fb0ea66324b39ecb591ada5427b0f3ca14dca7d83c388b972a90c",
+      "role": "source"
+    },
+    {
+      "path": "SharedPortsRegFile.bsv.bsc-sched-out.expected",
+      "sha256": "ef65db88c943288e2635db5b913b9b61892f8458a081c4547bae2f56876ca02e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ResourceOneRuleME",
+      "resource": "normal",
+      "fixtures": [
+        "ResourceOneRuleME.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ResourceOneRuleME",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ResourceOneRuleME.bs",
+              "mode": "verilog",
+              "module": "sysResourceOneRuleME",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ResourceOneRuleME.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ResourceOneRuleME.bs"
+                ],
+                "outputs": [
+                  "ResourceOneRuleME.bo",
+                  "ResourceOneRuleME.bs.bsc-vcomp-out",
+                  "sysResourceOneRuleME.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 168,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ResourceOneRuleb31Fixed",
+      "resource": "normal",
+      "fixtures": [
+        "ResourceOneRuleb31Fixed.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ResourceOneRuleb31Fixed",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ResourceOneRuleb31Fixed.bs",
+              "mode": "verilog",
+              "module": "sysResourceOneRuleMEb31",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ResourceOneRuleb31Fixed.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ResourceOneRuleb31Fixed.bs"
+                ],
+                "outputs": [
+                  "ResourceOneRuleb31Fixed.bo",
+                  "ResourceOneRuleb31Fixed.bs.bsc-vcomp-out",
+                  "sysResourceOneRuleMEb31.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 169,
+                  "endByte": 240,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-GCD_t1",
+      "resource": "normal",
+      "fixtures": [
+        "GCD_t1.bs",
+        "GCD_t1.bs.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-GCD_t1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "GCD_t1.bs",
+              "mode": "verilog_schedule",
+              "module": "sysGCD",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "GCD_t1.bs.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "GCD_t1.bs"
+                ],
+                "outputs": [
+                  "GCD_t1.bo",
+                  "GCD_t1.bs.bsc-sched-out",
+                  "sysGCD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 262,
+                  "endByte": 308,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "GCD_t1.bs.bsc-sched-out",
+              "expected": "GCD_t1.bs.bsc-sched-out.expected",
+              "normalizations": [
+                "generated_ids"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "GCD_t1.bs.bsc-sched-out",
+                  "GCD_t1.bs.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 309,
+                  "endByte": 356,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-ResourceOneRuleMEbug",
+      "resource": "normal",
+      "fixtures": [
+        "ResourceOneRuleMEbug.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ResourceOneRuleMEbug",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ResourceOneRuleMEbug.bs",
+              "mode": "verilog",
+              "module": "sysResourceOneRuleMEbug",
+              "args": [
+                "-print-flags"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ResourceOneRuleMEbug.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ResourceOneRuleMEbug.bs"
+                ],
+                "outputs": [
+                  "ResourceOneRuleMEbug.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 628,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 98
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ResourceOneRuleMEbug.bs.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0004",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ResourceOneRuleMEbug.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 531,
+                  "endByte": 628,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 98
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-SharedPortsFIFO",
+      "resource": "normal",
+      "fixtures": [
+        "SharedPortsFIFO.bsv",
+        "SharedPortsFIFO.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SharedPortsFIFO",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SharedPortsFIFO.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SharedPortsFIFO.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsFIFO.bsv"
+                ],
+                "outputs": [
+                  "SharedPortsFIFO.bo",
+                  "SharedPortsFIFO.bsv.bsc-sched-out",
+                  "sysSharedPortsFIFO.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1310,
+                  "endByte": 1359,
+                  "startLine": 40,
+                  "startColumn": 5,
+                  "endLine": 40,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "SharedPortsFIFO.bsv.bsc-sched-out",
+              "expected": "SharedPortsFIFO.bsv.bsc-sched-out.expected",
+              "normalizations": [
+                "generated_ids"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsFIFO.bsv.bsc-sched-out",
+                  "SharedPortsFIFO.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1364,
+                  "endByte": 1421,
+                  "startLine": 41,
+                  "startColumn": 5,
+                  "endLine": 41,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-SharedPortsRegFile",
+      "resource": "normal",
+      "fixtures": [
+        "SharedPortsRegFile.bsv",
+        "SharedPortsRegFile.bsv.bsc-sched-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SharedPortsRegFile",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SharedPortsRegFile.bsv",
+              "mode": "verilog_schedule",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SharedPortsRegFile.bsv.bsc-sched-out",
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsRegFile.bsv"
+                ],
+                "outputs": [
+                  "SharedPortsRegFile.bo",
+                  "SharedPortsRegFile.bsv.bsc-sched-out",
+                  "sysSharedPortsRegFile.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1718,
+                  "endByte": 1770,
+                  "startLine": 49,
+                  "startColumn": 5,
+                  "endLine": 49,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "SharedPortsRegFile.bsv.bsc-sched-out",
+              "expected": "SharedPortsRegFile.bsv.bsc-sched-out.expected",
+              "normalizations": [
+                "generated_ids"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsRegFile.bsv.bsc-sched-out",
+                  "SharedPortsRegFile.bsv.bsc-sched-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1775,
+                  "endByte": 1835,
+                  "startLine": 50,
+                  "startColumn": 5,
+                  "endLine": 50,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-SharedPortsInArg",
+      "resource": "normal",
+      "fixtures": [
+        "SharedPortsInArg.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SharedPortsInArg",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SharedPortsInArg.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SharedPortsInArg.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsInArg.bsv"
+                ],
+                "outputs": [
+                  "SharedPortsInArg.bo",
+                  "SharedPortsInArg.bsv.bsc-vcomp-out",
+                  "module_id.v",
+                  "sysSharedPortsInArg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2277,
+                  "endByte": 2339,
+                  "startLine": 62,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SharedPortsInArg.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsInArg.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2277,
+                  "endByte": 2339,
+                  "startLine": 62,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SharedPortsInArg.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "SharedPortsInArg.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2277,
+                  "endByte": 2339,
+                  "startLine": 62,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -648,6 +648,13 @@ bool check_version(tBluesimVersionInfo* version)
 /* Initialize the Bluesim kernel */
 tSimStateHdl bk_init(tModel model, tBool master)
 {
+#ifdef _WIN32
+  // The Windows CRT does not provide POSIX-style line buffering reliably for
+  // plugin models. Keep Bluesim displays and foreign diagnostics in event order.
+  setvbuf(stdout, NULL, _IONBF, 0);
+  setvbuf(stderr, NULL, _IONBF, 0);
+#endif
+
   tSimStateHdl simHdl = new tSimState;
 
   simHdl->model = (Model*)model;

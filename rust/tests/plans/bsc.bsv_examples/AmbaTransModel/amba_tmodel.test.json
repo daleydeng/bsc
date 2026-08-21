@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/AmbaTransModel/amba_tmodel",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/AmbaTransModel/amba_tmodel.exp",
+    "sha256": "48cd81908f7d18e81233b11d1f1f5ba66a820d36578791bfacce91685d1598fc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/AmbaTransModel",
+  "fixtures": [
+    {
+      "path": "Buses.bsv",
+      "sha256": "694a5a691facc9911bfe76091d31dcc6b07d26628ec637bd5071a8d5d524cae3",
+      "role": "source"
+    },
+    {
+      "path": "Interfaces.bsv",
+      "sha256": "8e0bad2456c492ca0e1d0d65cc14589429e2f1389db97b5eee421748305cbfe2",
+      "role": "source"
+    },
+    {
+      "path": "Masters.bsv",
+      "sha256": "cce5d69fc9102cd7e2d276c5528b5ed50bf751d624fd1eaa3e7aa8e3dea4c7a0",
+      "role": "source"
+    },
+    {
+      "path": "Slaves.bsv",
+      "sha256": "6b2bbe03d60040927cd2431926bba4bca96eb720b453f8e028dcf62160b8d469",
+      "role": "source"
+    },
+    {
+      "path": "TB1m2s.bsv",
+      "sha256": "42fa71c5d70bd5c12cb0d595241d6c6910c2afc6ac58425921bae278765cdc1b",
+      "role": "source"
+    },
+    {
+      "path": "sysTB1m2s.out.expected",
+      "sha256": "ce9bbd1bf22bdfebaf6dd4000c144fcc53663ee4802b018c3f1fe70ada857082",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTB1m2s",
+      "resource": "heavy",
+      "fixtures": [
+        "Buses.bsv",
+        "Interfaces.bsv",
+        "Masters.bsv",
+        "Slaves.bsv",
+        "TB1m2s.bsv",
+        "sysTB1m2s.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTB1m2s",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TB1m2s.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTB1m2s",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TB1m2s.bsv"
+                ],
+                "outputs": [
+                  "TB1m2s.bo",
+                  "TB1m2s.bsv.bsc-vcomp-out",
+                  "bus_1m_1s.ba",
+                  "bus_1m_1s.v",
+                  "bus_1m_2s.ba",
+                  "bus_1m_2s.v",
+                  "bus_2m_2s.ba",
+                  "bus_2m_2s.v",
+                  "defaultSlave.ba",
+                  "defaultSlave.v",
+                  "mkMaster.ba",
+                  "mkMaster.v",
+                  "mkMaster_500_1.ba",
+                  "mkMaster_500_1.v",
+                  "mkMaster_500_6.ba",
+                  "mkMaster_500_6.v",
+                  "mkSlave1.ba",
+                  "mkSlave1.v",
+                  "mkSlave2.ba",
+                  "mkSlave2.v",
+                  "mkSlaveN.ba",
+                  "mkSlaveN.v",
+                  "sysTB1m2s.ba",
+                  "sysTB1m2s.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTB1m2s",
+                "defaultSlave",
+                "mkSlave1",
+                "mkSlave2",
+                "bus_1m_2s",
+                "mkMaster"
+              ],
+              "top": "sysTB1m2s",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.v",
+                  "defaultSlave.v",
+                  "mkSlave1.v",
+                  "mkSlave2.v",
+                  "bus_1m_2s.v",
+                  "mkMaster.v"
+                ],
+                "outputs": [
+                  "sysTB1m2s.bsc-vcomp-out",
+                  "sysTB1m2s.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTB1m2s",
+              "args": [],
+              "stdout": "sysTB1m2s.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.vexe"
+                ],
+                "outputs": [
+                  "sysTB1m2s.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTB1m2s.v.out",
+              "expected": "sysTB1m2s.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.v.out",
+                  "sysTB1m2s.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTB1m2s",
+              "args": [],
+              "stdout": "sysTB1m2s.v-vcd.out",
+              "vcd": "sysTB1m2s.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.vexe"
+                ],
+                "outputs": [
+                  "sysTB1m2s.v-vcd.out",
+                  "sysTB1m2s.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTB1m2s.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTB1m2s",
+                "defaultSlave",
+                "mkSlave1",
+                "mkSlave2",
+                "bus_1m_2s",
+                "mkMaster"
+              ],
+              "top": "sysTB1m2s",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.ba",
+                  "defaultSlave.ba",
+                  "mkSlave1.ba",
+                  "mkSlave2.ba",
+                  "bus_1m_2s.ba",
+                  "mkMaster.ba"
+                ],
+                "outputs": [
+                  "sysTB1m2s.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTB1m2s.cexe",
+                    "sysTB1m2s.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTB1m2s",
+              "args": [],
+              "stdout": "sysTB1m2s.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.cexe"
+                ],
+                "outputs": [
+                  "sysTB1m2s.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTB1m2s.c.out",
+              "expected": "sysTB1m2s.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.c.out",
+                  "sysTB1m2s.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTB1m2s",
+              "args": [],
+              "stdout": "sysTB1m2s.c-vcd.out",
+              "vcd": "sysTB1m2s.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.cexe"
+                ],
+                "outputs": [
+                  "sysTB1m2s.c-vcd.out",
+                  "sysTB1m2s.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTB1m2s.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTB1m2s.c-vcd.out",
+              "expected": "sysTB1m2s.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTB1m2s.c-vcd.out",
+                  "sysTB1m2s.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 83,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 83
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

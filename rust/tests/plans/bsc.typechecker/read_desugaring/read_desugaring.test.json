@@ -1,0 +1,1367 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/read_desugaring/read_desugaring",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/read_desugaring/read_desugaring.exp",
+    "sha256": "777d99ce36523c031f24f10e1887cc8c59ec0ea88a2ffa051378b72bc2516557"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/read_desugaring",
+  "fixtures": [
+    {
+      "path": "ListDesugar.bsv",
+      "sha256": "53ac58e25d586bc8d807b096332d50e5b67fffb5e1db5e7a88e0b471e71781af",
+      "role": "source"
+    },
+    {
+      "path": "ListDesugarFail.bsv",
+      "sha256": "7fc306da318c6fb090aaea0a402fe53f1785cf8e5121a5390576823248446d9e",
+      "role": "source"
+    },
+    {
+      "path": "ListDesugarFail2.bsv",
+      "sha256": "4749dec63123fd90b59d00cc11ecb5ba4314e62e978360115605989a4aca85de",
+      "role": "source"
+    },
+    {
+      "path": "StructReg.bsv",
+      "sha256": "35c1b578f25d7c609145f6daa6591a5eab05c60e71bb6655fcac5191ffb82466",
+      "role": "source"
+    },
+    {
+      "path": "StructRegFail.bsv",
+      "sha256": "cdd69c3d3dac83a62bf3706ef3eb5e57dd6ca42ff75e6f820b192a46d5c32921",
+      "role": "source"
+    },
+    {
+      "path": "TwoDUpdateTest.bsv",
+      "sha256": "1a0dfa7140f5e5b12754fc23185ea60d39384265c0ee284cb1f7e77b8c42ad2a",
+      "role": "source"
+    },
+    {
+      "path": "sysListDesugar.out.expected",
+      "sha256": "8c8e36849b018ff4820e22151c12911984e2983eaaf4aa2c15567fd337ed1819",
+      "role": "golden"
+    },
+    {
+      "path": "sysStructReg.out.expected",
+      "sha256": "b777b86e005807a446ead00986fcbf3bdd6c022524deabf017eeb3f0c30b6eed",
+      "role": "golden"
+    },
+    {
+      "path": "sysTwoDUpdateTest.out.expected",
+      "sha256": "243e829f31699f9fe9a2e5feea35c2204fc318a8d85d3af7d760b12380983ae6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ListDesugarFail",
+      "resource": "normal",
+      "fixtures": [
+        "ListDesugarFail.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ListDesugarFail",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ListDesugarFail.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ListDesugarFail.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ListDesugarFail.bsv"
+                ],
+                "outputs": [
+                  "ListDesugarFail.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 44,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ListDesugarFail.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0060",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ListDesugarFail.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 44,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ListDesugarFail2",
+      "resource": "normal",
+      "fixtures": [
+        "ListDesugarFail2.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ListDesugarFail2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ListDesugarFail2.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ListDesugarFail2.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ListDesugarFail2.bsv"
+                ],
+                "outputs": [
+                  "ListDesugarFail2.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 90,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ListDesugarFail2.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0020",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ListDesugarFail2.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 45,
+                  "endByte": 90,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-StructRegFail",
+      "resource": "normal",
+      "fixtures": [
+        "StructRegFail.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StructRegFail",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StructRegFail.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "StructRegFail.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "StructRegFail.bsv"
+                ],
+                "outputs": [
+                  "StructRegFail.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 92,
+                  "endByte": 134,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "StructRegFail.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0020",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "StructRegFail.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 92,
+                  "endByte": 134,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysListDesugar",
+      "resource": "heavy",
+      "fixtures": [
+        "ListDesugar.bsv",
+        "sysListDesugar.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysListDesugar",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ListDesugar.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysListDesugar",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ListDesugar.bsv"
+                ],
+                "outputs": [
+                  "ListDesugar.bo",
+                  "ListDesugar.bsv.bsc-vcomp-out",
+                  "sysListDesugar.ba",
+                  "sysListDesugar.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysListDesugar"
+              ],
+              "top": "sysListDesugar",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.v"
+                ],
+                "outputs": [
+                  "sysListDesugar.bsc-vcomp-out",
+                  "sysListDesugar.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysListDesugar",
+              "args": [],
+              "stdout": "sysListDesugar.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.vexe"
+                ],
+                "outputs": [
+                  "sysListDesugar.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysListDesugar.v.out",
+              "expected": "sysListDesugar.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.v.out",
+                  "sysListDesugar.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysListDesugar",
+              "args": [],
+              "stdout": "sysListDesugar.v-vcd.out",
+              "vcd": "sysListDesugar.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.vexe"
+                ],
+                "outputs": [
+                  "sysListDesugar.v-vcd.out",
+                  "sysListDesugar.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysListDesugar.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysListDesugar"
+              ],
+              "top": "sysListDesugar",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.ba"
+                ],
+                "outputs": [
+                  "sysListDesugar.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysListDesugar.cexe",
+                    "sysListDesugar.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysListDesugar",
+              "args": [],
+              "stdout": "sysListDesugar.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.cexe"
+                ],
+                "outputs": [
+                  "sysListDesugar.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysListDesugar.c.out",
+              "expected": "sysListDesugar.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.c.out",
+                  "sysListDesugar.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysListDesugar",
+              "args": [],
+              "stdout": "sysListDesugar.c-vcd.out",
+              "vcd": "sysListDesugar.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.cexe"
+                ],
+                "outputs": [
+                  "sysListDesugar.c-vcd.out",
+                  "sysListDesugar.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysListDesugar.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysListDesugar.c-vcd.out",
+              "expected": "sysListDesugar.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysListDesugar.c-vcd.out",
+                  "sysListDesugar.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 136,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStructReg",
+      "resource": "heavy",
+      "fixtures": [
+        "StructReg.bsv",
+        "sysStructReg.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStructReg",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StructReg.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStructReg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StructReg.bsv"
+                ],
+                "outputs": [
+                  "StructReg.bo",
+                  "StructReg.bsv.bsc-vcomp-out",
+                  "sysStructReg.ba",
+                  "sysStructReg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStructReg"
+              ],
+              "top": "sysStructReg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.v"
+                ],
+                "outputs": [
+                  "sysStructReg.bsc-vcomp-out",
+                  "sysStructReg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStructReg",
+              "args": [],
+              "stdout": "sysStructReg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.vexe"
+                ],
+                "outputs": [
+                  "sysStructReg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStructReg.v.out",
+              "expected": "sysStructReg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.v.out",
+                  "sysStructReg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStructReg",
+              "args": [],
+              "stdout": "sysStructReg.v-vcd.out",
+              "vcd": "sysStructReg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.vexe"
+                ],
+                "outputs": [
+                  "sysStructReg.v-vcd.out",
+                  "sysStructReg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStructReg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStructReg"
+              ],
+              "top": "sysStructReg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.ba"
+                ],
+                "outputs": [
+                  "sysStructReg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStructReg.cexe",
+                    "sysStructReg.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStructReg",
+              "args": [],
+              "stdout": "sysStructReg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.cexe"
+                ],
+                "outputs": [
+                  "sysStructReg.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStructReg.c.out",
+              "expected": "sysStructReg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.c.out",
+                  "sysStructReg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStructReg",
+              "args": [],
+              "stdout": "sysStructReg.c-vcd.out",
+              "vcd": "sysStructReg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.cexe"
+                ],
+                "outputs": [
+                  "sysStructReg.c-vcd.out",
+                  "sysStructReg.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStructReg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStructReg.c-vcd.out",
+              "expected": "sysStructReg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStructReg.c-vcd.out",
+                  "sysStructReg.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 189,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTwoDUpdateTest",
+      "resource": "heavy",
+      "fixtures": [
+        "TwoDUpdateTest.bsv",
+        "sysTwoDUpdateTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTwoDUpdateTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TwoDUpdateTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTwoDUpdateTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TwoDUpdateTest.bsv"
+                ],
+                "outputs": [
+                  "TwoDUpdateTest.bo",
+                  "TwoDUpdateTest.bsv.bsc-vcomp-out",
+                  "sysTwoDUpdateTest.ba",
+                  "sysTwoDUpdateTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTwoDUpdateTest"
+              ],
+              "top": "sysTwoDUpdateTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.v"
+                ],
+                "outputs": [
+                  "sysTwoDUpdateTest.bsc-vcomp-out",
+                  "sysTwoDUpdateTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTwoDUpdateTest",
+              "args": [],
+              "stdout": "sysTwoDUpdateTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.vexe"
+                ],
+                "outputs": [
+                  "sysTwoDUpdateTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoDUpdateTest.v.out",
+              "expected": "sysTwoDUpdateTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.v.out",
+                  "sysTwoDUpdateTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTwoDUpdateTest",
+              "args": [],
+              "stdout": "sysTwoDUpdateTest.v-vcd.out",
+              "vcd": "sysTwoDUpdateTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.vexe"
+                ],
+                "outputs": [
+                  "sysTwoDUpdateTest.v-vcd.out",
+                  "sysTwoDUpdateTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTwoDUpdateTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTwoDUpdateTest"
+              ],
+              "top": "sysTwoDUpdateTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.ba"
+                ],
+                "outputs": [
+                  "sysTwoDUpdateTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTwoDUpdateTest.cexe",
+                    "sysTwoDUpdateTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTwoDUpdateTest",
+              "args": [],
+              "stdout": "sysTwoDUpdateTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.cexe"
+                ],
+                "outputs": [
+                  "sysTwoDUpdateTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoDUpdateTest.c.out",
+              "expected": "sysTwoDUpdateTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.c.out",
+                  "sysTwoDUpdateTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTwoDUpdateTest",
+              "args": [],
+              "stdout": "sysTwoDUpdateTest.c-vcd.out",
+              "vcd": "sysTwoDUpdateTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.cexe"
+                ],
+                "outputs": [
+                  "sysTwoDUpdateTest.c-vcd.out",
+                  "sysTwoDUpdateTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTwoDUpdateTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTwoDUpdateTest.c-vcd.out",
+              "expected": "sysTwoDUpdateTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTwoDUpdateTest.c-vcd.out",
+                  "sysTwoDUpdateTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 220,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

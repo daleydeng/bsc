@@ -1,0 +1,735 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.driver/no_filenames/no_filenames",
+  "origin": {
+    "path": "testsuite/bsc.driver/no_filenames/no_filenames.exp",
+    "sha256": "b14241c6ff405c9a659ec986c17b98387ef61ed8d841d7eaea126dde9a7008a6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.driver/no_filenames",
+  "fixtures": [
+    {
+      "path": "Mid1.bsv",
+      "sha256": "13b1b9cb3bb338c3826074547cf69697e242f237aec5aed2a13934e26b108b1f",
+      "role": "source"
+    },
+    {
+      "path": "Mid2.bsv",
+      "sha256": "e63c76a3d1c4158568163987fd8bbfcc78b5df7e656375d04513b884e9f70d07",
+      "role": "source"
+    },
+    {
+      "path": "Sub1.bsv",
+      "sha256": "3aa848ce3cde9c467b2a049213e36edb43de1a0eacf182d23eeca4786027d84f",
+      "role": "source"
+    },
+    {
+      "path": "Sub2.bsv",
+      "sha256": "4023724854bcb2827e2c0da2bfe60b6cb2cbee0157cac2a92f6bb03147f1dbe1",
+      "role": "source"
+    },
+    {
+      "path": "Sub3.bsv",
+      "sha256": "99cdb9438e0aa3119ee12171fc6ec9605075ed08329662a01f3cabe5bc78f32e",
+      "role": "source"
+    },
+    {
+      "path": "Top.bsv",
+      "sha256": "a9474eb1039d96ed7bec40f79490d918245dcf9b0432ef79212e2ce46051a749",
+      "role": "source"
+    },
+    {
+      "path": "bsim_build.out.expected",
+      "sha256": "af680b56b1c765b12e7849ec2e9104e9f2425eb212d03795e826e3528a67c464",
+      "role": "golden"
+    },
+    {
+      "path": "bsim_sim.out.expected",
+      "sha256": "7adf246894a7099bed25bed8321171b2a21e810d2d1b5b0878e43cdb35060594",
+      "role": "golden"
+    },
+    {
+      "path": "vlib/Banner.v",
+      "sha256": "08d5bcbe6c8bb70fba33e9bad6a7ac55383384e5ad7689225deee7b418a0a67f",
+      "role": "source"
+    },
+    {
+      "path": "vlog_build.out.expected",
+      "sha256": "9159658a0dcc1696430a413dc3d50e6a332ed2deeded4a35cf98ff278638e0f8",
+      "role": "golden"
+    },
+    {
+      "path": "vlog_sim.out.expected",
+      "sha256": "e5cd82c499b2e3ca57130c32f18c0cf93bb1e83f1261e98df9b349a634935fbd",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Top",
+      "resource": "heavy",
+      "fixtures": [
+        "Mid1.bsv",
+        "Mid2.bsv",
+        "Sub1.bsv",
+        "Sub2.bsv",
+        "Sub3.bsv",
+        "Top.bsv",
+        "vlib/Banner.v",
+        "vlog_build.out.expected",
+        "vlog_sim.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Top",
+          "operations": [
+            {
+              "op": "fs.ensure_dir_absent",
+              "path": "bd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "bd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 525,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 11
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_dir_absent",
+              "path": "vd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "vd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 526,
+                  "endByte": 536,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 11
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "bd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "bd"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 537,
+                  "endByte": 545,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 9
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "vd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "vd"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 546,
+                  "endByte": 554,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 9
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Top.bsv",
+              "mode": "verilog",
+              "args": [
+                "-vdir",
+                "vd"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Top.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bo",
+                  "Top.bsv.bsc-vcomp-out",
+                  "vd/mkMid1.v",
+                  "vd/mkMid2.v",
+                  "vd/mkSub1.v",
+                  "vd/mkSub2.v",
+                  "vd/mkSub3.v",
+                  "vd/mkTop.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 644,
+                  "endByte": 686,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [],
+              "top": "mkTop",
+              "args": [
+                "-vsearch",
+                "+:vlib",
+                "-vdir",
+                "vd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "vlib/Banner.v"
+                ],
+                "outputs": [
+                  "mkTop.bsc-vcomp-out",
+                  "mkTop.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 687,
+                  "endByte": 740,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.bsc-vcomp-out",
+              "destination": "vlog_build.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "vlog_build.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.bsc-vcomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 741,
+                  "endByte": 780,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "vlog_build.out",
+              "expected": "vlog_build.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "vlog_build.out",
+                  "vlog_build.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 781,
+                  "endByte": 808,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.vexe"
+                ],
+                "outputs": [
+                  "mkTop.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 809,
+                  "endByte": 829,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.out",
+              "destination": "vlog_sim.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.out"
+                ],
+                "outputs": [
+                  "vlog_sim.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 830,
+                  "endByte": 857,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "vlog_sim.out",
+              "expected": "vlog_sim.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "vlog_sim.out",
+                  "vlog_sim.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 858,
+                  "endByte": 883,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkTop",
+      "resource": "heavy",
+      "fixtures": [
+        "Mid1.bsv",
+        "Mid2.bsv",
+        "Sub1.bsv",
+        "Sub2.bsv",
+        "Sub3.bsv",
+        "Top.bsv",
+        "bsim_build.out.expected",
+        "bsim_sim.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTop",
+          "operations": [
+            {
+              "op": "fs.ensure_dir_absent",
+              "path": "bd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "bd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 74,
+                  "endByte": 84,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 11
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_dir_absent",
+              "path": "sd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 95,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 11
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "bd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "bd"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 96,
+                  "endByte": 104,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 9
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "sd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "sd"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 113,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 9
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Top.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-bdir",
+                "bd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bsv.bsc-ccomp-out",
+                  "bd/Top.bo",
+                  "bd/mkMid1.ba",
+                  "bd/mkMid2.ba",
+                  "bd/mkSub1.ba",
+                  "bd/mkSub2.ba",
+                  "bd/mkSub3.ba",
+                  "bd/mkTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 204,
+                  "endByte": 245,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTop",
+              "args": [
+                "-bdir",
+                "bd",
+                "-simdir",
+                "sd"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 246,
+                  "endByte": 294,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.bsc-ccomp-out",
+              "destination": "bsim_build.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputs": [
+                  "bsim_build.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.bsc-ccomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 295,
+                  "endByte": 334,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "bsim_build.out",
+              "expected": "bsim_build.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "bsim_build.out",
+                  "bsim_build.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 335,
+                  "endByte": 362,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cexe"
+                ],
+                "outputs": [
+                  "mkTop.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 363,
+                  "endByte": 382,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.out",
+              "destination": "bsim_sim.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.out"
+                ],
+                "outputs": [
+                  "bsim_sim.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 383,
+                  "endByte": 410,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "bsim_sim.out",
+              "expected": "bsim_sim.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "bsim_sim.out",
+                  "bsim_sim.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 411,
+                  "endByte": 436,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

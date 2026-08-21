@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/github/gh836/gh836",
+  "origin": {
+    "path": "testsuite/bsc.bugs/github/gh836/gh836.exp",
+    "sha256": "0d326be856f6bc81786a8940dade6e557b0b65ffb2fdded1d08ed024fd5099a3"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/github/gh836",
+  "fixtures": [
+    {
+      "path": "ZeroSizeWires.bs",
+      "sha256": "72ec80ac445eaaa0899930353ec82146ac822b3c9a2e8688bd5c29f1b47a2c5d",
+      "role": "source"
+    },
+    {
+      "path": "ZeroUndet.bs",
+      "sha256": "e77bb30d44eefb02b27b43b37ea62b22452065c5f42c43e7e6ee884edf822724",
+      "role": "source"
+    },
+    {
+      "path": "sysZeroSizeWires.out.expected",
+      "sha256": "216de916c966a1f47543ff972df5f2b9cddb193e95c07ac58561cc7fe89aa782",
+      "role": "golden"
+    },
+    {
+      "path": "sysZeroUndet.out.expected",
+      "sha256": "ee44177d0e3e9578bb41e8e62d2e140e93120511242c77c62f2afa05a9e69e48",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysZeroSizeWires",
+      "resource": "heavy",
+      "fixtures": [
+        "ZeroSizeWires.bs",
+        "sysZeroSizeWires.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysZeroSizeWires",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ZeroSizeWires.bs",
+              "mode": "shared_elaboration",
+              "module": "sysZeroSizeWires",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ZeroSizeWires.bs"
+                ],
+                "outputs": [
+                  "ZeroSizeWires.bo",
+                  "ZeroSizeWires.bs.bsc-vcomp-out",
+                  "sysZeroSizeWires.ba",
+                  "sysZeroSizeWires.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysZeroSizeWires"
+              ],
+              "top": "sysZeroSizeWires",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.v"
+                ],
+                "outputs": [
+                  "sysZeroSizeWires.bsc-vcomp-out",
+                  "sysZeroSizeWires.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysZeroSizeWires",
+              "args": [],
+              "stdout": "sysZeroSizeWires.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.vexe"
+                ],
+                "outputs": [
+                  "sysZeroSizeWires.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysZeroSizeWires.v.out",
+              "expected": "sysZeroSizeWires.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.v.out",
+                  "sysZeroSizeWires.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysZeroSizeWires",
+              "args": [],
+              "stdout": "sysZeroSizeWires.v-vcd.out",
+              "vcd": "sysZeroSizeWires.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.vexe"
+                ],
+                "outputs": [
+                  "sysZeroSizeWires.v-vcd.out",
+                  "sysZeroSizeWires.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysZeroSizeWires.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysZeroSizeWires"
+              ],
+              "top": "sysZeroSizeWires",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.ba"
+                ],
+                "outputs": [
+                  "sysZeroSizeWires.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysZeroSizeWires.cexe",
+                    "sysZeroSizeWires.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysZeroSizeWires",
+              "args": [],
+              "stdout": "sysZeroSizeWires.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.cexe"
+                ],
+                "outputs": [
+                  "sysZeroSizeWires.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysZeroSizeWires.c.out",
+              "expected": "sysZeroSizeWires.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.c.out",
+                  "sysZeroSizeWires.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysZeroSizeWires",
+              "args": [],
+              "stdout": "sysZeroSizeWires.c-vcd.out",
+              "vcd": "sysZeroSizeWires.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.cexe"
+                ],
+                "outputs": [
+                  "sysZeroSizeWires.c-vcd.out",
+                  "sysZeroSizeWires.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysZeroSizeWires.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysZeroSizeWires.c-vcd.out",
+              "expected": "sysZeroSizeWires.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroSizeWires.c-vcd.out",
+                  "sysZeroSizeWires.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 25,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysZeroUndet",
+      "resource": "heavy",
+      "fixtures": [
+        "ZeroUndet.bs",
+        "sysZeroUndet.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysZeroUndet",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ZeroUndet.bs",
+              "mode": "shared_elaboration",
+              "module": "sysZeroUndet",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ZeroUndet.bs"
+                ],
+                "outputs": [
+                  "ZeroUndet.bo",
+                  "ZeroUndet.bs.bsc-vcomp-out",
+                  "sysZeroUndet.ba",
+                  "sysZeroUndet.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysZeroUndet"
+              ],
+              "top": "sysZeroUndet",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.v"
+                ],
+                "outputs": [
+                  "sysZeroUndet.bsc-vcomp-out",
+                  "sysZeroUndet.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysZeroUndet",
+              "args": [],
+              "stdout": "sysZeroUndet.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.vexe"
+                ],
+                "outputs": [
+                  "sysZeroUndet.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysZeroUndet.v.out",
+              "expected": "sysZeroUndet.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.v.out",
+                  "sysZeroUndet.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysZeroUndet",
+              "args": [],
+              "stdout": "sysZeroUndet.v-vcd.out",
+              "vcd": "sysZeroUndet.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.vexe"
+                ],
+                "outputs": [
+                  "sysZeroUndet.v-vcd.out",
+                  "sysZeroUndet.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysZeroUndet.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysZeroUndet"
+              ],
+              "top": "sysZeroUndet",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.ba"
+                ],
+                "outputs": [
+                  "sysZeroUndet.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysZeroUndet.cexe",
+                    "sysZeroUndet.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysZeroUndet",
+              "args": [],
+              "stdout": "sysZeroUndet.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.cexe"
+                ],
+                "outputs": [
+                  "sysZeroUndet.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysZeroUndet.c.out",
+              "expected": "sysZeroUndet.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.c.out",
+                  "sysZeroUndet.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysZeroUndet",
+              "args": [],
+              "stdout": "sysZeroUndet.c-vcd.out",
+              "vcd": "sysZeroUndet.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.cexe"
+                ],
+                "outputs": [
+                  "sysZeroUndet.c-vcd.out",
+                  "sysZeroUndet.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysZeroUndet.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysZeroUndet.c-vcd.out",
+              "expected": "sysZeroUndet.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysZeroUndet.c-vcd.out",
+                  "sysZeroUndet.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 26,
+                  "endByte": 47,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 22
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

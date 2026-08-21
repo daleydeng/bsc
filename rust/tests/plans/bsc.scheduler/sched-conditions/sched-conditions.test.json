@@ -1,0 +1,730 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/sched-conditions/sched-conditions",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/sched-conditions/sched-conditions.exp",
+    "sha256": "462b5d0e52a4f2a83a6e606632b24917b15495af75417dd9448504d7c780dc06"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/sched-conditions",
+  "fixtures": [
+    {
+      "path": "SchedCondsDynamicSchedule.bsv",
+      "sha256": "7da281aa44fc1148c4760c4a4fc692c0d7b4bb73e75c0fab437dd5072103167f",
+      "role": "source"
+    },
+    {
+      "path": "SchedCondsInit.bsv",
+      "sha256": "4f4f13e08072d10414aaf2f696691aa68855ac5169e6bcc1dfc729b21c27e928",
+      "role": "source"
+    },
+    {
+      "path": "SchedCondsSimple.bsv",
+      "sha256": "d3794ebd6aea16d839176459be97b25b6cfcee91f77e8a67a6516de61f5875ad",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-SchedCondsSimple-FlagOff",
+      "resource": "normal",
+      "fixtures": [
+        "SchedCondsSimple.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SchedCondsSimple-FlagOff",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "SchedCondsSimple.bsv",
+              "destination": "SchedCondsSimple-FlagOff.bsv",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsSimple.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsSimple-FlagOff.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 387,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "SchedCondsSimple-FlagOff.bsv",
+              "mode": "verilog",
+              "args": [
+                "-no-sched-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SchedCondsSimple-FlagOff.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsSimple-FlagOff.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsSimple-FlagOff.bo",
+                  "SchedCondsSimple-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 485,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsSimple-FlagOff.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsSimple-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 485,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "SchedCondsSimple-FlagOff.bsv",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsSimple-FlagOff.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "SchedCondsSimple-FlagOff.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 486,
+                  "endByte": 520,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-SchedCondsSimple",
+      "resource": "normal",
+      "fixtures": [
+        "SchedCondsSimple.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SchedCondsSimple",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SchedCondsSimple.bsv",
+              "mode": "verilog",
+              "args": [
+                "-sched-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SchedCondsSimple.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsSimple.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsSimple.bo",
+                  "SchedCondsSimple.bsv.bsc-vcomp-out",
+                  "sysSchedCondsSimple.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 551,
+                  "endByte": 632,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsSimple.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsSimple.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 551,
+                  "endByte": 632,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-SchedCondsInit-FlagOff",
+      "resource": "normal",
+      "fixtures": [
+        "SchedCondsInit.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SchedCondsInit-FlagOff",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "SchedCondsInit.bsv",
+              "destination": "SchedCondsInit-FlagOff.bsv",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsInit.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsInit-FlagOff.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 926,
+                  "endByte": 976,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "SchedCondsInit-FlagOff.bsv",
+              "mode": "verilog",
+              "args": [
+                "-aggressive-conditions",
+                "-no-sched-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SchedCondsInit-FlagOff.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsInit-FlagOff.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsInit-FlagOff.bo",
+                  "SchedCondsInit-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 977,
+                  "endByte": 1095,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsInit-FlagOff.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsInit-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 977,
+                  "endByte": 1095,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "SchedCondsInit-FlagOff.bsv",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsInit-FlagOff.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "SchedCondsInit-FlagOff.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1096,
+                  "endByte": 1128,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-SchedCondsInit",
+      "resource": "normal",
+      "fixtures": [
+        "SchedCondsInit.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SchedCondsInit",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SchedCondsInit.bsv",
+              "mode": "verilog",
+              "args": [
+                "-aggressive-conditions",
+                "-sched-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SchedCondsInit.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsInit.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsInit.bo",
+                  "SchedCondsInit.bsv.bsc-vcomp-out",
+                  "sysSchedCondsInit.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1159,
+                  "endByte": 1261,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsInit.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsInit.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1159,
+                  "endByte": 1261,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 47
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-SchedCondsDynamicSchedule-FlagOff",
+      "resource": "normal",
+      "fixtures": [
+        "SchedCondsDynamicSchedule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SchedCondsDynamicSchedule-FlagOff",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "SchedCondsDynamicSchedule.bsv",
+              "destination": "SchedCondsDynamicSchedule-FlagOff.bsv",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsDynamicSchedule-FlagOff.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1478,
+                  "endByte": 1550,
+                  "startLine": 47,
+                  "startColumn": 1,
+                  "endLine": 47,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "SchedCondsDynamicSchedule-FlagOff.bsv",
+              "mode": "verilog",
+              "args": [
+                "-no-sched-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SchedCondsDynamicSchedule-FlagOff.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule-FlagOff.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsDynamicSchedule-FlagOff.bo",
+                  "SchedCondsDynamicSchedule-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1551,
+                  "endByte": 1657,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsDynamicSchedule-FlagOff.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1551,
+                  "endByte": 1657,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "SchedCondsDynamicSchedule-FlagOff.bsv",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule-FlagOff.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "SchedCondsDynamicSchedule-FlagOff.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1658,
+                  "endByte": 1701,
+                  "startLine": 50,
+                  "startColumn": 1,
+                  "endLine": 50,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsDynamicSchedule-FlagOff.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0100",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule-FlagOff.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1744,
+                  "endByte": 1845,
+                  "startLine": 52,
+                  "startColumn": 1,
+                  "endLine": 54,
+                  "endColumn": 12
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-SchedCondsDynamicSchedule",
+      "resource": "normal",
+      "fixtures": [
+        "SchedCondsDynamicSchedule.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SchedCondsDynamicSchedule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SchedCondsDynamicSchedule.bsv",
+              "mode": "verilog",
+              "args": [
+                "-sched-conditions"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SchedCondsDynamicSchedule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule.bsv"
+                ],
+                "outputs": [
+                  "SchedCondsDynamicSchedule.bo",
+                  "SchedCondsDynamicSchedule.bsv.bsc-vcomp-out",
+                  "mkSchedCondsDynamicSchedule_Sub.v",
+                  "sysSchedCondsDynamicSchedule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1876,
+                  "endByte": 1971,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsDynamicSchedule.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0100",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1876,
+                  "endByte": 1971,
+                  "startLine": 57,
+                  "startColumn": 1,
+                  "endLine": 58,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "SchedCondsDynamicSchedule.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "SchedCondsDynamicSchedule.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2014,
+                  "endByte": 2107,
+                  "startLine": 60,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 12
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

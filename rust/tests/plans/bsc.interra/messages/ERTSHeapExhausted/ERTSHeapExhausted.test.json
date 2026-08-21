@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/ERTSHeapExhausted/ERTSHeapExhausted",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/ERTSHeapExhausted/ERTSHeapExhausted.exp",
+    "sha256": "78c1ff85e36df453100d3f1717d3a4d1b5456db6e5f59094cc447f34d6eca623"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/ERTSHeapExhausted",
+  "fixtures": [
+    {
+      "path": "ERTSHeapExhausted1.bs",
+      "sha256": "39afbae35d1455f8feb938cb2b38c8b22b666ddaad4a0160cb6536df4cef86c0",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ERTSHeapExhausted1",
+      "resource": "normal",
+      "fixtures": [
+        "ERTSHeapExhausted1.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ERTSHeapExhausted1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ERTSHeapExhausted1.bs",
+              "mode": "verilog",
+              "module": "mkERTSHeapExhausted1",
+              "args": [
+                "+RTS",
+                "-H1M",
+                "-M1M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ERTSHeapExhausted1.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ERTSHeapExhausted1.bs"
+                ],
+                "outputs": [
+                  "ERTSHeapExhausted1.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 103,
+                  "endByte": 189,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 87
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "ERTSHeapExhausted1.bs.bsc-vcomp-out",
+              "text": "Heap exhausted",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ERTSHeapExhausted1.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 190,
+                  "endByte": 259,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

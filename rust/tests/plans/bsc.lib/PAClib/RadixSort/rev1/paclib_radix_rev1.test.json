@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/PAClib/RadixSort/rev1/paclib_radix_rev1",
+  "origin": {
+    "path": "testsuite/bsc.lib/PAClib/RadixSort/rev1/paclib_radix_rev1.exp",
+    "sha256": "257e5cda3ecad9b52dbfde8c7cb65e551d48e971f6d7e714d2b19dde4e8bfd7a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/PAClib/RadixSort/rev1",
+  "fixtures": [
+    {
+      "path": "RadixSort.bsv",
+      "sha256": "f3ecf8c5045bb98726ea6c73852aaab54ef1df2f484061e4265e82e540804a04",
+      "role": "source"
+    },
+    {
+      "path": "Tb.bsv",
+      "sha256": "9a20a2cc38e208cf484db469db2bedd925590a5a6760dbca0e7808837185a654",
+      "role": "source"
+    },
+    {
+      "path": "Types.bsv",
+      "sha256": "5e9f57bcee9ee2dea83c79c993731c8858babe9d3d3cf23861f13e7ad4f6ce04",
+      "role": "source"
+    },
+    {
+      "path": "sysTb.out.expected",
+      "sha256": "8e1e7e058177efb56695e4690e7749fd9a33011255e4b75841f3eba1a1f329c5",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTb",
+      "resource": "heavy",
+      "fixtures": [
+        "RadixSort.bsv",
+        "Tb.bsv",
+        "Types.bsv",
+        "sysTb.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTb",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Tb.bsv",
+              "mode": "bluesim",
+              "module": "sysTb",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Tb.bsv"
+                ],
+                "outputs": [
+                  "Tb.bo",
+                  "Tb.bsv.bsc-ccomp-out",
+                  "mkRadixSort.ba",
+                  "sysTb.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTb"
+              ],
+              "top": "sysTb",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTb.ba"
+                ],
+                "outputs": [
+                  "sysTb.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTb.cexe",
+                    "sysTb.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTb",
+              "args": [],
+              "stdout": "sysTb.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTb.cexe"
+                ],
+                "outputs": [
+                  "sysTb.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTb.c.out",
+              "expected": "sysTb.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTb.c.out",
+                  "sysTb.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTb",
+              "args": [],
+              "stdout": "sysTb.c-vcd.out",
+              "vcd": "sysTb.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTb.cexe"
+                ],
+                "outputs": [
+                  "sysTb.c-vcd.out",
+                  "sysTb.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTb.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTb.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTb.c-vcd.out",
+              "expected": "sysTb.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTb.c-vcd.out",
+                  "sysTb.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 19,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 19
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

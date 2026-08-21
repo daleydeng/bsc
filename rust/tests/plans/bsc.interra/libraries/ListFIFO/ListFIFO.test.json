@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/ListFIFO/ListFIFO",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/ListFIFO/ListFIFO.exp",
+    "sha256": "ca65bcf9b380cb78d9a9edf7cb6d447172428ed2ad1ddf0922d836f0c9421df5"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/ListFIFO",
+  "fixtures": [
+    {
+      "path": "MkListFifo.bsv",
+      "sha256": "1e5ba86d722e6d9dbd4c660cefa4fbb9f5ae0f6ff096f2595c5e9c2e68584b8e",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_MkListFifo.v.out.expected",
+      "sha256": "c20ea089639095c12459ad760a539df55a4f16308eff50f97207efb40a8ac047",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_MkListFifo",
+      "resource": "heavy",
+      "fixtures": [
+        "MkListFifo.bsv",
+        "mkTestbench_MkListFifo.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_MkListFifo",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkListFifo.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_MkListFifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkListFifo.bsv"
+                ],
+                "outputs": [
+                  "MkListFifo.bo",
+                  "MkListFifo.bsv.bsc-vcomp-out",
+                  "mkTestbench_MkListFifo.ba",
+                  "mkTestbench_MkListFifo.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_MkListFifo"
+              ],
+              "top": "mkTestbench_MkListFifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.v"
+                ],
+                "outputs": [
+                  "mkTestbench_MkListFifo.bsc-vcomp-out",
+                  "mkTestbench_MkListFifo.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkListFifo",
+              "args": [],
+              "stdout": "mkTestbench_MkListFifo.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkListFifo.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkListFifo.v.out",
+              "expected": "mkTestbench_MkListFifo.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.v.out",
+                  "mkTestbench_MkListFifo.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_MkListFifo",
+              "args": [],
+              "stdout": "mkTestbench_MkListFifo.v-vcd.out",
+              "vcd": "mkTestbench_MkListFifo.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkListFifo.v-vcd.out",
+                  "mkTestbench_MkListFifo.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_MkListFifo.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkListFifo"
+              ],
+              "top": "mkTestbench_MkListFifo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkListFifo.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkListFifo.cexe",
+                    "mkTestbench_MkListFifo.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkListFifo",
+              "args": [],
+              "stdout": "mkTestbench_MkListFifo.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkListFifo.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkListFifo.c.out",
+              "expected": "mkTestbench_MkListFifo.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.c.out",
+                  "mkTestbench_MkListFifo.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkListFifo",
+              "args": [],
+              "stdout": "mkTestbench_MkListFifo.c-vcd.out",
+              "vcd": "mkTestbench_MkListFifo.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkListFifo.c-vcd.out",
+                  "mkTestbench_MkListFifo.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_MkListFifo.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkListFifo.c-vcd.out",
+              "expected": "mkTestbench_MkListFifo.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkListFifo.c-vcd.out",
+                  "mkTestbench_MkListFifo.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 111,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 112
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

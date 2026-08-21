@@ -55,33 +55,43 @@ contracts-check:
 contracts-update:
     "{{pixi_rtk}}" err "{{pixi_cargo}}" xtask contracts-update
 
+# Verify all generated per-origin Test Plans, their index, and JSON Schema.
+plans-check:
+    "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask plans-check
 
+# Regenerate all per-origin Test Plans from upstream .exp files.
+plans-update:
+    "{{pixi_rtk}}" err "{{pixi_cargo}}" xtask plans-update
+
+# Audit Test Plan coverage and non-.exp executable-input inventory.
+plans-audit:
+    "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask plans-audit
+
+# Execute complete Test Plans with the canonical Rust runner; optional arguments select plan IDs.
+test-plans *args:
+    "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test-plans {{args}}
 
 # Print the Tree-sitter concrete syntax tree for one upstream .exp file.
 contracts-cst script:
     "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask contracts-cst "{{script}}"
 
-# Check that Rust case declarations still match their upstream .exp origins.
-test-alignment:
-    "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask test-alignment
+
 
 # Check that the generated complete remaining-tests inventory is current.
 inventory-check:
     "{{pixi_rtk}}" test "{{pixi_cargo}}" xtask inventory-check
 
-# Regenerate rust-tests/REMAINING.md from the alignment registry and testsuite.
+# Regenerate rust/tests/REMAINING.md from Test Plan status and the typed manifest.
 inventory-update:
     "{{pixi_rtk}}" err "{{pixi_cargo}}" xtask inventory-update
 
-# Run migrated upstream tests with live, compact progress; optional arguments are forwarded to the Rust runner.
-test-upstream *args:
-    "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test-upstream {{args}}
 
-# Run Rust harness tests and all migrated contract tests with live progress.
+
+# Run Rust unit/SAT tests and all complete Test Plans with live progress.
 test-rust:
     "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test-rust
 
-# Default test entry point with live progress, content-addressed BSC caches, and ccache.
+# Default test entry point with live progress, content-addressed BSC caches, and sccache.
 test:
     "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test
 
@@ -93,13 +103,13 @@ test-cold:
 test-prune:
     "{{pixi_rtk}}" proxy "{{pixi_cargo}}" xtask test-prune
 
-# Show Bluesim C++ compiler-cache statistics.
-ccache-stats:
-    "{{pixi_rtk}}" summary "{{pixi_cargo}}" xtask ccache-stats
+# Show shared Rust and Bluesim C++ compiler-cache statistics.
+sccache-stats:
+    "{{pixi_rtk}}" summary "{{pixi_cargo}}" xtask sccache-stats
 
-# Remove all cached Bluesim C++ compilation results.
-ccache-clear:
-    "{{pixi_rtk}}" err "{{pixi_cargo}}" xtask ccache-clear
+# Remove all shared Rust and Bluesim C++ compilation results.
+sccache-clear:
+    "{{pixi_rtk}}" err "{{pixi_cargo}}" xtask sccache-clear
 
 # Remove the upstream build and installation directories.
 clean:

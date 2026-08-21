@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/RAMS/RAMS",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/RAMS/RAMS.exp",
+    "sha256": "104f7e34046e42f791f9ff3ae6046df086a832c956d788fc06778ed58719c815"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/RAMS",
+  "fixtures": [
+    {
+      "path": "SRAM_wrapper.bsv",
+      "sha256": "7d72fc5d9fa135f7a0c0a3bb0da21337f1c34f29620ef2d972002666440951cb",
+      "role": "source"
+    },
+    {
+      "path": "Test.bsv",
+      "sha256": "c374fdc4a5a31e4f1a1e155242a4152eeef36cd5aeae872e42b825a55db1279f",
+      "role": "source"
+    },
+    {
+      "path": "Verilog_SRAM_model.v",
+      "sha256": "eb477c599ee4f4e860079b51d990b779c6b0e0aad6144b34875eb3416e6de958",
+      "role": "source"
+    },
+    {
+      "path": "mem_init.data",
+      "sha256": "f5def14efc5304f532e0c860aee371597a02f5035d3acf74c1496901aeef49e0",
+      "role": "data"
+    },
+    {
+      "path": "mkTop.out.expected",
+      "sha256": "d48bca50a17caba3f283718458676cf4e812aeb3d198a66fcd384014e1c5c33d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTop",
+      "resource": "heavy",
+      "fixtures": [
+        "SRAM_wrapper.bsv",
+        "Test.bsv",
+        "Verilog_SRAM_model.v",
+        "mem_init.data",
+        "mkTop.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTop",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Test.bsv",
+              "mode": "verilog",
+              "module": "mkTop",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bo",
+                  "Test.bsv.bsc-vcomp-out",
+                  "mkTop.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 58,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTop",
+                "Verilog_SRAM_model.v"
+              ],
+              "top": "mkTop",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTop.v",
+                  "Verilog_SRAM_model.v"
+                ],
+                "outputs": [
+                  "mkTop.bsc-vcomp-out",
+                  "mkTop.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 58,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.vexe"
+                ],
+                "outputs": [
+                  "mkTop.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 58,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTop.v.out",
+              "expected": "mkTop.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.v.out",
+                  "mkTop.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 58,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.v-vcd.out",
+              "vcd": "mkTop.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.vexe"
+                ],
+                "outputs": [
+                  "mkTop.v-vcd.out",
+                  "mkTop.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 58,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTop.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 58,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

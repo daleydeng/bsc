@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.misc/crc/crc",
+  "origin": {
+    "path": "testsuite/bsc.misc/crc/crc.exp",
+    "sha256": "c225bb3989a5ffa7aed4408ac889efdfc51ad5a11a518e446f6a69f4d213dfe5"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.misc/crc",
+  "fixtures": [
+    {
+      "path": "CRCTest1.bsv",
+      "sha256": "d2c8ca5a55a56bd23cf3e947a62562e2fee9e3277db82fe6eaa1d6c68205b040",
+      "role": "source"
+    },
+    {
+      "path": "sysCRCTest1.out.expected",
+      "sha256": "6ce9b4804a435f2a99c79617075c107b2d31f82f6b1e6ae52c35fa2d4ce87519",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysCRCTest1",
+      "resource": "heavy",
+      "fixtures": [
+        "CRCTest1.bsv",
+        "sysCRCTest1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCRCTest1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CRCTest1.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysCRCTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CRCTest1.bsv"
+                ],
+                "outputs": [
+                  "CRCTest1.bo",
+                  "CRCTest1.bsv.bsc-vcomp-out",
+                  "sysCRCTest1.ba",
+                  "sysCRCTest1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCRCTest1"
+              ],
+              "top": "sysCRCTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.v"
+                ],
+                "outputs": [
+                  "sysCRCTest1.bsc-vcomp-out",
+                  "sysCRCTest1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCRCTest1",
+              "args": [],
+              "stdout": "sysCRCTest1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.vexe"
+                ],
+                "outputs": [
+                  "sysCRCTest1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCRCTest1.v.out",
+              "expected": "sysCRCTest1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.v.out",
+                  "sysCRCTest1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCRCTest1",
+              "args": [],
+              "stdout": "sysCRCTest1.v-vcd.out",
+              "vcd": "sysCRCTest1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.vexe"
+                ],
+                "outputs": [
+                  "sysCRCTest1.v-vcd.out",
+                  "sysCRCTest1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCRCTest1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCRCTest1"
+              ],
+              "top": "sysCRCTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.ba"
+                ],
+                "outputs": [
+                  "sysCRCTest1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCRCTest1.cexe",
+                    "sysCRCTest1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCRCTest1",
+              "args": [],
+              "stdout": "sysCRCTest1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.cexe"
+                ],
+                "outputs": [
+                  "sysCRCTest1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCRCTest1.c.out",
+              "expected": "sysCRCTest1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.c.out",
+                  "sysCRCTest1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCRCTest1",
+              "args": [],
+              "stdout": "sysCRCTest1.c-vcd.out",
+              "vcd": "sysCRCTest1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.cexe"
+                ],
+                "outputs": [
+                  "sysCRCTest1.c-vcd.out",
+                  "sysCRCTest1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCRCTest1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCRCTest1.c-vcd.out",
+              "expected": "sysCRCTest1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCRCTest1.c-vcd.out",
+                  "sysCRCTest1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

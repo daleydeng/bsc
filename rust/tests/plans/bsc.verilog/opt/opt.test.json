@@ -1,0 +1,810 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/opt/opt",
+  "origin": {
+    "path": "testsuite/bsc.verilog/opt/opt.exp",
+    "sha256": "a25da670ca5025456b1cd4c74d4f5a6bcd7a56c260d8c92dca803aedeb1752b2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/opt",
+  "fixtures": [
+    {
+      "path": "AOptTwoMethodsUsingSamePort.bsv",
+      "sha256": "574f08a47b74b4025050007221638d1465b004f48e48918f647afce212e03626",
+      "role": "source"
+    },
+    {
+      "path": "InlineExtract.bsv",
+      "sha256": "359034caa8fcfa37e211d5612136592e2e2b714b1d85ea3e305bc362e0691c40",
+      "role": "source"
+    },
+    {
+      "path": "InlineInv.bsv",
+      "sha256": "acdd69f2b08db9624405b99e9d9a98fec502f14c6f056576318c57f25b002017",
+      "role": "source"
+    },
+    {
+      "path": "InlineNot.bsv",
+      "sha256": "68587605146874decf3c5419da3978d70ee28e77c09454087280b688d9cfab27",
+      "role": "source"
+    },
+    {
+      "path": "InstParam_DontCareConcat.bsv",
+      "sha256": "1b619f53f1b2bfd4711affe02320c952775e14d6cf7b1444d69ef4480d907d67",
+      "role": "source"
+    },
+    {
+      "path": "InstParam_DontCareDynSelect.bsv",
+      "sha256": "6db79aa27e258c336aad000493ad846360909cd37c5970de9ad6d46d0f299dd3",
+      "role": "source"
+    },
+    {
+      "path": "InstParam_DontCareSelect.bsv",
+      "sha256": "89377fdccc9fc4b026bd9d3c2ad50b9abbdf81fb3916b64ac315fd83f52829f2",
+      "role": "source"
+    },
+    {
+      "path": "SmallCase.bsv",
+      "sha256": "7bb7cedb173a85aa0243b14aa6324473ff353ee0e21005a2f13454143e347e69",
+      "role": "source"
+    },
+    {
+      "path": "TestDoubleNorm.bs",
+      "sha256": "c4f64375fc24a12bd34db586bb3d3a9a0bf39ee5563a9257307595c99e07ff50",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-AOptTwoMethodsUsingSamePort",
+      "resource": "normal",
+      "fixtures": [
+        "AOptTwoMethodsUsingSamePort.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-AOptTwoMethodsUsingSamePort",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "AOptTwoMethodsUsingSamePort.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "AOptTwoMethodsUsingSamePort.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "AOptTwoMethodsUsingSamePort.bsv"
+                ],
+                "outputs": [
+                  "AOptTwoMethodsUsingSamePort.bo",
+                  "AOptTwoMethodsUsingSamePort.bsv.bsc-vcomp-out",
+                  "mkAOptTwoMethodsUsingSamePort.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 260,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkAOptTwoMethodsUsingSamePort.v",
+              "text": "assign RDY_produce = 1'b1 ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkAOptTwoMethodsUsingSamePort.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 286,
+                  "endByte": 367,
+                  "startLine": 10,
+                  "startColumn": 5,
+                  "endLine": 11,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkAOptTwoMethodsUsingSamePort.v",
+              "text": "assign RDY_consume = 1'b1 ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkAOptTwoMethodsUsingSamePort.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 372,
+                  "endByte": 453,
+                  "startLine": 12,
+                  "startColumn": 5,
+                  "endLine": 13,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-SmallCase",
+      "resource": "normal",
+      "fixtures": [
+        "SmallCase.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SmallCase",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SmallCase.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SmallCase.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SmallCase.bsv"
+                ],
+                "outputs": [
+                  "SmallCase.bo",
+                  "SmallCase.bsv.bsc-vcomp-out",
+                  "sysSmallCase.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 546,
+                  "endByte": 580,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysSmallCase.v",
+              "pattern": "\n    case \\(rg\\)\n      32'd0: rg\\$D_IN = 32'd1;\n      32'd1: rg\\$D_IN = 32'd2;\n      default: rg\\$D_IN = 32'd3;\n    endcase",
+              "artifacts": {
+                "inputs": [
+                  "sysSmallCase.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 606,
+                  "endByte": 758,
+                  "startLine": 21,
+                  "startColumn": 5,
+                  "endLine": 26,
+                  "endColumn": 13
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-InlineNot",
+      "resource": "normal",
+      "fixtures": [
+        "InlineNot.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InlineNot",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InlineNot.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InlineNot.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InlineNot.bsv"
+                ],
+                "outputs": [
+                  "InlineNot.bo",
+                  "InlineNot.bsv.bsc-vcomp-out",
+                  "sysInlineNot.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 918,
+                  "endByte": 952,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysInlineNot.v",
+              "text": " next >= limit ",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysInlineNot.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1025,
+                  "endByte": 1074,
+                  "startLine": 37,
+                  "startColumn": 5,
+                  "endLine": 37,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-InlineInv",
+      "resource": "normal",
+      "fixtures": [
+        "InlineInv.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InlineInv",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InlineInv.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InlineInv.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InlineInv.bsv"
+                ],
+                "outputs": [
+                  "InlineInv.bo",
+                  "InlineInv.bsv.bsc-vcomp-out",
+                  "sysInlineInv.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1078,
+                  "endByte": 1112,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysInlineInv.v",
+              "text": " ~(next + limit) ",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysInlineInv.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1185,
+                  "endByte": 1236,
+                  "startLine": 43,
+                  "startColumn": 5,
+                  "endLine": 43,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-InlineExtract",
+      "resource": "normal",
+      "fixtures": [
+        "InlineExtract.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InlineExtract",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InlineExtract.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InlineExtract.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InlineExtract.bsv"
+                ],
+                "outputs": [
+                  "InlineExtract.bo",
+                  "InlineExtract.bsv.bsc-vcomp-out",
+                  "sysInlineExtract.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1240,
+                  "endByte": 1278,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysInlineExtract.v",
+              "text": "next + limit",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysInlineExtract.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1351,
+                  "endByte": 1401,
+                  "startLine": 49,
+                  "startColumn": 5,
+                  "endLine": 49,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-InstParam_DontCareSelect",
+      "resource": "normal",
+      "fixtures": [
+        "InstParam_DontCareSelect.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InstParam_DontCareSelect",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InstParam_DontCareSelect.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InstParam_DontCareSelect.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InstParam_DontCareSelect.bsv"
+                ],
+                "outputs": [
+                  "InstParam_DontCareSelect.bo",
+                  "InstParam_DontCareSelect.bsv.bsc-vcomp-out",
+                  "sysInstParam_DontCareSelect.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1854,
+                  "endByte": 1903,
+                  "startLine": 62,
+                  "startColumn": 1,
+                  "endLine": 62,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-InstParam_DontCareConcat",
+      "resource": "normal",
+      "fixtures": [
+        "InstParam_DontCareConcat.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InstParam_DontCareConcat",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InstParam_DontCareConcat.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InstParam_DontCareConcat.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InstParam_DontCareConcat.bsv"
+                ],
+                "outputs": [
+                  "InstParam_DontCareConcat.bo",
+                  "InstParam_DontCareConcat.bsv.bsc-vcomp-out",
+                  "sysInstParam_DontCareConcat.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2512,
+                  "endByte": 2561,
+                  "startLine": 75,
+                  "startColumn": 1,
+                  "endLine": 75,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysInstParam_DontCareConcat.v",
+              "text": "8'b00010100",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysInstParam_DontCareConcat.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2587,
+                  "endByte": 2647,
+                  "startLine": 77,
+                  "startColumn": 5,
+                  "endLine": 77,
+                  "endColumn": 65
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-InstParam_DontCareDynSelect",
+      "resource": "normal",
+      "fixtures": [
+        "InstParam_DontCareDynSelect.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InstParam_DontCareDynSelect",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InstParam_DontCareDynSelect.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InstParam_DontCareDynSelect.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InstParam_DontCareDynSelect.bsv"
+                ],
+                "outputs": [
+                  "InstParam_DontCareDynSelect.bo",
+                  "InstParam_DontCareDynSelect.bsv.bsc-vcomp-out",
+                  "sysInstParam_DontCareDynSelect.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2840,
+                  "endByte": 2892,
+                  "startLine": 84,
+                  "startColumn": 1,
+                  "endLine": 84,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysInstParam_DontCareDynSelect.v",
+              "text": ".SOURCE_INITIAL_VALUE(\" 000\")",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysInstParam_DontCareDynSelect.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2918,
+                  "endByte": 2999,
+                  "startLine": 86,
+                  "startColumn": 5,
+                  "endLine": 86,
+                  "endColumn": 86
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-TestDoubleNorm",
+      "resource": "normal",
+      "fixtures": [
+        "TestDoubleNorm.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestDoubleNorm",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestDoubleNorm.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestDoubleNorm.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TestDoubleNorm.bs"
+                ],
+                "outputs": [
+                  "TestDoubleNorm.bo",
+                  "TestDoubleNorm.bs.bsc-vcomp-out",
+                  "mkTestDoubleNorm.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3022,
+                  "endByte": 3060,
+                  "startLine": 91,
+                  "startColumn": 1,
+                  "endLine": 91,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTestDoubleNorm.v",
+              "text": "?",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkTestDoubleNorm.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 731"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3061,
+                  "endByte": 3110,
+                  "startLine": 92,
+                  "startColumn": 1,
+                  "endLine": 92,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTestDoubleNorm.v",
+              "pattern": "assign _read = r ;",
+              "artifacts": {
+                "inputs": [
+                  "mkTestDoubleNorm.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 731"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3111,
+                  "endByte": 3172,
+                  "startLine": 93,
+                  "startColumn": 1,
+                  "endLine": 93,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

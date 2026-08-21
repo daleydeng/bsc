@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/RegA/rega",
+  "origin": {
+    "path": "testsuite/bsc.lib/RegA/rega.exp",
+    "sha256": "faf4463f9c0284f103cad45d948e8d8e6823cdd90668d779eb2daa955685f352"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/RegA",
+  "fixtures": [
+    {
+      "path": "TestRegA.bsv",
+      "sha256": "1b7ff0328925c2b49fb7bb7d3cd44facde8dddd2fd77c5f4295b87ecd424a422",
+      "role": "source"
+    },
+    {
+      "path": "sysTestRegA.out.expected",
+      "sha256": "62fff39e3fcfd5a9f9a429afa64a2787770eaf6e8429bf25f38c5b0e928dc101",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestRegA",
+      "resource": "heavy",
+      "fixtures": [
+        "TestRegA.bsv",
+        "sysTestRegA.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestRegA",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestRegA.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestRegA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestRegA.bsv"
+                ],
+                "outputs": [
+                  "TestRegA.bo",
+                  "TestRegA.bsv.bsc-vcomp-out",
+                  "sysTestRegA.ba",
+                  "sysTestRegA.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestRegA"
+              ],
+              "top": "sysTestRegA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.v"
+                ],
+                "outputs": [
+                  "sysTestRegA.bsc-vcomp-out",
+                  "sysTestRegA.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestRegA",
+              "args": [],
+              "stdout": "sysTestRegA.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.vexe"
+                ],
+                "outputs": [
+                  "sysTestRegA.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestRegA.v.out",
+              "expected": "sysTestRegA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.v.out",
+                  "sysTestRegA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestRegA",
+              "args": [],
+              "stdout": "sysTestRegA.v-vcd.out",
+              "vcd": "sysTestRegA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.vexe"
+                ],
+                "outputs": [
+                  "sysTestRegA.v-vcd.out",
+                  "sysTestRegA.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestRegA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestRegA"
+              ],
+              "top": "sysTestRegA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.ba"
+                ],
+                "outputs": [
+                  "sysTestRegA.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestRegA.cexe",
+                    "sysTestRegA.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestRegA",
+              "args": [],
+              "stdout": "sysTestRegA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.cexe"
+                ],
+                "outputs": [
+                  "sysTestRegA.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestRegA.c.out",
+              "expected": "sysTestRegA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.c.out",
+                  "sysTestRegA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestRegA",
+              "args": [],
+              "stdout": "sysTestRegA.c-vcd.out",
+              "vcd": "sysTestRegA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.cexe"
+                ],
+                "outputs": [
+                  "sysTestRegA.c-vcd.out",
+                  "sysTestRegA.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestRegA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestRegA.c-vcd.out",
+              "expected": "sysTestRegA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestRegA.c-vcd.out",
+                  "sysTestRegA.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 24,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,9 @@ rem PATH for GHC and Cabal, while `cargo xtask` resolves its authoritative bin
 rem directory before running native build tasks.
 set "PATH=%CONDA_PREFIX%\Library\mingw-w64\bin;%CONDA_PREFIX%\Library\usr\bin;%CONDA_PREFIX%\Library\bin;%PIXI_PROJECT_ROOT%\.pixi\ghcup\bin;%PIXI_PROJECT_ROOT%\.pixi\.ghcup\bin;%PATH%"
 set "PKG_CONFIG_PATH=%CONDA_PREFIX%\Library\mingw-w64\lib\pkgconfig;%CONDA_PREFIX%\Library\mingw-w64\share\pkgconfig"
+rem z3-sys does not discover the MSVC import library through pkg-config on Windows.
+set "Z3_LIBRARY_PATH_OVERRIDE=%CONDA_PREFIX%\Library\lib"
+set "Z3_SYS_Z3_HEADER=%CONDA_PREFIX%\Library\include\z3.h"
 set "SSL_CERT_FILE=%CONDA_PREFIX%\Library\ssl\cacert.pem"
 set "GIT_SSL_CAINFO=%CONDA_PREFIX%\Library\ssl\cacert.pem"
 set "CURL_CA_BUNDLE=%CONDA_PREFIX%\Library\ssl\cacert.pem"

@@ -1,0 +1,915 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.driver/bluesim/bluesim",
+  "origin": {
+    "path": "testsuite/bsc.driver/bluesim/bluesim.exp",
+    "sha256": "98d46368082730a1df948c522ce45f704d6743d0eae64ecd818a2194eedf7b42"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.driver/bluesim",
+  "fixtures": [
+    {
+      "path": "Mid1.bsv",
+      "sha256": "13b1b9cb3bb338c3826074547cf69697e242f237aec5aed2a13934e26b108b1f",
+      "role": "source"
+    },
+    {
+      "path": "Mid2.bsv",
+      "sha256": "e63c76a3d1c4158568163987fd8bbfcc78b5df7e656375d04513b884e9f70d07",
+      "role": "source"
+    },
+    {
+      "path": "Sub1.bsv",
+      "sha256": "3aa848ce3cde9c467b2a049213e36edb43de1a0eacf182d23eeca4786027d84f",
+      "role": "source"
+    },
+    {
+      "path": "Sub2.bsv",
+      "sha256": "4023724854bcb2827e2c0da2bfe60b6cb2cbee0157cac2a92f6bb03147f1dbe1",
+      "role": "source"
+    },
+    {
+      "path": "Sub3.bsv",
+      "sha256": "99cdb9438e0aa3119ee12171fc6ec9605075ed08329662a01f3cabe5bc78f32e",
+      "role": "source"
+    },
+    {
+      "path": "Top.bsv",
+      "sha256": "6fa004ffc9bde27210adde7bca498fc4f9d6e8656d04e14b1329fb3c4a1a66bb",
+      "role": "source"
+    },
+    {
+      "path": "full_build.out.expected",
+      "sha256": "af680b56b1c765b12e7849ec2e9104e9f2425eb212d03795e826e3528a67c464",
+      "role": "golden"
+    },
+    {
+      "path": "partial_build.out.expected",
+      "sha256": "0116eb3cea74e3ea45ff8d684bc5c1ae7c3bb8feb0ef8c4ffab51d5791b5a82c",
+      "role": "golden"
+    },
+    {
+      "path": "reused_build.out.expected",
+      "sha256": "4b29612c11875176517e0dda164a3f15730c1accdbf504df6344d819a5527007",
+      "role": "golden"
+    },
+    {
+      "path": "sim.out.expected",
+      "sha256": "7adf246894a7099bed25bed8321171b2a21e810d2d1b5b0878e43cdb35060594",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "stateful-bluesim-mkTop",
+      "resource": "heavy",
+      "fixtures": [
+        "Mid1.bsv",
+        "Mid2.bsv",
+        "Sub1.bsv",
+        "Sub2.bsv",
+        "Sub3.bsv",
+        "Top.bsv",
+        "full_build.out.expected",
+        "partial_build.out.expected",
+        "reused_build.out.expected",
+        "sim.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-Top.bsv",
+          "operations": [
+            {
+              "op": "fs.ensure_dir_absent",
+              "path": "bd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "bd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 74,
+                  "endByte": 84,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 11
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_dir_absent",
+              "path": "sd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 95,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 11
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "bd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "bd"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 96,
+                  "endByte": 104,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 9
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "sd",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "sd"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 113,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 9
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Top.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-bdir",
+                "bd",
+                "-p",
+                "+:bd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bsv.bsc-ccomp-out",
+                  "bd/Top.bo",
+                  "bd/mkMid1.ba",
+                  "bd/mkMid2.ba",
+                  "bd/mkSub1.ba",
+                  "bd/mkSub2.ba",
+                  "bd/mkSub3.ba",
+                  "bd/mkTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 179,
+                  "endByte": 228,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "time.delay",
+              "milliseconds": 2000,
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 241,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 13
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "bd/mkTop.ba"
+              ],
+              "top": "mkTop",
+              "args": [
+                "-p",
+                "bd",
+                "-simdir",
+                "sd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "bd/mkTop.ba"
+                ],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 242,
+                  "endByte": 298,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.bsc-ccomp-out",
+              "destination": "full_build.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputs": [
+                  "full_build.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.bsc-ccomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 299,
+                  "endByte": 338,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "full_build.out",
+              "expected": "full_build.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "full_build.out",
+                  "full_build.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 339,
+                  "endByte": 366,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cexe"
+                ],
+                "outputs": [
+                  "mkTop.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 367,
+                  "endByte": 386,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.out",
+              "destination": "full_sim.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.out"
+                ],
+                "outputs": [
+                  "full_sim.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 387,
+                  "endByte": 414,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "full_sim.out",
+              "expected": "sim.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "full_sim.out",
+                  "sim.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 415,
+                  "endByte": 457,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "fs.touch",
+              "path": "Sub1.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Sub1.bsv"
+                ],
+                "outputs": [
+                  "Sub1.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 503,
+                  "endByte": 517,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 15
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Top.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-bdir",
+                "bd",
+                "-p",
+                "+:bd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bsv.bsc-ccomp-out",
+                  "bd/Top.bo",
+                  "bd/mkMid1.ba",
+                  "bd/mkMid2.ba",
+                  "bd/mkSub1.ba",
+                  "bd/mkSub2.ba",
+                  "bd/mkSub3.ba",
+                  "bd/mkTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 584,
+                  "endByte": 633,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "time.delay",
+              "milliseconds": 2000,
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 634,
+                  "endByte": 646,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 13
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "bd/mkTop.ba"
+              ],
+              "top": "mkTop",
+              "args": [
+                "-p",
+                "bd",
+                "-simdir",
+                "sd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "bd/mkTop.ba"
+                ],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 647,
+                  "endByte": 703,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.bsc-ccomp-out",
+              "destination": "partial_build.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputs": [
+                  "partial_build.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.bsc-ccomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 704,
+                  "endByte": 746,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "partial_build.out",
+              "expected": "partial_build.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "partial_build.out",
+                  "partial_build.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 747,
+                  "endByte": 777,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cexe"
+                ],
+                "outputs": [
+                  "mkTop.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 778,
+                  "endByte": 797,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.out",
+              "destination": "partial_sim.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.out"
+                ],
+                "outputs": [
+                  "partial_sim.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 798,
+                  "endByte": 828,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "partial_sim.out",
+              "expected": "sim.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "partial_sim.out",
+                  "sim.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 829,
+                  "endByte": 874,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Top.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-bdir",
+                "bd",
+                "-p",
+                "+:bd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bsv.bsc-ccomp-out",
+                  "bd/Top.bo",
+                  "bd/mkMid1.ba",
+                  "bd/mkMid2.ba",
+                  "bd/mkSub1.ba",
+                  "bd/mkSub2.ba",
+                  "bd/mkSub3.ba",
+                  "bd/mkTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 919,
+                  "endByte": 968,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "time.delay",
+              "milliseconds": 2000,
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 969,
+                  "endByte": 981,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 13
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "bd/mkTop.ba"
+              ],
+              "top": "mkTop",
+              "args": [
+                "-p",
+                "bd",
+                "-simdir",
+                "sd"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "bd/mkTop.ba"
+                ],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 982,
+                  "endByte": 1038,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.bsc-ccomp-out",
+              "destination": "reused_build.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.bsc-ccomp-out"
+                ],
+                "outputs": [
+                  "reused_build.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.bsc-ccomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1039,
+                  "endByte": 1080,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "reused_build.out",
+              "expected": "reused_build.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "reused_build.out",
+                  "reused_build.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1081,
+                  "endByte": 1110,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTop",
+              "args": [],
+              "stdout": "mkTop.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cexe"
+                ],
+                "outputs": [
+                  "mkTop.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1111,
+                  "endByte": 1130,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.out",
+              "destination": "reused_sim.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.out"
+                ],
+                "outputs": [
+                  "reused_sim.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1131,
+                  "endByte": 1160,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "reused_sim.out",
+              "expected": "sim.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "reused_sim.out",
+                  "sim.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1161,
+                  "endByte": 1205,
+                  "startLine": 40,
+                  "startColumn": 1,
+                  "endLine": 40,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

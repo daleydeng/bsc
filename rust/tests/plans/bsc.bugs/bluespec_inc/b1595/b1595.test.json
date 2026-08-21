@@ -1,0 +1,455 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1595/b1595",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1595/b1595.exp",
+    "sha256": "916d217320503b58d8e94a57b0e7b8b81929b6680ba21faa51b3776f2e2d6854"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1595",
+  "fixtures": [
+    {
+      "path": "GCD.bsv",
+      "sha256": "a8e33b5279bfffedb503230ae3573cd8b5623adfda0182326f7f505dc9720894",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "4e064862773328c94aeb7e41bbae7916d7f1f5c08d4a80b77b12e6de2516d8f0",
+      "role": "source"
+    },
+    {
+      "path": "WrongMod.bsv",
+      "sha256": "e83bda779957afeca0ef9f2608d96ea54512e98d4988dfd6427e028a98e1dbb3",
+      "role": "source"
+    },
+    {
+      "path": "WrongTop.bsv",
+      "sha256": "7bb0d1f6196af1b96f6c022ebc7faca879f8a68b63d76f3c5e4a981a30992c94",
+      "role": "source"
+    },
+    {
+      "path": "mkTbGCD.bsc-ccomp-out.expected",
+      "sha256": "9bfbeba5a2a5cc211792c2eb9bdbe62db60829c7ac43db412f093654cd65f322",
+      "role": "golden"
+    },
+    {
+      "path": "mkWrongTop.bsc-ccomp-out.expected",
+      "sha256": "0a867a670da57e465cfe57e388f73ca10be7a5575a10828cbf560d3b76b7fc7f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "ordered-workspace-unreadable-import",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv",
+        "mkTbGCD.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "unreadable-import",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-ccomp-out",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 207,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "libdir1",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir1"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 261,
+                  "endByte": 274,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 14
+                }
+              }
+            },
+            {
+              "op": "fs.mkdir",
+              "path": "libdir2",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir2"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 275,
+                  "endByte": 288,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 14
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkGCD.ba",
+              "destination": "libdir1/mkGCD.ba",
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.ba"
+                ],
+                "outputs": [
+                  "libdir1/mkGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 289,
+                  "endByte": 310,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkGCD.ba",
+              "destination": "libdir2/mkGCD.ba",
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.ba"
+                ],
+                "outputs": [
+                  "libdir2/mkGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 332,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "fs.remove_user_read",
+              "path": "libdir1/mkGCD.ba",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "libdir1/mkGCD.ba"
+                ],
+                "outputs": [
+                  "libdir1/mkGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 367,
+                  "endByte": 395,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTbGCD",
+              "args": [
+                "-p",
+                "libdir1:+:libdir2"
+              ],
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 444,
+                  "endByte": 495,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbGCD.bsc-ccomp-out",
+              "expected": "mkTbGCD.bsc-ccomp-out.expected",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.bsc-ccomp-out",
+                  "mkTbGCD.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 541,
+                  "endByte": 575,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ordered-workspace-wrong-module",
+      "resource": "heavy",
+      "fixtures": [
+        "WrongMod.bsv",
+        "WrongTop.bsv",
+        "mkWrongTop.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "wrong-module-link",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "WrongMod.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WrongMod.bsv"
+                ],
+                "outputs": [
+                  "WrongMod.bo",
+                  "WrongMod.bsv.bsc-ccomp-out",
+                  "mkWrongMod.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 700,
+                  "endByte": 732,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "WrongTop.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WrongTop.bsv"
+                ],
+                "outputs": [
+                  "WrongTop.bo",
+                  "WrongTop.bsv.bsc-ccomp-out",
+                  "mkRightMod.ba",
+                  "mkWrongTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 733,
+                  "endByte": 765,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "fs.move_replace",
+              "source": "mkWrongMod.ba",
+              "destination": "mkRightMod.ba",
+              "artifacts": {
+                "inputs": [
+                  "mkWrongMod.ba",
+                  "mkRightMod.ba"
+                ],
+                "outputs": [
+                  "mkRightMod.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkWrongMod.ba"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 767,
+                  "endByte": 799,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkWrongTop",
+              "args": [],
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkWrongTop.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 801,
+                  "endByte": 832,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkWrongTop.bsc-ccomp-out",
+              "expected": "mkWrongTop.bsc-ccomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkWrongTop.bsc-ccomp-out",
+                  "mkWrongTop.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 910,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 41,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1354/b1354",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1354/b1354.exp",
+    "sha256": "ee2d797263ea0e957c227b5cc5255b918e931fb6c6143dcdc9d965e83d804f01"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1354",
+  "fixtures": [
+    {
+      "path": "Test.bsv",
+      "sha256": "51f0e3cda0688cdfd0a2f06be3499203b651fdd01fa1d1606ab54918a818ad70",
+      "role": "source"
+    },
+    {
+      "path": "mkMulti.v.expected",
+      "sha256": "475ab5dd0d556a62a7c7d66104919c70ced23e59404ec4eeff40ec58f9e2c302",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "Test.bsv",
+        "mkMulti.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bo",
+                  "Test.bsv.bsc-vcomp-out",
+                  "mkMulti.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkMulti.v",
+              "expected": "mkMulti.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkMulti.v",
+                  "mkMulti.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 55,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

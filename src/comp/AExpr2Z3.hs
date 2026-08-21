@@ -58,11 +58,13 @@ data ZState =
                anyId         :: Integer,
                unknownId     :: Integer,
                portId        :: Integer,
+               sharedId      :: Integer,
 
                defZExprMap   :: M.Map AId ZExpr,
                portZExprMap  :: M.Map AId ZExpr,
                expZExprMap   :: M.Map AExpr ZExpr,
-               declarations  :: M.Map String ZType
+               declarations  :: M.Map String ZType,
+               definitions   :: [(String, ZType, String)]
               }
 
 type ZM = StateT ZState IO
@@ -81,10 +83,12 @@ initZState _ _ doHardFail ds avis rs = do
                    anyId = 0,
                    unknownId = 0,
                    portId = 0,
+                   sharedId = 0,
                    defZExprMap = M.empty,
                    portZExprMap = M.empty,
                    expZExprMap = M.empty,
-                   declarations = M.empty
+                   declarations = M.empty,
+                   definitions = []
                  })
 
 addADefToZState :: ZState -> [ADef] -> IO ZState
@@ -178,15 +182,24 @@ checkRelation provingEq e1 e2 = do
 runQuery :: String -> ZM Z3.SMTResult
 runQuery assertion = do
   decls <- gets declarations
-  let commands = map renderDeclaration (M.toAscList decls)
+  defs <- gets definitions
+  let commands = map renderDeclaration (M.toAscList decls) ++
+                 map renderDefinition (reverse defs)
   when traceTest $ traceM ("Z3 assertion: " ++ assertion)
   liftIO $ Z3.runZ3 commands assertion
 
 renderDeclaration :: (String, ZType) -> String
-renderDeclaration (name, ZBool) = "(declare-const " ++ name ++ " Bool)"
-renderDeclaration (name, ZBits w) =
-  "(declare-const " ++ name ++ " (_ BitVec " ++ show w ++ "))"
-renderDeclaration (_, ZZero) = internalError "AExpr2Z3: zero-width declaration"
+renderDeclaration (name, ty) =
+  "(declare-const " ++ name ++ " " ++ renderType ty ++ ")"
+
+renderDefinition :: (String, ZType, String) -> String
+renderDefinition (name, ty, term) =
+  "(define-fun " ++ name ++ " () " ++ renderType ty ++ " " ++ term ++ ")"
+
+renderType :: ZType -> String
+renderType ZBool = "Bool"
+renderType (ZBits w) = "(_ BitVec " ++ show w ++ ")"
+renderType ZZero = internalError "AExpr2Z3: zero-width SMT type"
 
 -- -------------------------
 -- State helpers
@@ -217,6 +230,17 @@ freshUnknownName = freshName "__bsc_unknown_" unknownId
 
 freshPortName :: ZM String
 freshPortName = freshName "__bsc_port_" portId (\s n -> s { portId = n })
+
+freshSharedName :: ZM String
+freshSharedName = freshName "__bsc_shared_" sharedId
+                            (\s n -> s { sharedId = n })
+
+shareExpr :: ZExpr -> ZM ZExpr
+shareExpr z@(_, ZZero) = return z
+shareExpr (term, ty) = do
+  name <- freshSharedName
+  modify $ \s -> s { definitions = (name, ty, term) : definitions s }
+  return (name, ty)
 
 makeVar :: Maybe ZType -> String -> Integer -> ZM ZExpr
 makeVar _ _ 0 = return ("__bsc_zero_width", ZZero)
@@ -295,7 +319,7 @@ convAExpr mty e@(ASDef (ATBit width) aid) = do
       dmap <- gets defMap
       case M.lookup aid dmap of
         Just ADef { adef_expr = e' } -> do
-          z <- convAExpr mty e'
+          z <- convAExpr mty e' >>= shareExpr
           addToDefMap aid z
           return z
         Nothing -> do

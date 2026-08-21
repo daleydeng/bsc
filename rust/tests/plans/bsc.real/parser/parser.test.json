@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.real/parser/parser",
+  "origin": {
+    "path": "testsuite/bsc.real/parser/parser.exp",
+    "sha256": "adb4e26c5e60c127b7d5c96d21cd56a8cbf74375dcecfba63b6b1b11cfadbf26"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.real/parser",
+  "fixtures": [
+    {
+      "path": "Classic.bs",
+      "sha256": "ce36bded8bfb3d457fa0c3d2fb562685f3fe1f14c8144db15e67f9ae1e1bf084",
+      "role": "source"
+    },
+    {
+      "path": "Classic.bs.bsc-vcomp-out.expected",
+      "sha256": "03e9fa1efe3fa78e5a17aa47cf85b11c0b4f57ca363b218d0779b122de13bb88",
+      "role": "golden"
+    },
+    {
+      "path": "FractionalLeadingZeros.bsv",
+      "sha256": "3fef03700b9def745746147748cfe97a3cbd0d0ec5878ce438e1b34c08951ccc",
+      "role": "source"
+    },
+    {
+      "path": "FractionalLeadingZeros.bsv.bsc-vcomp-out.expected",
+      "sha256": "a7787fc503064d86cd70475f26bc698a1c07423ac08348a3c6be01f31baebcb2",
+      "role": "golden"
+    },
+    {
+      "path": "LargeReal.bsv",
+      "sha256": "bb57e757b2cc183c97303f2901aab1d5868eee4b0566302d647c969824257534",
+      "role": "source"
+    },
+    {
+      "path": "LargeReal.bsv.bsc-vcomp-out.expected",
+      "sha256": "3d1fbfc44127743d8d132ac47869734d37b488d56f76dc69a961d9f68a1b77e9",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-FractionalLeadingZeros",
+      "resource": "normal",
+      "fixtures": [
+        "FractionalLeadingZeros.bsv",
+        "FractionalLeadingZeros.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-FractionalLeadingZeros",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "FractionalLeadingZeros.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "FractionalLeadingZeros.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "FractionalLeadingZeros.bsv"
+                ],
+                "outputs": [
+                  "FractionalLeadingZeros.bo",
+                  "FractionalLeadingZeros.bsv.bsc-vcomp-out",
+                  "sysFractionalLeadingZeros.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 147,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "FractionalLeadingZeros.bsv.bsc-vcomp-out",
+              "expected": "FractionalLeadingZeros.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "FractionalLeadingZeros.bsv.bsc-vcomp-out",
+                  "FractionalLeadingZeros.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 148,
+                  "endByte": 216,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 69
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-LargeReal",
+      "resource": "normal",
+      "fixtures": [
+        "LargeReal.bsv",
+        "LargeReal.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-LargeReal",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "LargeReal.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "LargeReal.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "LargeReal.bsv"
+                ],
+                "outputs": [
+                  "LargeReal.bo",
+                  "LargeReal.bsv.bsc-vcomp-out",
+                  "sysLargeReal.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 424,
+                  "endByte": 458,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "LargeReal.bsv.bsc-vcomp-out",
+              "expected": "LargeReal.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "LargeReal.bsv.bsc-vcomp-out",
+                  "LargeReal.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 459,
+                  "endByte": 514,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Classic",
+      "resource": "normal",
+      "fixtures": [
+        "Classic.bs",
+        "Classic.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Classic",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Classic.bs",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Classic.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Classic.bs"
+                ],
+                "outputs": [
+                  "Classic.bo",
+                  "Classic.bs.bsc-vcomp-out",
+                  "sysClassic.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 719,
+                  "endByte": 750,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Classic.bs.bsc-vcomp-out",
+              "expected": "Classic.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Classic.bs.bsc-vcomp-out",
+                  "Classic.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 751,
+                  "endByte": 803,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

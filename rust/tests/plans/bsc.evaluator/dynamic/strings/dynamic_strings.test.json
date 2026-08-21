@@ -1,0 +1,2560 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/dynamic/strings/dynamic_strings",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/dynamic/strings/dynamic_strings.exp",
+    "sha256": "2f1060a0c29342a61e454142a3b97d2a6a3fcdfd060e5367177661a3e82b8582"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/dynamic/strings",
+  "fixtures": [
+    {
+      "path": "DynamicFormatString.bsv",
+      "sha256": "43473549397d693a892dc1f8560f6673455516c52fec8ce3d64a5a9dbc460c73",
+      "role": "source"
+    },
+    {
+      "path": "StringConcat.bsv",
+      "sha256": "e853b0515d1c92933c317219a3a14ca9711ea2a63b00595482fdf1aa053eb128",
+      "role": "source"
+    },
+    {
+      "path": "StringEQ.bsv",
+      "sha256": "394c24fa0f65d4f64a410292924f74dfd9dc7e8b85dfe9b03e35d4beba9848cb",
+      "role": "source"
+    },
+    {
+      "path": "StringInteger.bsv",
+      "sha256": "ae27489dd49b9766ccba8b20b2401bd055ce2ce6af00b3f6a14924ecda2eb9bb",
+      "role": "source"
+    },
+    {
+      "path": "StringIntegerWithNull.bsv",
+      "sha256": "d710e1c767dfef99b09c6d79fc2cd7730ff81556056a07061a51b917c2635ae2",
+      "role": "source"
+    },
+    {
+      "path": "StringLT.bsv",
+      "sha256": "f10795f412f713a0d4d9f98b5c7ab680c3142f6f487717366458ffac194db77f",
+      "role": "source"
+    },
+    {
+      "path": "StringMux.bsv",
+      "sha256": "69893a75f6f52768c5fb30913e3f6a8da59781644912dcd8704d8b240a1f7abc",
+      "role": "source"
+    },
+    {
+      "path": "sysDynamicFormatString.out.expected",
+      "sha256": "ed8e9e434b00f5f2b7dee3e7aa6bf652e1556846d3ad00fa30b2f29e11eef392",
+      "role": "golden"
+    },
+    {
+      "path": "sysStringConcat.out.expected",
+      "sha256": "bf896badf9ded9bdaf0b249d3a1c2ac74d0e03f90a042364c201efb90d91a177",
+      "role": "golden"
+    },
+    {
+      "path": "sysStringEQ.out.expected",
+      "sha256": "c7d96c8f566a501c20ef64dca53dc8ac2f6c621ae7586c31f70662ea5503d58b",
+      "role": "golden"
+    },
+    {
+      "path": "sysStringInteger.out.expected",
+      "sha256": "dd5913a1a1e246e18407f78d01e4326a1c6e9c70e3b7bc2d67379e76d00a0a1b",
+      "role": "golden"
+    },
+    {
+      "path": "sysStringIntegerWithNull.out.expected",
+      "sha256": "4785b88074fe8157d3d4b9998a984eee36ba7d92e8f7af0a17ba7808cb0732fc",
+      "role": "golden"
+    },
+    {
+      "path": "sysStringLT.out.expected",
+      "sha256": "e6cfd5d49af61055c3d03e1aa8456ed88c7e1e63b13d3530fc2cfd26261dde0f",
+      "role": "golden"
+    },
+    {
+      "path": "sysStringMux.out.expected",
+      "sha256": "0370d6320224e15c0968786240aacdff03d1d9ba05716c4b7f8a5de9a15303f6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysStringMux",
+      "resource": "heavy",
+      "fixtures": [
+        "StringMux.bsv",
+        "sysStringMux.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStringMux",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StringMux.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStringMux",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StringMux.bsv"
+                ],
+                "outputs": [
+                  "StringMux.bo",
+                  "StringMux.bsv.bsc-vcomp-out",
+                  "sysStringMux.ba",
+                  "sysStringMux.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStringMux"
+              ],
+              "top": "sysStringMux",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.v"
+                ],
+                "outputs": [
+                  "sysStringMux.bsc-vcomp-out",
+                  "sysStringMux.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringMux",
+              "args": [],
+              "stdout": "sysStringMux.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.vexe"
+                ],
+                "outputs": [
+                  "sysStringMux.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringMux.v.out",
+              "expected": "sysStringMux.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.v.out",
+                  "sysStringMux.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringMux",
+              "args": [],
+              "stdout": "sysStringMux.v-vcd.out",
+              "vcd": "sysStringMux.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.vexe"
+                ],
+                "outputs": [
+                  "sysStringMux.v-vcd.out",
+                  "sysStringMux.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStringMux.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStringMux"
+              ],
+              "top": "sysStringMux",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.ba"
+                ],
+                "outputs": [
+                  "sysStringMux.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStringMux.cexe",
+                    "sysStringMux.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringMux",
+              "args": [],
+              "stdout": "sysStringMux.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.cexe"
+                ],
+                "outputs": [
+                  "sysStringMux.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringMux.c.out",
+              "expected": "sysStringMux.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.c.out",
+                  "sysStringMux.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringMux",
+              "args": [],
+              "stdout": "sysStringMux.c-vcd.out",
+              "vcd": "sysStringMux.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.cexe"
+                ],
+                "outputs": [
+                  "sysStringMux.c-vcd.out",
+                  "sysStringMux.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStringMux.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringMux.c-vcd.out",
+              "expected": "sysStringMux.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringMux.c-vcd.out",
+                  "sysStringMux.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 358,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStringConcat",
+      "resource": "heavy",
+      "fixtures": [
+        "StringConcat.bsv",
+        "sysStringConcat.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStringConcat",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StringConcat.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStringConcat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StringConcat.bsv"
+                ],
+                "outputs": [
+                  "StringConcat.bo",
+                  "StringConcat.bsv.bsc-vcomp-out",
+                  "sysStringConcat.ba",
+                  "sysStringConcat.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStringConcat"
+              ],
+              "top": "sysStringConcat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.v"
+                ],
+                "outputs": [
+                  "sysStringConcat.bsc-vcomp-out",
+                  "sysStringConcat.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringConcat",
+              "args": [],
+              "stdout": "sysStringConcat.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.vexe"
+                ],
+                "outputs": [
+                  "sysStringConcat.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringConcat.v.out",
+              "expected": "sysStringConcat.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.v.out",
+                  "sysStringConcat.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringConcat",
+              "args": [],
+              "stdout": "sysStringConcat.v-vcd.out",
+              "vcd": "sysStringConcat.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.vexe"
+                ],
+                "outputs": [
+                  "sysStringConcat.v-vcd.out",
+                  "sysStringConcat.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStringConcat.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStringConcat"
+              ],
+              "top": "sysStringConcat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.ba"
+                ],
+                "outputs": [
+                  "sysStringConcat.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStringConcat.cexe",
+                    "sysStringConcat.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringConcat",
+              "args": [],
+              "stdout": "sysStringConcat.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.cexe"
+                ],
+                "outputs": [
+                  "sysStringConcat.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringConcat.c.out",
+              "expected": "sysStringConcat.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.c.out",
+                  "sysStringConcat.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringConcat",
+              "args": [],
+              "stdout": "sysStringConcat.c-vcd.out",
+              "vcd": "sysStringConcat.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.cexe"
+                ],
+                "outputs": [
+                  "sysStringConcat.c-vcd.out",
+                  "sysStringConcat.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStringConcat.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringConcat.c-vcd.out",
+              "expected": "sysStringConcat.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringConcat.c-vcd.out",
+                  "sysStringConcat.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 359,
+                  "endByte": 387,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStringInteger",
+      "resource": "heavy",
+      "fixtures": [
+        "StringInteger.bsv",
+        "sysStringInteger.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStringInteger",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StringInteger.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStringInteger",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StringInteger.bsv"
+                ],
+                "outputs": [
+                  "StringInteger.bo",
+                  "StringInteger.bsv.bsc-vcomp-out",
+                  "sysStringInteger.ba",
+                  "sysStringInteger.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStringInteger"
+              ],
+              "top": "sysStringInteger",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.v"
+                ],
+                "outputs": [
+                  "sysStringInteger.bsc-vcomp-out",
+                  "sysStringInteger.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringInteger",
+              "args": [],
+              "stdout": "sysStringInteger.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.vexe"
+                ],
+                "outputs": [
+                  "sysStringInteger.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysStringInteger.v.out",
+              "expected": "sysStringInteger.out.expected",
+              "reason": "upstream simulator bug list \"iverilog\"",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.v.out",
+                  "sysStringInteger.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringInteger",
+              "args": [],
+              "stdout": "sysStringInteger.v-vcd.out",
+              "vcd": "sysStringInteger.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.vexe"
+                ],
+                "outputs": [
+                  "sysStringInteger.v-vcd.out",
+                  "sysStringInteger.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStringInteger"
+              ],
+              "top": "sysStringInteger",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.ba"
+                ],
+                "outputs": [
+                  "sysStringInteger.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStringInteger.cexe",
+                    "sysStringInteger.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringInteger",
+              "args": [],
+              "stdout": "sysStringInteger.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.cexe"
+                ],
+                "outputs": [
+                  "sysStringInteger.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringInteger.c.out",
+              "expected": "sysStringInteger.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.c.out",
+                  "sysStringInteger.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringInteger",
+              "args": [],
+              "stdout": "sysStringInteger.c-vcd.out",
+              "vcd": "sysStringInteger.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.cexe"
+                ],
+                "outputs": [
+                  "sysStringInteger.c-vcd.out",
+                  "sysStringInteger.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStringInteger.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringInteger.c-vcd.out",
+              "expected": "sysStringInteger.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringInteger.c-vcd.out",
+                  "sysStringInteger.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 388,
+                  "endByte": 439,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStringIntegerWithNull",
+      "resource": "heavy",
+      "fixtures": [
+        "StringIntegerWithNull.bsv",
+        "sysStringIntegerWithNull.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStringIntegerWithNull",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StringIntegerWithNull.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStringIntegerWithNull",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StringIntegerWithNull.bsv"
+                ],
+                "outputs": [
+                  "StringIntegerWithNull.bo",
+                  "StringIntegerWithNull.bsv.bsc-vcomp-out",
+                  "sysStringIntegerWithNull.ba",
+                  "sysStringIntegerWithNull.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStringIntegerWithNull"
+              ],
+              "top": "sysStringIntegerWithNull",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.v"
+                ],
+                "outputs": [
+                  "sysStringIntegerWithNull.bsc-vcomp-out",
+                  "sysStringIntegerWithNull.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringIntegerWithNull",
+              "args": [],
+              "stdout": "sysStringIntegerWithNull.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.vexe"
+                ],
+                "outputs": [
+                  "sysStringIntegerWithNull.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysStringIntegerWithNull.v.out",
+              "expected": "sysStringIntegerWithNull.out.expected",
+              "reason": "upstream simulator bug list \"iverilog modelsim\"",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.v.out",
+                  "sysStringIntegerWithNull.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringIntegerWithNull",
+              "args": [],
+              "stdout": "sysStringIntegerWithNull.v-vcd.out",
+              "vcd": "sysStringIntegerWithNull.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.vexe"
+                ],
+                "outputs": [
+                  "sysStringIntegerWithNull.v-vcd.out",
+                  "sysStringIntegerWithNull.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStringIntegerWithNull"
+              ],
+              "top": "sysStringIntegerWithNull",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.ba"
+                ],
+                "outputs": [
+                  "sysStringIntegerWithNull.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStringIntegerWithNull.cexe",
+                    "sysStringIntegerWithNull.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringIntegerWithNull",
+              "args": [],
+              "stdout": "sysStringIntegerWithNull.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.cexe"
+                ],
+                "outputs": [
+                  "sysStringIntegerWithNull.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringIntegerWithNull.c.out",
+              "expected": "sysStringIntegerWithNull.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.c.out",
+                  "sysStringIntegerWithNull.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringIntegerWithNull",
+              "args": [],
+              "stdout": "sysStringIntegerWithNull.c-vcd.out",
+              "vcd": "sysStringIntegerWithNull.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.cexe"
+                ],
+                "outputs": [
+                  "sysStringIntegerWithNull.c-vcd.out",
+                  "sysStringIntegerWithNull.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStringIntegerWithNull.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringIntegerWithNull.c-vcd.out",
+              "expected": "sysStringIntegerWithNull.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringIntegerWithNull.c-vcd.out",
+                  "sysStringIntegerWithNull.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 590,
+                  "endByte": 660,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 71
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStringEQ",
+      "resource": "heavy",
+      "fixtures": [
+        "StringEQ.bsv",
+        "sysStringEQ.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStringEQ",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StringEQ.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStringEQ",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StringEQ.bsv"
+                ],
+                "outputs": [
+                  "StringEQ.bo",
+                  "StringEQ.bsv.bsc-vcomp-out",
+                  "sysStringEQ.ba",
+                  "sysStringEQ.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStringEQ"
+              ],
+              "top": "sysStringEQ",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.v"
+                ],
+                "outputs": [
+                  "sysStringEQ.bsc-vcomp-out",
+                  "sysStringEQ.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringEQ",
+              "args": [],
+              "stdout": "sysStringEQ.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.vexe"
+                ],
+                "outputs": [
+                  "sysStringEQ.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringEQ.v.out",
+              "expected": "sysStringEQ.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.v.out",
+                  "sysStringEQ.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringEQ",
+              "args": [],
+              "stdout": "sysStringEQ.v-vcd.out",
+              "vcd": "sysStringEQ.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.vexe"
+                ],
+                "outputs": [
+                  "sysStringEQ.v-vcd.out",
+                  "sysStringEQ.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStringEQ.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStringEQ"
+              ],
+              "top": "sysStringEQ",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.ba"
+                ],
+                "outputs": [
+                  "sysStringEQ.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStringEQ.cexe",
+                    "sysStringEQ.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringEQ",
+              "args": [],
+              "stdout": "sysStringEQ.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.cexe"
+                ],
+                "outputs": [
+                  "sysStringEQ.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringEQ.c.out",
+              "expected": "sysStringEQ.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.c.out",
+                  "sysStringEQ.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringEQ",
+              "args": [],
+              "stdout": "sysStringEQ.c-vcd.out",
+              "vcd": "sysStringEQ.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.cexe"
+                ],
+                "outputs": [
+                  "sysStringEQ.c-vcd.out",
+                  "sysStringEQ.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStringEQ.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringEQ.c-vcd.out",
+              "expected": "sysStringEQ.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringEQ.c-vcd.out",
+                  "sysStringEQ.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 685,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStringLT",
+      "resource": "heavy",
+      "fixtures": [
+        "StringLT.bsv",
+        "sysStringLT.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStringLT",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StringLT.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStringLT",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StringLT.bsv"
+                ],
+                "outputs": [
+                  "StringLT.bo",
+                  "StringLT.bsv.bsc-vcomp-out",
+                  "sysStringLT.ba",
+                  "sysStringLT.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStringLT"
+              ],
+              "top": "sysStringLT",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.v"
+                ],
+                "outputs": [
+                  "sysStringLT.bsc-vcomp-out",
+                  "sysStringLT.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringLT",
+              "args": [],
+              "stdout": "sysStringLT.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.vexe"
+                ],
+                "outputs": [
+                  "sysStringLT.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringLT.v.out",
+              "expected": "sysStringLT.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.v.out",
+                  "sysStringLT.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStringLT",
+              "args": [],
+              "stdout": "sysStringLT.v-vcd.out",
+              "vcd": "sysStringLT.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.vexe"
+                ],
+                "outputs": [
+                  "sysStringLT.v-vcd.out",
+                  "sysStringLT.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStringLT.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStringLT"
+              ],
+              "top": "sysStringLT",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.ba"
+                ],
+                "outputs": [
+                  "sysStringLT.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStringLT.cexe",
+                    "sysStringLT.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringLT",
+              "args": [],
+              "stdout": "sysStringLT.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.cexe"
+                ],
+                "outputs": [
+                  "sysStringLT.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringLT.c.out",
+              "expected": "sysStringLT.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.c.out",
+                  "sysStringLT.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStringLT",
+              "args": [],
+              "stdout": "sysStringLT.c-vcd.out",
+              "vcd": "sysStringLT.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.cexe"
+                ],
+                "outputs": [
+                  "sysStringLT.c-vcd.out",
+                  "sysStringLT.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStringLT.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStringLT.c-vcd.out",
+              "expected": "sysStringLT.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStringLT.c-vcd.out",
+                  "sysStringLT.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 686,
+                  "endByte": 710,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDynamicFormatString",
+      "resource": "heavy",
+      "fixtures": [
+        "DynamicFormatString.bsv",
+        "sysDynamicFormatString.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDynamicFormatString",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DynamicFormatString.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDynamicFormatString",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DynamicFormatString.bsv"
+                ],
+                "outputs": [
+                  "DynamicFormatString.bo",
+                  "DynamicFormatString.bsv.bsc-vcomp-out",
+                  "sysDynamicFormatString.ba",
+                  "sysDynamicFormatString.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDynamicFormatString"
+              ],
+              "top": "sysDynamicFormatString",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.v"
+                ],
+                "outputs": [
+                  "sysDynamicFormatString.bsc-vcomp-out",
+                  "sysDynamicFormatString.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDynamicFormatString",
+              "args": [],
+              "stdout": "sysDynamicFormatString.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.vexe"
+                ],
+                "outputs": [
+                  "sysDynamicFormatString.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDynamicFormatString.v.out",
+              "expected": "sysDynamicFormatString.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.v.out",
+                  "sysDynamicFormatString.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDynamicFormatString",
+              "args": [],
+              "stdout": "sysDynamicFormatString.v-vcd.out",
+              "vcd": "sysDynamicFormatString.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.vexe"
+                ],
+                "outputs": [
+                  "sysDynamicFormatString.v-vcd.out",
+                  "sysDynamicFormatString.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDynamicFormatString.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDynamicFormatString"
+              ],
+              "top": "sysDynamicFormatString",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.ba"
+                ],
+                "outputs": [
+                  "sysDynamicFormatString.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDynamicFormatString.cexe",
+                    "sysDynamicFormatString.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDynamicFormatString",
+              "args": [],
+              "stdout": "sysDynamicFormatString.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.cexe"
+                ],
+                "outputs": [
+                  "sysDynamicFormatString.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDynamicFormatString.c.out",
+              "expected": "sysDynamicFormatString.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.c.out",
+                  "sysDynamicFormatString.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDynamicFormatString",
+              "args": [],
+              "stdout": "sysDynamicFormatString.c-vcd.out",
+              "vcd": "sysDynamicFormatString.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.cexe"
+                ],
+                "outputs": [
+                  "sysDynamicFormatString.c-vcd.out",
+                  "sysDynamicFormatString.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDynamicFormatString.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDynamicFormatString.c-vcd.out",
+              "expected": "sysDynamicFormatString.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicFormatString.c-vcd.out",
+                  "sysDynamicFormatString.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 711,
+                  "endByte": 746,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

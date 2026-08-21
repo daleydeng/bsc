@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID156/bugID156",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID156/bugID156.exp",
+    "sha256": "9ae1724179e0f54fff15930db77ac6d530df0f0edb2e40d2542af2ba7afcbfa2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID156",
+  "fixtures": [
+    {
+      "path": "Sizebug.bs",
+      "sha256": "fa1fe5f15e2096884ac88f3be9c5620dcdbc92366b398fe6d4b8b52940b75a1f",
+      "role": "source"
+    },
+    {
+      "path": "Sizebug.bs.bsc-vcomp-out.expected",
+      "sha256": "d30bc1346b975ba10b5a75d71b51864916108055445fb0e45056a57251eab426",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Sizebug",
+      "resource": "normal",
+      "fixtures": [
+        "Sizebug.bs",
+        "Sizebug.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Sizebug",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Sizebug.bs",
+              "mode": "verilog",
+              "module": "top",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Sizebug.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Sizebug.bs"
+                ],
+                "outputs": [
+                  "Sizebug.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 54,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Sizebug.bs.bsc-vcomp-out",
+              "expected": "Sizebug.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Sizebug.bs.bsc-vcomp-out",
+                  "Sizebug.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 92,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

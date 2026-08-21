@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b569/b569",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b569/b569.exp",
+    "sha256": "b949b54cf63d577d1892d99ab557cd835e296c31f3ddad7972bc8b3eea569591"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b569",
+  "fixtures": [
+    {
+      "path": "ArithModules.bsv",
+      "sha256": "eea25a769958d7d3bc62c96c87181f869dc3e79ebe5a4d23dc896d994cd30203",
+      "role": "source"
+    },
+    {
+      "path": "Test.bsv",
+      "sha256": "71443fd686d9be7cd978637cb4d07c4f9db57d2a0a2548fe88f71e6c87c40267",
+      "role": "source"
+    },
+    {
+      "path": "mkAddSub.v.expected",
+      "sha256": "a819215f8d85e1f5a63055e438838367f35502d4a6d318e85646d2d2884d9140",
+      "role": "golden"
+    },
+    {
+      "path": "tb.v.expected",
+      "sha256": "6ff6c8020f187c8691d6f377f5035ee24b83225292776c017b1f186ccfba1b95",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "ArithModules.bsv",
+        "Test.bsv",
+        "mkAddSub.v.expected",
+        "tb.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bsv",
+              "mode": "verilog",
+              "module": "tb",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bo",
+                  "Test.bsv.bsc-vcomp-out",
+                  "mkAddSub.v",
+                  "mkConstMult.v",
+                  "mult_W1W2W3.v",
+                  "mult_W5W6W7.v",
+                  "tb.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "tb.v",
+              "expected": "tb.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "tb.v",
+                  "tb.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 80,
+                  "endByte": 100,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkAddSub.v",
+              "expected": "mkAddSub.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkAddSub.v",
+                  "mkAddSub.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 101,
+                  "endByte": 127,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Stmt/FacTest/FacTest",
+  "origin": {
+    "path": "testsuite/bsc.lib/Stmt/FacTest/FacTest.exp",
+    "sha256": "6052dc636fc1ac1d2ec7347add53da3f65c2556b145922a9921f4313a6f2e770"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Stmt/FacTest",
+  "fixtures": [
+    {
+      "path": "FacTest.bsv",
+      "sha256": "4ee1fb6caa7c28dc8cd9f79f929b1956021d4d8ac5e3279acf503b7968e05c9a",
+      "role": "source"
+    },
+    {
+      "path": "mkFacTest.out.expected",
+      "sha256": "83c1ee29a9ca58c65ad41598f0e695bd17a04e2666b2d3fc7f05bf54a6d8a766",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkFacTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FacTest.bsv",
+        "mkFacTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkFacTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FacTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkFacTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "FacTest.bsv"
+                ],
+                "outputs": [
+                  "FacTest.bo",
+                  "FacTest.bsv.bsc-vcomp-out",
+                  "mkFacTest.ba",
+                  "mkFacTest.v",
+                  "mkLockTest.ba",
+                  "mkLockTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkFacTest"
+              ],
+              "top": "mkFacTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.v"
+                ],
+                "outputs": [
+                  "mkFacTest.bsc-vcomp-out",
+                  "mkFacTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkFacTest",
+              "args": [],
+              "stdout": "mkFacTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.vexe"
+                ],
+                "outputs": [
+                  "mkFacTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkFacTest.v.out",
+              "expected": "mkFacTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.v.out",
+                  "mkFacTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkFacTest",
+              "args": [],
+              "stdout": "mkFacTest.v-vcd.out",
+              "vcd": "mkFacTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.vexe"
+                ],
+                "outputs": [
+                  "mkFacTest.v-vcd.out",
+                  "mkFacTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkFacTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkFacTest"
+              ],
+              "top": "mkFacTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.ba"
+                ],
+                "outputs": [
+                  "mkFacTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkFacTest.cexe",
+                    "mkFacTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkFacTest",
+              "args": [],
+              "stdout": "mkFacTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.cexe"
+                ],
+                "outputs": [
+                  "mkFacTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkFacTest.c.out",
+              "expected": "mkFacTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.c.out",
+                  "mkFacTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkFacTest",
+              "args": [],
+              "stdout": "mkFacTest.c-vcd.out",
+              "vcd": "mkFacTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.cexe"
+                ],
+                "outputs": [
+                  "mkFacTest.c-vcd.out",
+                  "mkFacTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkFacTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkFacTest.c-vcd.out",
+              "expected": "mkFacTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkFacTest.c-vcd.out",
+                  "mkFacTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

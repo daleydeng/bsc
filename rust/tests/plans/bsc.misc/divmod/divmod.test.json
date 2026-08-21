@@ -1,0 +1,1880 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.misc/divmod/divmod",
+  "origin": {
+    "path": "testsuite/bsc.misc/divmod/divmod.exp",
+    "sha256": "3511f8aa3c5105554d6b215809e7817666330ba8dbd48174aa522a01a51d0405"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.misc/divmod",
+  "fixtures": [
+    {
+      "path": "DivMod.bsv",
+      "sha256": "9fa84749dadeb31afb0e6051f864853a6e7e29533b4da3c2eac87e2a464dc400",
+      "role": "source"
+    },
+    {
+      "path": "DivModWide.bsv",
+      "sha256": "4f676e4abbb956d76e1881558f1de6984b8ca57cce6c5ca0182ec2154c7c8f07",
+      "role": "source"
+    },
+    {
+      "path": "DivideByZero.bsv",
+      "sha256": "d08e1736469a53ec25abfd22116542dff858507b05a43f5b7e8e580582827133",
+      "role": "source"
+    },
+    {
+      "path": "DivideByZeroStatic.bsv",
+      "sha256": "a9967cd926ceddfb812c72014b0726523783f091791a807001f37316419e76a2",
+      "role": "source"
+    },
+    {
+      "path": "DivideByZeroWide.bsv",
+      "sha256": "6e4100e9fe97c093482b4d59433846fa7f6a93ba53271b30a3c8dbf2546f4c66",
+      "role": "source"
+    },
+    {
+      "path": "SimpleTest.bsv",
+      "sha256": "d3a1fce3427fb7ffb25978ee65bceec391743e8c9abe48a7edd18acf9acce43f",
+      "role": "source"
+    },
+    {
+      "path": "sysDivMod.out.expected",
+      "sha256": "07c1106f547214a0d2ff0b14486dbbb8227bd9f2cdf28b81ffa4105e6938742d",
+      "role": "golden"
+    },
+    {
+      "path": "sysDivModWide.out.expected",
+      "sha256": "43d0fe50e617fc8be1678ce552de51f2493b55ae31ab5a0180bc9803bfc094cf",
+      "role": "golden"
+    },
+    {
+      "path": "sysDivideByZero.v.out.expected",
+      "sha256": "1c6e0be078d45ed1595021a94f52e20cf9d787005ac4b21c16fdd10032986aa8",
+      "role": "golden"
+    },
+    {
+      "path": "sysDivideByZeroWide.v.out.expected",
+      "sha256": "0829e1b50b0bb19d577c10daefd6da6cc1a7f088676de03aeb9507573d4d599d",
+      "role": "golden"
+    },
+    {
+      "path": "sysSimpleTest.out.expected",
+      "sha256": "e3aca281a3c3c334e692405d9600b60eb25869656b4c93411fb3ca8fd2ced093",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysSimpleTest",
+      "resource": "heavy",
+      "fixtures": [
+        "SimpleTest.bsv",
+        "sysSimpleTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSimpleTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SimpleTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysSimpleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SimpleTest.bsv"
+                ],
+                "outputs": [
+                  "SimpleTest.bo",
+                  "SimpleTest.bsv.bsc-vcomp-out",
+                  "sysSimpleTest.ba",
+                  "sysSimpleTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSimpleTest"
+              ],
+              "top": "sysSimpleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.v"
+                ],
+                "outputs": [
+                  "sysSimpleTest.bsc-vcomp-out",
+                  "sysSimpleTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSimpleTest",
+              "args": [],
+              "stdout": "sysSimpleTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.vexe"
+                ],
+                "outputs": [
+                  "sysSimpleTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSimpleTest.v.out",
+              "expected": "sysSimpleTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.v.out",
+                  "sysSimpleTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSimpleTest",
+              "args": [],
+              "stdout": "sysSimpleTest.v-vcd.out",
+              "vcd": "sysSimpleTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.vexe"
+                ],
+                "outputs": [
+                  "sysSimpleTest.v-vcd.out",
+                  "sysSimpleTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSimpleTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSimpleTest"
+              ],
+              "top": "sysSimpleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.ba"
+                ],
+                "outputs": [
+                  "sysSimpleTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSimpleTest.cexe",
+                    "sysSimpleTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSimpleTest",
+              "args": [],
+              "stdout": "sysSimpleTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.cexe"
+                ],
+                "outputs": [
+                  "sysSimpleTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSimpleTest.c.out",
+              "expected": "sysSimpleTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.c.out",
+                  "sysSimpleTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSimpleTest",
+              "args": [],
+              "stdout": "sysSimpleTest.c-vcd.out",
+              "vcd": "sysSimpleTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.cexe"
+                ],
+                "outputs": [
+                  "sysSimpleTest.c-vcd.out",
+                  "sysSimpleTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSimpleTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSimpleTest.c-vcd.out",
+              "expected": "sysSimpleTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSimpleTest.c-vcd.out",
+                  "sysSimpleTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 139,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDivMod",
+      "resource": "heavy",
+      "fixtures": [
+        "DivMod.bsv",
+        "sysDivMod.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDivMod",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivMod.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDivMod",
+              "args": [
+                "-no-use-negate"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DivMod.bsv"
+                ],
+                "outputs": [
+                  "DivMod.bo",
+                  "DivMod.bsv.bsc-vcomp-out",
+                  "sysDivMod.ba",
+                  "sysDivMod.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDivMod"
+              ],
+              "top": "sysDivMod",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.v"
+                ],
+                "outputs": [
+                  "sysDivMod.bsc-vcomp-out",
+                  "sysDivMod.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivMod",
+              "args": [],
+              "stdout": "sysDivMod.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.vexe"
+                ],
+                "outputs": [
+                  "sysDivMod.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivMod.v.out",
+              "expected": "sysDivMod.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.v.out",
+                  "sysDivMod.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivMod",
+              "args": [],
+              "stdout": "sysDivMod.v-vcd.out",
+              "vcd": "sysDivMod.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.vexe"
+                ],
+                "outputs": [
+                  "sysDivMod.v-vcd.out",
+                  "sysDivMod.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDivMod.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDivMod"
+              ],
+              "top": "sysDivMod",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.ba"
+                ],
+                "outputs": [
+                  "sysDivMod.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDivMod.cexe",
+                    "sysDivMod.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivMod",
+              "args": [],
+              "stdout": "sysDivMod.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.cexe"
+                ],
+                "outputs": [
+                  "sysDivMod.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivMod.c.out",
+              "expected": "sysDivMod.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.c.out",
+                  "sysDivMod.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivMod",
+              "args": [],
+              "stdout": "sysDivMod.c-vcd.out",
+              "vcd": "sysDivMod.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.cexe"
+                ],
+                "outputs": [
+                  "sysDivMod.c-vcd.out",
+                  "sysDivMod.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDivMod.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivMod.c-vcd.out",
+              "expected": "sysDivMod.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivMod.c-vcd.out",
+                  "sysDivMod.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 199,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDivModWide",
+      "resource": "heavy",
+      "fixtures": [
+        "DivModWide.bsv",
+        "sysDivModWide.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDivModWide",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivModWide.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDivModWide",
+              "args": [
+                "-no-use-negate"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DivModWide.bsv"
+                ],
+                "outputs": [
+                  "DivModWide.bo",
+                  "DivModWide.bsv.bsc-vcomp-out",
+                  "sysDivModWide.ba",
+                  "sysDivModWide.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDivModWide"
+              ],
+              "top": "sysDivModWide",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.v"
+                ],
+                "outputs": [
+                  "sysDivModWide.bsc-vcomp-out",
+                  "sysDivModWide.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivModWide",
+              "args": [],
+              "stdout": "sysDivModWide.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.vexe"
+                ],
+                "outputs": [
+                  "sysDivModWide.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivModWide.v.out",
+              "expected": "sysDivModWide.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.v.out",
+                  "sysDivModWide.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivModWide",
+              "args": [],
+              "stdout": "sysDivModWide.v-vcd.out",
+              "vcd": "sysDivModWide.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.vexe"
+                ],
+                "outputs": [
+                  "sysDivModWide.v-vcd.out",
+                  "sysDivModWide.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDivModWide.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDivModWide"
+              ],
+              "top": "sysDivModWide",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.ba"
+                ],
+                "outputs": [
+                  "sysDivModWide.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDivModWide.cexe",
+                    "sysDivModWide.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivModWide",
+              "args": [],
+              "stdout": "sysDivModWide.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.cexe"
+                ],
+                "outputs": [
+                  "sysDivModWide.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivModWide.c.out",
+              "expected": "sysDivModWide.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.c.out",
+                  "sysDivModWide.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivModWide",
+              "args": [],
+              "stdout": "sysDivModWide.c-vcd.out",
+              "vcd": "sysDivModWide.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.cexe"
+                ],
+                "outputs": [
+                  "sysDivModWide.c-vcd.out",
+                  "sysDivModWide.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDivModWide.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivModWide.c-vcd.out",
+              "expected": "sysDivModWide.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivModWide.c-vcd.out",
+                  "sysDivModWide.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 290,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 90
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDivideByZero",
+      "resource": "heavy",
+      "fixtures": [
+        "DivideByZero.bsv",
+        "sysDivideByZero.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDivideByZero",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivideByZero.bsv",
+              "mode": "verilog",
+              "module": "sysDivideByZero",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DivideByZero.bsv"
+                ],
+                "outputs": [
+                  "DivideByZero.bo",
+                  "DivideByZero.bsv.bsc-vcomp-out",
+                  "sysDivideByZero.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 792,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDivideByZero"
+              ],
+              "top": "sysDivideByZero",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.v"
+                ],
+                "outputs": [
+                  "sysDivideByZero.bsc-vcomp-out",
+                  "sysDivideByZero.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 792,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivideByZero",
+              "args": [],
+              "stdout": "sysDivideByZero.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.vexe"
+                ],
+                "outputs": [
+                  "sysDivideByZero.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 792,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivideByZero.v.out",
+              "expected": "sysDivideByZero.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.v.out",
+                  "sysDivideByZero.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 792,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivideByZero",
+              "args": [],
+              "stdout": "sysDivideByZero.v-vcd.out",
+              "vcd": "sysDivideByZero.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.vexe"
+                ],
+                "outputs": [
+                  "sysDivideByZero.v-vcd.out",
+                  "sysDivideByZero.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 792,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDivideByZero.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 730,
+                  "endByte": 792,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDivideByZeroWide",
+      "resource": "heavy",
+      "fixtures": [
+        "DivideByZeroWide.bsv",
+        "sysDivideByZeroWide.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDivideByZeroWide",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivideByZeroWide.bsv",
+              "mode": "verilog",
+              "module": "sysDivideByZeroWide",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DivideByZeroWide.bsv"
+                ],
+                "outputs": [
+                  "DivideByZeroWide.bo",
+                  "DivideByZeroWide.bsv.bsc-vcomp-out",
+                  "sysDivideByZeroWide.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1125,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDivideByZeroWide"
+              ],
+              "top": "sysDivideByZeroWide",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.v"
+                ],
+                "outputs": [
+                  "sysDivideByZeroWide.bsc-vcomp-out",
+                  "sysDivideByZeroWide.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1125,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivideByZeroWide",
+              "args": [],
+              "stdout": "sysDivideByZeroWide.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.vexe"
+                ],
+                "outputs": [
+                  "sysDivideByZeroWide.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1125,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivideByZeroWide.v.out",
+              "expected": "sysDivideByZeroWide.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.v.out",
+                  "sysDivideByZeroWide.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1125,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivideByZeroWide",
+              "args": [],
+              "stdout": "sysDivideByZeroWide.v-vcd.out",
+              "vcd": "sysDivideByZeroWide.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.vexe"
+                ],
+                "outputs": [
+                  "sysDivideByZeroWide.v-vcd.out",
+                  "sysDivideByZeroWide.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1125,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDivideByZeroWide.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1055,
+                  "endByte": 1125,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 71
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-DivideByZeroStatic",
+      "resource": "normal",
+      "fixtures": [
+        "DivideByZeroStatic.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DivideByZeroStatic",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DivideByZeroStatic.bsv",
+              "mode": "bluesim_object",
+              "module": "sysDivideByZeroStatic",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "DivideByZeroStatic.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DivideByZeroStatic.bsv"
+                ],
+                "outputs": [
+                  "DivideByZeroStatic.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1199,
+                  "endByte": 1277,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "DivideByZeroStatic.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0059",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "DivideByZeroStatic.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1199,
+                  "endByte": 1277,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysDivideByZero",
+      "resource": "heavy",
+      "fixtures": [
+        "DivideByZero.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysDivideByZero",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivideByZero.bsv",
+              "mode": "bluesim",
+              "module": "sysDivideByZero",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DivideByZero.bsv"
+                ],
+                "outputs": [
+                  "DivideByZero.bo",
+                  "DivideByZero.bsv.bsc-ccomp-out",
+                  "sysDivideByZero.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 381,
+                  "endByte": 433,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDivideByZero"
+              ],
+              "top": "sysDivideByZero",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.ba"
+                ],
+                "outputs": [
+                  "sysDivideByZero.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDivideByZero.cexe",
+                    "sysDivideByZero.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 434,
+                  "endByte": 483,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivideByZero",
+              "args": [],
+              "stdout": "sysDivideByZero.out",
+              "expectedExits": {
+                "codes": [
+                  8,
+                  136
+                ],
+                "aarch64Codes": [
+                  0
+                ],
+                "windowsCodes": [
+                  127
+                ]
+              },
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZero.cexe"
+                ],
+                "outputs": [
+                  "sysDivideByZero.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 484,
+                  "endByte": 690,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 2
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-sysDivideByZeroWide",
+      "resource": "heavy",
+      "fixtures": [
+        "DivideByZeroWide.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysDivideByZeroWide",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivideByZeroWide.bsv",
+              "mode": "bluesim",
+              "module": "sysDivideByZeroWide",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DivideByZeroWide.bsv"
+                ],
+                "outputs": [
+                  "DivideByZeroWide.bo",
+                  "DivideByZeroWide.bsv.bsc-ccomp-out",
+                  "sysDivideByZeroWide.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 854,
+                  "endByte": 914,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 61
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDivideByZeroWide"
+              ],
+              "top": "sysDivideByZeroWide",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.ba"
+                ],
+                "outputs": [
+                  "sysDivideByZeroWide.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDivideByZeroWide.cexe",
+                    "sysDivideByZeroWide.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 915,
+                  "endByte": 972,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivideByZeroWide",
+              "args": [],
+              "stdout": "sysDivideByZeroWide.out",
+              "expectedExits": {
+                "codes": [
+                  8,
+                  136
+                ],
+                "windowsCodes": [
+                  3
+                ]
+              },
+              "artifacts": {
+                "inputs": [
+                  "sysDivideByZeroWide.cexe"
+                ],
+                "outputs": [
+                  "sysDivideByZeroWide.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 973,
+                  "endByte": 1015,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/SShow/SShow",
+  "origin": {
+    "path": "testsuite/bsc.lib/SShow/SShow.exp",
+    "sha256": "df700f1072917c9ef2cffc6ac2a37fce350ab65a65d67e3630b3979e1173c1a9"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/SShow",
+  "fixtures": [
+    {
+      "path": "TestSShow.bs",
+      "sha256": "0c1aac84207f8fb048156e93bc32d41d4e68e2b3053a700fbed244a2314673db",
+      "role": "source"
+    },
+    {
+      "path": "sysTestSShow.out.expected",
+      "sha256": "b781b7b363bdd8c2740e14102a0fbe299eda1858265c4f0903cc21a82e03adc6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-TestSShow",
+      "resource": "normal",
+      "fixtures": [
+        "TestSShow.bs",
+        "sysTestSShow.out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestSShow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestSShow.bs",
+              "mode": "verilog",
+              "module": "sysTestSShow",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestSShow.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TestSShow.bs"
+                ],
+                "outputs": [
+                  "TestSShow.bo",
+                  "TestSShow.bs.bsc-vcomp-out",
+                  "sysTestSShow.out",
+                  "sysTestSShow.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 59,
+                  "endByte": 105,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestSShow.out",
+              "expected": "sysTestSShow.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSShow.out",
+                  "sysTestSShow.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 136,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

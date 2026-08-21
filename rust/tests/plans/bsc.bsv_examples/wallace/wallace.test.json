@@ -1,0 +1,1572 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/wallace/wallace",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/wallace/wallace.exp",
+    "sha256": "41472beef01aec4add0d3244ebe3f20c3506bce9584c5976f112d355de07ef8b"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/wallace",
+  "fixtures": [
+    {
+      "path": "CombWallace.bsv",
+      "sha256": "da59b298e06acaad82bceed4ffa0160222069b3a001ec7d8dca11a7bc9b6f2b9",
+      "role": "source"
+    },
+    {
+      "path": "StatefulWallace.bsv",
+      "sha256": "b5f099f3324769edf030ca63faa79eeb86141d45ad5846e6a8cfa438a2ce9378",
+      "role": "source"
+    },
+    {
+      "path": "WallaceLib.bsv",
+      "sha256": "2ef57c920321f5085e670e6a581a894e5eda4954831c98d9ce68e379e73ef530",
+      "role": "source"
+    },
+    {
+      "path": "WallaceServer.bsv",
+      "sha256": "699205622a8a7928aa46617c886cb36066ff8af9662836959c4199d77136b329",
+      "role": "source"
+    },
+    {
+      "path": "WallaceTest.bsv",
+      "sha256": "92bd9b0042c3278f0c09ec348d002690552d2bc85c960a5fe8d11ec03bd40b74",
+      "role": "source"
+    },
+    {
+      "path": "wallace435.out.expected",
+      "sha256": "076ad3e7e7df9cda4a63fa17288ac9b8fd479a90dbb35e447400cbce220db3ae",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-testCombServer",
+      "resource": "heavy",
+      "fixtures": [
+        "CombWallace.bsv",
+        "StatefulWallace.bsv",
+        "WallaceLib.bsv",
+        "WallaceServer.bsv",
+        "WallaceTest.bsv",
+        "wallace435.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "testCombServer",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "WallaceTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "testCombServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WallaceTest.bsv"
+                ],
+                "outputs": [
+                  "WallaceTest.bo",
+                  "WallaceTest.bsv.bsc-vcomp-out",
+                  "sysCombServer.ba",
+                  "sysCombServer.v",
+                  "sysStatefulServer1.ba",
+                  "sysStatefulServer1.v",
+                  "sysStatefulServer2.ba",
+                  "sysStatefulServer2.v",
+                  "sysStatefulServer3.ba",
+                  "sysStatefulServer3.v",
+                  "testCombServer.ba",
+                  "testCombServer.v",
+                  "testStatefulServer1.ba",
+                  "testStatefulServer1.v",
+                  "testStatefulServer2.ba",
+                  "testStatefulServer2.v",
+                  "testStatefulServer3.ba",
+                  "testStatefulServer3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "testCombServer",
+                "sysCombServer"
+              ],
+              "top": "testCombServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.v",
+                  "sysCombServer.v"
+                ],
+                "outputs": [
+                  "testCombServer.bsc-vcomp-out",
+                  "testCombServer.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testCombServer",
+              "args": [],
+              "stdout": "testCombServer.v.out",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.vexe"
+                ],
+                "outputs": [
+                  "testCombServer.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testCombServer.v.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.v.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testCombServer",
+              "args": [],
+              "stdout": "testCombServer.v-vcd.out",
+              "vcd": "testCombServer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.vexe"
+                ],
+                "outputs": [
+                  "testCombServer.v-vcd.out",
+                  "testCombServer.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "testCombServer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "testCombServer",
+                "sysCombServer"
+              ],
+              "top": "testCombServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.ba",
+                  "sysCombServer.ba"
+                ],
+                "outputs": [
+                  "testCombServer.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "testCombServer.cexe",
+                    "testCombServer.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testCombServer",
+              "args": [],
+              "stdout": "testCombServer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.cexe"
+                ],
+                "outputs": [
+                  "testCombServer.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testCombServer.c.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.c.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testCombServer",
+              "args": [],
+              "stdout": "testCombServer.c-vcd.out",
+              "vcd": "testCombServer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.cexe"
+                ],
+                "outputs": [
+                  "testCombServer.c-vcd.out",
+                  "testCombServer.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "testCombServer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testCombServer.c-vcd.out",
+              "expected": "testCombServer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testCombServer.c-vcd.out",
+                  "testCombServer.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 88,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 89
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-testStatefulServer1",
+      "resource": "heavy",
+      "fixtures": [
+        "CombWallace.bsv",
+        "StatefulWallace.bsv",
+        "WallaceLib.bsv",
+        "WallaceServer.bsv",
+        "WallaceTest.bsv",
+        "wallace435.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "testStatefulServer1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "WallaceTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "testStatefulServer1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WallaceTest.bsv"
+                ],
+                "outputs": [
+                  "WallaceTest.bo",
+                  "WallaceTest.bsv.bsc-vcomp-out",
+                  "sysCombServer.ba",
+                  "sysCombServer.v",
+                  "sysStatefulServer1.ba",
+                  "sysStatefulServer1.v",
+                  "sysStatefulServer2.ba",
+                  "sysStatefulServer2.v",
+                  "sysStatefulServer3.ba",
+                  "sysStatefulServer3.v",
+                  "testCombServer.ba",
+                  "testCombServer.v",
+                  "testStatefulServer1.ba",
+                  "testStatefulServer1.v",
+                  "testStatefulServer2.ba",
+                  "testStatefulServer2.v",
+                  "testStatefulServer3.ba",
+                  "testStatefulServer3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "testStatefulServer1",
+                "sysStatefulServer1"
+              ],
+              "top": "testStatefulServer1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.v",
+                  "sysStatefulServer1.v"
+                ],
+                "outputs": [
+                  "testStatefulServer1.bsc-vcomp-out",
+                  "testStatefulServer1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testStatefulServer1",
+              "args": [],
+              "stdout": "testStatefulServer1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.vexe"
+                ],
+                "outputs": [
+                  "testStatefulServer1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer1.v.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.v.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testStatefulServer1",
+              "args": [],
+              "stdout": "testStatefulServer1.v-vcd.out",
+              "vcd": "testStatefulServer1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.vexe"
+                ],
+                "outputs": [
+                  "testStatefulServer1.v-vcd.out",
+                  "testStatefulServer1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "testStatefulServer1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "testStatefulServer1",
+                "sysStatefulServer1"
+              ],
+              "top": "testStatefulServer1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.ba",
+                  "sysStatefulServer1.ba"
+                ],
+                "outputs": [
+                  "testStatefulServer1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "testStatefulServer1.cexe",
+                    "testStatefulServer1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testStatefulServer1",
+              "args": [],
+              "stdout": "testStatefulServer1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.cexe"
+                ],
+                "outputs": [
+                  "testStatefulServer1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer1.c.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.c.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testStatefulServer1",
+              "args": [],
+              "stdout": "testStatefulServer1.c-vcd.out",
+              "vcd": "testStatefulServer1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.cexe"
+                ],
+                "outputs": [
+                  "testStatefulServer1.c-vcd.out",
+                  "testStatefulServer1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "testStatefulServer1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer1.c-vcd.out",
+              "expected": "testStatefulServer1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer1.c-vcd.out",
+                  "testStatefulServer1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 99
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-testStatefulServer2",
+      "resource": "heavy",
+      "fixtures": [
+        "CombWallace.bsv",
+        "StatefulWallace.bsv",
+        "WallaceLib.bsv",
+        "WallaceServer.bsv",
+        "WallaceTest.bsv",
+        "wallace435.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "testStatefulServer2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "WallaceTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "testStatefulServer2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WallaceTest.bsv"
+                ],
+                "outputs": [
+                  "WallaceTest.bo",
+                  "WallaceTest.bsv.bsc-vcomp-out",
+                  "sysCombServer.ba",
+                  "sysCombServer.v",
+                  "sysStatefulServer1.ba",
+                  "sysStatefulServer1.v",
+                  "sysStatefulServer2.ba",
+                  "sysStatefulServer2.v",
+                  "sysStatefulServer3.ba",
+                  "sysStatefulServer3.v",
+                  "testCombServer.ba",
+                  "testCombServer.v",
+                  "testStatefulServer1.ba",
+                  "testStatefulServer1.v",
+                  "testStatefulServer2.ba",
+                  "testStatefulServer2.v",
+                  "testStatefulServer3.ba",
+                  "testStatefulServer3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "testStatefulServer2",
+                "sysStatefulServer2"
+              ],
+              "top": "testStatefulServer2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.v",
+                  "sysStatefulServer2.v"
+                ],
+                "outputs": [
+                  "testStatefulServer2.bsc-vcomp-out",
+                  "testStatefulServer2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testStatefulServer2",
+              "args": [],
+              "stdout": "testStatefulServer2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.vexe"
+                ],
+                "outputs": [
+                  "testStatefulServer2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer2.v.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.v.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testStatefulServer2",
+              "args": [],
+              "stdout": "testStatefulServer2.v-vcd.out",
+              "vcd": "testStatefulServer2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.vexe"
+                ],
+                "outputs": [
+                  "testStatefulServer2.v-vcd.out",
+                  "testStatefulServer2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "testStatefulServer2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "testStatefulServer2",
+                "sysStatefulServer2"
+              ],
+              "top": "testStatefulServer2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.ba",
+                  "sysStatefulServer2.ba"
+                ],
+                "outputs": [
+                  "testStatefulServer2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "testStatefulServer2.cexe",
+                    "testStatefulServer2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testStatefulServer2",
+              "args": [],
+              "stdout": "testStatefulServer2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.cexe"
+                ],
+                "outputs": [
+                  "testStatefulServer2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer2.c.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.c.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testStatefulServer2",
+              "args": [],
+              "stdout": "testStatefulServer2.c-vcd.out",
+              "vcd": "testStatefulServer2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.cexe"
+                ],
+                "outputs": [
+                  "testStatefulServer2.c-vcd.out",
+                  "testStatefulServer2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "testStatefulServer2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer2.c-vcd.out",
+              "expected": "testStatefulServer2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer2.c-vcd.out",
+                  "testStatefulServer2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 188,
+                  "endByte": 286,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 99
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-testStatefulServer3",
+      "resource": "heavy",
+      "fixtures": [
+        "CombWallace.bsv",
+        "StatefulWallace.bsv",
+        "WallaceLib.bsv",
+        "WallaceServer.bsv",
+        "WallaceTest.bsv",
+        "wallace435.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "testStatefulServer3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "WallaceTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "testStatefulServer3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WallaceTest.bsv"
+                ],
+                "outputs": [
+                  "WallaceTest.bo",
+                  "WallaceTest.bsv.bsc-vcomp-out",
+                  "sysCombServer.ba",
+                  "sysCombServer.v",
+                  "sysStatefulServer1.ba",
+                  "sysStatefulServer1.v",
+                  "sysStatefulServer2.ba",
+                  "sysStatefulServer2.v",
+                  "sysStatefulServer3.ba",
+                  "sysStatefulServer3.v",
+                  "testCombServer.ba",
+                  "testCombServer.v",
+                  "testStatefulServer1.ba",
+                  "testStatefulServer1.v",
+                  "testStatefulServer2.ba",
+                  "testStatefulServer2.v",
+                  "testStatefulServer3.ba",
+                  "testStatefulServer3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "testStatefulServer3",
+                "sysStatefulServer3"
+              ],
+              "top": "testStatefulServer3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.v",
+                  "sysStatefulServer3.v"
+                ],
+                "outputs": [
+                  "testStatefulServer3.bsc-vcomp-out",
+                  "testStatefulServer3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testStatefulServer3",
+              "args": [],
+              "stdout": "testStatefulServer3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.vexe"
+                ],
+                "outputs": [
+                  "testStatefulServer3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer3.v.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.v.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "testStatefulServer3",
+              "args": [],
+              "stdout": "testStatefulServer3.v-vcd.out",
+              "vcd": "testStatefulServer3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.vexe"
+                ],
+                "outputs": [
+                  "testStatefulServer3.v-vcd.out",
+                  "testStatefulServer3.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "testStatefulServer3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "testStatefulServer3",
+                "sysStatefulServer3"
+              ],
+              "top": "testStatefulServer3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.ba",
+                  "sysStatefulServer3.ba"
+                ],
+                "outputs": [
+                  "testStatefulServer3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "testStatefulServer3.cexe",
+                    "testStatefulServer3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testStatefulServer3",
+              "args": [],
+              "stdout": "testStatefulServer3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.cexe"
+                ],
+                "outputs": [
+                  "testStatefulServer3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer3.c.out",
+              "expected": "wallace435.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.c.out",
+                  "wallace435.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "testStatefulServer3",
+              "args": [],
+              "stdout": "testStatefulServer3.c-vcd.out",
+              "vcd": "testStatefulServer3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.cexe"
+                ],
+                "outputs": [
+                  "testStatefulServer3.c-vcd.out",
+                  "testStatefulServer3.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "testStatefulServer3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "testStatefulServer3.c-vcd.out",
+              "expected": "testStatefulServer3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "testStatefulServer3.c-vcd.out",
+                  "testStatefulServer3.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 287,
+                  "endByte": 385,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 99
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

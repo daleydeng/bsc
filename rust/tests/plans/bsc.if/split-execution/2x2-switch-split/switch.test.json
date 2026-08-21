@@ -1,0 +1,459 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.if/split-execution/2x2-switch-split/switch",
+  "origin": {
+    "path": "testsuite/bsc.if/split-execution/2x2-switch-split/switch.exp",
+    "sha256": "40cb5de8f105cf364351387c863e2fbc5493537c9cbff6cd2ee9efbc9f19a621"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.if/split-execution/2x2-switch-split",
+  "fixtures": [
+    {
+      "path": "Switch.bsv",
+      "sha256": "f7823dbb3c268ca90f3e1531e81b65554251d87fca0aef3451a8ed8b48951217",
+      "role": "source"
+    },
+    {
+      "path": "TestSwitch.bsv",
+      "sha256": "4bd023d0b14565d47c04752277b65a07afdcefa7e744e2fb9d084c17efa04ee0",
+      "role": "source"
+    },
+    {
+      "path": "fast.expected",
+      "sha256": "532d1d6bd2800e6e9c4e8256e6ffa9d0b596ef1e62da7fb5f8fd294e12ab0c73",
+      "role": "golden"
+    },
+    {
+      "path": "sysTestSwitch.out.expected",
+      "sha256": "8cf15fb0abdd4408d38030ea9b9ba8be9f757fa64226667606be7579ca6f4084",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestSwitch",
+      "resource": "heavy",
+      "fixtures": [
+        "Switch.bsv",
+        "TestSwitch.bsv",
+        "fast.expected",
+        "sysTestSwitch.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestSwitch",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestSwitch.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestSwitch",
+              "args": [
+                "-split-if"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TestSwitch.bsv"
+                ],
+                "outputs": [
+                  "TestSwitch.bo",
+                  "TestSwitch.bsv.bsc-vcomp-out",
+                  "sysTestSwitch.ba",
+                  "sysTestSwitch.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestSwitch"
+              ],
+              "top": "sysTestSwitch",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.v"
+                ],
+                "outputs": [
+                  "sysTestSwitch.bsc-vcomp-out",
+                  "sysTestSwitch.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestSwitch",
+              "args": [],
+              "stdout": "sysTestSwitch.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.vexe"
+                ],
+                "outputs": [
+                  "sysTestSwitch.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestSwitch.v.out",
+              "expected": "sysTestSwitch.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.v.out",
+                  "sysTestSwitch.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestSwitch",
+              "args": [],
+              "stdout": "sysTestSwitch.v-vcd.out",
+              "vcd": "sysTestSwitch.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.vexe"
+                ],
+                "outputs": [
+                  "sysTestSwitch.v-vcd.out",
+                  "sysTestSwitch.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestSwitch.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestSwitch"
+              ],
+              "top": "sysTestSwitch",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.ba"
+                ],
+                "outputs": [
+                  "sysTestSwitch.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestSwitch.cexe",
+                    "sysTestSwitch.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestSwitch",
+              "args": [],
+              "stdout": "sysTestSwitch.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.cexe"
+                ],
+                "outputs": [
+                  "sysTestSwitch.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestSwitch.c.out",
+              "expected": "sysTestSwitch.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.c.out",
+                  "sysTestSwitch.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestSwitch",
+              "args": [],
+              "stdout": "sysTestSwitch.c-vcd.out",
+              "vcd": "sysTestSwitch.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.cexe"
+                ],
+                "outputs": [
+                  "sysTestSwitch.c-vcd.out",
+                  "sysTestSwitch.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestSwitch.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestSwitch.c-vcd.out",
+              "expected": "sysTestSwitch.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.c-vcd.out",
+                  "sysTestSwitch.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 55,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "simulation-sysTestSwitch",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestSwitch",
+              "args": [
+                "-c",
+                "sim run; puts [sim clock]"
+              ],
+              "stdout": "sysTestSwitch.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.cexe"
+                ],
+                "outputs": [
+                  "sysTestSwitch.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 57,
+                  "endByte": 114,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestSwitch.out",
+              "expected": "fast.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestSwitch.out",
+                  "fast.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 228,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

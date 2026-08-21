@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b264/b264",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b264/b264.exp",
+    "sha256": "4876527fda3418d27c322f8012fbd0e7813f04e1294cefaa3d43393dc4600a60"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b264",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "aa3b47b8c6547a3b746187787e4eb4cdfcc2ca174d64a38950711f451db65208",
+      "role": "source"
+    },
+    {
+      "path": "Interface.bsv",
+      "sha256": "3e2d040157306bd59cf541047b7029e3dab406cf922ff1968a68a61f62c6ce2e",
+      "role": "source"
+    },
+    {
+      "path": "Top.bsv",
+      "sha256": "431e579ac238447c7f921de9063d1e319cfe2e6eee42a1868538868fdcf94eeb",
+      "role": "source"
+    },
+    {
+      "path": "foo.v.expected",
+      "sha256": "18a90772f8d559aa81eebf2eb7d901eb515eb2a9f4393673bf2e39243dc9d899",
+      "role": "golden"
+    },
+    {
+      "path": "mkDesign.v.expected",
+      "sha256": "c50ae79beceb2037a54c7958d0e8bac8ba75661862c5dad8e8b61ed3106aeda8",
+      "role": "golden"
+    },
+    {
+      "path": "mkDesign_in.v.expected",
+      "sha256": "e7b43fa4afd315ec1c946186fb3a0a566985abe82fa45f7ada97e313f2f0bd6d",
+      "role": "golden"
+    },
+    {
+      "path": "top.v.expected",
+      "sha256": "9995d68dbcbfda64b44db181d627d418e0ae9bf5e6ddfdf38834e5745c927ae3",
+      "role": "golden"
+    },
+    {
+      "path": "top2.v.expected",
+      "sha256": "fa4b9ce9f091aa9743e2048712dae6ae1b74090879f6394cf2cd145613d2281a",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Design",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "Interface.bsv",
+        "foo.v.expected",
+        "mkDesign.v.expected",
+        "mkDesign_in.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Design",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Design.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-vcomp-out",
+                  "foo.v",
+                  "mkDesign.v",
+                  "mkDesign2.v",
+                  "mkDesign_in.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 120,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkDesign.v",
+              "expected": "mkDesign.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign.v",
+                  "mkDesign.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 122,
+                  "endByte": 148,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkDesign_in.v",
+              "expected": "mkDesign_in.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkDesign_in.v",
+                  "mkDesign_in.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 149,
+                  "endByte": 178,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "foo.v",
+              "expected": "foo.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "foo.v",
+                  "foo.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 179,
+                  "endByte": 200,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 22
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Top",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "Interface.bsv",
+        "Top.bsv",
+        "top.v.expected",
+        "top2.v.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Top",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Design.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-vcomp-out",
+                  "foo.v",
+                  "mkDesign.v",
+                  "mkDesign2.v",
+                  "mkDesign_in.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 120,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Top.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Top.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Top.bsv"
+                ],
+                "outputs": [
+                  "Top.bo",
+                  "Top.bsv.bsc-vcomp-out",
+                  "foo.v",
+                  "mkDesign2.v",
+                  "mkDesign_in.v",
+                  "top.v",
+                  "top2.v",
+                  "top3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 202,
+                  "endByte": 230,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "top.v",
+              "expected": "top.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "top.v",
+                  "top.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 232,
+                  "endByte": 253,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "top2.v",
+              "expected": "top2.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "top2.v",
+                  "top2.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 254,
+                  "endByte": 276,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkDesign_in.v",
+                "top.v"
+              ],
+              "top": "top",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkDesign_in.v",
+                  "top.v"
+                ],
+                "outputs": [
+                  "top.bsc-vcomp-out",
+                  "top.vexe",
+                  "mkDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 278,
+                  "endByte": 321,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkDesign.v",
+                "top2.v"
+              ],
+              "top": "top2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkDesign.v",
+                  "top2.v"
+                ],
+                "outputs": [
+                  "top2.bsc-vcomp-out",
+                  "top2.vexe",
+                  "foo.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 322,
+                  "endByte": 364,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "foo.v",
+                "top3.v"
+              ],
+              "top": "top3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "foo.v",
+                  "top3.v"
+                ],
+                "outputs": [
+                  "top3.bsc-vcomp-out",
+                  "top3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 365,
+                  "endByte": 402,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

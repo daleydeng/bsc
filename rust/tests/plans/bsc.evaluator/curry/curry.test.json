@@ -1,0 +1,656 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/curry/curry",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/curry/curry.exp",
+    "sha256": "f117c8eab0529550d7ff62975518208fc8f64ac1275cb9a6eadaf966a2fe8a66"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/curry",
+  "fixtures": [
+    {
+      "path": "ArrayCurry.bsv",
+      "sha256": "b8357000fba4aa411ac1a9c571cf7f5a5e70e7398b72e73969d5e76970f48bc8",
+      "role": "source"
+    },
+    {
+      "path": "ErrorCurry.bsv",
+      "sha256": "0456bd40b82df519941f302fbd3425d2cbacd91ea933c708abf8d434777f2504",
+      "role": "source"
+    },
+    {
+      "path": "IBMBug.bsv",
+      "sha256": "be61576296e6360e5f4bbf8cb196524d216aab8ae2304b734482c963724bf9f3",
+      "role": "source"
+    },
+    {
+      "path": "IfCurry.bsv",
+      "sha256": "7bf4d9cce7e5f8abf8bd0bdd4a20a0099b2494cae15b1fee331b6a32a28493f8",
+      "role": "source"
+    },
+    {
+      "path": "MessageCurry.bsv",
+      "sha256": "ab4974bd5d1d58c371120755011973d7da0bcd4abdae51fb81e9e39ed0731bc1",
+      "role": "source"
+    },
+    {
+      "path": "MessageCurry.bsv.bsc-ccomp-out.expected",
+      "sha256": "0ac269e35327ae291537d22707825be31ccbcc2cc5af2d9c98a0fa036959e32a",
+      "role": "golden"
+    },
+    {
+      "path": "SeqBug.bsv",
+      "sha256": "a187e197412510154315efd30006736b907e73e0db5b8908400243d85069643c",
+      "role": "source"
+    },
+    {
+      "path": "SeqCurry.bsv",
+      "sha256": "01d548c5242619cec56cac04263af97a19fbbe69de2847142c42f2c6aaa6125e",
+      "role": "source"
+    },
+    {
+      "path": "WarningCurry.bsv",
+      "sha256": "045e3bf109749da315b71783b819b1ba2646b47553a1aabbe10ff311a3a4cdd0",
+      "role": "source"
+    },
+    {
+      "path": "WarningCurry.bsv.bsc-ccomp-out.expected",
+      "sha256": "22965bf36ca31666581439e81bd6851a1bbdc5d3727c4d14c057445f9df0cd47",
+      "role": "golden"
+    },
+    {
+      "path": "WhenCurry.bsv",
+      "sha256": "248ee81626c63796967fe251dc3018499855fbd5c1b6494c38153511d4b0b494",
+      "role": "source"
+    },
+    {
+      "path": "mkWhenCurry.v.expected",
+      "sha256": "a3864ac4b89381ce348bd573bec55b0c0705110882abf87f4b2e4b2956210a66",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ErrorCurry",
+      "resource": "normal",
+      "fixtures": [
+        "ErrorCurry.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ErrorCurry",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ErrorCurry.bsv",
+              "mode": "bluesim_object",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ErrorCurry.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ErrorCurry.bsv"
+                ],
+                "outputs": [
+                  "ErrorCurry.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 243,
+                  "endByte": 289,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ErrorCurry.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ErrorCurry.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 243,
+                  "endByte": 289,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 47
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-WhenCurry",
+      "resource": "normal",
+      "fixtures": [
+        "WhenCurry.bsv",
+        "mkWhenCurry.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-WhenCurry",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "WhenCurry.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "WhenCurry.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "WhenCurry.bsv"
+                ],
+                "outputs": [
+                  "WhenCurry.bo",
+                  "WhenCurry.bsv.bsc-vcomp-out",
+                  "mkWhenCurry.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 291,
+                  "endByte": 325,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkWhenCurry.v",
+              "expected": "mkWhenCurry.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkWhenCurry.v",
+                  "mkWhenCurry.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 326,
+                  "endByte": 355,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-IBMBug",
+      "resource": "normal",
+      "fixtures": [
+        "IBMBug.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IBMBug",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IBMBug.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IBMBug.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "IBMBug.bsv"
+                ],
+                "outputs": [
+                  "IBMBug.bo",
+                  "IBMBug.bsv.bsc-vcomp-out",
+                  "sysIBMBug.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 426,
+                  "endByte": 457,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-SeqBug",
+      "resource": "normal",
+      "fixtures": [
+        "SeqBug.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SeqBug",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SeqBug.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SeqBug.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SeqBug.bsv"
+                ],
+                "outputs": [
+                  "SeqBug.bo",
+                  "SeqBug.bsv.bsc-vcomp-out",
+                  "sysIBMBug.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 458,
+                  "endByte": 489,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-1-IfCurry",
+      "resource": "heavy",
+      "fixtures": [
+        "IfCurry.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-IfCurry",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IfCurry.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IfCurry.bsv"
+                ],
+                "outputs": [
+                  "IfCurry.bo",
+                  "IfCurry.bsv.bsc-ccomp-out",
+                  "mkIfCurry.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-2-MessageCurry",
+      "resource": "heavy",
+      "fixtures": [
+        "MessageCurry.bsv",
+        "MessageCurry.bsv.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-MessageCurry",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MessageCurry.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MessageCurry.bsv"
+                ],
+                "outputs": [
+                  "MessageCurry.bo",
+                  "MessageCurry.bsv.bsc-ccomp-out",
+                  "mkMessageCurry.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 33,
+                  "endByte": 69,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MessageCurry.bsv.bsc-ccomp-out",
+              "expected": "MessageCurry.bsv.bsc-ccomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MessageCurry.bsv.bsc-ccomp-out",
+                  "MessageCurry.bsv.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 134,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-3-WarningCurry",
+      "resource": "heavy",
+      "fixtures": [
+        "WarningCurry.bsv",
+        "WarningCurry.bsv.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-WarningCurry",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "WarningCurry.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "WarningCurry.bsv"
+                ],
+                "outputs": [
+                  "WarningCurry.bo",
+                  "WarningCurry.bsv.bsc-ccomp-out",
+                  "mkWarningCurry.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 138,
+                  "endByte": 174,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "WarningCurry.bsv.bsc-ccomp-out",
+              "expected": "WarningCurry.bsv.bsc-ccomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "WarningCurry.bsv.bsc-ccomp-out",
+                  "WarningCurry.bsv.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 196,
+                  "endByte": 239,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-4-ArrayCurry",
+      "resource": "heavy",
+      "fixtures": [
+        "ArrayCurry.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-ArrayCurry",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ArrayCurry.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ArrayCurry.bsv"
+                ],
+                "outputs": [
+                  "ArrayCurry.bo",
+                  "ArrayCurry.bsv.bsc-ccomp-out",
+                  "mkArrayCurry.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 357,
+                  "endByte": 391,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-5-SeqCurry",
+      "resource": "heavy",
+      "fixtures": [
+        "SeqCurry.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-SeqCurry",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SeqCurry.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SeqCurry.bsv"
+                ],
+                "outputs": [
+                  "SeqCurry.bo",
+                  "SeqCurry.bsv.bsc-ccomp-out",
+                  "mkSeqCurry.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 392,
+                  "endByte": 424,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

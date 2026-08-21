@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/noinline/divbug/noinline_divbug",
+  "origin": {
+    "path": "testsuite/bsc.verilog/noinline/divbug/noinline_divbug.exp",
+    "sha256": "c7c88012aa1b3702d41cb0b23d9fd656d3b98389ad588d991dc0e9a0b587aa06"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/noinline/divbug",
+  "fixtures": [
+    {
+      "path": "Div.bsv",
+      "sha256": "c8243769b5cafb4dfed2f9b92638bdc9e9780e717f293e0817b4d1ee1723a528",
+      "role": "source"
+    },
+    {
+      "path": "DivTest.bsv",
+      "sha256": "a3c62115fd709a96cc152f37ae2edc80c1cca652d5dcf2154332a2aa5b7a2680",
+      "role": "source"
+    },
+    {
+      "path": "sysDivTest.out.expected",
+      "sha256": "4f60786b0c9629d8bbfcefa24d75198fb265cda8c8f2d82cc3a583eea0f24cf6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysDivTest",
+      "resource": "heavy",
+      "fixtures": [
+        "Div.bsv",
+        "DivTest.bsv",
+        "sysDivTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDivTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DivTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDivTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DivTest.bsv"
+                ],
+                "outputs": [
+                  "DivTest.bo",
+                  "DivTest.bsv.bsc-vcomp-out",
+                  "module_divide.ba",
+                  "module_divide.v",
+                  "sysDivTest.ba",
+                  "sysDivTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDivTest",
+                "module_divide"
+              ],
+              "top": "sysDivTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.v",
+                  "module_divide.v"
+                ],
+                "outputs": [
+                  "sysDivTest.bsc-vcomp-out",
+                  "sysDivTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivTest",
+              "args": [],
+              "stdout": "sysDivTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.vexe"
+                ],
+                "outputs": [
+                  "sysDivTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivTest.v.out",
+              "expected": "sysDivTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.v.out",
+                  "sysDivTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDivTest",
+              "args": [],
+              "stdout": "sysDivTest.v-vcd.out",
+              "vcd": "sysDivTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.vexe"
+                ],
+                "outputs": [
+                  "sysDivTest.v-vcd.out",
+                  "sysDivTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDivTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDivTest",
+                "module_divide"
+              ],
+              "top": "sysDivTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.ba",
+                  "module_divide.ba"
+                ],
+                "outputs": [
+                  "sysDivTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDivTest.cexe",
+                    "sysDivTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivTest",
+              "args": [],
+              "stdout": "sysDivTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.cexe"
+                ],
+                "outputs": [
+                  "sysDivTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivTest.c.out",
+              "expected": "sysDivTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.c.out",
+                  "sysDivTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDivTest",
+              "args": [],
+              "stdout": "sysDivTest.c-vcd.out",
+              "vcd": "sysDivTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.cexe"
+                ],
+                "outputs": [
+                  "sysDivTest.c-vcd.out",
+                  "sysDivTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDivTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDivTest.c-vcd.out",
+              "expected": "sysDivTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDivTest.c-vcd.out",
+                  "sysDivTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 45,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

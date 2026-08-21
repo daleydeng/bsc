@@ -1,0 +1,2582 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.showrules/showrules",
+  "origin": {
+    "path": "testsuite/bsc.showrules/showrules.exp",
+    "sha256": "286d9f4f1b8a82fdba3af0ebf8e3ca12e3dd3e230b1bacb3d159be9bdd4b40e4"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.showrules",
+  "fixtures": [
+    {
+      "path": "Blocking.bsv",
+      "sha256": "9a47e82fa0a968921071a007bb1c511d800048700bdda300b0053f73f095c754",
+      "role": "source"
+    },
+    {
+      "path": "CFTest.bsv",
+      "sha256": "b6d8b1d2749b197f8a7e09d0e37f4be206c8682206d78c2e55ad3758168aecc4",
+      "role": "source"
+    },
+    {
+      "path": "FIFOTest.bsv",
+      "sha256": "9e7ea6f5d3037aaeb2111880512ffb91d0d58556e95eb5714e80a966d9eb140a",
+      "role": "source"
+    },
+    {
+      "path": "GCD.bsv",
+      "sha256": "c009ad9212e2e0c34343b5d2f2231f9e4e8d0a79f090ee9e9edeb0e3ee29d8bf",
+      "role": "source"
+    },
+    {
+      "path": "MultWriteTest.bsv",
+      "sha256": "0e4a89756f04e498ee2e80cdd54b27a7fe9e362a1b302b256a8a3d41811f9316",
+      "role": "source"
+    },
+    {
+      "path": "RWireTest.bsv",
+      "sha256": "018501cda3bc0a7ca8922dee281ed4abd36dd19d1f0805b371353f5a36ba6ba2",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "98246247831ac583b44bdd335bc62a83a900f3e67e3a7978ff13de50400f647a",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-TbGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TbGCD",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TbGCD.bsv",
+              "mode": "verilog",
+              "module": "mkTbGCD",
+              "args": [
+                "-elab",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TbGCD.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-vcomp-out",
+                  "mkGCD.v",
+                  "mkTbGCD.ba",
+                  "mkTbGCD.v",
+                  "mkGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 699,
+                  "endByte": 757,
+                  "startLine": 22,
+                  "startColumn": 5,
+                  "endLine": 22,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTbGCD.v",
+                "mkGCD.v"
+              ],
+              "top": "mkTbGCD",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.v",
+                  "mkGCD.v"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-vcomp-out",
+                  "mkTbGCD.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 762,
+                  "endByte": 821,
+                  "startLine": 23,
+                  "startColumn": 5,
+                  "endLine": 23,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.vexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 826,
+                  "endByte": 849,
+                  "startLine": 24,
+                  "startColumn": 5,
+                  "endLine": 24,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "gcd_vlog.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "gcd_vlog.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 854,
+                  "endByte": 880,
+                  "startLine": 25,
+                  "startColumn": 5,
+                  "endLine": 25,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkTbGCD",
+              "input": "gcd_vlog.vcd",
+              "output": "gcd_vlog_rules.vcd",
+              "designInputs": [
+                "mkGCD.ba",
+                "mkTbGCD.ba"
+              ],
+              "stdout": "gcd_vlog.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "gcd_vlog.vcd",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputs": [
+                  "gcd_vlog_rules.vcd",
+                  "gcd_vlog.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 885,
+                  "endByte": 934,
+                  "startLine": 26,
+                  "startColumn": 5,
+                  "endLine": 26,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "gcd_vlog_rules.vcd",
+              "checks": [
+                "FIRED_RULE_main.top.gcd.CLK toggles @125000",
+                "BLOCKED_RULE_main.top.gcd.CLK exists",
+                "main.top.gcd.the_x equals 9 @280000"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "gcd_vlog_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 939,
+                  "endByte": 1166,
+                  "startLine": 27,
+                  "startColumn": 5,
+                  "endLine": 29,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-RWireTest",
+      "resource": "heavy",
+      "fixtures": [
+        "RWireTest.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RWireTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RWireTest.bsv",
+              "mode": "verilog",
+              "module": "mkRWireTest",
+              "args": [
+                "-elab",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RWireTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RWireTest.bsv"
+                ],
+                "outputs": [
+                  "RWireTest.bo",
+                  "RWireTest.bsv.bsc-vcomp-out",
+                  "mkRWireTest.ba",
+                  "mkRWireTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1814,
+                  "endByte": 1880,
+                  "startLine": 49,
+                  "startColumn": 5,
+                  "endLine": 49,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkRWireTest.v"
+              ],
+              "top": "mkRWireTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkRWireTest.v"
+                ],
+                "outputs": [
+                  "mkRWireTest.bsc-vcomp-out",
+                  "mkRWireTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1885,
+                  "endByte": 1944,
+                  "startLine": 50,
+                  "startColumn": 5,
+                  "endLine": 50,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkRWireTest",
+              "args": [],
+              "stdout": "mkRWireTest.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkRWireTest.vexe"
+                ],
+                "outputs": [
+                  "mkRWireTest.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1949,
+                  "endByte": 1976,
+                  "startLine": 51,
+                  "startColumn": 5,
+                  "endLine": 51,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "rwire_vlog.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "rwire_vlog.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1981,
+                  "endByte": 2009,
+                  "startLine": 52,
+                  "startColumn": 5,
+                  "endLine": 52,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkRWireTest",
+              "input": "rwire_vlog.vcd",
+              "output": "rwire_vlog_rules.vcd",
+              "designInputs": [
+                "mkRWireTest.ba"
+              ],
+              "stdout": "rwire_vlog.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "rwire_vlog.vcd",
+                  "mkRWireTest.ba"
+                ],
+                "outputs": [
+                  "rwire_vlog_rules.vcd",
+                  "rwire_vlog.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2014,
+                  "endByte": 2071,
+                  "startLine": 53,
+                  "startColumn": 5,
+                  "endLine": 53,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "rwire_vlog_rules.vcd",
+              "checks": [
+                "main.top.WILL_FIRE_RL_send becomes 1 @70000",
+                "main.top.WILL_FIRE_RL_send becomes 0 @73333",
+                "main.top.count2 becomes 1 @80000"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "rwire_vlog_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2155,
+                  "endByte": 2370,
+                  "startLine": 55,
+                  "startColumn": 5,
+                  "endLine": 57,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Blocking",
+      "resource": "heavy",
+      "fixtures": [
+        "Blocking.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Blocking",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Blocking.bsv",
+              "mode": "verilog",
+              "module": "mkBlockingTest",
+              "args": [
+                "-elab",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Blocking.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Blocking.bsv"
+                ],
+                "outputs": [
+                  "Blocking.bo",
+                  "Blocking.bsv.bsc-vcomp-out",
+                  "mkBlockingTest.ba",
+                  "mkBlockingTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 4018,
+                  "endByte": 4086,
+                  "startLine": 85,
+                  "startColumn": 5,
+                  "endLine": 85,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkBlockingTest.v"
+              ],
+              "top": "mkBlockingTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkBlockingTest.v"
+                ],
+                "outputs": [
+                  "mkBlockingTest.bsc-vcomp-out",
+                  "mkBlockingTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 4091,
+                  "endByte": 4156,
+                  "startLine": 86,
+                  "startColumn": 5,
+                  "endLine": 86,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkBlockingTest",
+              "args": [],
+              "stdout": "mkBlockingTest.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkBlockingTest.vexe"
+                ],
+                "outputs": [
+                  "mkBlockingTest.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 4161,
+                  "endByte": 4191,
+                  "startLine": 87,
+                  "startColumn": 5,
+                  "endLine": 87,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "blocking_vlog.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "blocking_vlog.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 4196,
+                  "endByte": 4227,
+                  "startLine": 88,
+                  "startColumn": 5,
+                  "endLine": 88,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkBlockingTest",
+              "input": "blocking_vlog.vcd",
+              "output": "blocking_vlog_rules.vcd",
+              "designInputs": [
+                "mkBlockingTest.ba"
+              ],
+              "stdout": "blocking_vlog.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "blocking_vlog.vcd",
+                  "mkBlockingTest.ba"
+                ],
+                "outputs": [
+                  "blocking_vlog_rules.vcd",
+                  "blocking_vlog.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 4232,
+                  "endByte": 4298,
+                  "startLine": 89,
+                  "startColumn": 5,
+                  "endLine": 89,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "blocking_vlog_rules.vcd",
+              "checks": [
+                "BLOCKED_RULE_main.top.CLK becomes x @40000",
+                "BLOCKED_RULE_main.top.CLK remains x @41666",
+                "BLOCKED_RULE_main.top.CLK toggles @43333",
+                "BLOCKED_RULE_main.top.CLK becomes x @45000",
+                "BLOCKED_RULE_main.top.CLK toggles @46666",
+                "BLOCKED_RULE_main.top.CLK toggles @48333",
+                "BLOCKED_RULE_main.top.CLK becomes x @50000",
+                "FIRED_RULE_main.top.CLK toggles @40000",
+                "FIRED_RULE_main.top.CLK toggles @41666",
+                "FIRED_RULE_main.top.CLK becomes x @43333",
+                "FIRED_RULE_main.top.CLK toggles @45000",
+                "FIRED_RULE_main.top.CLK becomes x @46666",
+                "FIRED_RULE_main.top.CLK remains x @48333",
+                "FIRED_RULE_main.top.CLK toggles @50000"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "blocking_vlog_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 4303,
+                  "endByte": 5571,
+                  "startLine": 90,
+                  "startColumn": 5,
+                  "endLine": 103,
+                  "endColumn": 88
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-MultWriteTest",
+      "resource": "heavy",
+      "fixtures": [
+        "MultWriteTest.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MultWriteTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MultWriteTest.bsv",
+              "mode": "verilog",
+              "module": "mkMultWriteTest",
+              "args": [
+                "-elab",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MultWriteTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MultWriteTest.bsv"
+                ],
+                "outputs": [
+                  "MultWriteTest.bo",
+                  "MultWriteTest.bsv.bsc-vcomp-out",
+                  "mkMultWriteTest.ba",
+                  "mkMultWriteTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 6388,
+                  "endByte": 6462,
+                  "startLine": 124,
+                  "startColumn": 5,
+                  "endLine": 124,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkMultWriteTest.v"
+              ],
+              "top": "mkMultWriteTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkMultWriteTest.v"
+                ],
+                "outputs": [
+                  "mkMultWriteTest.bsc-vcomp-out",
+                  "mkMultWriteTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 6467,
+                  "endByte": 6534,
+                  "startLine": 125,
+                  "startColumn": 5,
+                  "endLine": 125,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkMultWriteTest",
+              "args": [],
+              "stdout": "mkMultWriteTest.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkMultWriteTest.vexe"
+                ],
+                "outputs": [
+                  "mkMultWriteTest.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 6539,
+                  "endByte": 6570,
+                  "startLine": 126,
+                  "startColumn": 5,
+                  "endLine": 126,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "mult_vlog.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "mult_vlog.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 6575,
+                  "endByte": 6602,
+                  "startLine": 127,
+                  "startColumn": 5,
+                  "endLine": 127,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkMultWriteTest",
+              "input": "mult_vlog.vcd",
+              "output": "mult_vlog_rules.vcd",
+              "designInputs": [
+                "mkMultWriteTest.ba"
+              ],
+              "stdout": "mult_vlog.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "mult_vlog.vcd",
+                  "mkMultWriteTest.ba"
+                ],
+                "outputs": [
+                  "mult_vlog_rules.vcd",
+                  "mult_vlog.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 6607,
+                  "endByte": 6666,
+                  "startLine": 128,
+                  "startColumn": 5,
+                  "endLine": 128,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "mult_vlog_rules.vcd",
+              "checks": [
+                "main.top.count  becomes 9 @90000",
+                "main.top.count2 stable @90000",
+                "main.top.WILL_FIRE_RL_bump becomes 1 @90000",
+                "main.top.WILL_FIRE_RL_bump becomes 0 @93333",
+                "main.top.WILL_FIRE_RL_restart becomes 1 @93333",
+                "main.top.WILL_FIRE_RL_restart becomes 0 @96666",
+                "main.top.count2 becomes 1 @96666"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mult_vlog_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 6671,
+                  "endByte": 7107,
+                  "startLine": 129,
+                  "startColumn": 5,
+                  "endLine": 135,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-CFTest",
+      "resource": "heavy",
+      "fixtures": [
+        "CFTest.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-CFTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "CFTest.bsv",
+              "mode": "verilog",
+              "module": "mkCFTest",
+              "args": [
+                "-elab",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "CFTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "CFTest.bsv"
+                ],
+                "outputs": [
+                  "CFTest.bo",
+                  "CFTest.bsv.bsc-vcomp-out",
+                  "mkCFTest.ba",
+                  "mkCFTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 8191,
+                  "endByte": 8251,
+                  "startLine": 162,
+                  "startColumn": 5,
+                  "endLine": 162,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkCFTest.v"
+              ],
+              "top": "mkCFTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkCFTest.v"
+                ],
+                "outputs": [
+                  "mkCFTest.bsc-vcomp-out",
+                  "mkCFTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 8256,
+                  "endByte": 8309,
+                  "startLine": 163,
+                  "startColumn": 5,
+                  "endLine": 163,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkCFTest",
+              "args": [],
+              "stdout": "mkCFTest.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkCFTest.vexe"
+                ],
+                "outputs": [
+                  "mkCFTest.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 8314,
+                  "endByte": 8338,
+                  "startLine": 164,
+                  "startColumn": 5,
+                  "endLine": 164,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "cf_vlog.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "cf_vlog.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 8343,
+                  "endByte": 8368,
+                  "startLine": 165,
+                  "startColumn": 5,
+                  "endLine": 165,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkCFTest",
+              "input": "cf_vlog.vcd",
+              "output": "cf_vlog_rules.vcd",
+              "designInputs": [
+                "mkCFTest.ba"
+              ],
+              "stdout": "cf_vlog.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "cf_vlog.vcd",
+                  "mkCFTest.ba"
+                ],
+                "outputs": [
+                  "cf_vlog_rules.vcd",
+                  "cf_vlog.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 8373,
+                  "endByte": 8421,
+                  "startLine": 166,
+                  "startColumn": 5,
+                  "endLine": 166,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "cf_vlog_rules.vcd",
+              "checks": [
+                "main.top.toggle equals 1 @23333",
+                "main.top.count  toggles  @23333",
+                "main.top.count2 stable   @23333",
+                "main.top.toggle equals 1 @26666",
+                "main.top.count  stable   @26666",
+                "main.top.count2 toggles  @26666",
+                "main.top.toggle equals 0 @33333",
+                "main.top.count  stable   @33333",
+                "main.top.count2 toggles  @33333",
+                "main.top.toggle equals 0 @36666",
+                "main.top.count  toggles  @36666",
+                "main.top.count2 stable   @36666"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "cf_vlog_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 8426,
+                  "endByte": 9178,
+                  "startLine": 167,
+                  "startColumn": 5,
+                  "endLine": 178,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-FIFOTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FIFOTest.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-FIFOTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "FIFOTest.bsv",
+              "mode": "verilog",
+              "module": "mkFIFOTest",
+              "args": [
+                "-elab",
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "FIFOTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "FIFOTest.bsv"
+                ],
+                "outputs": [
+                  "FIFOTest.bo",
+                  "FIFOTest.bsv.bsc-vcomp-out",
+                  "mkFIFOTest.ba",
+                  "mkFIFOTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13784,
+                  "endByte": 13848,
+                  "startLine": 254,
+                  "startColumn": 5,
+                  "endLine": 254,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkFIFOTest.v"
+              ],
+              "top": "mkFIFOTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkFIFOTest.v"
+                ],
+                "outputs": [
+                  "mkFIFOTest.bsc-vcomp-out",
+                  "mkFIFOTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13853,
+                  "endByte": 13910,
+                  "startLine": 255,
+                  "startColumn": 5,
+                  "endLine": 255,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkFIFOTest",
+              "args": [],
+              "stdout": "mkFIFOTest.out",
+              "vcd": "dump.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkFIFOTest.vexe"
+                ],
+                "outputs": [
+                  "mkFIFOTest.out",
+                  "dump.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13915,
+                  "endByte": 13941,
+                  "startLine": 256,
+                  "startColumn": 5,
+                  "endLine": 256,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "dump.vcd",
+              "destination": "fifo_vlog.vcd",
+              "artifacts": {
+                "inputs": [
+                  "dump.vcd"
+                ],
+                "outputs": [
+                  "fifo_vlog.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "dump.vcd"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13946,
+                  "endByte": 13973,
+                  "startLine": 257,
+                  "startColumn": 5,
+                  "endLine": 257,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkFIFOTest",
+              "input": "fifo_vlog.vcd",
+              "output": "fifo_vlog_rules.vcd",
+              "designInputs": [
+                "mkFIFOTest.ba"
+              ],
+              "stdout": "fifo_vlog.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "fifo_vlog.vcd",
+                  "mkFIFOTest.ba"
+                ],
+                "outputs": [
+                  "fifo_vlog_rules.vcd",
+                  "fifo_vlog.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13978,
+                  "endByte": 14032,
+                  "startLine": 258,
+                  "startColumn": 5,
+                  "endLine": 258,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "fifo_vlog_rules.vcd",
+              "checks": [
+                "main.top.WILL_FIRE_RL_merge becomes 1 @100000",
+                "main.top.WILL_FIRE_RL_merge becomes 0 @102500",
+                "main.top.WILL_FIRE_RL_sink becomes 1 @102500",
+                "main.top.WILL_FIRE_RL_sink becomes 0 @105000",
+                "main.top.out.D_OUT toggles @105000",
+                "main.top.in2.D_OUT toggles @107500"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "fifo_vlog_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 14037,
+                  "endByte": 14531,
+                  "startLine": 259,
+                  "startColumn": 5,
+                  "endLine": 264,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkTbGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTbGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "bluesim",
+              "module": "mkTbGCD",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-ccomp-out",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 205,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 5,
+                  "endLine": 11,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTbGCD"
+              ],
+              "top": "mkTbGCD",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.ba"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 261,
+                  "endByte": 310,
+                  "startLine": 12,
+                  "startColumn": 5,
+                  "endLine": 12,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbGCD",
+              "args": [
+                "-V",
+                "gcd_bsim.vcd"
+              ],
+              "stdout": "mkTbGCD.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.out",
+                  "gcd_bsim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 315,
+                  "endByte": 351,
+                  "startLine": 13,
+                  "startColumn": 5,
+                  "endLine": 13,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkTbGCD",
+              "input": "gcd_bsim.vcd",
+              "output": "gcd_bsim_rules.vcd",
+              "designInputs": [
+                "mkGCD.ba",
+                "mkTbGCD.ba"
+              ],
+              "stdout": "gcd_bsim.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "gcd_bsim.vcd",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputs": [
+                  "gcd_bsim_rules.vcd",
+                  "gcd_bsim.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 356,
+                  "endByte": 405,
+                  "startLine": 14,
+                  "startColumn": 5,
+                  "endLine": 14,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "gcd_bsim_rules.vcd",
+              "checks": [
+                "FIRED_RULE_main.top.gcd.CLK toggles @125000",
+                "BLOCKED_RULE_main.top.gcd.CLK exists",
+                "main.top.gcd.the_x equals 9 @280000"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "gcd_bsim_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 410,
+                  "endByte": 637,
+                  "startLine": 15,
+                  "startColumn": 5,
+                  "endLine": 17,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-mkRWireTest",
+      "resource": "heavy",
+      "fixtures": [
+        "RWireTest.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkRWireTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RWireTest.bsv",
+              "mode": "bluesim",
+              "module": "mkRWireTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "RWireTest.bsv"
+                ],
+                "outputs": [
+                  "RWireTest.bo",
+                  "RWireTest.bsv.bsc-ccomp-out",
+                  "mkRWireTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1220,
+                  "endByte": 1279,
+                  "startLine": 36,
+                  "startColumn": 5,
+                  "endLine": 36,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkRWireTest"
+              ],
+              "top": "mkRWireTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkRWireTest.ba"
+                ],
+                "outputs": [
+                  "mkRWireTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkRWireTest.cexe",
+                    "mkRWireTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1284,
+                  "endByte": 1341,
+                  "startLine": 37,
+                  "startColumn": 5,
+                  "endLine": 37,
+                  "endColumn": 62
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkRWireTest",
+              "args": [
+                "-V",
+                "rwire_bsim.vcd"
+              ],
+              "stdout": "mkRWireTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkRWireTest.cexe"
+                ],
+                "outputs": [
+                  "mkRWireTest.out",
+                  "rwire_bsim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1346,
+                  "endByte": 1388,
+                  "startLine": 38,
+                  "startColumn": 5,
+                  "endLine": 38,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkRWireTest",
+              "input": "rwire_bsim.vcd",
+              "output": "rwire_bsim_rules.vcd",
+              "designInputs": [
+                "mkRWireTest.ba"
+              ],
+              "stdout": "rwire_bsim.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "rwire_bsim.vcd",
+                  "mkRWireTest.ba"
+                ],
+                "outputs": [
+                  "rwire_bsim_rules.vcd",
+                  "rwire_bsim.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1393,
+                  "endByte": 1450,
+                  "startLine": 39,
+                  "startColumn": 5,
+                  "endLine": 39,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "rwire_bsim_rules.vcd",
+              "checks": [
+                "main.top.WILL_FIRE_RL_send becomes 1 @70000",
+                "main.top.WILL_FIRE_RL_send becomes 0 @73333",
+                "main.top.rw becomes 1 @73333",
+                "main.top.rw becomes x @80000",
+                "main.top.count2 becomes 1 @80000"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "rwire_bsim_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1455,
+                  "endByte": 1752,
+                  "startLine": 40,
+                  "startColumn": 5,
+                  "endLine": 44,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-3-mkBlockingTest",
+      "resource": "heavy",
+      "fixtures": [
+        "Blocking.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkBlockingTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Blocking.bsv",
+              "mode": "bluesim",
+              "module": "mkBlockingTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Blocking.bsv"
+                ],
+                "outputs": [
+                  "Blocking.bo",
+                  "Blocking.bsv.bsc-ccomp-out",
+                  "mkBlockingTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2430,
+                  "endByte": 2491,
+                  "startLine": 63,
+                  "startColumn": 5,
+                  "endLine": 63,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkBlockingTest"
+              ],
+              "top": "mkBlockingTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkBlockingTest.ba"
+                ],
+                "outputs": [
+                  "mkBlockingTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkBlockingTest.cexe",
+                    "mkBlockingTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2496,
+                  "endByte": 2559,
+                  "startLine": 64,
+                  "startColumn": 5,
+                  "endLine": 64,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkBlockingTest",
+              "args": [
+                "-V",
+                "blocking_bsim.vcd"
+              ],
+              "stdout": "mkBlockingTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkBlockingTest.cexe"
+                ],
+                "outputs": [
+                  "mkBlockingTest.out",
+                  "blocking_bsim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2564,
+                  "endByte": 2612,
+                  "startLine": 65,
+                  "startColumn": 5,
+                  "endLine": 65,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkBlockingTest",
+              "input": "blocking_bsim.vcd",
+              "output": "blocking_bsim_rules.vcd",
+              "designInputs": [
+                "mkBlockingTest.ba"
+              ],
+              "stdout": "blocking_bsim.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "blocking_bsim.vcd",
+                  "mkBlockingTest.ba"
+                ],
+                "outputs": [
+                  "blocking_bsim_rules.vcd",
+                  "blocking_bsim.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2617,
+                  "endByte": 2683,
+                  "startLine": 66,
+                  "startColumn": 5,
+                  "endLine": 66,
+                  "endColumn": 71
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "blocking_bsim_rules.vcd",
+              "checks": [
+                "BLOCKED_RULE_main.top.CLK becomes x @40000",
+                "BLOCKED_RULE_main.top.CLK remains x @41666",
+                "BLOCKED_RULE_main.top.CLK toggles @43333",
+                "BLOCKED_RULE_main.top.CLK becomes x @45000",
+                "BLOCKED_RULE_main.top.CLK toggles @46666",
+                "BLOCKED_RULE_main.top.CLK toggles @48333",
+                "BLOCKED_RULE_main.top.CLK becomes x @50000",
+                "FIRED_RULE_main.top.CLK toggles @40000",
+                "FIRED_RULE_main.top.CLK toggles @41666",
+                "FIRED_RULE_main.top.CLK becomes x @43333",
+                "FIRED_RULE_main.top.CLK toggles @45000",
+                "FIRED_RULE_main.top.CLK becomes x @46666",
+                "FIRED_RULE_main.top.CLK remains x @48333",
+                "FIRED_RULE_main.top.CLK toggles @50000"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "blocking_bsim_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2688,
+                  "endByte": 3956,
+                  "startLine": 67,
+                  "startColumn": 5,
+                  "endLine": 80,
+                  "endColumn": 88
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-4-mkMultWriteTest",
+      "resource": "heavy",
+      "fixtures": [
+        "MultWriteTest.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkMultWriteTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MultWriteTest.bsv",
+              "mode": "bluesim",
+              "module": "mkMultWriteTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "MultWriteTest.bsv"
+                ],
+                "outputs": [
+                  "MultWriteTest.bo",
+                  "MultWriteTest.bsv.bsc-ccomp-out",
+                  "mkMultWriteTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 5634,
+                  "endByte": 5701,
+                  "startLine": 109,
+                  "startColumn": 5,
+                  "endLine": 109,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkMultWriteTest"
+              ],
+              "top": "mkMultWriteTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkMultWriteTest.ba"
+                ],
+                "outputs": [
+                  "mkMultWriteTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkMultWriteTest.cexe",
+                    "mkMultWriteTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 5706,
+                  "endByte": 5771,
+                  "startLine": 110,
+                  "startColumn": 5,
+                  "endLine": 110,
+                  "endColumn": 70
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkMultWriteTest",
+              "args": [
+                "-V",
+                "mult_bsim.vcd"
+              ],
+              "stdout": "mkMultWriteTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkMultWriteTest.cexe"
+                ],
+                "outputs": [
+                  "mkMultWriteTest.out",
+                  "mult_bsim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 5776,
+                  "endByte": 5821,
+                  "startLine": 111,
+                  "startColumn": 5,
+                  "endLine": 111,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkMultWriteTest",
+              "input": "mult_bsim.vcd",
+              "output": "mult_bsim_rules.vcd",
+              "designInputs": [
+                "mkMultWriteTest.ba"
+              ],
+              "stdout": "mult_bsim.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "mult_bsim.vcd",
+                  "mkMultWriteTest.ba"
+                ],
+                "outputs": [
+                  "mult_bsim_rules.vcd",
+                  "mult_bsim.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 5826,
+                  "endByte": 5885,
+                  "startLine": 112,
+                  "startColumn": 5,
+                  "endLine": 112,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "mult_bsim_rules.vcd",
+              "checks": [
+                "main.top.count  becomes 9 @90000",
+                "main.top.count2 stable @90000",
+                "main.top.WILL_FIRE_RL_bump becomes 1 @90000",
+                "main.top.WILL_FIRE_RL_bump becomes 0 @93333",
+                "main.top.WILL_FIRE_RL_restart becomes 1 @93333",
+                "main.top.WILL_FIRE_RL_restart becomes 0 @96666",
+                "main.top.count2 becomes 1 @96666"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mult_bsim_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 5890,
+                  "endByte": 6326,
+                  "startLine": 113,
+                  "startColumn": 5,
+                  "endLine": 119,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-5-mkCFTest",
+      "resource": "heavy",
+      "fixtures": [
+        "CFTest.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkCFTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CFTest.bsv",
+              "mode": "bluesim",
+              "module": "mkCFTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "CFTest.bsv"
+                ],
+                "outputs": [
+                  "CFTest.bo",
+                  "CFTest.bsv.bsc-ccomp-out",
+                  "mkCFTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 7169,
+                  "endByte": 7222,
+                  "startLine": 142,
+                  "startColumn": 5,
+                  "endLine": 142,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkCFTest"
+              ],
+              "top": "mkCFTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkCFTest.ba"
+                ],
+                "outputs": [
+                  "mkCFTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkCFTest.cexe",
+                    "mkCFTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 7227,
+                  "endByte": 7278,
+                  "startLine": 143,
+                  "startColumn": 5,
+                  "endLine": 143,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkCFTest",
+              "args": [
+                "-V",
+                "cf_bsim.vcd"
+              ],
+              "stdout": "mkCFTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkCFTest.cexe"
+                ],
+                "outputs": [
+                  "mkCFTest.out",
+                  "cf_bsim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 7283,
+                  "endByte": 7319,
+                  "startLine": 144,
+                  "startColumn": 5,
+                  "endLine": 144,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkCFTest",
+              "input": "cf_bsim.vcd",
+              "output": "cf_bsim_rules.vcd",
+              "designInputs": [
+                "mkCFTest.ba"
+              ],
+              "stdout": "cf_bsim.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "cf_bsim.vcd",
+                  "mkCFTest.ba"
+                ],
+                "outputs": [
+                  "cf_bsim_rules.vcd",
+                  "cf_bsim.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 7324,
+                  "endByte": 7372,
+                  "startLine": 145,
+                  "startColumn": 5,
+                  "endLine": 145,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "cf_bsim_rules.vcd",
+              "checks": [
+                "main.top.toggle equals 1 @23333",
+                "main.top.count  toggles  @23333",
+                "main.top.count2 stable   @23333",
+                "main.top.toggle equals 1 @26666",
+                "main.top.count  stable   @26666",
+                "main.top.count2 toggles  @26666",
+                "main.top.toggle equals 0 @33333",
+                "main.top.count  stable   @33333",
+                "main.top.count2 toggles  @33333",
+                "main.top.toggle equals 0 @36666",
+                "main.top.count  toggles  @36666",
+                "main.top.count2 stable   @36666"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "cf_bsim_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 7377,
+                  "endByte": 8129,
+                  "startLine": 146,
+                  "startColumn": 5,
+                  "endLine": 157,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-6-mkFIFOTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FIFOTest.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "show_rules"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkFIFOTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FIFOTest.bsv",
+              "mode": "bluesim",
+              "module": "mkFIFOTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FIFOTest.bsv"
+                ],
+                "outputs": [
+                  "FIFOTest.bo",
+                  "FIFOTest.bsv.bsc-ccomp-out",
+                  "mkFIFOTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13002,
+                  "endByte": 13059,
+                  "startLine": 240,
+                  "startColumn": 5,
+                  "endLine": 240,
+                  "endColumn": 62
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkFIFOTest"
+              ],
+              "top": "mkFIFOTest",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkFIFOTest.ba"
+                ],
+                "outputs": [
+                  "mkFIFOTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkFIFOTest.cexe",
+                    "mkFIFOTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13064,
+                  "endByte": 13119,
+                  "startLine": 241,
+                  "startColumn": 5,
+                  "endLine": 241,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkFIFOTest",
+              "args": [
+                "-V",
+                "fifo_bsim.vcd"
+              ],
+              "stdout": "mkFIFOTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkFIFOTest.cexe"
+                ],
+                "outputs": [
+                  "mkFIFOTest.out",
+                  "fifo_bsim.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13124,
+                  "endByte": 13164,
+                  "startLine": 242,
+                  "startColumn": 5,
+                  "endLine": 242,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "vcd.showrules",
+              "top": "mkFIFOTest",
+              "input": "fifo_bsim.vcd",
+              "output": "fifo_bsim_rules.vcd",
+              "designInputs": [
+                "mkFIFOTest.ba"
+              ],
+              "stdout": "fifo_bsim.vcd.showrules-out",
+              "artifacts": {
+                "inputs": [
+                  "fifo_bsim.vcd",
+                  "mkFIFOTest.ba"
+                ],
+                "outputs": [
+                  "fifo_bsim_rules.vcd",
+                  "fifo_bsim.vcd.showrules-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13169,
+                  "endByte": 13223,
+                  "startLine": 243,
+                  "startColumn": 5,
+                  "endLine": 243,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "fifo_bsim_rules.vcd",
+              "checks": [
+                "main.top.WILL_FIRE_RL_merge becomes 1 @100000",
+                "main.top.WILL_FIRE_RL_merge becomes 0 @102500",
+                "main.top.WILL_FIRE_RL_sink becomes 1 @102500",
+                "main.top.WILL_FIRE_RL_sink becomes 0 @105000",
+                "main.top.out.D_OUT toggles @105000",
+                "main.top.in2.D_OUT toggles @107500"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "fifo_bsim_rules.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 13228,
+                  "endByte": 13722,
+                  "startLine": 244,
+                  "startColumn": 5,
+                  "endLine": 249,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

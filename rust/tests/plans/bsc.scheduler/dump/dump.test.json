@@ -1,0 +1,590 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/dump/dump",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/dump/dump.exp",
+    "sha256": "174793b78cbe3bde76cb2cb78e6e9e9af976e57d618e7ea09fbaf1a0a8535b57"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/dump",
+  "fixtures": [
+    {
+      "path": "ExpandFalse.bsv",
+      "sha256": "614878745908935eb8bc955680118947007859e816d5083ac6eb848922479261",
+      "role": "source"
+    },
+    {
+      "path": "ExpandFalse.bsv.bsc-vcomp-out.expected",
+      "sha256": "b8f38f9c2233f1dc238ab9eabcde64a754e0255c907b64832afba04b0cd533bd",
+      "role": "golden"
+    },
+    {
+      "path": "MethodNeverReady.bsv",
+      "sha256": "7ee80d3449fa6448b6db2c66ddd1a755f5fdfe967a259ae5e6e8a11996460e2b",
+      "role": "source"
+    },
+    {
+      "path": "MethodNeverReady.bsv.bsc-vcomp-out.expected",
+      "sha256": "4ead90cf8f46aa9a6b48ece78ecb53b1ba4ae75b3a53dc3f2db515f040e535a7",
+      "role": "golden"
+    },
+    {
+      "path": "PPrintSched.bsv",
+      "sha256": "cec3414d2ace7da2dc8d29969e328290e608093a1be73081997658f870ad7a29",
+      "role": "source"
+    },
+    {
+      "path": "RuleFalse.bsv",
+      "sha256": "bd27a057f9e2c12532fa821142a83da1aae2793fecf26a1be928a2d397cf9ca8",
+      "role": "source"
+    },
+    {
+      "path": "RuleFalse.bsv.bsc-vcomp-out.expected",
+      "sha256": "e7b936126ee4f8bce30c8001b7ac60c026f8758b1a30af8b835b31c501b685c1",
+      "role": "golden"
+    },
+    {
+      "path": "RuleNeverFires.bsv",
+      "sha256": "8bc9714955becdae5a5952558dead0c90425a660a98372fc266624333fa99ef6",
+      "role": "source"
+    },
+    {
+      "path": "RuleNeverFires.bsv.bsc-vcomp-out.expected",
+      "sha256": "5e63144d9415511c70974b24dc9084c929351774e9ba52d510e10faa1320e2fe",
+      "role": "golden"
+    },
+    {
+      "path": "sysPPrintSched.sched.expected",
+      "sha256": "ad152b7b9c79caaf383bb5003b0613a6029e7d24202c21a081f11e65d296a0a3",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MethodNeverReady",
+      "resource": "normal",
+      "fixtures": [
+        "MethodNeverReady.bsv",
+        "MethodNeverReady.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodNeverReady",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodNeverReady.bsv",
+              "mode": "verilog",
+              "module": "sysMethodNeverReady",
+              "args": [
+                "-promote-warnings",
+                "ALL"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MethodNeverReady.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodNeverReady.bsv"
+                ],
+                "outputs": [
+                  "MethodNeverReady.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 104,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MethodNeverReady.bsv.bsc-vcomp-out",
+              "expected": "MethodNeverReady.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MethodNeverReady.bsv.bsc-vcomp-out",
+                  "MethodNeverReady.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 105,
+                  "endByte": 152,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "RuleNeverFires.bi",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "RuleNeverFires.bi"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 283,
+                  "endByte": 306,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-RuleNeverFires",
+      "resource": "normal",
+      "fixtures": [
+        "RuleNeverFires.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RuleNeverFires",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RuleNeverFires.bsv",
+              "mode": "verilog",
+              "module": "sysRuleNeverFires",
+              "args": [
+                "-remove-starved-rules"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RuleNeverFires.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RuleNeverFires.bsv"
+                ],
+                "outputs": [
+                  "RuleNeverFires.bo",
+                  "RuleNeverFires.bsv.bsc-vcomp-out",
+                  "sysRuleNeverFires.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 282,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "RuleNeverFires.bo",
+              "artifacts": {
+                "inputs": [
+                  "RuleNeverFires.bo"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "RuleNeverFires.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 308,
+                  "endByte": 331,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-RuleNeverFires",
+      "resource": "normal",
+      "fixtures": [
+        "RuleNeverFires.bsv",
+        "RuleNeverFires.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RuleNeverFires",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RuleNeverFires.bsv",
+              "mode": "verilog",
+              "module": "sysRuleNeverFires",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RuleNeverFires.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RuleNeverFires.bsv"
+                ],
+                "outputs": [
+                  "RuleNeverFires.bo",
+                  "RuleNeverFires.bsv.bsc-vcomp-out",
+                  "sysRuleNeverFires.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 390,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "RuleNeverFires.bsv.bsc-vcomp-out",
+              "expected": "RuleNeverFires.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "RuleNeverFires.bsv.bsc-vcomp-out",
+                  "RuleNeverFires.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 391,
+                  "endByte": 436,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-RuleFalse",
+      "resource": "normal",
+      "fixtures": [
+        "RuleFalse.bsv",
+        "RuleFalse.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RuleFalse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RuleFalse.bsv",
+              "mode": "verilog",
+              "module": "sysRuleFalse",
+              "args": [
+                "-opt-bool"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RuleFalse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RuleFalse.bsv"
+                ],
+                "outputs": [
+                  "RuleFalse.bo",
+                  "RuleFalse.bsv.bsc-vcomp-out",
+                  "sysRuleFalse.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 483,
+                  "endByte": 542,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "RuleFalse.bsv.bsc-vcomp-out",
+              "expected": "RuleFalse.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "RuleFalse.bsv.bsc-vcomp-out",
+                  "RuleFalse.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 543,
+                  "endByte": 583,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-ExpandFalse",
+      "resource": "normal",
+      "fixtures": [
+        "ExpandFalse.bsv",
+        "ExpandFalse.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExpandFalse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExpandFalse.bsv",
+              "mode": "verilog",
+              "module": "sysExpandFalse",
+              "args": [
+                "-split-if",
+                "-opt-bool"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ExpandFalse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ExpandFalse.bsv"
+                ],
+                "outputs": [
+                  "ExpandFalse.bo",
+                  "ExpandFalse.bsv.bsc-vcomp-out",
+                  "sysExpandFalse.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 648,
+                  "endByte": 721,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ExpandFalse.bsv.bsc-vcomp-out",
+              "expected": "ExpandFalse.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ExpandFalse.bsv.bsc-vcomp-out",
+                  "ExpandFalse.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 722,
+                  "endByte": 764,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-PPrintSched",
+      "resource": "normal",
+      "fixtures": [
+        "PPrintSched.bsv",
+        "sysPPrintSched.sched.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PPrintSched",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PPrintSched.bsv",
+              "mode": "verilog",
+              "module": "sysPPrintSched",
+              "args": [
+                "-show-schedule"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PPrintSched.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PPrintSched.bsv"
+                ],
+                "outputs": [
+                  "PPrintSched.bo",
+                  "PPrintSched.bsv.bsc-vcomp-out",
+                  "module_test1.v",
+                  "sysPPrintSched.sched",
+                  "sysPPrintSched.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 766,
+                  "endByte": 835,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPPrintSched.sched",
+              "expected": "sysPPrintSched.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysPPrintSched.sched",
+                  "sysPPrintSched.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 836,
+                  "endByte": 869,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

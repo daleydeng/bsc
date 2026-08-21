@@ -32,7 +32,7 @@ jobs:
           path: |
             .pixi/ghcup
             .pixi/cabal
-          key: native-windows-haskell-v2-ghc-9.6.7-${{ hashFiles('rust-util/xtask/src/toolchain.rs', 'rust-util/xtask/Cargo.toml', 'Cargo.lock') }}
+          key: native-windows-haskell-v2-ghc-9.6.7-${{ hashFiles('rust/util/xtask/src/toolchain.rs', 'rust/util/xtask/Cargo.toml', 'Cargo.lock') }}
           restore-keys: |
             native-windows-haskell-v2-ghc-9.6.7-
 
@@ -49,19 +49,19 @@ jobs:
         uses: actions/cache@v5
         with:
           path: .pixi/cache/rust-tests
-          key: native-windows-rust-tests-v2-${{ hashFiles('pixi.lock') }}-${{ github.sha }}
+          key: native-windows-rust-tests-v4-${{ hashFiles('pixi.lock') }}-${{ github.sha }}
           restore-keys: |
-            native-windows-rust-tests-v2-${{ hashFiles('pixi.lock') }}-
-            native-windows-rust-tests-v2-
+            native-windows-rust-tests-v4-${{ hashFiles('pixi.lock') }}-
+            native-windows-rust-tests-v4-
 
-      - name: Restore C++ compiler cache
+      - name: Restore Rust and C++ compiler cache
         uses: actions/cache@v5
         with:
-          path: .pixi/cache/ccache
-          key: native-windows-ccache-v1-${{ hashFiles('pixi.lock') }}-${{ github.sha }}
+          path: .pixi/cache/sccache
+          key: native-windows-sccache-v1-${{ hashFiles('pixi.lock') }}-${{ github.sha }}
           restore-keys: |
-            native-windows-ccache-v1-${{ hashFiles('pixi.lock') }}-
-            native-windows-ccache-v1-
+            native-windows-sccache-v1-${{ hashFiles('pixi.lock') }}-
+            native-windows-sccache-v1-
 
       - name: Build and smoke test
         run: pixi run just smoke
@@ -69,11 +69,11 @@ jobs:
       - name: Run migrated Rust contract tests
         run: pixi run just test
 
-      - name: CCache statistics
+      - name: Sccache statistics
         if: always()
         env:
-          CCACHE_DIR: ${{ github.workspace }}\.pixi\cache\ccache
-        run: pixi run ccache --show-stats
+          SCCACHE_DIR: ${{ github.workspace }}\.pixi\cache\sccache
+        run: pixi run sccache --show-stats
 
       - name: Upload test diagnostics
         if: failure()

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.doc/doc",
+  "origin": {
+    "path": "testsuite/bsc.doc/doc.exp",
+    "sha256": "4bddb3215999f6db6a0418863935ca93bb335812919e392fea6be343238f3d8c"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.doc",
+  "fixtures": [
+    {
+      "path": "UserGuide_GCD.bsv",
+      "sha256": "dc32c9deb41a232e2898aec3f90e48c4639a55d87bb517e2273c3d1e6d7a4993",
+      "role": "source"
+    },
+    {
+      "path": "UserGuide_RegInsts.bsv",
+      "sha256": "79d1c474d8bfeb49941b065a9a64b26d4fc96422b7e31bbfe722b902385e65aa",
+      "role": "source"
+    },
+    {
+      "path": "UserGuide_mkGCD.v.expected",
+      "sha256": "858db1df970bbabff43cf9c6a27d46a50827c2a2463bdbfc8f69026ea07ef1a4",
+      "role": "golden"
+    },
+    {
+      "path": "sysUserGuide_RegInsts.v.expected",
+      "sha256": "b5b065d301023d68f7ac50ba5c8fbcec5f69f319d68a915e12118f879c0734a3",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-UserGuide_GCD",
+      "resource": "normal",
+      "fixtures": [
+        "UserGuide_GCD.bsv",
+        "UserGuide_mkGCD.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UserGuide_GCD",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UserGuide_GCD.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UserGuide_GCD.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UserGuide_GCD.bsv"
+                ],
+                "outputs": [
+                  "UserGuide_GCD.bo",
+                  "UserGuide_GCD.bsv.bsc-vcomp-out",
+                  "mkGCD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 553,
+                  "endByte": 591,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkGCD.v",
+              "expected": "UserGuide_mkGCD.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkGCD.v",
+                  "UserGuide_mkGCD.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 592,
+                  "endByte": 642,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-UserGuide_RegInsts",
+      "resource": "normal",
+      "fixtures": [
+        "UserGuide_RegInsts.bsv",
+        "sysUserGuide_RegInsts.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UserGuide_RegInsts",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UserGuide_RegInsts.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UserGuide_RegInsts.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UserGuide_RegInsts.bsv"
+                ],
+                "outputs": [
+                  "UserGuide_RegInsts.bo",
+                  "UserGuide_RegInsts.bsv.bsc-vcomp-out",
+                  "sysUserGuide_RegInsts.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 715,
+                  "endByte": 758,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "sysUserGuide_RegInsts.v",
+              "expected": "sysUserGuide_RegInsts.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUserGuide_RegInsts.v",
+                  "sysUserGuide_RegInsts.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 759,
+                  "endByte": 798,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 40
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

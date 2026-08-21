@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/list_ops/list_ops",
+  "origin": {
+    "path": "testsuite/bsc.lib/list_ops/list_ops.exp",
+    "sha256": "6c619e0d9fe72693cbfb8abbcd3f79d349abc6e5f68f2374aa3a30aaa3bac0d4"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/list_ops",
+  "fixtures": [
+    {
+      "path": "SortGroupTest.bsv",
+      "sha256": "fb70e764382cbcab84b40492848ce78b2a5b7b6852ce8390df1ffee7f601a1e5",
+      "role": "source"
+    },
+    {
+      "path": "sysSortGroupTest.out.expected",
+      "sha256": "be901b2115c0597c901f0df53cad2cce89c363b46e88582a8d18c2ac58ffee7b",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysSortGroupTest",
+      "resource": "heavy",
+      "fixtures": [
+        "SortGroupTest.bsv",
+        "sysSortGroupTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSortGroupTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SortGroupTest.bsv",
+              "mode": "bluesim",
+              "module": "sysSortGroupTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SortGroupTest.bsv"
+                ],
+                "outputs": [
+                  "SortGroupTest.bo",
+                  "SortGroupTest.bsv.bsc-ccomp-out",
+                  "sysSortGroupTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSortGroupTest"
+              ],
+              "top": "sysSortGroupTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSortGroupTest.ba"
+                ],
+                "outputs": [
+                  "sysSortGroupTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSortGroupTest.cexe",
+                    "sysSortGroupTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSortGroupTest",
+              "args": [],
+              "stdout": "sysSortGroupTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSortGroupTest.cexe"
+                ],
+                "outputs": [
+                  "sysSortGroupTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSortGroupTest.c.out",
+              "expected": "sysSortGroupTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSortGroupTest.c.out",
+                  "sysSortGroupTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSortGroupTest",
+              "args": [],
+              "stdout": "sysSortGroupTest.c-vcd.out",
+              "vcd": "sysSortGroupTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSortGroupTest.cexe"
+                ],
+                "outputs": [
+                  "sysSortGroupTest.c-vcd.out",
+                  "sysSortGroupTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSortGroupTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSortGroupTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSortGroupTest.c-vcd.out",
+              "expected": "sysSortGroupTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSortGroupTest.c-vcd.out",
+                  "sysSortGroupTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

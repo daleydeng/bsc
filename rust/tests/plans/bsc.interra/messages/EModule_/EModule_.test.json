@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/EModule_/EModule_",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/EModule_/EModule_.exp",
+    "sha256": "415837705a559e11784b64d836eb07fb194b79c04830cb0031c68535af0838a8"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/EModule_",
+  "fixtures": [
+    {
+      "path": "EModule_.bs",
+      "sha256": "4b7e16b49dddb5858ad952daff97b4d799621e6bee7e933579480dade7bd8d39",
+      "role": "source"
+    },
+    {
+      "path": "EModule_.bs.bsc-vcomp-out.expected",
+      "sha256": "2e293f7d2148e098f3b2aba90c6366135541e715ac2e18d4cfca15e2f6172d13",
+      "role": "golden"
+    },
+    {
+      "path": "EModule_2.bs",
+      "sha256": "06bde0147a8dc14a037c7f8b47517de90eba487921ecf59e2e3b0ffb77837723",
+      "role": "source"
+    },
+    {
+      "path": "EModule_2.bs.bsc-vcomp-out.expected",
+      "sha256": "3d6dc40bdd38897ad74b357a84e6c96fabc59f47adc50fed990500fe60304914",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-EModule_",
+      "resource": "normal",
+      "fixtures": [
+        "EModule_.bs",
+        "EModule_.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EModule_",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EModule_.bs",
+              "mode": "verilog",
+              "module": "mkTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "EModule_.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EModule_.bs"
+                ],
+                "outputs": [
+                  "EModule_.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 58,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "EModule_.bs.bsc-vcomp-out",
+              "expected": "EModule_.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "EModule_.bs.bsc-vcomp-out",
+                  "EModule_.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 59,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-EModule_2",
+      "resource": "normal",
+      "fixtures": [
+        "EModule_2.bs",
+        "EModule_2.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EModule_2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EModule_2.bs",
+              "mode": "verilog",
+              "module": "myReg",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "EModule_2.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EModule_2.bs"
+                ],
+                "outputs": [
+                  "EModule_2.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 99,
+                  "endByte": 138,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "EModule_2.bs.bsc-vcomp-out",
+              "expected": "EModule_2.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "EModule_2.bs.bsc-vcomp-out",
+                  "EModule_2.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1278"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 190,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "EModule_2.bs.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0011",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "EModule_2.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 247,
+                  "endByte": 294,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

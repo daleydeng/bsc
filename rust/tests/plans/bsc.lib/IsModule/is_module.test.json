@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/IsModule/is_module",
+  "origin": {
+    "path": "testsuite/bsc.lib/IsModule/is_module.exp",
+    "sha256": "418e417009b96c62573b676a9a92b2208507e536361936055f37dc75b6ba8072"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/IsModule",
+  "fixtures": [
+    {
+      "path": "FIFOContextTest.bsv",
+      "sha256": "c736f1e5878dedd6b850bc5f5eb73d703ac7d2ab9ea1dd414677f62ba95754e1",
+      "role": "source"
+    },
+    {
+      "path": "FIFOContextTest.bsv.bsc-vcomp-out.expected",
+      "sha256": "583d17b7db94aa87a6fc906367e2c9a93799ca9de1122e74c21a52b5d7fc56e3",
+      "role": "golden"
+    },
+    {
+      "path": "ModuleCollectClock.bsv",
+      "sha256": "85aa1f227bdd0d44a2a146ee9290a856eb71552551d2915a61d1e067b674142d",
+      "role": "source"
+    },
+    {
+      "path": "ModuleCollectClock.bsv.bsc-vcomp-out.expected",
+      "sha256": "550b443c69912f38b83b80af4efb018f5ff03e5dddaa16fbe88b90fd1ee2e3c9",
+      "role": "golden"
+    },
+    {
+      "path": "ModuleContextClock.bsv",
+      "sha256": "3ff519f8020fbce8d3fb183d178aafc2e941c6945f99d558ed44d014b156307b",
+      "role": "source"
+    },
+    {
+      "path": "ModuleContextClock.bsv.bsc-vcomp-out.expected",
+      "sha256": "d808e4dcc0c43de299f88329f697adb68a8c00ce4d66aed7422a756acdc2e5d2",
+      "role": "golden"
+    },
+    {
+      "path": "mkFIFOContextTest.v.expected",
+      "sha256": "5f00aefa4843298d4d8e6413e8c367fe2aaea024118a5d1a512b5d842cfbd4cd",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ModuleCollectClock",
+      "resource": "normal",
+      "fixtures": [
+        "ModuleCollectClock.bsv",
+        "ModuleCollectClock.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ModuleCollectClock",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ModuleCollectClock.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ModuleCollectClock.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ModuleCollectClock.bsv"
+                ],
+                "outputs": [
+                  "ModuleCollectClock.bo",
+                  "ModuleCollectClock.bsv.bsc-vcomp-out",
+                  "mkTestWrapper.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 65,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ModuleCollectClock.bsv.bsc-vcomp-out",
+              "expected": "ModuleCollectClock.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ModuleCollectClock.bsv.bsc-vcomp-out",
+                  "ModuleCollectClock.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 115,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTestWrapper.v",
+              "text": "posedge CLK_c",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkTestWrapper.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 116,
+                  "endByte": 164,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ModuleContextClock",
+      "resource": "normal",
+      "fixtures": [
+        "ModuleContextClock.bsv",
+        "ModuleContextClock.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ModuleContextClock",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ModuleContextClock.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ModuleContextClock.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ModuleContextClock.bsv"
+                ],
+                "outputs": [
+                  "ModuleContextClock.bo",
+                  "ModuleContextClock.bsv.bsc-vcomp-out",
+                  "mkTestWrapper2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 166,
+                  "endByte": 209,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "ModuleContextClock.bsv.bsc-vcomp-out",
+              "expected": "ModuleContextClock.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "ModuleContextClock.bsv.bsc-vcomp-out",
+                  "ModuleContextClock.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 210,
+                  "endByte": 259,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTestWrapper2.v",
+              "text": "posedge CLK_c",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkTestWrapper2.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 260,
+                  "endByte": 309,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-FIFOContextTest",
+      "resource": "normal",
+      "fixtures": [
+        "FIFOContextTest.bsv",
+        "FIFOContextTest.bsv.bsc-vcomp-out.expected",
+        "mkFIFOContextTest.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-FIFOContextTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "FIFOContextTest.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "FIFOContextTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "FIFOContextTest.bsv"
+                ],
+                "outputs": [
+                  "FIFOContextTest.bo",
+                  "FIFOContextTest.bsv.bsc-vcomp-out",
+                  "mkFIFOContextTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 311,
+                  "endByte": 351,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "FIFOContextTest.bsv.bsc-vcomp-out",
+              "expected": "FIFOContextTest.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "FIFOContextTest.bsv.bsc-vcomp-out",
+                  "FIFOContextTest.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 352,
+                  "endByte": 398,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkFIFOContextTest.v",
+              "expected": "mkFIFOContextTest.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkFIFOContextTest.v",
+                  "mkFIFOContextTest.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 399,
+                  "endByte": 434,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/clearOfOnce/clearOfOnce",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/clearOfOnce/clearOfOnce.exp",
+    "sha256": "03ee135edb3b97f52072fb30371fa5fea11936bfd76636a921ca6d2dfd14b02f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/clearOfOnce",
+  "fixtures": [
+    {
+      "path": "clearOfOnce.bsv",
+      "sha256": "55ce1cb83692ec3d12d662e8b92367f6b19eaf16c7fceba26817f6a937ba0564",
+      "role": "source"
+    },
+    {
+      "path": "clearOfOnce.out.expected",
+      "sha256": "7ab7c28a508032d0dd77db4826063e6221d2822693e6080194925e48c5c2008d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-clearOfOnce",
+      "resource": "heavy",
+      "fixtures": [
+        "clearOfOnce.bsv",
+        "clearOfOnce.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "clearOfOnce",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "clearOfOnce.bsv",
+              "mode": "shared_elaboration",
+              "module": "clearOfOnce",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.bsv"
+                ],
+                "outputs": [
+                  "clearOfOnce.ba",
+                  "clearOfOnce.bo",
+                  "clearOfOnce.bsv.bsc-vcomp-out",
+                  "clearOfOnce.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "clearOfOnce"
+              ],
+              "top": "clearOfOnce",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.v"
+                ],
+                "outputs": [
+                  "clearOfOnce.bsc-vcomp-out",
+                  "clearOfOnce.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "clearOfOnce",
+              "args": [],
+              "stdout": "clearOfOnce.v.out",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.vexe"
+                ],
+                "outputs": [
+                  "clearOfOnce.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "clearOfOnce.v.out",
+              "expected": "clearOfOnce.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.v.out",
+                  "clearOfOnce.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "clearOfOnce",
+              "args": [],
+              "stdout": "clearOfOnce.v-vcd.out",
+              "vcd": "clearOfOnce.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.vexe"
+                ],
+                "outputs": [
+                  "clearOfOnce.v-vcd.out",
+                  "clearOfOnce.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "clearOfOnce.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "clearOfOnce"
+              ],
+              "top": "clearOfOnce",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.ba"
+                ],
+                "outputs": [
+                  "clearOfOnce.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "clearOfOnce.cexe",
+                    "clearOfOnce.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "clearOfOnce",
+              "args": [],
+              "stdout": "clearOfOnce.c.out",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.cexe"
+                ],
+                "outputs": [
+                  "clearOfOnce.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "clearOfOnce.c.out",
+              "expected": "clearOfOnce.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.c.out",
+                  "clearOfOnce.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "clearOfOnce",
+              "args": [],
+              "stdout": "clearOfOnce.c-vcd.out",
+              "vcd": "clearOfOnce.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.cexe"
+                ],
+                "outputs": [
+                  "clearOfOnce.c-vcd.out",
+                  "clearOfOnce.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "clearOfOnce.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "clearOfOnce.c-vcd.out",
+              "expected": "clearOfOnce.c.out",
+              "artifacts": {
+                "inputs": [
+                  "clearOfOnce.c-vcd.out",
+                  "clearOfOnce.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 75,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

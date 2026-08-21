@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/stepcounter/stepcounter",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/stepcounter/stepcounter.exp",
+    "sha256": "5166adb6dcd2dbb8a36ec13a47dd09a8c441656df09fb9ecb8d4a0f761c92d26"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/stepcounter",
+  "fixtures": [
+    {
+      "path": "StepCounter.bsv",
+      "sha256": "5e93e758d0c4cb956b3895a9d0a10dbaf252f83d4c828a6472111763d885bb95",
+      "role": "source"
+    },
+    {
+      "path": "TestStepCounter.bsv",
+      "sha256": "345fe51a87a66a1efe656060f174dd32f9943a2a9e5a6fa3f1d0ea0682cc6e9f",
+      "role": "source"
+    },
+    {
+      "path": "sysTestStepCounter.out.expected",
+      "sha256": "75d90fad6896beed458eac32eecd4da16f196f14639b5340bda7280c215c38c7",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestStepCounter",
+      "resource": "heavy",
+      "fixtures": [
+        "StepCounter.bsv",
+        "TestStepCounter.bsv",
+        "sysTestStepCounter.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestStepCounter",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestStepCounter.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestStepCounter",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestStepCounter.bsv"
+                ],
+                "outputs": [
+                  "TestStepCounter.bo",
+                  "TestStepCounter.bsv.bsc-vcomp-out",
+                  "sysTestStepCounter.ba",
+                  "sysTestStepCounter.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestStepCounter"
+              ],
+              "top": "sysTestStepCounter",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.v"
+                ],
+                "outputs": [
+                  "sysTestStepCounter.bsc-vcomp-out",
+                  "sysTestStepCounter.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestStepCounter",
+              "args": [],
+              "stdout": "sysTestStepCounter.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.vexe"
+                ],
+                "outputs": [
+                  "sysTestStepCounter.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestStepCounter.v.out",
+              "expected": "sysTestStepCounter.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.v.out",
+                  "sysTestStepCounter.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestStepCounter",
+              "args": [],
+              "stdout": "sysTestStepCounter.v-vcd.out",
+              "vcd": "sysTestStepCounter.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.vexe"
+                ],
+                "outputs": [
+                  "sysTestStepCounter.v-vcd.out",
+                  "sysTestStepCounter.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestStepCounter.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestStepCounter"
+              ],
+              "top": "sysTestStepCounter",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.ba"
+                ],
+                "outputs": [
+                  "sysTestStepCounter.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestStepCounter.cexe",
+                    "sysTestStepCounter.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestStepCounter",
+              "args": [],
+              "stdout": "sysTestStepCounter.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.cexe"
+                ],
+                "outputs": [
+                  "sysTestStepCounter.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestStepCounter.c.out",
+              "expected": "sysTestStepCounter.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.c.out",
+                  "sysTestStepCounter.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestStepCounter",
+              "args": [],
+              "stdout": "sysTestStepCounter.c-vcd.out",
+              "vcd": "sysTestStepCounter.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.cexe"
+                ],
+                "outputs": [
+                  "sysTestStepCounter.c-vcd.out",
+                  "sysTestStepCounter.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestStepCounter.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestStepCounter.c-vcd.out",
+              "expected": "sysTestStepCounter.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestStepCounter.c-vcd.out",
+                  "sysTestStepCounter.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

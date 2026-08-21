@@ -1,0 +1,754 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/Enum/Enum",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/Enum/Enum.exp",
+    "sha256": "a79ba29b429fd6c3d1232efc25e5bc103c7dd128a0e827c8edc4636f31eb1b69"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/Enum",
+  "fixtures": [
+    {
+      "path": "EnumAll.bsv",
+      "sha256": "898f54a8a1441ed402b12361cfaf51aede6cfab3000ecd4a8c61086a3f789c71",
+      "role": "source"
+    },
+    {
+      "path": "EnumFromTo.bsv",
+      "sha256": "5a74c85eb26e9241200c998aa9a916caa2aa5e3501cf9c001eb26a63ecd0914f",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_EnumAll.v.out.expected",
+      "sha256": "c20ea089639095c12459ad760a539df55a4f16308eff50f97207efb40a8ac047",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_EnumFromTo.v.out.expected",
+      "sha256": "c20ea089639095c12459ad760a539df55a4f16308eff50f97207efb40a8ac047",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_EnumAll",
+      "resource": "heavy",
+      "fixtures": [
+        "EnumAll.bsv",
+        "mkTestbench_EnumAll.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_EnumAll",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "EnumAll.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_EnumAll",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "EnumAll.bsv"
+                ],
+                "outputs": [
+                  "EnumAll.bo",
+                  "EnumAll.bsv.bsc-vcomp-out",
+                  "mkTestbench_EnumAll.ba",
+                  "mkTestbench_EnumAll.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_EnumAll"
+              ],
+              "top": "mkTestbench_EnumAll",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.v"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumAll.bsc-vcomp-out",
+                  "mkTestbench_EnumAll.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_EnumAll",
+              "args": [],
+              "stdout": "mkTestbench_EnumAll.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumAll.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EnumAll.v.out",
+              "expected": "mkTestbench_EnumAll.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.v.out",
+                  "mkTestbench_EnumAll.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_EnumAll",
+              "args": [],
+              "stdout": "mkTestbench_EnumAll.v-vcd.out",
+              "vcd": "mkTestbench_EnumAll.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumAll.v-vcd.out",
+                  "mkTestbench_EnumAll.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_EnumAll.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_EnumAll"
+              ],
+              "top": "mkTestbench_EnumAll",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumAll.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_EnumAll.cexe",
+                    "mkTestbench_EnumAll.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_EnumAll",
+              "args": [],
+              "stdout": "mkTestbench_EnumAll.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumAll.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EnumAll.c.out",
+              "expected": "mkTestbench_EnumAll.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.c.out",
+                  "mkTestbench_EnumAll.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_EnumAll",
+              "args": [],
+              "stdout": "mkTestbench_EnumAll.c-vcd.out",
+              "vcd": "mkTestbench_EnumAll.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumAll.c-vcd.out",
+                  "mkTestbench_EnumAll.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_EnumAll.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EnumAll.c-vcd.out",
+              "expected": "mkTestbench_EnumAll.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumAll.c-vcd.out",
+                  "mkTestbench_EnumAll.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 102,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 103
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_EnumFromTo",
+      "resource": "heavy",
+      "fixtures": [
+        "EnumFromTo.bsv",
+        "mkTestbench_EnumFromTo.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_EnumFromTo",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "EnumFromTo.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_EnumFromTo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "EnumFromTo.bsv"
+                ],
+                "outputs": [
+                  "EnumFromTo.bo",
+                  "EnumFromTo.bsv.bsc-vcomp-out",
+                  "mkTestbench_EnumFromTo.ba",
+                  "mkTestbench_EnumFromTo.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_EnumFromTo"
+              ],
+              "top": "mkTestbench_EnumFromTo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.v"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumFromTo.bsc-vcomp-out",
+                  "mkTestbench_EnumFromTo.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_EnumFromTo",
+              "args": [],
+              "stdout": "mkTestbench_EnumFromTo.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumFromTo.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EnumFromTo.v.out",
+              "expected": "mkTestbench_EnumFromTo.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.v.out",
+                  "mkTestbench_EnumFromTo.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_EnumFromTo",
+              "args": [],
+              "stdout": "mkTestbench_EnumFromTo.v-vcd.out",
+              "vcd": "mkTestbench_EnumFromTo.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumFromTo.v-vcd.out",
+                  "mkTestbench_EnumFromTo.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_EnumFromTo.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_EnumFromTo"
+              ],
+              "top": "mkTestbench_EnumFromTo",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumFromTo.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_EnumFromTo.cexe",
+                    "mkTestbench_EnumFromTo.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_EnumFromTo",
+              "args": [],
+              "stdout": "mkTestbench_EnumFromTo.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumFromTo.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EnumFromTo.c.out",
+              "expected": "mkTestbench_EnumFromTo.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.c.out",
+                  "mkTestbench_EnumFromTo.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_EnumFromTo",
+              "args": [],
+              "stdout": "mkTestbench_EnumFromTo.c-vcd.out",
+              "vcd": "mkTestbench_EnumFromTo.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_EnumFromTo.c-vcd.out",
+                  "mkTestbench_EnumFromTo.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_EnumFromTo.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_EnumFromTo.c-vcd.out",
+              "expected": "mkTestbench_EnumFromTo.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_EnumFromTo.c-vcd.out",
+                  "mkTestbench_EnumFromTo.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 104,
+                  "endByte": 215,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 112
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

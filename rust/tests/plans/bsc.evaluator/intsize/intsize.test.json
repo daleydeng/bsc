@@ -1,0 +1,242 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/intsize/intsize",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/intsize/intsize.exp",
+    "sha256": "9c602bc57be9b11aadfcf2a9ddc0723254a948ba35aba649489d9a09622dbaa7"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/intsize",
+  "fixtures": [
+    {
+      "path": "intbad1.bsv",
+      "sha256": "b17f815f7e19595145b865f41a0b973fa3cdbd33a02ab7143f221a6bd5f513c4",
+      "role": "source"
+    },
+    {
+      "path": "intbad2.bsv",
+      "sha256": "3b571641477a5074a56ea3b59b0ec53b3c1869f14b47b1a8bea69b9645a4ad2c",
+      "role": "source"
+    },
+    {
+      "path": "intok.bsv",
+      "sha256": "8412e656fff40d2c1e9c8f2f32625a38caf3e9cf66230c29ae626a819c94c685",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-intok",
+      "resource": "normal",
+      "fixtures": [
+        "intok.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-intok",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "intok.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "intok.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "intok.bsv"
+                ],
+                "outputs": [
+                  "intok.bo",
+                  "intok.bsv.bsc-vcomp-out",
+                  "mkintok.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 20,
+                  "endByte": 50,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 31
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-intbad1",
+      "resource": "normal",
+      "fixtures": [
+        "intbad1.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-intbad1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "intbad1.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "intbad1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "intbad1.bsv"
+                ],
+                "outputs": [
+                  "intbad1.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 112,
+                  "endByte": 156,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "intbad1.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "intbad1.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 112,
+                  "endByte": 156,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-intbad2",
+      "resource": "normal",
+      "fixtures": [
+        "intbad2.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-intbad2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "intbad2.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "intbad2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "intbad2.bsv"
+                ],
+                "outputs": [
+                  "intbad2.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 202,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "intbad2.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "intbad2.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 202,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

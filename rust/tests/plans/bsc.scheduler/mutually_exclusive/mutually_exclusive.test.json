@@ -1,0 +1,1792 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/mutually_exclusive/mutually_exclusive",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/mutually_exclusive/mutually_exclusive.exp",
+    "sha256": "15649d4e3dbcf9d3cd4c50547e8f4a1129e991fb5ecc70ea221a8286b4d9b95f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/mutually_exclusive",
+  "fixtures": [
+    {
+      "path": "MEExecOrder1.bsv",
+      "sha256": "4aa2508fe70d1bf19111246ee91a957dd5a0247208b3d7c1a72ac23e89d4a443",
+      "role": "source"
+    },
+    {
+      "path": "MEExecOrder2.bsv",
+      "sha256": "f9cabab29cc4ce438b8571b9f25437242fccf237ab23c2439b16d35367bd2118",
+      "role": "source"
+    },
+    {
+      "path": "MESingleton.bsv",
+      "sha256": "4e8e51193d7b3d00171f2ab554f8321c7e8db395dea0e0d1da7833c0bcc2f4e2",
+      "role": "source"
+    },
+    {
+      "path": "MutuallyExclusiveBug1327.bsv",
+      "sha256": "3a5026dfea9c841861a40518d4fcfd347538185a7998ff88afb3484811b1963c",
+      "role": "source"
+    },
+    {
+      "path": "MutuallyExclusiveCheck.bsv",
+      "sha256": "9f6f37cd7cf5ac0abeb06174fc1c3722f999f8fef310b8e1eb70f661442066a2",
+      "role": "source"
+    },
+    {
+      "path": "MutuallyExclusiveCheckOK.bsv",
+      "sha256": "a70c2c3c948b74ba6a9c9ef44b149c34875c0b11acccf848f671bbd56ba373d2",
+      "role": "source"
+    },
+    {
+      "path": "MutuallyExclusiveNotOK.bsv",
+      "sha256": "e18185578f3399598853c770a4a5dcec5165b54871be9463368b7ab2f0784d66",
+      "role": "source"
+    },
+    {
+      "path": "MutuallyExclusiveOK.bsv",
+      "sha256": "8d6be6f8573d8f82d768226da9585c25d8e1246db777d0744e48b1955f207342",
+      "role": "source"
+    },
+    {
+      "path": "sysMEExecOrder2.out.expected",
+      "sha256": "e67014ba3215041d10da0401e7d7eb2b4c292b4895d40732af64a25f256644b1",
+      "role": "golden"
+    },
+    {
+      "path": "sysMutuallyExclusiveBug1327.out.expected",
+      "sha256": "6b6f3c3be870e3ad291f6ba5a80c9a8a83b3cd87198c8d486903e7f7f174880f",
+      "role": "golden"
+    },
+    {
+      "path": "sysMutuallyExclusiveCheck.out.expected",
+      "sha256": "ca8e1b2d98c39efd977e2b4fddb7113c744f1ff80fc31337a7d5568375448c6a",
+      "role": "golden"
+    },
+    {
+      "path": "sysMutuallyExclusiveCheckOK.out.expected",
+      "sha256": "259c806a99a826d59b237de08d1a73c9bad7ad23c1a5450d83e7c956d8e6202b",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MutuallyExclusiveOK",
+      "resource": "normal",
+      "fixtures": [
+        "MutuallyExclusiveOK.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MutuallyExclusiveOK",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MutuallyExclusiveOK.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MutuallyExclusiveOK.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MutuallyExclusiveOK.bsv"
+                ],
+                "outputs": [
+                  "MutuallyExclusiveOK.bo",
+                  "MutuallyExclusiveOK.bsv.bsc-vcomp-out",
+                  "mkMutuallyExclusiveOK.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 147,
+                  "endByte": 191,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkMutuallyExclusiveOK.v",
+              "text": "Error",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "mkMutuallyExclusiveOK.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1847"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 245,
+                  "endByte": 302,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-MutuallyExclusiveNotOK",
+      "resource": "normal",
+      "fixtures": [
+        "MutuallyExclusiveNotOK.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MutuallyExclusiveNotOK",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MutuallyExclusiveNotOK.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MutuallyExclusiveNotOK.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MutuallyExclusiveNotOK.bsv"
+                ],
+                "outputs": [
+                  "MutuallyExclusiveNotOK.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1847"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 430,
+                  "endByte": 489,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysMutuallyExclusiveCheck",
+      "resource": "heavy",
+      "fixtures": [
+        "MutuallyExclusiveCheck.bsv",
+        "sysMutuallyExclusiveCheck.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMutuallyExclusiveCheck",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MutuallyExclusiveCheck.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MutuallyExclusiveCheck.bsv"
+                ],
+                "outputs": [
+                  "MutuallyExclusiveCheck.bo",
+                  "MutuallyExclusiveCheck.bsv.bsc-vcomp-out",
+                  "sysMutuallyExclusiveCheck.ba",
+                  "sysMutuallyExclusiveCheck.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMutuallyExclusiveCheck"
+              ],
+              "top": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.v"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheck.bsc-vcomp-out",
+                  "sysMutuallyExclusiveCheck.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheck.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.vexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheck.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveCheck.v.out",
+              "expected": "sysMutuallyExclusiveCheck.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.v.out",
+                  "sysMutuallyExclusiveCheck.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheck.v-vcd.out",
+              "vcd": "sysMutuallyExclusiveCheck.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.vexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheck.v-vcd.out",
+                  "sysMutuallyExclusiveCheck.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMutuallyExclusiveCheck.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMutuallyExclusiveCheck"
+              ],
+              "top": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.ba"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheck.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMutuallyExclusiveCheck.cexe",
+                    "sysMutuallyExclusiveCheck.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheck.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.cexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheck.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveCheck.c.out",
+              "expected": "sysMutuallyExclusiveCheck.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.c.out",
+                  "sysMutuallyExclusiveCheck.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMutuallyExclusiveCheck",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheck.c-vcd.out",
+              "vcd": "sysMutuallyExclusiveCheck.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.cexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheck.c-vcd.out",
+                  "sysMutuallyExclusiveCheck.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMutuallyExclusiveCheck.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveCheck.c-vcd.out",
+              "expected": "sysMutuallyExclusiveCheck.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheck.c-vcd.out",
+                  "sysMutuallyExclusiveCheck.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 873,
+                  "endByte": 911,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysMutuallyExclusiveCheckOK",
+      "resource": "heavy",
+      "fixtures": [
+        "MutuallyExclusiveCheckOK.bsv",
+        "sysMutuallyExclusiveCheckOK.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMutuallyExclusiveCheckOK",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MutuallyExclusiveCheckOK.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MutuallyExclusiveCheckOK.bsv"
+                ],
+                "outputs": [
+                  "MutuallyExclusiveCheckOK.bo",
+                  "MutuallyExclusiveCheckOK.bsv.bsc-vcomp-out",
+                  "sysMutuallyExclusiveCheckOK.ba",
+                  "sysMutuallyExclusiveCheckOK.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMutuallyExclusiveCheckOK"
+              ],
+              "top": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.v"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheckOK.bsc-vcomp-out",
+                  "sysMutuallyExclusiveCheckOK.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheckOK.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.vexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheckOK.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveCheckOK.v.out",
+              "expected": "sysMutuallyExclusiveCheckOK.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.v.out",
+                  "sysMutuallyExclusiveCheckOK.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheckOK.v-vcd.out",
+              "vcd": "sysMutuallyExclusiveCheckOK.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.vexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheckOK.v-vcd.out",
+                  "sysMutuallyExclusiveCheckOK.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMutuallyExclusiveCheckOK.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMutuallyExclusiveCheckOK"
+              ],
+              "top": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.ba"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheckOK.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMutuallyExclusiveCheckOK.cexe",
+                    "sysMutuallyExclusiveCheckOK.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheckOK.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.cexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheckOK.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveCheckOK.c.out",
+              "expected": "sysMutuallyExclusiveCheckOK.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.c.out",
+                  "sysMutuallyExclusiveCheckOK.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMutuallyExclusiveCheckOK",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveCheckOK.c-vcd.out",
+              "vcd": "sysMutuallyExclusiveCheckOK.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.cexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveCheckOK.c-vcd.out",
+                  "sysMutuallyExclusiveCheckOK.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMutuallyExclusiveCheckOK.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveCheckOK.c-vcd.out",
+              "expected": "sysMutuallyExclusiveCheckOK.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveCheckOK.c-vcd.out",
+                  "sysMutuallyExclusiveCheckOK.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1018,
+                  "endByte": 1058,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysMutuallyExclusiveBug1327",
+      "resource": "heavy",
+      "fixtures": [
+        "MutuallyExclusiveBug1327.bsv",
+        "sysMutuallyExclusiveBug1327.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMutuallyExclusiveBug1327",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MutuallyExclusiveBug1327.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MutuallyExclusiveBug1327.bsv"
+                ],
+                "outputs": [
+                  "MutuallyExclusiveBug1327.bo",
+                  "MutuallyExclusiveBug1327.bsv.bsc-vcomp-out",
+                  "sysMutuallyExclusiveBug1327.ba",
+                  "sysMutuallyExclusiveBug1327.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMutuallyExclusiveBug1327"
+              ],
+              "top": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.v"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveBug1327.bsc-vcomp-out",
+                  "sysMutuallyExclusiveBug1327.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveBug1327.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.vexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveBug1327.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMutuallyExclusiveBug1327.v.out",
+              "expected": "sysMutuallyExclusiveBug1327.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.v.out",
+                  "sysMutuallyExclusiveBug1327.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveBug1327.v-vcd.out",
+              "vcd": "sysMutuallyExclusiveBug1327.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.vexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveBug1327.v-vcd.out",
+                  "sysMutuallyExclusiveBug1327.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMutuallyExclusiveBug1327.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMutuallyExclusiveBug1327"
+              ],
+              "top": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.ba"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveBug1327.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMutuallyExclusiveBug1327.cexe",
+                    "sysMutuallyExclusiveBug1327.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveBug1327.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.cexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveBug1327.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysMutuallyExclusiveBug1327.c.out",
+              "expected": "sysMutuallyExclusiveBug1327.out.expected",
+              "reason": "upstream bug 1327",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.c.out",
+                  "sysMutuallyExclusiveBug1327.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMutuallyExclusiveBug1327",
+              "args": [],
+              "stdout": "sysMutuallyExclusiveBug1327.c-vcd.out",
+              "vcd": "sysMutuallyExclusiveBug1327.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.cexe"
+                ],
+                "outputs": [
+                  "sysMutuallyExclusiveBug1327.c-vcd.out",
+                  "sysMutuallyExclusiveBug1327.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMutuallyExclusiveBug1327.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMutuallyExclusiveBug1327.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1197,
+                  "endByte": 1245,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-MEExecOrder1",
+      "resource": "normal",
+      "fixtures": [
+        "MEExecOrder1.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MEExecOrder1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MEExecOrder1.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MEExecOrder1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MEExecOrder1.bsv"
+                ],
+                "outputs": [
+                  "MEExecOrder1.bo",
+                  "MEExecOrder1.bsv.bsc-vcomp-out",
+                  "sysMEExecOrder1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1426,
+                  "endByte": 1474,
+                  "startLine": 44,
+                  "startColumn": 1,
+                  "endLine": 44,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MEExecOrder1.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "MEExecOrder1.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1426,
+                  "endByte": 1474,
+                  "startLine": 44,
+                  "startColumn": 1,
+                  "endLine": 44,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysMEExecOrder2",
+      "resource": "heavy",
+      "fixtures": [
+        "MEExecOrder2.bsv",
+        "sysMEExecOrder2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMEExecOrder2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MEExecOrder2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysMEExecOrder2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MEExecOrder2.bsv"
+                ],
+                "outputs": [
+                  "MEExecOrder2.bo",
+                  "MEExecOrder2.bsv.bsc-vcomp-out",
+                  "sysMEExecOrder2.ba",
+                  "sysMEExecOrder2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMEExecOrder2"
+              ],
+              "top": "sysMEExecOrder2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.v"
+                ],
+                "outputs": [
+                  "sysMEExecOrder2.bsc-vcomp-out",
+                  "sysMEExecOrder2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMEExecOrder2",
+              "args": [],
+              "stdout": "sysMEExecOrder2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.vexe"
+                ],
+                "outputs": [
+                  "sysMEExecOrder2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMEExecOrder2.v.out",
+              "expected": "sysMEExecOrder2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.v.out",
+                  "sysMEExecOrder2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMEExecOrder2",
+              "args": [],
+              "stdout": "sysMEExecOrder2.v-vcd.out",
+              "vcd": "sysMEExecOrder2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.vexe"
+                ],
+                "outputs": [
+                  "sysMEExecOrder2.v-vcd.out",
+                  "sysMEExecOrder2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMEExecOrder2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMEExecOrder2"
+              ],
+              "top": "sysMEExecOrder2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.ba"
+                ],
+                "outputs": [
+                  "sysMEExecOrder2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMEExecOrder2.cexe",
+                    "sysMEExecOrder2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMEExecOrder2",
+              "args": [],
+              "stdout": "sysMEExecOrder2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.cexe"
+                ],
+                "outputs": [
+                  "sysMEExecOrder2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMEExecOrder2.c.out",
+              "expected": "sysMEExecOrder2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.c.out",
+                  "sysMEExecOrder2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMEExecOrder2",
+              "args": [],
+              "stdout": "sysMEExecOrder2.c-vcd.out",
+              "vcd": "sysMEExecOrder2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.cexe"
+                ],
+                "outputs": [
+                  "sysMEExecOrder2.c-vcd.out",
+                  "sysMEExecOrder2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMEExecOrder2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMEExecOrder2.c-vcd.out",
+              "expected": "sysMEExecOrder2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMEExecOrder2.c-vcd.out",
+                  "sysMEExecOrder2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1569,
+                  "endByte": 1597,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-12-MESingleton",
+      "resource": "normal",
+      "fixtures": [
+        "MESingleton.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MESingleton",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MESingleton.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MESingleton.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MESingleton.bsv"
+                ],
+                "outputs": [
+                  "MESingleton.bo",
+                  "MESingleton.bsv.bsc-vcomp-out",
+                  "sysMESingleton.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1650,
+                  "endByte": 1700,
+                  "startLine": 53,
+                  "startColumn": 1,
+                  "endLine": 53,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MESingleton.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "G0010",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MESingleton.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1650,
+                  "endByte": 1700,
+                  "startLine": 53,
+                  "startColumn": 1,
+                  "endLine": 53,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

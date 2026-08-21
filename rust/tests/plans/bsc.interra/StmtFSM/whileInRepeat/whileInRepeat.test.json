@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/whileInRepeat/whileInRepeat",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/whileInRepeat/whileInRepeat.exp",
+    "sha256": "16717d871612009dbea878d76e4720c3e601cb5d7bb3789f2df5dd810038ae29"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/whileInRepeat",
+  "fixtures": [
+    {
+      "path": "whileInRepeat.bsv",
+      "sha256": "a297a3763278518f57c7fbcb7d5bcd1b6dc26b04c62e0ab541191f315cb457eb",
+      "role": "source"
+    },
+    {
+      "path": "whileInRepeat.out.expected",
+      "sha256": "3c88b97466c475b0add9188c1441c62432c8d1716c36cf283c00f80c4e25772b",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-whileInRepeat",
+      "resource": "heavy",
+      "fixtures": [
+        "whileInRepeat.bsv",
+        "whileInRepeat.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "whileInRepeat",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "whileInRepeat.bsv",
+              "mode": "shared_elaboration",
+              "module": "whileInRepeat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.bsv"
+                ],
+                "outputs": [
+                  "whileInRepeat.ba",
+                  "whileInRepeat.bo",
+                  "whileInRepeat.bsv.bsc-vcomp-out",
+                  "whileInRepeat.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "whileInRepeat"
+              ],
+              "top": "whileInRepeat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.v"
+                ],
+                "outputs": [
+                  "whileInRepeat.bsc-vcomp-out",
+                  "whileInRepeat.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "whileInRepeat",
+              "args": [],
+              "stdout": "whileInRepeat.v.out",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.vexe"
+                ],
+                "outputs": [
+                  "whileInRepeat.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "whileInRepeat.v.out",
+              "expected": "whileInRepeat.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.v.out",
+                  "whileInRepeat.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "whileInRepeat",
+              "args": [],
+              "stdout": "whileInRepeat.v-vcd.out",
+              "vcd": "whileInRepeat.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.vexe"
+                ],
+                "outputs": [
+                  "whileInRepeat.v-vcd.out",
+                  "whileInRepeat.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "whileInRepeat.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "whileInRepeat"
+              ],
+              "top": "whileInRepeat",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.ba"
+                ],
+                "outputs": [
+                  "whileInRepeat.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "whileInRepeat.cexe",
+                    "whileInRepeat.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "whileInRepeat",
+              "args": [],
+              "stdout": "whileInRepeat.c.out",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.cexe"
+                ],
+                "outputs": [
+                  "whileInRepeat.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "whileInRepeat.c.out",
+              "expected": "whileInRepeat.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.c.out",
+                  "whileInRepeat.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "whileInRepeat",
+              "args": [],
+              "stdout": "whileInRepeat.c-vcd.out",
+              "vcd": "whileInRepeat.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.cexe"
+                ],
+                "outputs": [
+                  "whileInRepeat.c-vcd.out",
+                  "whileInRepeat.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "whileInRepeat.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "whileInRepeat.c-vcd.out",
+              "expected": "whileInRepeat.c.out",
+              "artifacts": {
+                "inputs": [
+                  "whileInRepeat.c-vcd.out",
+                  "whileInRepeat.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 81,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 82
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

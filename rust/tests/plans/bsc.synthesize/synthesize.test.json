@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.synthesize/synthesize",
+  "origin": {
+    "path": "testsuite/bsc.synthesize/synthesize.exp",
+    "sha256": "cdc2e78b141f7dec298eaa1eeea159581fba9a17f46c6cd65eb44e8356bd147a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.synthesize",
+  "fixtures": [
+    {
+      "path": "FACT.bs",
+      "sha256": "5e5d31703bdac68e50cc6f708fc03a5f92de33adb3f6aac432c90c365c2322b7",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-FACT",
+      "resource": "normal",
+      "fixtures": [
+        "FACT.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-FACT",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "FACT.bs",
+              "mode": "synthesize",
+              "module": "sysFACT",
+              "args": [],
+              "dependencyMode": "no_deps",
+              "expectedExit": "success",
+              "stdout": "FACT.bs.bsc-vcomp-syn-out",
+              "artifacts": {
+                "inputs": [
+                  "FACT.bs"
+                ],
+                "outputs": [
+                  "FACT.bs.bsc-vcomp-syn-out",
+                  "FACT.bo",
+                  "sysFACT.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream unannotated known failure"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 172,
+                  "endByte": 223,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

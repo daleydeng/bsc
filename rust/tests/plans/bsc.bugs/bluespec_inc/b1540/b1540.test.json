@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1540/b1540",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1540/b1540.exp",
+    "sha256": "30cffab87c0f42913e956d5d6cf7941259921fafce36785c3e81d3f96baaba58"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1540",
+  "fixtures": [
+    {
+      "path": "foo.bsv",
+      "sha256": "fb3c432ef804b551877f0e34b191774eb64a1c39e818b748fa0e8af3dd5f29a4",
+      "role": "source"
+    },
+    {
+      "path": "mkFOO.v.expected",
+      "sha256": "5e0b0b1f4ce7963b2b25dc4348d47a7658898de00c5c3e30f9a1b0862fc655ac",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-foo",
+      "resource": "normal",
+      "fixtures": [
+        "foo.bsv",
+        "mkFOO.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-foo",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "foo.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "foo.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "foo.bsv"
+                ],
+                "outputs": [
+                  "foo.bo",
+                  "foo.bsv.bsc-vcomp-out",
+                  "mkFOO.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 28,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkFOO.v",
+              "expected": "mkFOO.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkFOO.v",
+                  "mkFOO.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 29,
+                  "endByte": 52,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

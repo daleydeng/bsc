@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/prims/name/name",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/prims/name/name.exp",
+    "sha256": "c15e6f8f6f47b237b2df9de4cd9053eb143c2025408169b4485e711cccb7bfa6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/prims/name",
+  "fixtures": [
+    {
+      "path": "MakeName.bsv",
+      "sha256": "7a3a695876d76b25c83d6f66cfeadf6a3906bc5ae83c5e5fdb7e3b3d2c298cef",
+      "role": "source"
+    },
+    {
+      "path": "MakeNameBadName.bsv",
+      "sha256": "872b53763f7b3c4359c68c72e35576dfcbdc192130830a913eb091a5e5a99bdd",
+      "role": "source"
+    },
+    {
+      "path": "MakeNameDynamicString.bsv",
+      "sha256": "984646f0b8475a4b6a07cbe2669753b20f520f14d8a7a5fc63f32cc46f3ea85e",
+      "role": "source"
+    },
+    {
+      "path": "ReaderModule.bs",
+      "sha256": "46e078adf73ef96362398fac607fc8797b855006dd7b9067fd570153e8caba63",
+      "role": "source"
+    },
+    {
+      "path": "ReaderModuleTest.bs",
+      "sha256": "0d75d24e64d56db7f4000c458264c9c74ba3f798c268c0957d4c1f0b24975dc6",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MakeName",
+      "resource": "normal",
+      "fixtures": [
+        "MakeName.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MakeName",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MakeName.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MakeName.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MakeName.bsv"
+                ],
+                "outputs": [
+                  "MakeName.bo",
+                  "MakeName.bsv.bsc-vcomp-out",
+                  "sysMakeName.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 55,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysMakeName.v",
+              "text": "assign bp$PROBE = !rg ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysMakeName.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 133,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-MakeNameBadName",
+      "resource": "normal",
+      "fixtures": [
+        "MakeNameBadName.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MakeNameBadName",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MakeNameBadName.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "MakeNameBadName.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MakeNameBadName.bsv"
+                ],
+                "outputs": [
+                  "MakeNameBadName.bo",
+                  "MakeNameBadName.bsv.bsc-vcomp-out",
+                  "sysMakeNameBadName.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 199,
+                  "endByte": 239,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysMakeNameBadName.v",
+              "text": "assign thisisabadname$PROBE = !rg ;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysMakeNameBadName.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 261,
+                  "endByte": 336,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-MakeNameDynamicString",
+      "resource": "normal",
+      "fixtures": [
+        "MakeNameDynamicString.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MakeNameDynamicString",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MakeNameDynamicString.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MakeNameDynamicString.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MakeNameDynamicString.bsv"
+                ],
+                "outputs": [
+                  "MakeNameDynamicString.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 385,
+                  "endByte": 443,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MakeNameDynamicString.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0012",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MakeNameDynamicString.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 385,
+                  "endByte": 443,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 59
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-ReaderModuleTest",
+      "resource": "normal",
+      "fixtures": [
+        "ReaderModule.bs",
+        "ReaderModuleTest.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ReaderModuleTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ReaderModuleTest.bs",
+              "mode": "verilog",
+              "args": [
+                "-dATS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ReaderModuleTest.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ReaderModuleTest.bs"
+                ],
+                "outputs": [
+                  "ReaderModuleTest.bo",
+                  "ReaderModuleTest.bs.bsc-vcomp-out",
+                  "mkReaderModuleTestInner.v",
+                  "mkReaderModuleTestOuter.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 628,
+                  "endByte": 679,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkReaderModuleTestInner.v",
+              "text": "reg [15 : 0] count;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkReaderModuleTestInner.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 749,
+                  "endByte": 813,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkReaderModuleTestOuter.v",
+              "text": "reg [15 : 0] count;",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkReaderModuleTestOuter.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 887,
+                  "endByte": 951,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 65
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkReaderModuleTestOuter.v",
+              "text": "mkReaderModuleTestInner inner(",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "mkReaderModuleTestOuter.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 952,
+                  "endByte": 1027,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

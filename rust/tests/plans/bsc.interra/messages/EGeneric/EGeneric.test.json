@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/EGeneric/EGeneric",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/EGeneric/EGeneric.exp",
+    "sha256": "f295f6ed36e5eabaffedba68434a4ffd85ef0417d1e9b28a809aa1f3b4279c99"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/EGeneric",
+  "fixtures": [
+    {
+      "path": "EGeneric.bs",
+      "sha256": "5a1601cb2eb78fc1a4a02e672ec6a768323a42d6f715928c9446fb32d156b8ea",
+      "role": "source"
+    },
+    {
+      "path": "EGeneric.bs.bsc-vcomp-out.expected",
+      "sha256": "0387b376ed328753f4da7aa84d8a0973ebc5ec322a2b9c1a17fffb008ec76e44",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-EGeneric",
+      "resource": "normal",
+      "fixtures": [
+        "EGeneric.bs",
+        "EGeneric.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EGeneric",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EGeneric.bs",
+              "mode": "verilog",
+              "module": "mkTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "EGeneric.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EGeneric.bs"
+                ],
+                "outputs": [
+                  "EGeneric.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 58,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "EGeneric.bs.bsc-vcomp-out",
+              "expected": "EGeneric.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "EGeneric.bs.bsc-vcomp-out",
+                  "EGeneric.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 59,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

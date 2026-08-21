@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.scheduler/rulesort/rulesort",
+  "origin": {
+    "path": "testsuite/bsc.scheduler/rulesort/rulesort.exp",
+    "sha256": "1ce97209d43b97e280c93977d03a4be3e6ccd81d3cd19454ada4b488c2fef995"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.scheduler/rulesort",
+  "fixtures": [
+    {
+      "path": "RuleSort.bs",
+      "sha256": "66e4748f76aa0942fd316629a5c5aa2117aa5e07812caf392fd97d5a2557c3c2",
+      "role": "source"
+    },
+    {
+      "path": "sysRuleSort.out.expected",
+      "sha256": "d85426acb84e3bbc566d341e61d6c78933dab78a6ffc3668481a1ca1126abe5d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysRuleSort",
+      "resource": "heavy",
+      "fixtures": [
+        "RuleSort.bs",
+        "sysRuleSort.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRuleSort",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RuleSort.bs",
+              "mode": "shared_elaboration",
+              "module": "sysRuleSort",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RuleSort.bs"
+                ],
+                "outputs": [
+                  "RuleSort.bo",
+                  "RuleSort.bs.bsc-vcomp-out",
+                  "sysRuleSort.ba",
+                  "sysRuleSort.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRuleSort"
+              ],
+              "top": "sysRuleSort",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.v"
+                ],
+                "outputs": [
+                  "sysRuleSort.bsc-vcomp-out",
+                  "sysRuleSort.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRuleSort",
+              "args": [],
+              "stdout": "sysRuleSort.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.vexe"
+                ],
+                "outputs": [
+                  "sysRuleSort.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRuleSort.v.out",
+              "expected": "sysRuleSort.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.v.out",
+                  "sysRuleSort.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRuleSort",
+              "args": [],
+              "stdout": "sysRuleSort.v-vcd.out",
+              "vcd": "sysRuleSort.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.vexe"
+                ],
+                "outputs": [
+                  "sysRuleSort.v-vcd.out",
+                  "sysRuleSort.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRuleSort.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRuleSort"
+              ],
+              "top": "sysRuleSort",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.ba"
+                ],
+                "outputs": [
+                  "sysRuleSort.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRuleSort.cexe",
+                    "sysRuleSort.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRuleSort",
+              "args": [],
+              "stdout": "sysRuleSort.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.cexe"
+                ],
+                "outputs": [
+                  "sysRuleSort.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRuleSort.c.out",
+              "expected": "sysRuleSort.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.c.out",
+                  "sysRuleSort.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRuleSort",
+              "args": [],
+              "stdout": "sysRuleSort.c-vcd.out",
+              "vcd": "sysRuleSort.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.cexe"
+                ],
+                "outputs": [
+                  "sysRuleSort.c-vcd.out",
+                  "sysRuleSort.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRuleSort.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRuleSort.c-vcd.out",
+              "expected": "sysRuleSort.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleSort.c-vcd.out",
+                  "sysRuleSort.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

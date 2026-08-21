@@ -1,0 +1,766 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b621/b621",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b621/b621.exp",
+    "sha256": "54c5157fa4583344eccfe4fb15ad2d315a5620d48034c77930ac2d20ec341f30"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b621",
+  "fixtures": [
+    {
+      "path": "DynamicVectorIfc.bsv",
+      "sha256": "78f58b03616ee31d8e6c5892414ffd56ac0478674c3bec28bebe9cb2eb63597d",
+      "role": "source"
+    },
+    {
+      "path": "StaticVectorIfc.bsv",
+      "sha256": "48d16386600ea9e984a34a3866a9e665960e56f9929b906f59d1f493696e1b78",
+      "role": "source"
+    },
+    {
+      "path": "sysDynamicVectorIfc.out.expected",
+      "sha256": "bcaeda7f714b52b1f3130eaaba9760bad21c3129682e33b541a390b73ee17448",
+      "role": "golden"
+    },
+    {
+      "path": "sysStaticVectorIfc.out.expected",
+      "sha256": "99c3b20a51b0d4cd6851220b4b168a0e3b42f8811ecb22c6d7c1a98ab61c6307",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysStaticVectorIfc",
+      "resource": "heavy",
+      "fixtures": [
+        "StaticVectorIfc.bsv",
+        "sysStaticVectorIfc.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStaticVectorIfc",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StaticVectorIfc.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStaticVectorIfc",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StaticVectorIfc.bsv"
+                ],
+                "outputs": [
+                  "StaticVectorIfc.bo",
+                  "StaticVectorIfc.bsv.bsc-vcomp-out",
+                  "mkVectored.ba",
+                  "mkVectored.v",
+                  "sysStaticVectorIfc.ba",
+                  "sysStaticVectorIfc.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStaticVectorIfc",
+                "mkVectored"
+              ],
+              "top": "sysStaticVectorIfc",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.v",
+                  "mkVectored.v"
+                ],
+                "outputs": [
+                  "sysStaticVectorIfc.bsc-vcomp-out",
+                  "sysStaticVectorIfc.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStaticVectorIfc",
+              "args": [],
+              "stdout": "sysStaticVectorIfc.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.vexe"
+                ],
+                "outputs": [
+                  "sysStaticVectorIfc.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStaticVectorIfc.v.out",
+              "expected": "sysStaticVectorIfc.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.v.out",
+                  "sysStaticVectorIfc.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStaticVectorIfc",
+              "args": [],
+              "stdout": "sysStaticVectorIfc.v-vcd.out",
+              "vcd": "sysStaticVectorIfc.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.vexe"
+                ],
+                "outputs": [
+                  "sysStaticVectorIfc.v-vcd.out",
+                  "sysStaticVectorIfc.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStaticVectorIfc.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStaticVectorIfc",
+                "mkVectored"
+              ],
+              "top": "sysStaticVectorIfc",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.ba",
+                  "mkVectored.ba"
+                ],
+                "outputs": [
+                  "sysStaticVectorIfc.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStaticVectorIfc.cexe",
+                    "sysStaticVectorIfc.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStaticVectorIfc",
+              "args": [],
+              "stdout": "sysStaticVectorIfc.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.cexe"
+                ],
+                "outputs": [
+                  "sysStaticVectorIfc.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStaticVectorIfc.c.out",
+              "expected": "sysStaticVectorIfc.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.c.out",
+                  "sysStaticVectorIfc.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStaticVectorIfc",
+              "args": [],
+              "stdout": "sysStaticVectorIfc.c-vcd.out",
+              "vcd": "sysStaticVectorIfc.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.cexe"
+                ],
+                "outputs": [
+                  "sysStaticVectorIfc.c-vcd.out",
+                  "sysStaticVectorIfc.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStaticVectorIfc.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStaticVectorIfc.c-vcd.out",
+              "expected": "sysStaticVectorIfc.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStaticVectorIfc.c-vcd.out",
+                  "sysStaticVectorIfc.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 50,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDynamicVectorIfc",
+      "resource": "heavy",
+      "fixtures": [
+        "DynamicVectorIfc.bsv",
+        "sysDynamicVectorIfc.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDynamicVectorIfc",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DynamicVectorIfc.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDynamicVectorIfc",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DynamicVectorIfc.bsv"
+                ],
+                "outputs": [
+                  "DynamicVectorIfc.bo",
+                  "DynamicVectorIfc.bsv.bsc-vcomp-out",
+                  "mkVectored.ba",
+                  "mkVectored.v",
+                  "sysDynamicVectorIfc.ba",
+                  "sysDynamicVectorIfc.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDynamicVectorIfc",
+                "mkVectored"
+              ],
+              "top": "sysDynamicVectorIfc",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.v",
+                  "mkVectored.v"
+                ],
+                "outputs": [
+                  "sysDynamicVectorIfc.bsc-vcomp-out",
+                  "sysDynamicVectorIfc.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDynamicVectorIfc",
+              "args": [],
+              "stdout": "sysDynamicVectorIfc.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.vexe"
+                ],
+                "outputs": [
+                  "sysDynamicVectorIfc.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDynamicVectorIfc.v.out",
+              "expected": "sysDynamicVectorIfc.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.v.out",
+                  "sysDynamicVectorIfc.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDynamicVectorIfc",
+              "args": [],
+              "stdout": "sysDynamicVectorIfc.v-vcd.out",
+              "vcd": "sysDynamicVectorIfc.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.vexe"
+                ],
+                "outputs": [
+                  "sysDynamicVectorIfc.v-vcd.out",
+                  "sysDynamicVectorIfc.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDynamicVectorIfc.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDynamicVectorIfc",
+                "mkVectored"
+              ],
+              "top": "sysDynamicVectorIfc",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.ba",
+                  "mkVectored.ba"
+                ],
+                "outputs": [
+                  "sysDynamicVectorIfc.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDynamicVectorIfc.cexe",
+                    "sysDynamicVectorIfc.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDynamicVectorIfc",
+              "args": [],
+              "stdout": "sysDynamicVectorIfc.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.cexe"
+                ],
+                "outputs": [
+                  "sysDynamicVectorIfc.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDynamicVectorIfc.c.out",
+              "expected": "sysDynamicVectorIfc.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.c.out",
+                  "sysDynamicVectorIfc.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDynamicVectorIfc",
+              "args": [],
+              "stdout": "sysDynamicVectorIfc.c-vcd.out",
+              "vcd": "sysDynamicVectorIfc.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.cexe"
+                ],
+                "outputs": [
+                  "sysDynamicVectorIfc.c-vcd.out",
+                  "sysDynamicVectorIfc.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDynamicVectorIfc.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDynamicVectorIfc.c-vcd.out",
+              "expected": "sysDynamicVectorIfc.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDynamicVectorIfc.c-vcd.out",
+                  "sysDynamicVectorIfc.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 102,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

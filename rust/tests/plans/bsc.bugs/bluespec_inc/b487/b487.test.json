@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b487/b487",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b487/b487.exp",
+    "sha256": "5bb316bdaeeb3d95fcf4cb635f8036781c03936ae99e7b5ac7dcb2da09a70bbc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b487",
+  "fixtures": [
+    {
+      "path": "SimpleClient.bsv",
+      "sha256": "fb80423f8aee79e8743dc8c1b830126ae35390ac4b145d8d91a267b4e4b43aec",
+      "role": "source"
+    },
+    {
+      "path": "ZBusBuffer.bsv",
+      "sha256": "943d59ad11066733f621bae01fddf1b85596703cfbb3f167425e4d9a08a01601",
+      "role": "source"
+    },
+    {
+      "path": "ZBusUtil.bs",
+      "sha256": "65f93761a9a078567268566aee7b27161d7b39855adb8df28dc7e29041374780",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-SimpleClient",
+      "resource": "normal",
+      "fixtures": [
+        "SimpleClient.bsv",
+        "ZBusBuffer.bsv",
+        "ZBusUtil.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SimpleClient",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SimpleClient.bsv",
+              "mode": "verilog",
+              "args": [
+                "+RTS",
+                "-K200k",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SimpleClient.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SimpleClient.bsv"
+                ],
+                "outputs": [
+                  "SimpleClient.bo",
+                  "SimpleClient.bsv.bsc-vcomp-out",
+                  "mkSimpleClient.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 59,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

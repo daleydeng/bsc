@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/WCycleDrop/WCycleDrop",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/WCycleDrop/WCycleDrop.exp",
+    "sha256": "4734f8cad17e9f7963ccaf2d4fb7e826994971f01df3f84e706a4cd3051c8c1d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/WCycleDrop",
+  "fixtures": [
+    {
+      "path": "WCycleDrop1.bs",
+      "sha256": "45dbd645ca92d1ff4340e7313685f02b93978276922cb607b6f8b176d0d1184a",
+      "role": "source"
+    },
+    {
+      "path": "WCycleDrop1.bs.bsc-vcomp-out.expected",
+      "sha256": "fca0577d998c8a2e487be631e2e73a66aa9c914f16ed13630312bcbdeeb088b6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-WCycleDrop1",
+      "resource": "normal",
+      "fixtures": [
+        "WCycleDrop1.bs",
+        "WCycleDrop1.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-WCycleDrop1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "WCycleDrop1.bs",
+              "mode": "verilog",
+              "module": "mkWCycleDrop1",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "WCycleDrop1.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "WCycleDrop1.bs"
+                ],
+                "outputs": [
+                  "WCycleDrop1.bo",
+                  "WCycleDrop1.bs.bsc-vcomp-out",
+                  "mkWCycleDrop1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 68,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "WCycleDrop1.bs.bsc-vcomp-out",
+              "expected": "WCycleDrop1.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "WCycleDrop1.bs.bsc-vcomp-out",
+                  "WCycleDrop1.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 69,
+                  "endByte": 110,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

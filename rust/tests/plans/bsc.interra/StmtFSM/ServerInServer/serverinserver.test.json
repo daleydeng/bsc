@@ -1,0 +1,436 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/ServerInServer/serverinserver",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/ServerInServer/serverinserver.exp",
+    "sha256": "a6485261748b2c37cc4f4ce772a70d79678b34af7aba0603c5ebd424bae8dbd2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/ServerInServer",
+  "fixtures": [
+    {
+      "path": "ServerInServer.bsv",
+      "sha256": "dd4635bb54ae54fce04750f4e4fa4fcb124d5a70174fb7ee0bd34f1acc098845",
+      "role": "source"
+    },
+    {
+      "path": "sysServerInServer.out.expected",
+      "sha256": "53efc87d55c8f854dfee55029a41a22ce955e78c057e61f634a18662565de4b9",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysServerInServer",
+      "resource": "heavy",
+      "fixtures": [
+        "ServerInServer.bsv",
+        "sysServerInServer.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysServerInServer",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ServerInServer.bsv",
+              "mode": "bluesim",
+              "module": "sysServerInServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ServerInServer.bsv"
+                ],
+                "outputs": [
+                  "ServerInServer.bo",
+                  "ServerInServer.bsv.bsc-ccomp-out",
+                  "sysServerInServer.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysServerInServer"
+              ],
+              "top": "sysServerInServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.ba"
+                ],
+                "outputs": [
+                  "sysServerInServer.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysServerInServer.cexe",
+                    "sysServerInServer.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysServerInServer",
+              "args": [],
+              "stdout": "sysServerInServer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.cexe"
+                ],
+                "outputs": [
+                  "sysServerInServer.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysServerInServer.c.out",
+              "expected": "sysServerInServer.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.c.out",
+                  "sysServerInServer.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysServerInServer",
+              "args": [],
+              "stdout": "sysServerInServer.c-vcd.out",
+              "vcd": "sysServerInServer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.cexe"
+                ],
+                "outputs": [
+                  "sysServerInServer.c-vcd.out",
+                  "sysServerInServer.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysServerInServer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysServerInServer.c-vcd.out",
+              "expected": "sysServerInServer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.c-vcd.out",
+                  "sysServerInServer.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysServerInServer-2",
+      "resource": "heavy",
+      "fixtures": [
+        "ServerInServer.bsv",
+        "sysServerInServer.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysServerInServer",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ServerInServer.bsv",
+              "mode": "verilog",
+              "module": "sysServerInServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ServerInServer.bsv"
+                ],
+                "outputs": [
+                  "ServerInServer.bo",
+                  "ServerInServer.bsv.bsc-vcomp-out",
+                  "sysServerInServer.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysServerInServer"
+              ],
+              "top": "sysServerInServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.v"
+                ],
+                "outputs": [
+                  "sysServerInServer.bsc-vcomp-out",
+                  "sysServerInServer.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysServerInServer",
+              "args": [],
+              "stdout": "sysServerInServer.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.vexe"
+                ],
+                "outputs": [
+                  "sysServerInServer.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysServerInServer.v.out",
+              "expected": "sysServerInServer.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.v.out",
+                  "sysServerInServer.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysServerInServer",
+              "args": [],
+              "stdout": "sysServerInServer.v-vcd.out",
+              "vcd": "sysServerInServer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.vexe"
+                ],
+                "outputs": [
+                  "sysServerInServer.v-vcd.out",
+                  "sysServerInServer.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysServerInServer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysServerInServer.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

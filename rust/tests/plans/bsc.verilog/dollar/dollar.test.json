@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/dollar/dollar",
+  "origin": {
+    "path": "testsuite/bsc.verilog/dollar/dollar.exp",
+    "sha256": "36b7235e7b1ef7b8ec3068ce43dd3b8ba89446124bac53e46acab4cf10dca276"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/dollar",
+  "fixtures": [
+    {
+      "path": "TbWideGCD.bsv",
+      "sha256": "8c5a393b371f489d13e9e143c8be8cfc19d5e211d102e29c743aa3ba6b82f80b",
+      "role": "source"
+    },
+    {
+      "path": "WideGCD.bsv",
+      "sha256": "b98b2f298f889e9f8064c5463c4166ec277551f7651dd4553363e9bcae84a842",
+      "role": "source"
+    },
+    {
+      "path": "mkTbWideGCD.out.expected",
+      "sha256": "5118a8e31b893f7e7c8c4752e5807c9d50449252bd8eaf1810ee11af6e6ebde5",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTbWideGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "TbWideGCD.bsv",
+        "WideGCD.bsv",
+        "mkTbWideGCD.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTbWideGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbWideGCD.bsv",
+              "mode": "verilog",
+              "module": "sysTbWideGCD",
+              "args": [
+                "-remove-dollar"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TbWideGCD.bsv"
+                ],
+                "outputs": [
+                  "TbWideGCD.bo",
+                  "TbWideGCD.bsv.bsc-vcomp-out",
+                  "mkFoo2.v",
+                  "mkFoo3.v",
+                  "mkTestInput.v",
+                  "mkTestMethod.v",
+                  "mkTestMethod2.v",
+                  "mkWideGCD.v",
+                  "mkWideGCDken.v",
+                  "sysTbWideGCD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 87,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTbWideGCD"
+              ],
+              "top": "sysTbWideGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTbWideGCD.v"
+                ],
+                "outputs": [
+                  "sysTbWideGCD.bsc-vcomp-out",
+                  "sysTbWideGCD.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 87,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTbWideGCD",
+              "args": [],
+              "stdout": "sysTbWideGCD.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTbWideGCD.vexe"
+                ],
+                "outputs": [
+                  "sysTbWideGCD.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 87,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTbWideGCD.v.out",
+              "expected": "mkTbWideGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTbWideGCD.v.out",
+                  "mkTbWideGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 87,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTbWideGCD",
+              "args": [],
+              "stdout": "sysTbWideGCD.v-vcd.out",
+              "vcd": "sysTbWideGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTbWideGCD.vexe"
+                ],
+                "outputs": [
+                  "sysTbWideGCD.v-vcd.out",
+                  "sysTbWideGCD.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 87,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 88
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTbWideGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTbWideGCD.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 87,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 88
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-TbWideGCD",
+      "resource": "normal",
+      "fixtures": [
+        "TbWideGCD.bsv",
+        "WideGCD.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TbWideGCD",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TbWideGCD.bsv",
+              "mode": "bluesim_object",
+              "args": [
+                "-remove-dollar"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TbWideGCD.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TbWideGCD.bsv"
+                ],
+                "outputs": [
+                  "TbWideGCD.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 146,
+                  "endByte": 199,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysTbWideGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "TbWideGCD.bsv",
+        "WideGCD.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysTbWideGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbWideGCD.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbWideGCD.bsv"
+                ],
+                "outputs": [
+                  "TbWideGCD.bo",
+                  "TbWideGCD.bsv.bsc-ccomp-out",
+                  "mkFoo2.ba",
+                  "mkFoo3.ba",
+                  "mkTestInput.ba",
+                  "mkTestMethod.ba",
+                  "mkTestMethod2.ba",
+                  "mkWideGCD.ba",
+                  "mkWideGCDken.ba",
+                  "sysTbWideGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 201,
+                  "endByte": 234,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTbWideGCD.ba",
+                "mkWideGCD.ba",
+                "mkWideGCDken.ba"
+              ],
+              "top": "sysTbWideGCD",
+              "args": [
+                "-remove-dollar"
+              ],
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "sysTbWideGCD.ba",
+                  "mkWideGCD.ba",
+                  "mkWideGCDken.ba"
+                ],
+                "outputs": [
+                  "sysTbWideGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 309,
+                  "endByte": 401,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 93
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

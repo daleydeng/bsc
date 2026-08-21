@@ -1,0 +1,334 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/Library_latency/RAM/RAM",
+  "origin": {
+    "path": "testsuite/bsc.interra/Library_latency/RAM/RAM.exp",
+    "sha256": "3250e0817478ca26bea5f45e262654e9ce19a440a35c61750028f253683cf420"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/Library_latency/RAM",
+  "fixtures": [
+    {
+      "path": "TagRam.bsv",
+      "sha256": "2396b6f652249624393bdf4d2657691682d9627659fb04955a4cf18a90d568d1",
+      "role": "source"
+    },
+    {
+      "path": "TestRAM.bsv",
+      "sha256": "c3920fc8c220408d82629ff952989734e0a60b0e02af48b0182b63bc630b96bc",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_Ram.out.expected",
+      "sha256": "87e5945f639e9ba9d8d1497b53e5c4bc0adb419bea7ddc8aa54be79a50353aea",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_TagRam.out.expected",
+      "sha256": "33d791f0e1cac9f1828f41986ea950b4fbf6a1db3483a9db56f88c9d53684b55",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTestbench_Ram",
+      "resource": "heavy",
+      "fixtures": [
+        "TestRAM.bsv",
+        "mkTestbench_Ram.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_Ram",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestRAM.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_Ram",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestRAM.bsv"
+                ],
+                "outputs": [
+                  "TestRAM.bo",
+                  "TestRAM.bsv.bsc-ccomp-out",
+                  "mkTestbench_Ram.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 66,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Ram"
+              ],
+              "top": "mkTestbench_Ram",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Ram.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Ram.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Ram.cexe",
+                    "mkTestbench_Ram.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 67,
+                  "endByte": 120,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Ram",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_Ram.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Ram.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Ram.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 206,
+                  "endByte": 243,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Ram.out",
+              "expected": "mkTestbench_Ram.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Ram.out",
+                  "mkTestbench_Ram.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 244,
+                  "endByte": 278,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-mkTestbench_TagRam",
+      "resource": "heavy",
+      "fixtures": [
+        "TagRam.bsv",
+        "mkTestbench_TagRam.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_TagRam",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TagRam.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_TagRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TagRam.bsv"
+                ],
+                "outputs": [
+                  "TagRam.bo",
+                  "TagRam.bsv.bsc-ccomp-out",
+                  "mkTestbench_TagRam.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 280,
+                  "endByte": 329,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_TagRam"
+              ],
+              "top": "mkTestbench_TagRam",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_TagRam.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_TagRam.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_TagRam.cexe",
+                    "mkTestbench_TagRam.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 330,
+                  "endByte": 389,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_TagRam",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_TagRam.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_TagRam.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_TagRam.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 481,
+                  "endByte": 521,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_TagRam.out",
+              "expected": "mkTestbench_TagRam.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_TagRam.out",
+                  "mkTestbench_TagRam.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 522,
+                  "endByte": 559,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

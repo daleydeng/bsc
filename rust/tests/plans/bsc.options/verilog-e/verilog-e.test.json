@@ -1,0 +1,630 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.options/verilog-e/verilog-e",
+  "origin": {
+    "path": "testsuite/bsc.options/verilog-e/verilog-e.exp",
+    "sha256": "e4dcf5c7a9a138fe1e46787f5bbd76ead21c5e1e2ea8059bbe942d78c7118aff"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.options/verilog-e",
+  "fixtures": [
+    {
+      "path": "Hello.bsv",
+      "sha256": "e9e98f7e58c4b310f9d3b6f92837a4228cfe84fa2aac3038db7b718f733feab1",
+      "role": "source"
+    },
+    {
+      "path": "bsc-D-test.expected",
+      "sha256": "631a79e7dab5f2d98fb17949ec271636e5bdff70a7a4bc0cdc1ef7dbd7e19eb2",
+      "role": "source"
+    },
+    {
+      "path": "bsc-sim-echo.expected",
+      "sha256": "f77c39a28d10ad497684b3e36bdc080eee49a02152244ae0ebf811524d0d8f12",
+      "role": "source"
+    },
+    {
+      "path": "sysHello.out.expected",
+      "sha256": "a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Hello",
+      "resource": "heavy",
+      "fixtures": [
+        "Hello.bsv",
+        "bsc-D-test.expected",
+        "bsc-sim-echo.expected",
+        "sysHello.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Hello",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Hello.bsv",
+              "mode": "verilog",
+              "module": "sysHello",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Hello.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Hello.bsv"
+                ],
+                "outputs": [
+                  "Hello.bo",
+                  "Hello.bsv.bsc-vcomp-out",
+                  "sysHello.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 125,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHello.v"
+              ],
+              "top": "sysHello",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.v"
+                ],
+                "outputs": [
+                  "sysHello.bsc-vcomp-out",
+                  "sysHello.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 173,
+                  "endByte": 210,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysHello",
+              "args": [],
+              "stdout": "sysHello.out",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.vexe"
+                ],
+                "outputs": [
+                  "sysHello.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 211,
+                  "endByte": 231,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysHello.out",
+              "expected": "sysHello.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.out",
+                  "sysHello.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 232,
+                  "endByte": 290,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHello.v"
+              ],
+              "top": "sysHello",
+              "args": [],
+              "simulator": "bluespec_dir_installed_builder",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.v"
+                ],
+                "outputs": [
+                  "sysHello.bsc-vcomp-out",
+                  "sysHello.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 347,
+                  "endByte": 437,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysHello",
+              "args": [],
+              "stdout": "sysHello.out",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.vexe"
+                ],
+                "outputs": [
+                  "sysHello.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 438,
+                  "endByte": 458,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysHello.out",
+              "expected": "sysHello.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.out",
+                  "sysHello.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 459,
+                  "endByte": 517,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 59
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHello.v"
+              ],
+              "top": "sysHello",
+              "args": [],
+              "simulator": "posix_echo_probe",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.v"
+                ],
+                "outputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 581,
+                  "endByte": 636,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysHello.bsc-vcomp-out",
+              "destination": "sysHello.sim-echo.bsc-vcomp-out",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "sysHello.sim-echo.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysHello.bsc-vcomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 637,
+                  "endByte": 696,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "golden.render",
+              "template": "bsc-sim-echo.expected",
+              "output": "bsc-sim-echo.expected.post-m4",
+              "replacement": "bluespec_dir",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "bsc-sim-echo.expected"
+                ],
+                "outputs": [
+                  "bsc-sim-echo.expected.post-m4"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 697,
+                  "endByte": 782,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysHello.sim-echo.bsc-vcomp-out",
+              "expected": "bsc-sim-echo.expected.post-m4",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.sim-echo.bsc-vcomp-out",
+                  "bsc-sim-echo.expected.post-m4"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 783,
+                  "endByte": 857,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHello.v"
+              ],
+              "top": "sysHello",
+              "args": [],
+              "expectedExit": "failure",
+              "simulator": "literal_bogus",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.v"
+                ],
+                "outputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 910,
+                  "endByte": 965,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 56
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysHello.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0035",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 966,
+                  "endByte": 1009,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHello.v"
+              ],
+              "top": "sysHello",
+              "args": [],
+              "expectedExit": "failure",
+              "simulator": "bluespec_dir_bogus",
+              "artifacts": {
+                "inputs": [
+                  "sysHello.v"
+                ],
+                "outputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1058,
+                  "endByte": 1125,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysHello.bsc-vcomp-out",
+              "kind": "error",
+              "code": "S0035",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1126,
+                  "endByte": 1169,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysHello.v"
+              ],
+              "top": "sysHello",
+              "args": [
+                "-D",
+                "foo",
+                "-D",
+                "bar=128"
+              ],
+              "simulator": "posix_echo_probe",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.v"
+                ],
+                "outputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1235,
+                  "endByte": 1308,
+                  "startLine": 34,
+                  "startColumn": 1,
+                  "endLine": 34,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "sysHello.bsc-vcomp-out",
+              "destination": "sysHello.D-test.bsc-vcomp-out",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "sysHello.D-test.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysHello.bsc-vcomp-out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1309,
+                  "endByte": 1366,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "golden.render",
+              "template": "bsc-D-test.expected",
+              "output": "bsc-D-test.expected.post-m4",
+              "replacement": "bluespec_dir",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "bsc-D-test.expected"
+                ],
+                "outputs": [
+                  "bsc-D-test.expected.post-m4"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1367,
+                  "endByte": 1448,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysHello.D-test.bsc-vcomp-out",
+              "expected": "bsc-D-test.expected.post-m4",
+              "requires": [
+                "non_windows"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysHello.D-test.bsc-vcomp-out",
+                  "bsc-D-test.expected.post-m4"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1449,
+                  "endByte": 1519,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 71
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

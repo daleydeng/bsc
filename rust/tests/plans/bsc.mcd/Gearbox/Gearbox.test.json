@@ -1,0 +1,1722 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.mcd/Gearbox/Gearbox",
+  "origin": {
+    "path": "testsuite/bsc.mcd/Gearbox/Gearbox.exp",
+    "sha256": "d0106f020a8858e75356f2ccdde706ec13455ab772628890ae33ff2f45761bbc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.mcd/Gearbox",
+  "fixtures": [
+    {
+      "path": "Gearbox1to1Test.bsv",
+      "sha256": "8fb7454753e09a5755b4dbeaac8648b5a143e2ef2f64d73bf716f4186855250f",
+      "role": "source"
+    },
+    {
+      "path": "GearboxBubbleTest.bsv",
+      "sha256": "bc5a10adf19ce0dc94c7b069e89ac2e04e95080d125397c50c4eb041b901cee0",
+      "role": "source"
+    },
+    {
+      "path": "GearboxFullSpeedTest.bsv",
+      "sha256": "b1148c7c6e46f0baf736f7d5a6883f35bc3e15ca091ec0ffd4daf6c588f26edc",
+      "role": "source"
+    },
+    {
+      "path": "GearboxSameClockTest.bsv",
+      "sha256": "22baba0f9d5e605fe0a4afa21a438929839515abf3c773770da3779ea4baa0b1",
+      "role": "source"
+    },
+    {
+      "path": "sysGearbox1to1Test.c.out.expected",
+      "sha256": "09687852042a2d55346740edc5cc6dd6934b4fb400a30f8a61f08ea49438a9db",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearbox1to1Test.v.out.expected",
+      "sha256": "f772e50ffaeba277017fc44b3f4873c2e72d7d75188ccd4fac3cbea39b89627e",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearboxBubbleTest.c.out.expected",
+      "sha256": "e081103a68027790c0567360a691ee14a318555b91e13bf2419926fc374d8f49",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearboxBubbleTest.v.out.expected",
+      "sha256": "808d9a7c7107d5192e5f84f7365cdca67b4a2ca5aee780c2875fcc52d685d12d",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearboxFullSpeedTest.c.out.expected",
+      "sha256": "3b239c2cc3977d9530d9d5916e17c79d12e3baa3bbafc6e35f37da9fcfe704f0",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearboxFullSpeedTest.v.out.expected",
+      "sha256": "e8f017c586c6dae0683a379ab42c931011ff08099486b5bc42fb4f93757ec47d",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearboxSameClockTest.c.out.expected",
+      "sha256": "b197318512b82ea9481634f533b2700c52f3505415b1971a0349a0a8c0d71901",
+      "role": "golden"
+    },
+    {
+      "path": "sysGearboxSameClockTest.v.out.expected",
+      "sha256": "7e442e4fa019f59f7e8b5aff339a8a9718053a76d05f2f8da6b917aae46279a3",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysGearboxFullSpeedTest",
+      "resource": "heavy",
+      "fixtures": [
+        "GearboxFullSpeedTest.bsv",
+        "sysGearboxFullSpeedTest.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearboxFullSpeedTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GearboxFullSpeedTest.bsv",
+              "mode": "verilog",
+              "module": "sysGearboxFullSpeedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GearboxFullSpeedTest.bsv"
+                ],
+                "outputs": [
+                  "GearboxFullSpeedTest.bo",
+                  "GearboxFullSpeedTest.bsv.bsc-vcomp-out",
+                  "sysGearboxFullSpeedTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 78,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysGearboxFullSpeedTest"
+              ],
+              "top": "sysGearboxFullSpeedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.v"
+                ],
+                "outputs": [
+                  "sysGearboxFullSpeedTest.bsc-vcomp-out",
+                  "sysGearboxFullSpeedTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 78,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearboxFullSpeedTest",
+              "args": [],
+              "stdout": "sysGearboxFullSpeedTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.vexe"
+                ],
+                "outputs": [
+                  "sysGearboxFullSpeedTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 78,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxFullSpeedTest.v.out",
+              "expected": "sysGearboxFullSpeedTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.v.out",
+                  "sysGearboxFullSpeedTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 78,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearboxFullSpeedTest",
+              "args": [],
+              "stdout": "sysGearboxFullSpeedTest.v-vcd.out",
+              "vcd": "sysGearboxFullSpeedTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.vexe"
+                ],
+                "outputs": [
+                  "sysGearboxFullSpeedTest.v-vcd.out",
+                  "sysGearboxFullSpeedTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 78,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysGearboxFullSpeedTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 78,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearboxFullSpeedTest-2",
+      "resource": "heavy",
+      "fixtures": [
+        "GearboxFullSpeedTest.bsv",
+        "sysGearboxFullSpeedTest.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearboxFullSpeedTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GearboxFullSpeedTest.bsv",
+              "mode": "bluesim",
+              "module": "sysGearboxFullSpeedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GearboxFullSpeedTest.bsv"
+                ],
+                "outputs": [
+                  "GearboxFullSpeedTest.bo",
+                  "GearboxFullSpeedTest.bsv.bsc-ccomp-out",
+                  "sysGearboxFullSpeedTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysGearboxFullSpeedTest"
+              ],
+              "top": "sysGearboxFullSpeedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.ba"
+                ],
+                "outputs": [
+                  "sysGearboxFullSpeedTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysGearboxFullSpeedTest.cexe",
+                    "sysGearboxFullSpeedTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearboxFullSpeedTest",
+              "args": [],
+              "stdout": "sysGearboxFullSpeedTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.cexe"
+                ],
+                "outputs": [
+                  "sysGearboxFullSpeedTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxFullSpeedTest.c.out",
+              "expected": "sysGearboxFullSpeedTest.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.c.out",
+                  "sysGearboxFullSpeedTest.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearboxFullSpeedTest",
+              "args": [],
+              "stdout": "sysGearboxFullSpeedTest.c-vcd.out",
+              "vcd": "sysGearboxFullSpeedTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.cexe"
+                ],
+                "outputs": [
+                  "sysGearboxFullSpeedTest.c-vcd.out",
+                  "sysGearboxFullSpeedTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysGearboxFullSpeedTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxFullSpeedTest.c-vcd.out",
+              "expected": "sysGearboxFullSpeedTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxFullSpeedTest.c-vcd.out",
+                  "sysGearboxFullSpeedTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 154,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearboxBubbleTest",
+      "resource": "heavy",
+      "fixtures": [
+        "GearboxBubbleTest.bsv",
+        "sysGearboxBubbleTest.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearboxBubbleTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GearboxBubbleTest.bsv",
+              "mode": "verilog",
+              "module": "sysGearboxBubbleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GearboxBubbleTest.bsv"
+                ],
+                "outputs": [
+                  "GearboxBubbleTest.bo",
+                  "GearboxBubbleTest.bsv.bsc-vcomp-out",
+                  "sysGearboxBubbleTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 228,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysGearboxBubbleTest"
+              ],
+              "top": "sysGearboxBubbleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.v"
+                ],
+                "outputs": [
+                  "sysGearboxBubbleTest.bsc-vcomp-out",
+                  "sysGearboxBubbleTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 228,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearboxBubbleTest",
+              "args": [],
+              "stdout": "sysGearboxBubbleTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.vexe"
+                ],
+                "outputs": [
+                  "sysGearboxBubbleTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 228,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxBubbleTest.v.out",
+              "expected": "sysGearboxBubbleTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.v.out",
+                  "sysGearboxBubbleTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 228,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearboxBubbleTest",
+              "args": [],
+              "stdout": "sysGearboxBubbleTest.v-vcd.out",
+              "vcd": "sysGearboxBubbleTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.vexe"
+                ],
+                "outputs": [
+                  "sysGearboxBubbleTest.v-vcd.out",
+                  "sysGearboxBubbleTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 228,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysGearboxBubbleTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 156,
+                  "endByte": 228,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearboxBubbleTest-2",
+      "resource": "heavy",
+      "fixtures": [
+        "GearboxBubbleTest.bsv",
+        "sysGearboxBubbleTest.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearboxBubbleTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GearboxBubbleTest.bsv",
+              "mode": "bluesim",
+              "module": "sysGearboxBubbleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GearboxBubbleTest.bsv"
+                ],
+                "outputs": [
+                  "GearboxBubbleTest.bo",
+                  "GearboxBubbleTest.bsv.bsc-ccomp-out",
+                  "sysGearboxBubbleTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysGearboxBubbleTest"
+              ],
+              "top": "sysGearboxBubbleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.ba"
+                ],
+                "outputs": [
+                  "sysGearboxBubbleTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysGearboxBubbleTest.cexe",
+                    "sysGearboxBubbleTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearboxBubbleTest",
+              "args": [],
+              "stdout": "sysGearboxBubbleTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.cexe"
+                ],
+                "outputs": [
+                  "sysGearboxBubbleTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxBubbleTest.c.out",
+              "expected": "sysGearboxBubbleTest.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.c.out",
+                  "sysGearboxBubbleTest.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearboxBubbleTest",
+              "args": [],
+              "stdout": "sysGearboxBubbleTest.c-vcd.out",
+              "vcd": "sysGearboxBubbleTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.cexe"
+                ],
+                "outputs": [
+                  "sysGearboxBubbleTest.c-vcd.out",
+                  "sysGearboxBubbleTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysGearboxBubbleTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxBubbleTest.c-vcd.out",
+              "expected": "sysGearboxBubbleTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxBubbleTest.c-vcd.out",
+                  "sysGearboxBubbleTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 229,
+                  "endByte": 298,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearbox1to1Test",
+      "resource": "heavy",
+      "fixtures": [
+        "Gearbox1to1Test.bsv",
+        "sysGearbox1to1Test.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearbox1to1Test",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Gearbox1to1Test.bsv",
+              "mode": "verilog",
+              "module": "sysGearbox1to1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Gearbox1to1Test.bsv"
+                ],
+                "outputs": [
+                  "Gearbox1to1Test.bo",
+                  "Gearbox1to1Test.bsv.bsc-vcomp-out",
+                  "sysGearbox1to1Test.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 300,
+                  "endByte": 368,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysGearbox1to1Test"
+              ],
+              "top": "sysGearbox1to1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.v"
+                ],
+                "outputs": [
+                  "sysGearbox1to1Test.bsc-vcomp-out",
+                  "sysGearbox1to1Test.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 300,
+                  "endByte": 368,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearbox1to1Test",
+              "args": [],
+              "stdout": "sysGearbox1to1Test.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.vexe"
+                ],
+                "outputs": [
+                  "sysGearbox1to1Test.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 300,
+                  "endByte": 368,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearbox1to1Test.v.out",
+              "expected": "sysGearbox1to1Test.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.v.out",
+                  "sysGearbox1to1Test.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 300,
+                  "endByte": 368,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearbox1to1Test",
+              "args": [],
+              "stdout": "sysGearbox1to1Test.v-vcd.out",
+              "vcd": "sysGearbox1to1Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.vexe"
+                ],
+                "outputs": [
+                  "sysGearbox1to1Test.v-vcd.out",
+                  "sysGearbox1to1Test.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 300,
+                  "endByte": 368,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysGearbox1to1Test.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 300,
+                  "endByte": 368,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 69
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearbox1to1Test-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Gearbox1to1Test.bsv",
+        "sysGearbox1to1Test.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearbox1to1Test",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Gearbox1to1Test.bsv",
+              "mode": "bluesim",
+              "module": "sysGearbox1to1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Gearbox1to1Test.bsv"
+                ],
+                "outputs": [
+                  "Gearbox1to1Test.bo",
+                  "Gearbox1to1Test.bsv.bsc-ccomp-out",
+                  "sysGearbox1to1Test.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysGearbox1to1Test"
+              ],
+              "top": "sysGearbox1to1Test",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.ba"
+                ],
+                "outputs": [
+                  "sysGearbox1to1Test.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysGearbox1to1Test.cexe",
+                    "sysGearbox1to1Test.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearbox1to1Test",
+              "args": [],
+              "stdout": "sysGearbox1to1Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.cexe"
+                ],
+                "outputs": [
+                  "sysGearbox1to1Test.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearbox1to1Test.c.out",
+              "expected": "sysGearbox1to1Test.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.c.out",
+                  "sysGearbox1to1Test.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearbox1to1Test",
+              "args": [],
+              "stdout": "sysGearbox1to1Test.c-vcd.out",
+              "vcd": "sysGearbox1to1Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.cexe"
+                ],
+                "outputs": [
+                  "sysGearbox1to1Test.c-vcd.out",
+                  "sysGearbox1to1Test.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysGearbox1to1Test.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearbox1to1Test.c-vcd.out",
+              "expected": "sysGearbox1to1Test.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearbox1to1Test.c-vcd.out",
+                  "sysGearbox1to1Test.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 434,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 66
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearboxSameClockTest",
+      "resource": "heavy",
+      "fixtures": [
+        "GearboxSameClockTest.bsv",
+        "sysGearboxSameClockTest.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearboxSameClockTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GearboxSameClockTest.bsv",
+              "mode": "verilog",
+              "module": "sysGearboxSameClockTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GearboxSameClockTest.bsv"
+                ],
+                "outputs": [
+                  "GearboxSameClockTest.bo",
+                  "GearboxSameClockTest.bsv.bsc-vcomp-out",
+                  "sysGearboxSameClockTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 436,
+                  "endByte": 514,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysGearboxSameClockTest"
+              ],
+              "top": "sysGearboxSameClockTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.v"
+                ],
+                "outputs": [
+                  "sysGearboxSameClockTest.bsc-vcomp-out",
+                  "sysGearboxSameClockTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 436,
+                  "endByte": 514,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearboxSameClockTest",
+              "args": [],
+              "stdout": "sysGearboxSameClockTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.vexe"
+                ],
+                "outputs": [
+                  "sysGearboxSameClockTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 436,
+                  "endByte": 514,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxSameClockTest.v.out",
+              "expected": "sysGearboxSameClockTest.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.v.out",
+                  "sysGearboxSameClockTest.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 436,
+                  "endByte": 514,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysGearboxSameClockTest",
+              "args": [],
+              "stdout": "sysGearboxSameClockTest.v-vcd.out",
+              "vcd": "sysGearboxSameClockTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.vexe"
+                ],
+                "outputs": [
+                  "sysGearboxSameClockTest.v-vcd.out",
+                  "sysGearboxSameClockTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 436,
+                  "endByte": 514,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysGearboxSameClockTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 436,
+                  "endByte": 514,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 79
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysGearboxSameClockTest-2",
+      "resource": "heavy",
+      "fixtures": [
+        "GearboxSameClockTest.bsv",
+        "sysGearboxSameClockTest.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysGearboxSameClockTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "GearboxSameClockTest.bsv",
+              "mode": "bluesim",
+              "module": "sysGearboxSameClockTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "GearboxSameClockTest.bsv"
+                ],
+                "outputs": [
+                  "GearboxSameClockTest.bo",
+                  "GearboxSameClockTest.bsv.bsc-ccomp-out",
+                  "sysGearboxSameClockTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysGearboxSameClockTest"
+              ],
+              "top": "sysGearboxSameClockTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.ba"
+                ],
+                "outputs": [
+                  "sysGearboxSameClockTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysGearboxSameClockTest.cexe",
+                    "sysGearboxSameClockTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearboxSameClockTest",
+              "args": [],
+              "stdout": "sysGearboxSameClockTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.cexe"
+                ],
+                "outputs": [
+                  "sysGearboxSameClockTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxSameClockTest.c.out",
+              "expected": "sysGearboxSameClockTest.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.c.out",
+                  "sysGearboxSameClockTest.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysGearboxSameClockTest",
+              "args": [],
+              "stdout": "sysGearboxSameClockTest.c-vcd.out",
+              "vcd": "sysGearboxSameClockTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.cexe"
+                ],
+                "outputs": [
+                  "sysGearboxSameClockTest.c-vcd.out",
+                  "sysGearboxSameClockTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysGearboxSameClockTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysGearboxSameClockTest.c-vcd.out",
+              "expected": "sysGearboxSameClockTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysGearboxSameClockTest.c-vcd.out",
+                  "sysGearboxSameClockTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 515,
+                  "endByte": 590,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

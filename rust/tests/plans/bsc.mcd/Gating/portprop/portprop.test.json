@@ -1,0 +1,713 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.mcd/Gating/portprop/portprop",
+  "origin": {
+    "path": "testsuite/bsc.mcd/Gating/portprop/portprop.exp",
+    "sha256": "998ba0b78c73f618aa532bb8e0223cc3bd10f221304fbeb0d67625ce445934ee"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.mcd/Gating/portprop",
+  "fixtures": [
+    {
+      "path": "OuthighGateAsCondition.bsv",
+      "sha256": "91fac4818526824e3a4279e24cb075ad7a19a70d10f143126efd4f3eb486c7af",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_InClockAsOutClock.bsv",
+      "sha256": "030b7d1acc7a8c1e4b1971f688757820e131c76911419ba89b596201e3609e08",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_MethodUse.bsv",
+      "sha256": "a1775cfad93c34622022c0ded6838643c3e96404a2ccb2cad20e5e206f683b18",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_NoUse.bsv",
+      "sha256": "b83efaa58999745ed5bc8b191b1ca7cf07d93fbe6ca222e0aed0c6de79e50d9b",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_RuleAndMethodShareUse.bsv",
+      "sha256": "0d60ce7e44c783b613a63a0eae654f2d2d38e5c15a0dd0a5b885eab642a5736b",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_RuleUse.bsv",
+      "sha256": "01927e20e939847a8e13a61a8a3080987e7d7ac265fed3b729652f7ed45008d3",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_SubmodUseInhigh.bsv",
+      "sha256": "4f942a11f784e7883a5de583de26dcfb0850ff0ce7b0197aa5f949c7edb11387",
+      "role": "source"
+    },
+    {
+      "path": "PropDeduce_SubmodUseUnused.bsv",
+      "sha256": "f744b9f07e234cac8cffdadd6409a25f588cecbe5747e16fec5734ac608cbb07",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-PropDeduce_NoUse",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_NoUse.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_NoUse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_NoUse.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_NoUse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_NoUse.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_NoUse.bo",
+                  "PropDeduce_NoUse.bsv.bsc-vcomp-out",
+                  "sysPropDeduce_NoUse.v",
+                  "sysPropDeduce_NoUse.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 288,
+                  "startLine": 9,
+                  "startColumn": 5,
+                  "endLine": 9,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_NoUse.wrap",
+              "pattern": "clock default_clock\\(CLK, \\{-unused-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_NoUse.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 293,
+                  "endByte": 376,
+                  "startLine": 10,
+                  "startColumn": 5,
+                  "endLine": 11,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-PropDeduce_SubmodUseUnused",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_SubmodUseUnused.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_SubmodUseUnused",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_SubmodUseUnused.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_SubmodUseUnused.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_SubmodUseUnused.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_SubmodUseUnused.bo",
+                  "PropDeduce_SubmodUseUnused.bsv.bsc-vcomp-out",
+                  "sysPropDeduce_SubmodUseUnused.v",
+                  "sysPropDeduce_SubmodUseUnused.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 588,
+                  "startLine": 15,
+                  "startColumn": 5,
+                  "endLine": 15,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_SubmodUseUnused.wrap",
+              "pattern": "clock default_clock\\(CLK, \\{-unused-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_SubmodUseUnused.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 593,
+                  "endByte": 686,
+                  "startLine": 16,
+                  "startColumn": 5,
+                  "endLine": 17,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-PropDeduce_SubmodUseInhigh",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_SubmodUseInhigh.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_SubmodUseInhigh",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_SubmodUseInhigh.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_SubmodUseInhigh.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_SubmodUseInhigh.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_SubmodUseInhigh.bo",
+                  "PropDeduce_SubmodUseInhigh.bsv.bsc-vcomp-out",
+                  "mkPropDeduce_SubmodUseInhigh_Sub.v",
+                  "mkPropDeduce_SubmodUseInhigh_Sub.wrap",
+                  "sysPropDeduce_SubmodUseInhigh.v",
+                  "sysPropDeduce_SubmodUseInhigh.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 815,
+                  "endByte": 892,
+                  "startLine": 21,
+                  "startColumn": 5,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_SubmodUseInhigh.wrap",
+              "pattern": "clock default_clock\\(CLK, \\{-inhigh-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_SubmodUseInhigh.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 897,
+                  "endByte": 990,
+                  "startLine": 22,
+                  "startColumn": 5,
+                  "endLine": 23,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-PropDeduce_MethodUse",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_MethodUse.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_MethodUse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_MethodUse.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_MethodUse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_MethodUse.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_MethodUse.bo",
+                  "PropDeduce_MethodUse.bsv.bsc-vcomp-out",
+                  "sysPropDeduce_MethodUse.v",
+                  "sysPropDeduce_MethodUse.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1059,
+                  "endByte": 1130,
+                  "startLine": 26,
+                  "startColumn": 5,
+                  "endLine": 26,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_MethodUse.wrap",
+              "pattern": "clock default_clock\\(CLK, \\{-unused-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_MethodUse.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1135,
+                  "endByte": 1222,
+                  "startLine": 27,
+                  "startColumn": 5,
+                  "endLine": 28,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-PropDeduce_RuleUse",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_RuleUse.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_RuleUse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_RuleUse.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_RuleUse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_RuleUse.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_RuleUse.bo",
+                  "PropDeduce_RuleUse.bsv.bsc-vcomp-out",
+                  "sysPropDeduce_RuleUse.v",
+                  "sysPropDeduce_RuleUse.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1290,
+                  "endByte": 1359,
+                  "startLine": 31,
+                  "startColumn": 5,
+                  "endLine": 31,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_RuleUse.wrap",
+              "pattern": "clock default_clock\\(CLK, \\{-inhigh-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_RuleUse.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1364,
+                  "endByte": 1449,
+                  "startLine": 32,
+                  "startColumn": 5,
+                  "endLine": 33,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-PropDeduce_RuleAndMethodShareUse",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_RuleAndMethodShareUse.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_RuleAndMethodShareUse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_RuleAndMethodShareUse.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_RuleAndMethodShareUse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_RuleAndMethodShareUse.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_RuleAndMethodShareUse.bo",
+                  "PropDeduce_RuleAndMethodShareUse.bsv.bsc-vcomp-out",
+                  "sysPropDeduce_RuleAndMethodShareUse.v",
+                  "sysPropDeduce_RuleAndMethodShareUse.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1535,
+                  "endByte": 1628,
+                  "startLine": 36,
+                  "startColumn": 5,
+                  "endLine": 37,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_RuleAndMethodShareUse.wrap",
+              "pattern": "clock default_clock\\(CLK, \\{-inhigh-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_RuleAndMethodShareUse.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1633,
+                  "endByte": 1732,
+                  "startLine": 38,
+                  "startColumn": 5,
+                  "endLine": 39,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-PropDeduce_InClockAsOutClock",
+      "resource": "normal",
+      "fixtures": [
+        "PropDeduce_InClockAsOutClock.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PropDeduce_InClockAsOutClock",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PropDeduce_InClockAsOutClock.bsv",
+              "mode": "verilog",
+              "args": [
+                "-dwrappergen=%m.wrap"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PropDeduce_InClockAsOutClock.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PropDeduce_InClockAsOutClock.bsv"
+                ],
+                "outputs": [
+                  "PropDeduce_InClockAsOutClock.bo",
+                  "PropDeduce_InClockAsOutClock.bsv.bsc-vcomp-out",
+                  "sysPropDeduce_InClockAsOutClock.v",
+                  "sysPropDeduce_InClockAsOutClock.wrap",
+                  "sysTest.v",
+                  "sysTest.wrap"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1830,
+                  "endByte": 1919,
+                  "startLine": 43,
+                  "startColumn": 5,
+                  "endLine": 44,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "sysPropDeduce_InClockAsOutClock.wrap",
+              "pattern": "clock c\\(CLK_c, \\{-inhigh-\\}\\);",
+              "artifacts": {
+                "inputs": [
+                  "sysPropDeduce_InClockAsOutClock.wrap"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1924,
+                  "endByte": 2009,
+                  "startLine": 45,
+                  "startColumn": 5,
+                  "endLine": 46,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-OuthighGateAsCondition",
+      "resource": "normal",
+      "fixtures": [
+        "OuthighGateAsCondition.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OuthighGateAsCondition",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OuthighGateAsCondition.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "OuthighGateAsCondition.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OuthighGateAsCondition.bsv"
+                ],
+                "outputs": [
+                  "OuthighGateAsCondition.bo",
+                  "OuthighGateAsCondition.bsv.bsc-vcomp-out",
+                  "mkOuthighGateAsCondition_Sub.v",
+                  "sysOuthigGateAsCondition.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2221,
+                  "endByte": 2268,
+                  "startLine": 57,
+                  "startColumn": 5,
+                  "endLine": 57,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "OuthighGateAsCondition.bsv.bsc-vcomp-out",
+              "kind": "warning",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "OuthighGateAsCondition.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2273,
+                  "endByte": 2325,
+                  "startLine": 58,
+                  "startColumn": 5,
+                  "endLine": 58,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,967 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/Environment/Environment",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/Environment/Environment.exp",
+    "sha256": "56d69970c804c8f925e1050f0c89bd737a0caaf8f7c567e4067ed97512b5ffad"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/Environment",
+  "fixtures": [
+    {
+      "path": "Env.bsv",
+      "sha256": "8f7dec3a07fc565113b283500d7cb19bbd8da801c494070646570f6c2037d065",
+      "role": "source"
+    },
+    {
+      "path": "Env2.bsv",
+      "sha256": "170e2d227f60821889852b21241d6bf1a3212d4d3574a8df9b855e2b1244ee47",
+      "role": "source"
+    },
+    {
+      "path": "Env3.bsv",
+      "sha256": "3cc5ebf1bc20eb8a3562b2b1aedb73b72f589ea256e53b190f764fe00d2b0d97",
+      "role": "source"
+    },
+    {
+      "path": "Env4.bsv",
+      "sha256": "3cb0af27c58779d81c2515ff6f259080c7ca1a9bb95fe422c50fc6ddc0d556e8",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_Env.v.out.expected",
+      "sha256": "0c9096e812559acbcab40c1c9acda94f3c7b24195a9dab55b2c2f72ead724d3b",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_Env2.c.out.expected",
+      "sha256": "169343e96fe5858415299180340a37ff0826fed171618cb704ac931fc604c37b",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_Env2.v.out.expected",
+      "sha256": "8ea1340f320e03f34fca518b06f9e488da7e68e78277c5698c336cbea0086d1c",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_Env2",
+      "resource": "heavy",
+      "fixtures": [
+        "Env2.bsv",
+        "mkTestbench_Env2.v.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Env2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Env2.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_Env2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Env2.bsv"
+                ],
+                "outputs": [
+                  "Env2.bo",
+                  "Env2.bsv.bsc-vcomp-out",
+                  "mkTestbench_Env2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 93,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_Env2"
+              ],
+              "top": "mkTestbench_Env2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.v"
+                ],
+                "outputs": [
+                  "mkTestbench_Env2.bsc-vcomp-out",
+                  "mkTestbench_Env2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 93,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Env2",
+              "args": [],
+              "stdout": "mkTestbench_Env2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 93,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Env2.v.out",
+              "expected": "mkTestbench_Env2.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.v.out",
+                  "mkTestbench_Env2.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 93,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Env2",
+              "args": [],
+              "stdout": "mkTestbench_Env2.v-vcd.out",
+              "vcd": "mkTestbench_Env2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env2.v-vcd.out",
+                  "mkTestbench_Env2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 93,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_Env2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 93,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 94
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_Env2-2",
+      "resource": "heavy",
+      "fixtures": [
+        "Env2.bsv",
+        "mkTestbench_Env2.c.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Env2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Env2.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_Env2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Env2.bsv"
+                ],
+                "outputs": [
+                  "Env2.bo",
+                  "Env2.bsv.bsc-ccomp-out",
+                  "mkTestbench_Env2.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Env2"
+              ],
+              "top": "mkTestbench_Env2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Env2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Env2.cexe",
+                    "mkTestbench_Env2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Env2",
+              "args": [],
+              "stdout": "mkTestbench_Env2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Env2.c.out",
+              "expected": "mkTestbench_Env2.c.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.c.out",
+                  "mkTestbench_Env2.c.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Env2",
+              "args": [],
+              "stdout": "mkTestbench_Env2.c-vcd.out",
+              "vcd": "mkTestbench_Env2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env2.c-vcd.out",
+                  "mkTestbench_Env2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_Env2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Env2.c-vcd.out",
+              "expected": "mkTestbench_Env2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env2.c-vcd.out",
+                  "mkTestbench_Env2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 187,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 94
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-Env3",
+      "resource": "normal",
+      "fixtures": [
+        "Env3.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Env3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Env3.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_Env3",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Env3.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Env3.bsv"
+                ],
+                "outputs": [
+                  "Env3.bo",
+                  "Env3.bsv.bsc-vcomp-out",
+                  "mkTestbench_Env3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 189,
+                  "endByte": 235,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 47
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_Env",
+      "resource": "heavy",
+      "fixtures": [
+        "Env.bsv",
+        "mkTestbench_Env.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Env",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Env.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_Env",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Env.bsv"
+                ],
+                "outputs": [
+                  "Env.bo",
+                  "Env.bsv.bsc-vcomp-out",
+                  "mkTestbench_Env.ba",
+                  "mkTestbench_Env.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_Env"
+              ],
+              "top": "mkTestbench_Env",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.v"
+                ],
+                "outputs": [
+                  "mkTestbench_Env.bsc-vcomp-out",
+                  "mkTestbench_Env.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Env",
+              "args": [],
+              "stdout": "mkTestbench_Env.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Env.v.out",
+              "expected": "mkTestbench_Env.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.v.out",
+                  "mkTestbench_Env.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Env",
+              "args": [],
+              "stdout": "mkTestbench_Env.v-vcd.out",
+              "vcd": "mkTestbench_Env.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env.v-vcd.out",
+                  "mkTestbench_Env.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_Env.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Env"
+              ],
+              "top": "mkTestbench_Env",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Env.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Env.cexe",
+                    "mkTestbench_Env.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Env",
+              "args": [],
+              "stdout": "mkTestbench_Env.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Env.c.out",
+              "expected": "mkTestbench_Env.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.c.out",
+                  "mkTestbench_Env.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Env",
+              "args": [],
+              "stdout": "mkTestbench_Env.c-vcd.out",
+              "vcd": "mkTestbench_Env.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Env.c-vcd.out",
+                  "mkTestbench_Env.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_Env.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Env.c-vcd.out",
+              "expected": "mkTestbench_Env.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env.c-vcd.out",
+                  "mkTestbench_Env.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 445,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 91
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkTestbench_Env4",
+      "resource": "heavy",
+      "fixtures": [
+        "Env4.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_Env4",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Env4.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_Env4",
+              "args": [
+                "-check-assert"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Env4.bsv"
+                ],
+                "outputs": [
+                  "Env4.bo",
+                  "Env4.bsv.bsc-ccomp-out",
+                  "mkTestbench_Env4.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 238,
+                  "endByte": 297,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Env4"
+              ],
+              "top": "mkTestbench_Env4",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Env4.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Env4.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Env4.cexe",
+                    "mkTestbench_Env4.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 298,
+                  "endByte": 353,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

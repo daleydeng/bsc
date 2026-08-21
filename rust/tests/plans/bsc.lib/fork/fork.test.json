@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/fork/fork",
+  "origin": {
+    "path": "testsuite/bsc.lib/fork/fork.exp",
+    "sha256": "7c3a601d855268327cc2042fe39c0fa1ac8257ac84591b9625a792ebb7e2300f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/fork",
+  "fixtures": [
+    {
+      "path": "ForkTest.bsv",
+      "sha256": "53479d3a9d71657972bb48c9a1c816355b3bf60b3fa3f4cb66db37b86ac193ee",
+      "role": "source"
+    },
+    {
+      "path": "sysForkTest.out.expected",
+      "sha256": "3fc19c8b37f169932e86f2a82e1f9df42159277e45df2ea0992079f005c6c6cc",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysForkTest",
+      "resource": "heavy",
+      "fixtures": [
+        "ForkTest.bsv",
+        "sysForkTest.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysForkTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ForkTest.bsv",
+              "mode": "verilog",
+              "module": "sysForkTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ForkTest.bsv"
+                ],
+                "outputs": [
+                  "ForkTest.bo",
+                  "ForkTest.bsv.bsc-vcomp-out",
+                  "sysForkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysForkTest"
+              ],
+              "top": "sysForkTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysForkTest.v"
+                ],
+                "outputs": [
+                  "sysForkTest.bsc-vcomp-out",
+                  "sysForkTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysForkTest",
+              "args": [],
+              "stdout": "sysForkTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysForkTest.vexe"
+                ],
+                "outputs": [
+                  "sysForkTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysForkTest.v.out",
+              "expected": "sysForkTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysForkTest.v.out",
+                  "sysForkTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysForkTest",
+              "args": [],
+              "stdout": "sysForkTest.v-vcd.out",
+              "vcd": "sysForkTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysForkTest.vexe"
+                ],
+                "outputs": [
+                  "sysForkTest.v-vcd.out",
+                  "sysForkTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysForkTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysForkTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 27,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

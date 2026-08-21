@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/dollar/renaming/rename",
+  "origin": {
+    "path": "testsuite/bsc.verilog/dollar/renaming/rename.exp",
+    "sha256": "b39d6a27357172d15a7485543576a9e7cc024ccd03a332e9a50224a7e37d26ed"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/dollar/renaming",
+  "fixtures": [
+    {
+      "path": "GCD.bsv",
+      "sha256": "eec557d1e1e11e59d148c8801f5505141dd4087fb4dc55688149ff6448015f08",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "bc72a4c872f492c8e9bb961ba036deb93a264f6a3e8a95335a7ea5ff3b75aa44",
+      "role": "source"
+    },
+    {
+      "path": "mkTbGCD.out.expected",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTbGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv",
+        "mkTbGCD.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTbGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "verilog",
+              "module": "sysTbGCD",
+              "args": [
+                "-remove-dollar"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-vcomp-out",
+                  "sysTbGCD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 79,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTbGCD"
+              ],
+              "top": "sysTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTbGCD.v"
+                ],
+                "outputs": [
+                  "sysTbGCD.bsc-vcomp-out",
+                  "sysTbGCD.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 79,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTbGCD",
+              "args": [],
+              "stdout": "sysTbGCD.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTbGCD.vexe"
+                ],
+                "outputs": [
+                  "sysTbGCD.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 79,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTbGCD.v.out",
+              "expected": "mkTbGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTbGCD.v.out",
+                  "mkTbGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 79,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTbGCD",
+              "args": [],
+              "stdout": "sysTbGCD.v-vcd.out",
+              "vcd": "sysTbGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTbGCD.vexe"
+                ],
+                "outputs": [
+                  "sysTbGCD.v-vcd.out",
+                  "sysTbGCD.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 79,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTbGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTbGCD.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 79,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

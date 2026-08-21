@@ -1,0 +1,2663 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Prelude/Prelude",
+  "origin": {
+    "path": "testsuite/bsc.lib/Prelude/Prelude.exp",
+    "sha256": "fcd1b46ae62bbb80a975a24dfaf2656d74638b7cc5fda47013ff369fedc306f0"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Prelude",
+  "fixtures": [
+    {
+      "path": "AppendTuple.bs",
+      "sha256": "0627287348b17735cd722672a772654c5de241a4127cf8c3433a4c06b5f72d92",
+      "role": "source"
+    },
+    {
+      "path": "CurryTypeClass.bs",
+      "sha256": "0bcf1bae9240ac1f662f9ef2fb8e3abc1048e85be974d98261ce9222a485dda1",
+      "role": "source"
+    },
+    {
+      "path": "Eq0.bsv",
+      "sha256": "12ad35fa4124cc86d4ab611534bd98687bb90fe0e244678d235d0bd5c003e6dc",
+      "role": "source"
+    },
+    {
+      "path": "Eq1.bsv",
+      "sha256": "4fc09087a93f278fda65044a9637988965391917dd1fb038d8fe04f9f9f5a249",
+      "role": "source"
+    },
+    {
+      "path": "Eq2.bsv",
+      "sha256": "cd5c097a17735155c34d29d145ead399fe4f8cb9ea077329226fe767123b3ff8",
+      "role": "source"
+    },
+    {
+      "path": "Eq3.bsv",
+      "sha256": "dcc23c09b4ed2ddcf6b35686da651fbe004c6cc0139bddc1f6728d001eb4caa3",
+      "role": "source"
+    },
+    {
+      "path": "TuplePack.bs",
+      "sha256": "bc7876ba6ef0e3011df365157cde4eeecc9abe9124829f97164a2242c1b43432",
+      "role": "source"
+    },
+    {
+      "path": "TupleSize.bs",
+      "sha256": "ee096111d60a477801bc2ab7234364cba066f0d5e879700938339db88926aa38",
+      "role": "source"
+    },
+    {
+      "path": "sysAppendTuple.out.expected",
+      "sha256": "bc43f66dc7c8659394d578d703fff1b7650bdee36bbe8bf0459a0140f3048547",
+      "role": "golden"
+    },
+    {
+      "path": "sysCurryTypeClass.out.expected",
+      "sha256": "1655b767d0b9944c6b1bd0a6cfd84ed3ebf04038d16e0debf907bcc6f0ed3dee",
+      "role": "golden"
+    },
+    {
+      "path": "sysEq0.out.expected",
+      "sha256": "fd49f95a3304a6bf0438ef392b63dd2e79418cbf15fa91f154ecb022a773407b",
+      "role": "golden"
+    },
+    {
+      "path": "sysEq1.out.expected",
+      "sha256": "688d3201edd4d168511e291b2dc5d0ad98d85acf2fadecebff6799c874ed4383",
+      "role": "golden"
+    },
+    {
+      "path": "sysEq2.out.expected",
+      "sha256": "fd49f95a3304a6bf0438ef392b63dd2e79418cbf15fa91f154ecb022a773407b",
+      "role": "golden"
+    },
+    {
+      "path": "sysTuplePack.out.expected",
+      "sha256": "26715366c02dbe0a74fd727a7c436829e6f95e35d3d4ffbc623d310604d4f96d",
+      "role": "golden"
+    },
+    {
+      "path": "sysTupleSize.out.expected",
+      "sha256": "e36a787e531dc4dabd1426d9056e3bf52318984e436d20d34a623e0309f3b14e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysEq0",
+      "resource": "heavy",
+      "fixtures": [
+        "Eq0.bsv",
+        "sysEq0.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysEq0",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Eq0.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysEq0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Eq0.bsv"
+                ],
+                "outputs": [
+                  "Eq0.bo",
+                  "Eq0.bsv.bsc-vcomp-out",
+                  "sysEq0.ba",
+                  "sysEq0.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysEq0"
+              ],
+              "top": "sysEq0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.v"
+                ],
+                "outputs": [
+                  "sysEq0.bsc-vcomp-out",
+                  "sysEq0.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEq0",
+              "args": [],
+              "stdout": "sysEq0.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.vexe"
+                ],
+                "outputs": [
+                  "sysEq0.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq0.v.out",
+              "expected": "sysEq0.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.v.out",
+                  "sysEq0.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEq0",
+              "args": [],
+              "stdout": "sysEq0.v-vcd.out",
+              "vcd": "sysEq0.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.vexe"
+                ],
+                "outputs": [
+                  "sysEq0.v-vcd.out",
+                  "sysEq0.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysEq0.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysEq0"
+              ],
+              "top": "sysEq0",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.ba"
+                ],
+                "outputs": [
+                  "sysEq0.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysEq0.cexe",
+                    "sysEq0.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEq0",
+              "args": [],
+              "stdout": "sysEq0.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.cexe"
+                ],
+                "outputs": [
+                  "sysEq0.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq0.c.out",
+              "expected": "sysEq0.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.c.out",
+                  "sysEq0.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEq0",
+              "args": [],
+              "stdout": "sysEq0.c-vcd.out",
+              "vcd": "sysEq0.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.cexe"
+                ],
+                "outputs": [
+                  "sysEq0.c-vcd.out",
+                  "sysEq0.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysEq0.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq0.c-vcd.out",
+              "expected": "sysEq0.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq0.c-vcd.out",
+                  "sysEq0.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 20,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 20
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysEq1",
+      "resource": "heavy",
+      "fixtures": [
+        "Eq1.bsv",
+        "sysEq1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysEq1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Eq1.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysEq1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Eq1.bsv"
+                ],
+                "outputs": [
+                  "Eq1.bo",
+                  "Eq1.bsv.bsc-vcomp-out",
+                  "sysEq1.ba",
+                  "sysEq1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysEq1"
+              ],
+              "top": "sysEq1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.v"
+                ],
+                "outputs": [
+                  "sysEq1.bsc-vcomp-out",
+                  "sysEq1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEq1",
+              "args": [],
+              "stdout": "sysEq1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.vexe"
+                ],
+                "outputs": [
+                  "sysEq1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq1.v.out",
+              "expected": "sysEq1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.v.out",
+                  "sysEq1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEq1",
+              "args": [],
+              "stdout": "sysEq1.v-vcd.out",
+              "vcd": "sysEq1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.vexe"
+                ],
+                "outputs": [
+                  "sysEq1.v-vcd.out",
+                  "sysEq1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysEq1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysEq1"
+              ],
+              "top": "sysEq1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.ba"
+                ],
+                "outputs": [
+                  "sysEq1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysEq1.cexe",
+                    "sysEq1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEq1",
+              "args": [],
+              "stdout": "sysEq1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.cexe"
+                ],
+                "outputs": [
+                  "sysEq1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq1.c.out",
+              "expected": "sysEq1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.c.out",
+                  "sysEq1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEq1",
+              "args": [],
+              "stdout": "sysEq1.c-vcd.out",
+              "vcd": "sysEq1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.cexe"
+                ],
+                "outputs": [
+                  "sysEq1.c-vcd.out",
+                  "sysEq1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysEq1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq1.c-vcd.out",
+              "expected": "sysEq1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq1.c-vcd.out",
+                  "sysEq1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 40,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 20
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysEq2",
+      "resource": "heavy",
+      "fixtures": [
+        "Eq2.bsv",
+        "sysEq2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysEq2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Eq2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysEq2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Eq2.bsv"
+                ],
+                "outputs": [
+                  "Eq2.bo",
+                  "Eq2.bsv.bsc-vcomp-out",
+                  "sysEq2.ba",
+                  "sysEq2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysEq2"
+              ],
+              "top": "sysEq2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.v"
+                ],
+                "outputs": [
+                  "sysEq2.bsc-vcomp-out",
+                  "sysEq2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEq2",
+              "args": [],
+              "stdout": "sysEq2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.vexe"
+                ],
+                "outputs": [
+                  "sysEq2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq2.v.out",
+              "expected": "sysEq2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.v.out",
+                  "sysEq2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysEq2",
+              "args": [],
+              "stdout": "sysEq2.v-vcd.out",
+              "vcd": "sysEq2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.vexe"
+                ],
+                "outputs": [
+                  "sysEq2.v-vcd.out",
+                  "sysEq2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysEq2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysEq2"
+              ],
+              "top": "sysEq2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.ba"
+                ],
+                "outputs": [
+                  "sysEq2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysEq2.cexe",
+                    "sysEq2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEq2",
+              "args": [],
+              "stdout": "sysEq2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.cexe"
+                ],
+                "outputs": [
+                  "sysEq2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq2.c.out",
+              "expected": "sysEq2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.c.out",
+                  "sysEq2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysEq2",
+              "args": [],
+              "stdout": "sysEq2.c-vcd.out",
+              "vcd": "sysEq2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.cexe"
+                ],
+                "outputs": [
+                  "sysEq2.c-vcd.out",
+                  "sysEq2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysEq2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysEq2.c-vcd.out",
+              "expected": "sysEq2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysEq2.c-vcd.out",
+                  "sysEq2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 60,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 20
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-Eq3",
+      "resource": "normal",
+      "fixtures": [
+        "Eq3.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Eq3",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Eq3.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "unexpectedSuccessForbiddenRegex": "Internal.*Error",
+              "stdout": "Eq3.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Eq3.bsv"
+                ],
+                "outputs": [
+                  "Eq3.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 62,
+                  "endByte": 104,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTuplePack",
+      "resource": "heavy",
+      "fixtures": [
+        "TuplePack.bs",
+        "sysTuplePack.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTuplePack",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TuplePack.bs",
+              "mode": "shared_elaboration",
+              "module": "sysTuplePack",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TuplePack.bs"
+                ],
+                "outputs": [
+                  "TuplePack.bo",
+                  "TuplePack.bs.bsc-vcomp-out",
+                  "sysTuplePack.ba",
+                  "sysTuplePack.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTuplePack"
+              ],
+              "top": "sysTuplePack",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.v"
+                ],
+                "outputs": [
+                  "sysTuplePack.bsc-vcomp-out",
+                  "sysTuplePack.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTuplePack",
+              "args": [],
+              "stdout": "sysTuplePack.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.vexe"
+                ],
+                "outputs": [
+                  "sysTuplePack.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTuplePack.v.out",
+              "expected": "sysTuplePack.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.v.out",
+                  "sysTuplePack.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTuplePack",
+              "args": [],
+              "stdout": "sysTuplePack.v-vcd.out",
+              "vcd": "sysTuplePack.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.vexe"
+                ],
+                "outputs": [
+                  "sysTuplePack.v-vcd.out",
+                  "sysTuplePack.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTuplePack.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTuplePack"
+              ],
+              "top": "sysTuplePack",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.ba"
+                ],
+                "outputs": [
+                  "sysTuplePack.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTuplePack.cexe",
+                    "sysTuplePack.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTuplePack",
+              "args": [],
+              "stdout": "sysTuplePack.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.cexe"
+                ],
+                "outputs": [
+                  "sysTuplePack.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTuplePack.c.out",
+              "expected": "sysTuplePack.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.c.out",
+                  "sysTuplePack.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTuplePack",
+              "args": [],
+              "stdout": "sysTuplePack.c-vcd.out",
+              "vcd": "sysTuplePack.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.cexe"
+                ],
+                "outputs": [
+                  "sysTuplePack.c-vcd.out",
+                  "sysTuplePack.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTuplePack.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTuplePack.c-vcd.out",
+              "expected": "sysTuplePack.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTuplePack.c-vcd.out",
+                  "sysTuplePack.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 141,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTupleSize",
+      "resource": "heavy",
+      "fixtures": [
+        "TupleSize.bs",
+        "sysTupleSize.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTupleSize",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TupleSize.bs",
+              "mode": "shared_elaboration",
+              "module": "sysTupleSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TupleSize.bs"
+                ],
+                "outputs": [
+                  "TupleSize.bo",
+                  "TupleSize.bs.bsc-vcomp-out",
+                  "sysTupleSize.ba",
+                  "sysTupleSize.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTupleSize"
+              ],
+              "top": "sysTupleSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.v"
+                ],
+                "outputs": [
+                  "sysTupleSize.bsc-vcomp-out",
+                  "sysTupleSize.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTupleSize",
+              "args": [],
+              "stdout": "sysTupleSize.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.vexe"
+                ],
+                "outputs": [
+                  "sysTupleSize.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTupleSize.v.out",
+              "expected": "sysTupleSize.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.v.out",
+                  "sysTupleSize.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTupleSize",
+              "args": [],
+              "stdout": "sysTupleSize.v-vcd.out",
+              "vcd": "sysTupleSize.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.vexe"
+                ],
+                "outputs": [
+                  "sysTupleSize.v-vcd.out",
+                  "sysTupleSize.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTupleSize.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTupleSize"
+              ],
+              "top": "sysTupleSize",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.ba"
+                ],
+                "outputs": [
+                  "sysTupleSize.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTupleSize.cexe",
+                    "sysTupleSize.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTupleSize",
+              "args": [],
+              "stdout": "sysTupleSize.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.cexe"
+                ],
+                "outputs": [
+                  "sysTupleSize.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTupleSize.c.out",
+              "expected": "sysTupleSize.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.c.out",
+                  "sysTupleSize.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTupleSize",
+              "args": [],
+              "stdout": "sysTupleSize.c-vcd.out",
+              "vcd": "sysTupleSize.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.cexe"
+                ],
+                "outputs": [
+                  "sysTupleSize.c-vcd.out",
+                  "sysTupleSize.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTupleSize.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTupleSize.c-vcd.out",
+              "expected": "sysTupleSize.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTupleSize.c-vcd.out",
+                  "sysTupleSize.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 142,
+                  "endByte": 177,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysAppendTuple",
+      "resource": "heavy",
+      "fixtures": [
+        "AppendTuple.bs",
+        "sysAppendTuple.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysAppendTuple",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "AppendTuple.bs",
+              "mode": "shared_elaboration",
+              "module": "sysAppendTuple",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "AppendTuple.bs"
+                ],
+                "outputs": [
+                  "AppendTuple.bo",
+                  "AppendTuple.bs.bsc-vcomp-out",
+                  "sysAppendTuple.ba",
+                  "sysAppendTuple.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysAppendTuple"
+              ],
+              "top": "sysAppendTuple",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.v"
+                ],
+                "outputs": [
+                  "sysAppendTuple.bsc-vcomp-out",
+                  "sysAppendTuple.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAppendTuple",
+              "args": [],
+              "stdout": "sysAppendTuple.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.vexe"
+                ],
+                "outputs": [
+                  "sysAppendTuple.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAppendTuple.v.out",
+              "expected": "sysAppendTuple.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.v.out",
+                  "sysAppendTuple.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAppendTuple",
+              "args": [],
+              "stdout": "sysAppendTuple.v-vcd.out",
+              "vcd": "sysAppendTuple.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.vexe"
+                ],
+                "outputs": [
+                  "sysAppendTuple.v-vcd.out",
+                  "sysAppendTuple.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysAppendTuple.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysAppendTuple"
+              ],
+              "top": "sysAppendTuple",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.ba"
+                ],
+                "outputs": [
+                  "sysAppendTuple.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysAppendTuple.cexe",
+                    "sysAppendTuple.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysAppendTuple",
+              "args": [],
+              "stdout": "sysAppendTuple.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.cexe"
+                ],
+                "outputs": [
+                  "sysAppendTuple.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAppendTuple.c.out",
+              "expected": "sysAppendTuple.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.c.out",
+                  "sysAppendTuple.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysAppendTuple",
+              "args": [],
+              "stdout": "sysAppendTuple.c-vcd.out",
+              "vcd": "sysAppendTuple.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.cexe"
+                ],
+                "outputs": [
+                  "sysAppendTuple.c-vcd.out",
+                  "sysAppendTuple.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysAppendTuple.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAppendTuple.c-vcd.out",
+              "expected": "sysAppendTuple.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAppendTuple.c-vcd.out",
+                  "sysAppendTuple.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 178,
+                  "endByte": 215,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysCurryTypeClass",
+      "resource": "heavy",
+      "fixtures": [
+        "CurryTypeClass.bs",
+        "sysCurryTypeClass.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCurryTypeClass",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CurryTypeClass.bs",
+              "mode": "shared_elaboration",
+              "module": "sysCurryTypeClass",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CurryTypeClass.bs"
+                ],
+                "outputs": [
+                  "CurryTypeClass.bo",
+                  "CurryTypeClass.bs.bsc-vcomp-out",
+                  "sysCurryTypeClass.ba",
+                  "sysCurryTypeClass.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCurryTypeClass"
+              ],
+              "top": "sysCurryTypeClass",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.v"
+                ],
+                "outputs": [
+                  "sysCurryTypeClass.bsc-vcomp-out",
+                  "sysCurryTypeClass.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCurryTypeClass",
+              "args": [],
+              "stdout": "sysCurryTypeClass.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.vexe"
+                ],
+                "outputs": [
+                  "sysCurryTypeClass.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCurryTypeClass.v.out",
+              "expected": "sysCurryTypeClass.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.v.out",
+                  "sysCurryTypeClass.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCurryTypeClass",
+              "args": [],
+              "stdout": "sysCurryTypeClass.v-vcd.out",
+              "vcd": "sysCurryTypeClass.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.vexe"
+                ],
+                "outputs": [
+                  "sysCurryTypeClass.v-vcd.out",
+                  "sysCurryTypeClass.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCurryTypeClass.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCurryTypeClass"
+              ],
+              "top": "sysCurryTypeClass",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.ba"
+                ],
+                "outputs": [
+                  "sysCurryTypeClass.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCurryTypeClass.cexe",
+                    "sysCurryTypeClass.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCurryTypeClass",
+              "args": [],
+              "stdout": "sysCurryTypeClass.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.cexe"
+                ],
+                "outputs": [
+                  "sysCurryTypeClass.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCurryTypeClass.c.out",
+              "expected": "sysCurryTypeClass.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.c.out",
+                  "sysCurryTypeClass.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCurryTypeClass",
+              "args": [],
+              "stdout": "sysCurryTypeClass.c-vcd.out",
+              "vcd": "sysCurryTypeClass.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.cexe"
+                ],
+                "outputs": [
+                  "sysCurryTypeClass.c-vcd.out",
+                  "sysCurryTypeClass.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCurryTypeClass.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCurryTypeClass.c-vcd.out",
+              "expected": "sysCurryTypeClass.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCurryTypeClass.c-vcd.out",
+                  "sysCurryTypeClass.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 256,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

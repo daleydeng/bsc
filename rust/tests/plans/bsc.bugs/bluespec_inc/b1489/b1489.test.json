@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1489/b1489",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1489/b1489.exp",
+    "sha256": "46c29e5000c467ef58a39ba19d84570b5aa30edcd2224621cbc87722d20c1540"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1489",
+  "fixtures": [
+    {
+      "path": "Bug1489.bsv",
+      "sha256": "0f10a2aeddf587a519fb690429803324595d50f90b2bcd7016f9152cdd8d5cb6",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-sysBug1489",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug1489.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysBug1489",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug1489.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug1489.bsv"
+                ],
+                "outputs": [
+                  "Bug1489.bo",
+                  "Bug1489.bsv.bsc-ccomp-out",
+                  "mkRegFileTest.ba",
+                  "sysBug1489.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 31,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug1489.ba"
+              ],
+              "top": "sysBug1489",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug1489.ba"
+                ],
+                "outputs": [
+                  "sysBug1489.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug1489.cexe",
+                    "sysBug1489.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 74,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug1489",
+              "args": [],
+              "stdout": "sysBug1489.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1489.cexe"
+                ],
+                "outputs": [
+                  "sysBug1489.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 96,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysBug1489.out",
+              "text": "file11.hex",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysBug1489.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 118,
+                  "endByte": 160,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysBug1489.out",
+              "text": "file100.hex",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysBug1489.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 161,
+                  "endByte": 204,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

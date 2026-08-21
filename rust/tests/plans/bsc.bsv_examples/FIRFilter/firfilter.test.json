@@ -1,0 +1,396 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/FIRFilter/firfilter",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/FIRFilter/firfilter.exp",
+    "sha256": "d62710ac01c9fcbda48746f69385c0e3c20f96c13d758849d0094998091a180a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/FIRFilter",
+  "fixtures": [
+    {
+      "path": "FIRMain.bsv",
+      "sha256": "92f4ef2f392271f3e72efbf651cc090321f3d5a2fc946cedc5ade235ffbdea23",
+      "role": "source"
+    },
+    {
+      "path": "FIRTest.bsv",
+      "sha256": "db4917cbd7d4300b47ddca5e20baeb2c5415945b126b82c2da1878d50b70aebc",
+      "role": "source"
+    },
+    {
+      "path": "SyncFIR.bsv",
+      "sha256": "a039612b08933e7614ce818cf555391bffee6e2071063435224ded10af9c9215",
+      "role": "source"
+    },
+    {
+      "path": "sysFIRTest.out.expected",
+      "sha256": "1fb7855e64361db264a1f364d7e8b8b05594b91512816393e65fb8d3002672a7",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysFIRTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FIRMain.bsv",
+        "FIRTest.bsv",
+        "SyncFIR.bsv",
+        "sysFIRTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysFIRTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "FIRTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysFIRTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "FIRTest.bsv"
+                ],
+                "outputs": [
+                  "FIRTest.bo",
+                  "FIRTest.bsv.bsc-vcomp-out",
+                  "sysFIRTest.ba",
+                  "sysFIRTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysFIRTest"
+              ],
+              "top": "sysFIRTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.v"
+                ],
+                "outputs": [
+                  "sysFIRTest.bsc-vcomp-out",
+                  "sysFIRTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFIRTest",
+              "args": [],
+              "stdout": "sysFIRTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.vexe"
+                ],
+                "outputs": [
+                  "sysFIRTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFIRTest.v.out",
+              "expected": "sysFIRTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.v.out",
+                  "sysFIRTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysFIRTest",
+              "args": [],
+              "stdout": "sysFIRTest.v-vcd.out",
+              "vcd": "sysFIRTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.vexe"
+                ],
+                "outputs": [
+                  "sysFIRTest.v-vcd.out",
+                  "sysFIRTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysFIRTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysFIRTest"
+              ],
+              "top": "sysFIRTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.ba"
+                ],
+                "outputs": [
+                  "sysFIRTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysFIRTest.cexe",
+                    "sysFIRTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFIRTest",
+              "args": [],
+              "stdout": "sysFIRTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.cexe"
+                ],
+                "outputs": [
+                  "sysFIRTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFIRTest.c.out",
+              "expected": "sysFIRTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.c.out",
+                  "sysFIRTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysFIRTest",
+              "args": [],
+              "stdout": "sysFIRTest.c-vcd.out",
+              "vcd": "sysFIRTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.cexe"
+                ],
+                "outputs": [
+                  "sysFIRTest.c-vcd.out",
+                  "sysFIRTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysFIRTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysFIRTest.c-vcd.out",
+              "expected": "sysFIRTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysFIRTest.c-vcd.out",
+                  "sysFIRTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 18,
+                  "endByte": 41,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

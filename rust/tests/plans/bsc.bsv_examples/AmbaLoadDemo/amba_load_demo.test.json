@@ -1,0 +1,412 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/AmbaLoadDemo/amba_load_demo",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/AmbaLoadDemo/amba_load_demo.exp",
+    "sha256": "83244d89034a5814c49feb24e10734d506f65d3d2a0761e1b6fc9717b6d41f8b"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/AmbaLoadDemo",
+  "fixtures": [
+    {
+      "path": "Buses.bsv",
+      "sha256": "53dbb220b994d6fbac8c860e1d076197d33eedd6f341290588d4bc6b10a3532b",
+      "role": "source"
+    },
+    {
+      "path": "Interfaces.bsv",
+      "sha256": "dfe38779bac64329155a0d8ce5eb1c4cac927ae96bd1ac56705f71acec239c4a",
+      "role": "source"
+    },
+    {
+      "path": "Masters.bsv",
+      "sha256": "fdc29f9b7f445c6aadba14cad9fe22bb0695a0e282fefe5e698473ae39031ccb",
+      "role": "source"
+    },
+    {
+      "path": "Slaves.bsv",
+      "sha256": "443633fc91a7686f2d581f830c3987440abb69feec36d3a72462e23b8ae18a4d",
+      "role": "source"
+    },
+    {
+      "path": "TBbaseline.bsv",
+      "sha256": "f1149a1aeedccc7fff97fd4c5e741765fa153e8f12c3bd9a201cff2f4f4f3fd3",
+      "role": "source"
+    },
+    {
+      "path": "sysM1_25.out.expected",
+      "sha256": "ec4738036c6d947f37bcfc1796a38dad440ea79df77b72ca1a84a727ebb345e3",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysM1_25",
+      "resource": "heavy",
+      "fixtures": [
+        "Buses.bsv",
+        "Interfaces.bsv",
+        "Masters.bsv",
+        "Slaves.bsv",
+        "TBbaseline.bsv",
+        "sysM1_25.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysM1_25",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TBbaseline.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysM1_25",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TBbaseline.bsv"
+                ],
+                "outputs": [
+                  "TBbaseline.bo",
+                  "TBbaseline.bsv.bsc-vcomp-out",
+                  "sysM1_25.ba",
+                  "sysM1_25.v",
+                  "sysM1_50.ba",
+                  "sysM1_50.v",
+                  "sysM1_75.ba",
+                  "sysM1_75.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysM1_25"
+              ],
+              "top": "sysM1_25",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.v"
+                ],
+                "outputs": [
+                  "sysM1_25.bsc-vcomp-out",
+                  "sysM1_25.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.vexe"
+                ],
+                "outputs": [
+                  "sysM1_25.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysM1_25.v.out",
+              "expected": "sysM1_25.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.v.out",
+                  "sysM1_25.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.v-vcd.out",
+              "vcd": "sysM1_25.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.vexe"
+                ],
+                "outputs": [
+                  "sysM1_25.v-vcd.out",
+                  "sysM1_25.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysM1_25.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysM1_25"
+              ],
+              "top": "sysM1_25",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.ba"
+                ],
+                "outputs": [
+                  "sysM1_25.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysM1_25.cexe",
+                    "sysM1_25.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.cexe"
+                ],
+                "outputs": [
+                  "sysM1_25.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysM1_25.c.out",
+              "expected": "sysM1_25.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.c.out",
+                  "sysM1_25.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysM1_25",
+              "args": [],
+              "stdout": "sysM1_25.c-vcd.out",
+              "vcd": "sysM1_25.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.cexe"
+                ],
+                "outputs": [
+                  "sysM1_25.c-vcd.out",
+                  "sysM1_25.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysM1_25.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysM1_25.c-vcd.out",
+              "expected": "sysM1_25.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysM1_25.c-vcd.out",
+                  "sysM1_25.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 46,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

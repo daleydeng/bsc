@@ -1,0 +1,1494 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/Boolify/Boolify",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/Boolify/Boolify.exp",
+    "sha256": "f3f9fff70fb77451aa8b82c2d23c8699778da0a411a7332240f7bd1d05001096"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/Boolify",
+  "fixtures": [
+    {
+      "path": "Boolify1.bsv",
+      "sha256": "729c785aaacc575393b522e46d44f3d49921145d721be3158bfd72cc3797b136",
+      "role": "source"
+    },
+    {
+      "path": "Boolify2.bsv",
+      "sha256": "362155d97798414d0f73a195bdd6c3700a7ee3b457187409e5f36e6b3a63a7ce",
+      "role": "source"
+    },
+    {
+      "path": "Boolify3.bsv",
+      "sha256": "88b35a9152f6f7044fcaebd81361028b75d7e3a26d44ae04b24dd6ab271a7fb9",
+      "role": "source"
+    },
+    {
+      "path": "Boolify4.bsv",
+      "sha256": "13fbb2cf67e419c226306d845f8ebf199337d138e5ca7e1012236e30a59ce971",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_Boolify1.v.out.expected",
+      "sha256": "28b6e4131d00d34a5901857dc0f3ea329c4d9e87a878f4a8e8726337527adcb3",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_Boolify2.v.out.expected",
+      "sha256": "9b89f85957dbb9e08d51dfffd082ac1eefd667fb938af5b9cc063d0ffdc8de67",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_Boolify3.v.out.expected",
+      "sha256": "9231ce6bfda811fa899b24321f6ee5718f79be01810b715e27925b228fc3f82f",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_Boolify4.v.out.expected",
+      "sha256": "d185f3841442926128005860555bbf3be37bf44b68cdc46de5eea858cac6dff0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_Boolify1",
+      "resource": "heavy",
+      "fixtures": [
+        "Boolify1.bsv",
+        "mkTestbench_Boolify1.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Boolify1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Boolify1.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_Boolify1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Boolify1.bsv"
+                ],
+                "outputs": [
+                  "Boolify1.bo",
+                  "Boolify1.bsv.bsc-vcomp-out",
+                  "mkTestbench_Boolify1.ba",
+                  "mkTestbench_Boolify1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_Boolify1"
+              ],
+              "top": "mkTestbench_Boolify1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.v"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify1.bsc-vcomp-out",
+                  "mkTestbench_Boolify1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify1",
+              "args": [],
+              "stdout": "mkTestbench_Boolify1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify1.v.out",
+              "expected": "mkTestbench_Boolify1.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.v.out",
+                  "mkTestbench_Boolify1.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify1",
+              "args": [],
+              "stdout": "mkTestbench_Boolify1.v-vcd.out",
+              "vcd": "mkTestbench_Boolify1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify1.v-vcd.out",
+                  "mkTestbench_Boolify1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_Boolify1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Boolify1"
+              ],
+              "top": "mkTestbench_Boolify1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Boolify1.cexe",
+                    "mkTestbench_Boolify1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify1",
+              "args": [],
+              "stdout": "mkTestbench_Boolify1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify1.c.out",
+              "expected": "mkTestbench_Boolify1.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.c.out",
+                  "mkTestbench_Boolify1.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify1",
+              "args": [],
+              "stdout": "mkTestbench_Boolify1.c-vcd.out",
+              "vcd": "mkTestbench_Boolify1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify1.c-vcd.out",
+                  "mkTestbench_Boolify1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_Boolify1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify1.c-vcd.out",
+              "expected": "mkTestbench_Boolify1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify1.c-vcd.out",
+                  "mkTestbench_Boolify1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 105,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 106
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_Boolify2",
+      "resource": "heavy",
+      "fixtures": [
+        "Boolify2.bsv",
+        "mkTestbench_Boolify2.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Boolify2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Boolify2.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_Boolify2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Boolify2.bsv"
+                ],
+                "outputs": [
+                  "Boolify2.bo",
+                  "Boolify2.bsv.bsc-vcomp-out",
+                  "mkTestbench_Boolify2.ba",
+                  "mkTestbench_Boolify2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_Boolify2"
+              ],
+              "top": "mkTestbench_Boolify2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.v"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify2.bsc-vcomp-out",
+                  "mkTestbench_Boolify2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify2",
+              "args": [],
+              "stdout": "mkTestbench_Boolify2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify2.v.out",
+              "expected": "mkTestbench_Boolify2.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.v.out",
+                  "mkTestbench_Boolify2.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify2",
+              "args": [],
+              "stdout": "mkTestbench_Boolify2.v-vcd.out",
+              "vcd": "mkTestbench_Boolify2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify2.v-vcd.out",
+                  "mkTestbench_Boolify2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_Boolify2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Boolify2"
+              ],
+              "top": "mkTestbench_Boolify2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Boolify2.cexe",
+                    "mkTestbench_Boolify2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify2",
+              "args": [],
+              "stdout": "mkTestbench_Boolify2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify2.c.out",
+              "expected": "mkTestbench_Boolify2.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.c.out",
+                  "mkTestbench_Boolify2.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify2",
+              "args": [],
+              "stdout": "mkTestbench_Boolify2.c-vcd.out",
+              "vcd": "mkTestbench_Boolify2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify2.c-vcd.out",
+                  "mkTestbench_Boolify2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_Boolify2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify2.c-vcd.out",
+              "expected": "mkTestbench_Boolify2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify2.c-vcd.out",
+                  "mkTestbench_Boolify2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 107,
+                  "endByte": 212,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 106
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_Boolify3",
+      "resource": "heavy",
+      "fixtures": [
+        "Boolify3.bsv",
+        "mkTestbench_Boolify3.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Boolify3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Boolify3.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_Boolify3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Boolify3.bsv"
+                ],
+                "outputs": [
+                  "Boolify3.bo",
+                  "Boolify3.bsv.bsc-vcomp-out",
+                  "mkTestbench_Boolify3.ba",
+                  "mkTestbench_Boolify3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_Boolify3"
+              ],
+              "top": "mkTestbench_Boolify3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.v"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify3.bsc-vcomp-out",
+                  "mkTestbench_Boolify3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify3",
+              "args": [],
+              "stdout": "mkTestbench_Boolify3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify3.v.out",
+              "expected": "mkTestbench_Boolify3.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.v.out",
+                  "mkTestbench_Boolify3.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify3",
+              "args": [],
+              "stdout": "mkTestbench_Boolify3.v-vcd.out",
+              "vcd": "mkTestbench_Boolify3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify3.v-vcd.out",
+                  "mkTestbench_Boolify3.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_Boolify3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Boolify3"
+              ],
+              "top": "mkTestbench_Boolify3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Boolify3.cexe",
+                    "mkTestbench_Boolify3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify3",
+              "args": [],
+              "stdout": "mkTestbench_Boolify3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify3.c.out",
+              "expected": "mkTestbench_Boolify3.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.c.out",
+                  "mkTestbench_Boolify3.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify3",
+              "args": [],
+              "stdout": "mkTestbench_Boolify3.c-vcd.out",
+              "vcd": "mkTestbench_Boolify3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify3.c-vcd.out",
+                  "mkTestbench_Boolify3.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_Boolify3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify3.c-vcd.out",
+              "expected": "mkTestbench_Boolify3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify3.c-vcd.out",
+                  "mkTestbench_Boolify3.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 319,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 106
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_Boolify4",
+      "resource": "heavy",
+      "fixtures": [
+        "Boolify4.bsv",
+        "mkTestbench_Boolify4.v.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_Boolify4",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Boolify4.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTestbench_Boolify4",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Boolify4.bsv"
+                ],
+                "outputs": [
+                  "Boolify4.bo",
+                  "Boolify4.bsv.bsc-vcomp-out",
+                  "mkTestbench_Boolify4.ba",
+                  "mkTestbench_Boolify4.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_Boolify4"
+              ],
+              "top": "mkTestbench_Boolify4",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.v"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify4.bsc-vcomp-out",
+                  "mkTestbench_Boolify4.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify4",
+              "args": [],
+              "stdout": "mkTestbench_Boolify4.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify4.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify4.v.out",
+              "expected": "mkTestbench_Boolify4.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.v.out",
+                  "mkTestbench_Boolify4.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_Boolify4",
+              "args": [],
+              "stdout": "mkTestbench_Boolify4.v-vcd.out",
+              "vcd": "mkTestbench_Boolify4.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify4.v-vcd.out",
+                  "mkTestbench_Boolify4.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_Boolify4.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_Boolify4"
+              ],
+              "top": "mkTestbench_Boolify4",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify4.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_Boolify4.cexe",
+                    "mkTestbench_Boolify4.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify4",
+              "args": [],
+              "stdout": "mkTestbench_Boolify4.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify4.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify4.c.out",
+              "expected": "mkTestbench_Boolify4.v.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.c.out",
+                  "mkTestbench_Boolify4.v.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_Boolify4",
+              "args": [],
+              "stdout": "mkTestbench_Boolify4.c-vcd.out",
+              "vcd": "mkTestbench_Boolify4.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_Boolify4.c-vcd.out",
+                  "mkTestbench_Boolify4.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTestbench_Boolify4.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_Boolify4.c-vcd.out",
+              "expected": "mkTestbench_Boolify4.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_Boolify4.c-vcd.out",
+                  "mkTestbench_Boolify4.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 321,
+                  "endByte": 426,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 106
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

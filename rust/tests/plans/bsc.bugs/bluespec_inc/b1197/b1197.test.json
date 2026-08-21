@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1197/b1197",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1197/b1197.exp",
+    "sha256": "6db847ec1576a676a0e068e5cd1b30cfe502d7edb3a801342b21d6d8b119d497"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1197",
+  "fixtures": [
+    {
+      "path": "FixedPointLibrary.bo.dumpbi-out.expected",
+      "sha256": "70de901cbb84fdfa1ed62bf6ae3b80ab1a846a277dc6e5d4f1be76ed18b9ccf5",
+      "role": "golden"
+    },
+    {
+      "path": "FixedPointLibrary.bsv",
+      "sha256": "dda72d7d023d912f6e38703b60ac6f26df317bb047fd1cd036b7567bbf4e1de6",
+      "role": "source"
+    },
+    {
+      "path": "TestFixedPointMultiFiles.bsv",
+      "sha256": "aced4c748eae704dbff4868072019fb9a41a6a4ee2c0df6381ee2667844bbc46",
+      "role": "source"
+    },
+    {
+      "path": "TypeClasses.bsv",
+      "sha256": "30556f0998284c9f91766e149f5a195ad2a67a67a98dc269a62a39125f41e7ba",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-TestFixedPointMultiFiles",
+      "resource": "normal",
+      "fixtures": [
+        "FixedPointLibrary.bo.dumpbi-out.expected",
+        "FixedPointLibrary.bsv",
+        "TestFixedPointMultiFiles.bsv",
+        "TypeClasses.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TestFixedPointMultiFiles",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TestFixedPointMultiFiles.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TestFixedPointMultiFiles.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TestFixedPointMultiFiles.bsv"
+                ],
+                "outputs": [
+                  "TestFixedPointMultiFiles.bsv.bsc-out",
+                  "TestFixedPointMultiFiles.bo",
+                  "FixedPointLibrary.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "internal.dump",
+              "input": "FixedPointLibrary.bo",
+              "output": "FixedPointLibrary.bo.dumpbi-out",
+              "view": "bi",
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FixedPointLibrary.bo"
+                ],
+                "outputs": [
+                  "FixedPointLibrary.bo.dumpbi-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 76,
+                  "endByte": 103,
+                  "startLine": 3,
+                  "startColumn": 5,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "FixedPointLibrary.bo.dumpbi-out",
+              "expected": "FixedPointLibrary.bo.dumpbi-out.expected",
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "FixedPointLibrary.bo.dumpbi-out",
+                  "FixedPointLibrary.bo.dumpbi-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 108,
+                  "endByte": 167,
+                  "startLine": 4,
+                  "startColumn": 5,
+                  "endLine": 4,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

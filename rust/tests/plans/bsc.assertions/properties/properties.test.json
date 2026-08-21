@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.assertions/properties/properties",
+  "origin": {
+    "path": "testsuite/bsc.assertions/properties/properties.exp",
+    "sha256": "8967c003c484d355913040062a987788af6de0d06cc76e3d90d58db3db5dc71f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.assertions/properties",
+  "fixtures": [
+    {
+      "path": "SemanticsTest.bsv",
+      "sha256": "00d2e3c82e415f85a3f31971438af5bac32314b92db2dbbbe9c178aa2a61ffa7",
+      "role": "source"
+    },
+    {
+      "path": "SyntaxTest.bsv",
+      "sha256": "7b72f12e9064b03aa6abc69f4574ebe3b204d2862d13531473a9571c12a8fb81",
+      "role": "source"
+    },
+    {
+      "path": "sysSemanticsTest.out.expected",
+      "sha256": "856b832a1211498c9e9f9b6ab218b1226635bb59cd6d6d69885f4a83dfa1fc7e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-SyntaxTest",
+      "resource": "normal",
+      "fixtures": [
+        "SyntaxTest.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SyntaxTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SyntaxTest.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SyntaxTest.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "SyntaxTest.bsv"
+                ],
+                "outputs": [
+                  "SyntaxTest.bsv.bsc-out",
+                  "SyntaxTest.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 46,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSemanticsTest",
+      "resource": "heavy",
+      "fixtures": [
+        "SemanticsTest.bsv",
+        "sysSemanticsTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSemanticsTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SemanticsTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysSemanticsTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SemanticsTest.bsv"
+                ],
+                "outputs": [
+                  "SemanticsTest.bo",
+                  "SemanticsTest.bsv.bsc-vcomp-out",
+                  "sysSemanticsTest.ba",
+                  "sysSemanticsTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSemanticsTest"
+              ],
+              "top": "sysSemanticsTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.v"
+                ],
+                "outputs": [
+                  "sysSemanticsTest.bsc-vcomp-out",
+                  "sysSemanticsTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSemanticsTest",
+              "args": [],
+              "stdout": "sysSemanticsTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.vexe"
+                ],
+                "outputs": [
+                  "sysSemanticsTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSemanticsTest.v.out",
+              "expected": "sysSemanticsTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.v.out",
+                  "sysSemanticsTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSemanticsTest",
+              "args": [],
+              "stdout": "sysSemanticsTest.v-vcd.out",
+              "vcd": "sysSemanticsTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.vexe"
+                ],
+                "outputs": [
+                  "sysSemanticsTest.v-vcd.out",
+                  "sysSemanticsTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSemanticsTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSemanticsTest"
+              ],
+              "top": "sysSemanticsTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.ba"
+                ],
+                "outputs": [
+                  "sysSemanticsTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSemanticsTest.cexe",
+                    "sysSemanticsTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSemanticsTest",
+              "args": [],
+              "stdout": "sysSemanticsTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.cexe"
+                ],
+                "outputs": [
+                  "sysSemanticsTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSemanticsTest.c.out",
+              "expected": "sysSemanticsTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.c.out",
+                  "sysSemanticsTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSemanticsTest",
+              "args": [],
+              "stdout": "sysSemanticsTest.c-vcd.out",
+              "vcd": "sysSemanticsTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.cexe"
+                ],
+                "outputs": [
+                  "sysSemanticsTest.c-vcd.out",
+                  "sysSemanticsTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSemanticsTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSemanticsTest.c-vcd.out",
+              "expected": "sysSemanticsTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSemanticsTest.c-vcd.out",
+                  "sysSemanticsTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 76,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

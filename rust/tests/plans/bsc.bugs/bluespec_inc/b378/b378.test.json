@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b378/b378",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b378/b378.exp",
+    "sha256": "c3dfb914cb9bb1eb259846feec803c1e959a5a532581df898abf041996849871"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b378",
+  "fixtures": [
+    {
+      "path": "Disjoint.bsv",
+      "sha256": "0391385de37c4372581a15b443a6d69c90b765c78f962c99df1ee2908424bc03",
+      "role": "source"
+    },
+    {
+      "path": "DisjointConflict.bsv",
+      "sha256": "3a162f9486a90da8b2e75e2637ddde01a746c6a617d15fe1a050c67fb81f9c5d",
+      "role": "source"
+    },
+    {
+      "path": "mkCTest.v.expected",
+      "sha256": "c4f811b9575d38fb4ba4a3960e8cffd78ca33d8f04e99593a8fe44d5ac4a04a3",
+      "role": "golden"
+    },
+    {
+      "path": "mkTest.v.expected",
+      "sha256": "ac3fd81ffa1dc903045a7711850dc18bf847fb955f35373d8c0470e6ad30f4d0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Disjoint",
+      "resource": "normal",
+      "fixtures": [
+        "Disjoint.bsv",
+        "mkTest.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Disjoint",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Disjoint.bsv",
+              "mode": "verilog",
+              "module": "mkTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Disjoint.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Disjoint.bsv"
+                ],
+                "outputs": [
+                  "Disjoint.bo",
+                  "Disjoint.bsv.bsc-vcomp-out",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 40,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkTest.v",
+              "expected": "mkTest.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTest.v",
+                  "mkTest.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 65,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-DisjointConflict",
+      "resource": "normal",
+      "fixtures": [
+        "DisjointConflict.bsv",
+        "mkCTest.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DisjointConflict",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DisjointConflict.bsv",
+              "mode": "verilog",
+              "module": "mkCTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DisjointConflict.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DisjointConflict.bsv"
+                ],
+                "outputs": [
+                  "DisjointConflict.bo",
+                  "DisjointConflict.bsv.bsc-vcomp-out",
+                  "mkCTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 67,
+                  "endByte": 116,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkCTest.v",
+              "expected": "mkCTest.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkCTest.v",
+                  "mkCTest.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 142,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 26
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

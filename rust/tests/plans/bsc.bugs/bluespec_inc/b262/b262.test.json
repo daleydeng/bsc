@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b262/b262",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b262/b262.exp",
+    "sha256": "ec466e0822ec6379cee725f18f1e106a23b6edca652c49dd91cfe099cc280861"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b262",
+  "fixtures": [
+    {
+      "path": "Bug262.bs",
+      "sha256": "182147cc600bdac959978e0a621ea05ff71a72f1729fcd8c564f5becaf7405ef",
+      "role": "source"
+    },
+    {
+      "path": "Bug262Opt.bsv",
+      "sha256": "e1a8d15585fee6da16c3a3a65f4a0bb68bdd79b46434f7f6fe6e1420fa9ccb72",
+      "role": "source"
+    },
+    {
+      "path": "sysBug262Opt.v.expected",
+      "sha256": "5d775085a69369b50df29276c2a9e4e3b84f50cfa8e6cac16121966243869b57",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Bug262",
+      "resource": "normal",
+      "fixtures": [
+        "Bug262.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug262",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug262.bs",
+              "mode": "verilog",
+              "module": "sysBug262",
+              "args": [
+                "-opt-undetermined-vals"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Bug262.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug262.bs"
+                ],
+                "outputs": [
+                  "Bug262.bo",
+                  "Bug262.bs.bsc-vcomp-out",
+                  "sysBug262.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 65,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 66
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Bug262Opt",
+      "resource": "normal",
+      "fixtures": [
+        "Bug262Opt.bsv",
+        "sysBug262Opt.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug262Opt",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug262Opt.bsv",
+              "mode": "verilog",
+              "module": "sysBug262Opt",
+              "args": [
+                "-opt-undetermined-vals"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Bug262Opt.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug262Opt.bsv"
+                ],
+                "outputs": [
+                  "Bug262Opt.bo",
+                  "Bug262Opt.bsv.bsc-vcomp-out",
+                  "sysBug262Opt.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 133,
+                  "endByte": 205,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "sysBug262Opt.v",
+              "expected": "sysBug262Opt.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug262Opt.v",
+                  "sysBug262Opt.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 206,
+                  "endByte": 236,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 31
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-1-Bug262",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug262.bs"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-Bug262",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug262.bs",
+              "mode": "bluesim",
+              "module": "sysBug262",
+              "args": [
+                "-opt-undetermined-vals"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Bug262.bs"
+                ],
+                "outputs": [
+                  "Bug262.bo",
+                  "Bug262.bs.bsc-ccomp-out",
+                  "sysBug262.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 66,
+                  "endByte": 131,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 66
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

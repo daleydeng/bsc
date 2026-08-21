@@ -1,0 +1,951 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/error_recovery/error_recovery",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/error_recovery/error_recovery.exp",
+    "sha256": "20e5e4c02feac98c16eefac4ee194b842a8d3678926a04ce89c362bccae90ae1"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/error_recovery",
+  "fixtures": [
+    {
+      "path": "Actions.bsv",
+      "sha256": "bead8a8d0d0e12c06279ffaa6326eadc42d8ed0be502e6541ee3e9458eb1da5d",
+      "role": "source"
+    },
+    {
+      "path": "DefErrorRecovery.bsv",
+      "sha256": "fd4941bd8273d690a5715cec8f3a61bb27c9620aac8cf7a539cefdc20ee716ee",
+      "role": "source"
+    },
+    {
+      "path": "ExplicitActions.bsv",
+      "sha256": "a7a2e5205c482471e3d6edd600e37c503e27526dafe8c140c21d97dc7fe8489c",
+      "role": "source"
+    },
+    {
+      "path": "ExplicitBool.bsv",
+      "sha256": "b0bd3631f5facdbc755c29ade0aab3494b1650ed82b5cffe686735df9b456b5e",
+      "role": "source"
+    },
+    {
+      "path": "ExplicitRules.bsv",
+      "sha256": "c9e1dba88136016e1e82171ced8abb391762bf6ce8192c34288c2d62c5c92300",
+      "role": "source"
+    },
+    {
+      "path": "Life.bsv",
+      "sha256": "94799df0c580c76259518a0eef0dbf39be7137f73178564fb084ee4388b57144",
+      "role": "source"
+    },
+    {
+      "path": "Rules1.bsv",
+      "sha256": "b63a6f3d4dd0cfc564ffe9e4351f5e2f0c0d95dcc410efc08012eebdf4d941ff",
+      "role": "source"
+    },
+    {
+      "path": "Rules2.bsv",
+      "sha256": "0f8489b057f64a11f1e0dce4f7e9be0e28472d3b30e9a99788bd106cce3acb63",
+      "role": "source"
+    },
+    {
+      "path": "TrimSkip.bs",
+      "sha256": "f8257e8b996f3a124cbe896d46d874dd5fc8ddc620f44e9e8f4efe9f8a257e2a",
+      "role": "source"
+    },
+    {
+      "path": "TrimSkip.bs.bsc-out.expected",
+      "sha256": "bb399fd994f8a211e7c2d8e4754bb889d96f887fdcacf06799b280a996949307",
+      "role": "golden"
+    },
+    {
+      "path": "TwoActions.bsv",
+      "sha256": "7c033ac8db8b7074c1b118c3b1eb179589d3c3a264759b245fe24499827b9af1",
+      "role": "source"
+    },
+    {
+      "path": "TwoRules.bsv",
+      "sha256": "79626353550a18188fb3dd01f3caca8941ccb2531a3fddb487bcfd9808d5cf1b",
+      "role": "source"
+    },
+    {
+      "path": "sysDefErrorRecovery.v.expected",
+      "sha256": "535f2d63e0f12ec3db3a8de050e34b7813d7f124d52e9fe9d91fd7ac7b655e16",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Actions",
+      "resource": "normal",
+      "fixtures": [
+        "Actions.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Actions",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Actions.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Actions.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Actions.bsv"
+                ],
+                "outputs": [
+                  "Actions.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 38,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Actions.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "Actions.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 38,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ExplicitActions",
+      "resource": "normal",
+      "fixtures": [
+        "ExplicitActions.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExplicitActions",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExplicitActions.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ExplicitActions.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ExplicitActions.bsv"
+                ],
+                "outputs": [
+                  "ExplicitActions.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 39,
+                  "endByte": 85,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ExplicitActions.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "ExplicitActions.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 39,
+                  "endByte": 85,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 47
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-ExplicitBool",
+      "resource": "normal",
+      "fixtures": [
+        "ExplicitBool.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExplicitBool",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExplicitBool.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ExplicitBool.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ExplicitBool.bsv"
+                ],
+                "outputs": [
+                  "ExplicitBool.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 129,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ExplicitBool.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0031",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "ExplicitBool.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 86,
+                  "endByte": 129,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-ExplicitRules",
+      "resource": "normal",
+      "fixtures": [
+        "ExplicitRules.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ExplicitRules",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ExplicitRules.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ExplicitRules.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ExplicitRules.bsv"
+                ],
+                "outputs": [
+                  "ExplicitRules.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 130,
+                  "endByte": 174,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ExplicitRules.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "ExplicitRules.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 130,
+                  "endByte": 174,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-Rules1",
+      "resource": "normal",
+      "fixtures": [
+        "Rules1.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Rules1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Rules1.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Rules1.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Rules1.bsv"
+                ],
+                "outputs": [
+                  "Rules1.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 197,
+                  "endByte": 234,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Rules1.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Rules1.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 197,
+                  "endByte": 234,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-Rules2",
+      "resource": "normal",
+      "fixtures": [
+        "Rules2.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Rules2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Rules2.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Rules2.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Rules2.bsv"
+                ],
+                "outputs": [
+                  "Rules2.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 236,
+                  "endByte": 273,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Rules2.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0020",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "Rules2.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 236,
+                  "endByte": 273,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-TwoRules",
+      "resource": "normal",
+      "fixtures": [
+        "TwoRules.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TwoRules",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TwoRules.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TwoRules.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TwoRules.bsv"
+                ],
+                "outputs": [
+                  "TwoRules.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 275,
+                  "endByte": 314,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "TwoRules.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "TwoRules.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 275,
+                  "endByte": 314,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 40
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-TwoActions",
+      "resource": "normal",
+      "fixtures": [
+        "TwoActions.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TwoActions",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TwoActions.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "TwoActions.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TwoActions.bsv"
+                ],
+                "outputs": [
+                  "TwoActions.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 315,
+                  "endByte": 356,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "TwoActions.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 2,
+              "artifacts": {
+                "inputs": [
+                  "TwoActions.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 315,
+                  "endByte": 356,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-Life",
+      "resource": "normal",
+      "fixtures": [
+        "Life.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Life",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Life.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Life.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Life.bsv"
+                ],
+                "outputs": [
+                  "Life.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 357,
+                  "endByte": 393,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Life.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 11,
+              "artifacts": {
+                "inputs": [
+                  "Life.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 357,
+                  "endByte": 393,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-10-TrimSkip",
+      "resource": "normal",
+      "fixtures": [
+        "TrimSkip.bs",
+        "TrimSkip.bs.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TrimSkip",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "TrimSkip.bs",
+              "mode": "frontend",
+              "args": [
+                "-dinternal",
+                "-trace-skip-trim"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TrimSkip.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "TrimSkip.bs"
+                ],
+                "outputs": [
+                  "TrimSkip.bs.bsc-out",
+                  "TrimSkip.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 395,
+                  "endByte": 449,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "TrimSkip.bs.bsc-out",
+              "expected": "TrimSkip.bs.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "TrimSkip.bs.bsc-out",
+                  "TrimSkip.bs.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 450,
+                  "endByte": 482,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-11-DefErrorRecovery",
+      "resource": "normal",
+      "fixtures": [
+        "DefErrorRecovery.bsv",
+        "sysDefErrorRecovery.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DefErrorRecovery",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DefErrorRecovery.bsv",
+              "mode": "verilog",
+              "args": [
+                "-continue-after-errors"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "DefErrorRecovery.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DefErrorRecovery.bsv"
+                ],
+                "outputs": [
+                  "DefErrorRecovery.bsv.bsc-vcomp-out",
+                  "sysDefErrorRecovery.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 484,
+                  "endByte": 567,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "DefErrorRecovery.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0080",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "DefErrorRecovery.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 484,
+                  "endByte": 567,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "sysDefErrorRecovery.v",
+              "expected": "sysDefErrorRecovery.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDefErrorRecovery.v",
+                  "sysDefErrorRecovery.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 568,
+                  "endByte": 605,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

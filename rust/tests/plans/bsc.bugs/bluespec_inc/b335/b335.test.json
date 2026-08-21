@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b335/b335",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b335/b335.exp",
+    "sha256": "b339f1bf471d5282a70bce2e8282c5e1507081536bc30a9068cd549ee1e17228"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b335",
+  "fixtures": [
+    {
+      "path": "FifoTest.bsv",
+      "sha256": "6c208d6240b6295404c287ddbb5506754a3fef275850cd981bb2c9d354fc9be4",
+      "role": "source"
+    },
+    {
+      "path": "mkDesignE.out.expected",
+      "sha256": "cc0c48634f327fb0f46e44edefdc7852dce5541d79417802a851b56c4517642f",
+      "role": "golden"
+    },
+    {
+      "path": "mkDesignI.out.expected",
+      "sha256": "1b3cd8c78572f8b1942038d841db8659f59310afc0e457a657e98cb173dfae2f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-FifoTest",
+      "resource": "heavy",
+      "fixtures": [
+        "FifoTest.bsv",
+        "mkDesignE.out.expected",
+        "mkDesignI.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-FifoTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "FifoTest.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "FifoTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "FifoTest.bsv"
+                ],
+                "outputs": [
+                  "FifoTest.bo",
+                  "FifoTest.bsv.bsc-vcomp-out",
+                  "mkDesignE.v",
+                  "mkDesignI.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 52,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkDesignI.v"
+              ],
+              "top": "mkDesignI",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkDesignI.v"
+                ],
+                "outputs": [
+                  "mkDesignI.bsc-vcomp-out",
+                  "mkDesignI.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 54,
+                  "endByte": 97,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkDesignI",
+              "args": [],
+              "stdout": "mkDesignI.out",
+              "artifacts": {
+                "inputs": [
+                  "mkDesignI.vexe"
+                ],
+                "outputs": [
+                  "mkDesignI.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 98,
+                  "endByte": 119,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkDesignI.out",
+              "expected": "mkDesignI.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkDesignI.out",
+                  "mkDesignI.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 121,
+                  "endByte": 147,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkDesignE.v"
+              ],
+              "top": "mkDesignE",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkDesignE.v"
+                ],
+                "outputs": [
+                  "mkDesignE.bsc-vcomp-out",
+                  "mkDesignE.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 149,
+                  "endByte": 192,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkDesignE",
+              "args": [],
+              "stdout": "mkDesignE.out",
+              "artifacts": {
+                "inputs": [
+                  "mkDesignE.vexe"
+                ],
+                "outputs": [
+                  "mkDesignE.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 193,
+                  "endByte": 214,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 22
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkDesignE.out",
+              "expected": "mkDesignE.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkDesignE.out",
+                  "mkDesignE.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 216,
+                  "endByte": 242,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

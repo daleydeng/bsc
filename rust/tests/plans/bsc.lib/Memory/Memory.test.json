@@ -1,0 +1,386 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Memory/Memory",
+  "origin": {
+    "path": "testsuite/bsc.lib/Memory/Memory.exp",
+    "sha256": "4403e66f1ddd039ca58f6ddbffc51bc786c01112203d933321b7cc44b629762e"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Memory",
+  "fixtures": [
+    {
+      "path": "MemoryTest.bsv",
+      "sha256": "03db0f363cd648c062574faf94308ab922e0ea10435a2ea8e4cb14223d72747c",
+      "role": "source"
+    },
+    {
+      "path": "sysMemoryTest.out.expected",
+      "sha256": "bb92a340a1a69a610cc2b79c48647325af745d66d35d0b53a5e40217ee81dfa5",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysMemoryTest",
+      "resource": "heavy",
+      "fixtures": [
+        "MemoryTest.bsv",
+        "sysMemoryTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysMemoryTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MemoryTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysMemoryTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MemoryTest.bsv"
+                ],
+                "outputs": [
+                  "MemoryTest.bo",
+                  "MemoryTest.bsv.bsc-vcomp-out",
+                  "mkTestMemory.ba",
+                  "mkTestMemory.v",
+                  "sysMemoryTest.ba",
+                  "sysMemoryTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysMemoryTest"
+              ],
+              "top": "sysMemoryTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.v"
+                ],
+                "outputs": [
+                  "sysMemoryTest.bsc-vcomp-out",
+                  "sysMemoryTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMemoryTest",
+              "args": [],
+              "stdout": "sysMemoryTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.vexe"
+                ],
+                "outputs": [
+                  "sysMemoryTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMemoryTest.v.out",
+              "expected": "sysMemoryTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.v.out",
+                  "sysMemoryTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysMemoryTest",
+              "args": [],
+              "stdout": "sysMemoryTest.v-vcd.out",
+              "vcd": "sysMemoryTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.vexe"
+                ],
+                "outputs": [
+                  "sysMemoryTest.v-vcd.out",
+                  "sysMemoryTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysMemoryTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysMemoryTest"
+              ],
+              "top": "sysMemoryTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.ba"
+                ],
+                "outputs": [
+                  "sysMemoryTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysMemoryTest.cexe",
+                    "sysMemoryTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMemoryTest",
+              "args": [],
+              "stdout": "sysMemoryTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.cexe"
+                ],
+                "outputs": [
+                  "sysMemoryTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMemoryTest.c.out",
+              "expected": "sysMemoryTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.c.out",
+                  "sysMemoryTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysMemoryTest",
+              "args": [],
+              "stdout": "sysMemoryTest.c-vcd.out",
+              "vcd": "sysMemoryTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.cexe"
+                ],
+                "outputs": [
+                  "sysMemoryTest.c-vcd.out",
+                  "sysMemoryTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysMemoryTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysMemoryTest.c-vcd.out",
+              "expected": "sysMemoryTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysMemoryTest.c-vcd.out",
+                  "sysMemoryTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 27,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

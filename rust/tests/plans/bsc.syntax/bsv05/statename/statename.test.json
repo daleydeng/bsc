@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.syntax/bsv05/statename/statename",
+  "origin": {
+    "path": "testsuite/bsc.syntax/bsv05/statename/statename.exp",
+    "sha256": "4367c00b75073d84fa6d7330599321f0f8c2e7551722eb94baf5cfccc2cf5a14"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.syntax/bsv05/statename",
+  "fixtures": [
+    {
+      "path": "StateNameTest.bsv",
+      "sha256": "c525e6c4e19edc54f51f80355e6137b0a4e94eb1cf52a5765369e45bccaf351f",
+      "role": "source"
+    },
+    {
+      "path": "StateNameTest2.bsv",
+      "sha256": "ce205d9862b7a8ca48cec06448ff89bf629b9de6e3a07cd89155924f765d2f56",
+      "role": "source"
+    },
+    {
+      "path": "UseMod2.bsv",
+      "sha256": "02183aa162b7d220ed3ddb99c72231073e201017eebd1865efd95891bfb45a0f",
+      "role": "source"
+    },
+    {
+      "path": "UseMod2Arrow.bsv",
+      "sha256": "edf9fc113f3e5547fb12477d7382da41862b443218184b44a898a09e34330d2c",
+      "role": "source"
+    },
+    {
+      "path": "sysStateNameTest.atsexpand.expected",
+      "sha256": "011d79584ea3a38a9921a53eaf2488d1c9a5185950d6c6e23fa934859343cfb8",
+      "role": "golden"
+    },
+    {
+      "path": "sysStateNameTest2.atsexpand.expected",
+      "sha256": "087affea59171edceb95c941d83dd530cdf0c09a99772eb57eb25b9d6c5dd4d4",
+      "role": "golden"
+    },
+    {
+      "path": "sysUseMod2.atsexpand.expected",
+      "sha256": "8030e49e1276bb0b1437d6e282a811563092ecd373fba03c946130f97d473321",
+      "role": "golden"
+    },
+    {
+      "path": "sysUseMod2Arrow.atsexpand.expected",
+      "sha256": "3e292030cf26b63e2d88461d7f71df824e2dee54b219b5e04e1a85866c378d7c",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-StateNameTest",
+      "resource": "normal",
+      "fixtures": [
+        "StateNameTest.bsv",
+        "sysStateNameTest.atsexpand.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StateNameTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StateNameTest.bsv",
+              "mode": "verilog",
+              "module": "sysStateNameTest",
+              "args": [
+                "-dATSexpand=%m.atsexpand"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "StateNameTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "StateNameTest.bsv"
+                ],
+                "outputs": [
+                  "StateNameTest.bo",
+                  "StateNameTest.bsv.bsc-vcomp-out",
+                  "sysStateNameTest.atsexpand",
+                  "sysStateNameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 103,
+                  "startLine": 2,
+                  "startColumn": 3,
+                  "endLine": 2,
+                  "endColumn": 85
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStateNameTest.atsexpand",
+              "expected": "sysStateNameTest.atsexpand.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStateNameTest.atsexpand",
+                  "sysStateNameTest.atsexpand.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 106,
+                  "endByte": 145,
+                  "startLine": 3,
+                  "startColumn": 3,
+                  "endLine": 3,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-StateNameTest2",
+      "resource": "normal",
+      "fixtures": [
+        "StateNameTest2.bsv",
+        "sysStateNameTest2.atsexpand.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StateNameTest2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StateNameTest2.bsv",
+              "mode": "verilog",
+              "module": "sysStateNameTest2",
+              "args": [
+                "-dATSexpand=%m.atsexpand"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "StateNameTest2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "StateNameTest2.bsv"
+                ],
+                "outputs": [
+                  "StateNameTest2.bo",
+                  "StateNameTest2.bsv.bsc-vcomp-out",
+                  "sysStateNameTest2.atsexpand",
+                  "sysStateNameTest2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 148,
+                  "endByte": 232,
+                  "startLine": 4,
+                  "startColumn": 3,
+                  "endLine": 4,
+                  "endColumn": 87
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStateNameTest2.atsexpand",
+              "expected": "sysStateNameTest2.atsexpand.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStateNameTest2.atsexpand",
+                  "sysStateNameTest2.atsexpand.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 235,
+                  "endByte": 275,
+                  "startLine": 5,
+                  "startColumn": 3,
+                  "endLine": 5,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-UseMod2",
+      "resource": "normal",
+      "fixtures": [
+        "UseMod2.bsv",
+        "sysUseMod2.atsexpand.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UseMod2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UseMod2.bsv",
+              "mode": "verilog",
+              "module": "sysUseMod2",
+              "args": [
+                "-dATSexpand=%m.atsexpand"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UseMod2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UseMod2.bsv"
+                ],
+                "outputs": [
+                  "UseMod2.bo",
+                  "UseMod2.bsv.bsc-vcomp-out",
+                  "sysUseMod2.atsexpand",
+                  "sysUseMod2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 350,
+                  "startLine": 7,
+                  "startColumn": 3,
+                  "endLine": 7,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUseMod2.atsexpand",
+              "expected": "sysUseMod2.atsexpand.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUseMod2.atsexpand",
+                  "sysUseMod2.atsexpand.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 353,
+                  "endByte": 386,
+                  "startLine": 8,
+                  "startColumn": 3,
+                  "endLine": 8,
+                  "endColumn": 36
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-UseMod2Arrow",
+      "resource": "normal",
+      "fixtures": [
+        "UseMod2Arrow.bsv",
+        "sysUseMod2Arrow.atsexpand.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-UseMod2Arrow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "UseMod2Arrow.bsv",
+              "mode": "verilog",
+              "module": "sysUseMod2Arrow",
+              "args": [
+                "-dATSexpand=%m.atsexpand"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "UseMod2Arrow.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "UseMod2Arrow.bsv"
+                ],
+                "outputs": [
+                  "UseMod2Arrow.bo",
+                  "UseMod2Arrow.bsv.bsc-vcomp-out",
+                  "sysUseMod2Arrow.atsexpand",
+                  "sysUseMod2Arrow.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 390,
+                  "endByte": 470,
+                  "startLine": 10,
+                  "startColumn": 3,
+                  "endLine": 10,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysUseMod2Arrow.atsexpand",
+              "expected": "sysUseMod2Arrow.atsexpand.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysUseMod2Arrow.atsexpand",
+                  "sysUseMod2Arrow.atsexpand.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 473,
+                  "endByte": 511,
+                  "startLine": 11,
+                  "startColumn": 3,
+                  "endLine": 11,
+                  "endColumn": 41
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

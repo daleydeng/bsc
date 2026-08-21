@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/forInWhile/forInWhile",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/forInWhile/forInWhile.exp",
+    "sha256": "ca0f83592edb6383f73825133ae76c9498bb72cf448cfae3616ce6eefabad597"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/forInWhile",
+  "fixtures": [
+    {
+      "path": "forInWhile.bsv",
+      "sha256": "e894d809b0f2f892d1b65df26c81bc83be4373d8ac1b4c0dc6915bb744f2ce8d",
+      "role": "source"
+    },
+    {
+      "path": "forInWhile.out.expected",
+      "sha256": "817110ca5f419deb21686a6fa9c629a1b1a3ac99177d6e7b3aba8ebd7085250f",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-forInWhile",
+      "resource": "heavy",
+      "fixtures": [
+        "forInWhile.bsv",
+        "forInWhile.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "forInWhile",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "forInWhile.bsv",
+              "mode": "shared_elaboration",
+              "module": "forInWhile",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.bsv"
+                ],
+                "outputs": [
+                  "forInWhile.ba",
+                  "forInWhile.bo",
+                  "forInWhile.bsv.bsc-vcomp-out",
+                  "forInWhile.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "forInWhile"
+              ],
+              "top": "forInWhile",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.v"
+                ],
+                "outputs": [
+                  "forInWhile.bsc-vcomp-out",
+                  "forInWhile.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "forInWhile",
+              "args": [],
+              "stdout": "forInWhile.v.out",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.vexe"
+                ],
+                "outputs": [
+                  "forInWhile.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "forInWhile.v.out",
+              "expected": "forInWhile.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.v.out",
+                  "forInWhile.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "forInWhile",
+              "args": [],
+              "stdout": "forInWhile.v-vcd.out",
+              "vcd": "forInWhile.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.vexe"
+                ],
+                "outputs": [
+                  "forInWhile.v-vcd.out",
+                  "forInWhile.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "forInWhile.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "forInWhile"
+              ],
+              "top": "forInWhile",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.ba"
+                ],
+                "outputs": [
+                  "forInWhile.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "forInWhile.cexe",
+                    "forInWhile.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "forInWhile",
+              "args": [],
+              "stdout": "forInWhile.c.out",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.cexe"
+                ],
+                "outputs": [
+                  "forInWhile.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "forInWhile.c.out",
+              "expected": "forInWhile.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.c.out",
+                  "forInWhile.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "forInWhile",
+              "args": [],
+              "stdout": "forInWhile.c-vcd.out",
+              "vcd": "forInWhile.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.cexe"
+                ],
+                "outputs": [
+                  "forInWhile.c-vcd.out",
+                  "forInWhile.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "forInWhile.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "forInWhile.c-vcd.out",
+              "expected": "forInWhile.c.out",
+              "artifacts": {
+                "inputs": [
+                  "forInWhile.c-vcd.out",
+                  "forInWhile.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 72,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

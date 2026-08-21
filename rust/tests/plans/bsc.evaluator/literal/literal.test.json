@@ -1,0 +1,1610 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/literal/literal",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/literal/literal.exp",
+    "sha256": "87f818d411326e81d0ba1cc020de84e95a4c82a59e7202ec8f808578d35b5880"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/literal",
+  "fixtures": [
+    {
+      "path": "ConcatTestFail.bsv",
+      "sha256": "dc482212bcd2692ffb589582a0eceb7e329426e231b5d92abe613aded3bd6206",
+      "role": "source"
+    },
+    {
+      "path": "ConcatTestOK.bsv",
+      "sha256": "3a1ef2ddf54c45f3b8642d57aba7c0a9ffed4fa9528d491f94a0199699577916",
+      "role": "source"
+    },
+    {
+      "path": "Invalid_Bit_Bin.bsv",
+      "sha256": "fbd35291e994640ee03e7b28d3b427aa602345b5a19abc4d55d3203eeb2965b7",
+      "role": "source"
+    },
+    {
+      "path": "Invalid_Bit_Hex.bsv",
+      "sha256": "06190c88c684eaa5d255f0795448cc118b5a29cde1495223425efdc6adddd91a",
+      "role": "source"
+    },
+    {
+      "path": "Invalid_Int_Oct.bsv",
+      "sha256": "acf4f8e5a6f86fcfd2bfefd68dd2092f44c34bd68fa3c51931d843b12812d620",
+      "role": "source"
+    },
+    {
+      "path": "Invalid_UInt_Dec.bsv",
+      "sha256": "0060433e35356c8651e7729967b33f589683bc0a369e1426473fdc03733be179",
+      "role": "source"
+    },
+    {
+      "path": "NegativeIntErr.bsv",
+      "sha256": "02f74358dacf18d43b53232519cc38e551dbcf85f848d2c73dc39bda22f62b74",
+      "role": "source"
+    },
+    {
+      "path": "NegativeIntOK.bsv",
+      "sha256": "d104fb7ffdc199bccc950bd45a44049e5d7eb1c6673d7af53de0b8c935c66a0e",
+      "role": "source"
+    },
+    {
+      "path": "NegativeUInt.bsv",
+      "sha256": "44eecef138d06809b116f98e29816b930a1cfad50b57fab3516ac8d58affa232",
+      "role": "source"
+    },
+    {
+      "path": "PositiveIntErr.bsv",
+      "sha256": "011fe96aeea3bb0348bf855bd01b7a332b48b6f8f10be64e0e5217636eaf28c2",
+      "role": "source"
+    },
+    {
+      "path": "PositiveIntOK.bsv",
+      "sha256": "4ee07544650892e68c834c62e12c305da6f990b717fcb22b29d0bdba025fe886",
+      "role": "source"
+    },
+    {
+      "path": "sysNegativeIntOK.out.expected",
+      "sha256": "de9bbd05406e527ecc571178bc138979edb39d38a83460992e4b6159a7c79858",
+      "role": "golden"
+    },
+    {
+      "path": "sysPositiveIntOK.out.expected",
+      "sha256": "4fd1c1e7f34efaf345555ee2b9a051c771682f1bf6d15634e622e07430cb40f6",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-NegativeUInt",
+      "resource": "normal",
+      "fixtures": [
+        "NegativeUInt.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-NegativeUInt",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "NegativeUInt.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "NegativeUInt.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "NegativeUInt.bsv"
+                ],
+                "outputs": [
+                  "NegativeUInt.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 49,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "NegativeUInt.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "NegativeUInt.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 49,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysNegativeIntOK",
+      "resource": "heavy",
+      "fixtures": [
+        "NegativeIntOK.bsv",
+        "sysNegativeIntOK.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysNegativeIntOK",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "NegativeIntOK.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysNegativeIntOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "NegativeIntOK.bsv"
+                ],
+                "outputs": [
+                  "NegativeIntOK.bo",
+                  "NegativeIntOK.bsv.bsc-vcomp-out",
+                  "sysNegativeIntOK.ba",
+                  "sysNegativeIntOK.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysNegativeIntOK"
+              ],
+              "top": "sysNegativeIntOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.v"
+                ],
+                "outputs": [
+                  "sysNegativeIntOK.bsc-vcomp-out",
+                  "sysNegativeIntOK.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNegativeIntOK",
+              "args": [],
+              "stdout": "sysNegativeIntOK.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.vexe"
+                ],
+                "outputs": [
+                  "sysNegativeIntOK.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNegativeIntOK.v.out",
+              "expected": "sysNegativeIntOK.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.v.out",
+                  "sysNegativeIntOK.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysNegativeIntOK",
+              "args": [],
+              "stdout": "sysNegativeIntOK.v-vcd.out",
+              "vcd": "sysNegativeIntOK.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.vexe"
+                ],
+                "outputs": [
+                  "sysNegativeIntOK.v-vcd.out",
+                  "sysNegativeIntOK.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysNegativeIntOK.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysNegativeIntOK"
+              ],
+              "top": "sysNegativeIntOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.ba"
+                ],
+                "outputs": [
+                  "sysNegativeIntOK.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysNegativeIntOK.cexe",
+                    "sysNegativeIntOK.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysNegativeIntOK",
+              "args": [],
+              "stdout": "sysNegativeIntOK.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.cexe"
+                ],
+                "outputs": [
+                  "sysNegativeIntOK.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNegativeIntOK.c.out",
+              "expected": "sysNegativeIntOK.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.c.out",
+                  "sysNegativeIntOK.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysNegativeIntOK",
+              "args": [],
+              "stdout": "sysNegativeIntOK.c-vcd.out",
+              "vcd": "sysNegativeIntOK.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.cexe"
+                ],
+                "outputs": [
+                  "sysNegativeIntOK.c-vcd.out",
+                  "sysNegativeIntOK.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysNegativeIntOK.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysNegativeIntOK.c-vcd.out",
+              "expected": "sysNegativeIntOK.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysNegativeIntOK.c-vcd.out",
+                  "sysNegativeIntOK.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 51,
+                  "endByte": 80,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-NegativeIntErr",
+      "resource": "normal",
+      "fixtures": [
+        "NegativeIntErr.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-NegativeIntErr",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "NegativeIntErr.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "NegativeIntErr.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "NegativeIntErr.bsv"
+                ],
+                "outputs": [
+                  "NegativeIntErr.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 132,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "NegativeIntErr.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "NegativeIntErr.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 81,
+                  "endByte": 132,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysPositiveIntOK",
+      "resource": "heavy",
+      "fixtures": [
+        "PositiveIntOK.bsv",
+        "sysPositiveIntOK.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysPositiveIntOK",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "PositiveIntOK.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysPositiveIntOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "PositiveIntOK.bsv"
+                ],
+                "outputs": [
+                  "PositiveIntOK.bo",
+                  "PositiveIntOK.bsv.bsc-vcomp-out",
+                  "sysPositiveIntOK.ba",
+                  "sysPositiveIntOK.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysPositiveIntOK"
+              ],
+              "top": "sysPositiveIntOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.v"
+                ],
+                "outputs": [
+                  "sysPositiveIntOK.bsc-vcomp-out",
+                  "sysPositiveIntOK.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysPositiveIntOK",
+              "args": [],
+              "stdout": "sysPositiveIntOK.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.vexe"
+                ],
+                "outputs": [
+                  "sysPositiveIntOK.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPositiveIntOK.v.out",
+              "expected": "sysPositiveIntOK.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.v.out",
+                  "sysPositiveIntOK.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysPositiveIntOK",
+              "args": [],
+              "stdout": "sysPositiveIntOK.v-vcd.out",
+              "vcd": "sysPositiveIntOK.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.vexe"
+                ],
+                "outputs": [
+                  "sysPositiveIntOK.v-vcd.out",
+                  "sysPositiveIntOK.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysPositiveIntOK.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysPositiveIntOK"
+              ],
+              "top": "sysPositiveIntOK",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.ba"
+                ],
+                "outputs": [
+                  "sysPositiveIntOK.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysPositiveIntOK.cexe",
+                    "sysPositiveIntOK.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysPositiveIntOK",
+              "args": [],
+              "stdout": "sysPositiveIntOK.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.cexe"
+                ],
+                "outputs": [
+                  "sysPositiveIntOK.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPositiveIntOK.c.out",
+              "expected": "sysPositiveIntOK.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.c.out",
+                  "sysPositiveIntOK.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysPositiveIntOK",
+              "args": [],
+              "stdout": "sysPositiveIntOK.c-vcd.out",
+              "vcd": "sysPositiveIntOK.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.cexe"
+                ],
+                "outputs": [
+                  "sysPositiveIntOK.c-vcd.out",
+                  "sysPositiveIntOK.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysPositiveIntOK.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPositiveIntOK.c-vcd.out",
+              "expected": "sysPositiveIntOK.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPositiveIntOK.c-vcd.out",
+                  "sysPositiveIntOK.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 163,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-PositiveIntErr",
+      "resource": "normal",
+      "fixtures": [
+        "PositiveIntErr.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PositiveIntErr",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PositiveIntErr.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "PositiveIntErr.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PositiveIntErr.bsv"
+                ],
+                "outputs": [
+                  "PositiveIntErr.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 215,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "PositiveIntErr.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "PositiveIntErr.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 215,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-ConcatTestOK",
+      "resource": "normal",
+      "fixtures": [
+        "ConcatTestOK.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ConcatTestOK",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ConcatTestOK.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ConcatTestOK.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ConcatTestOK.bsv"
+                ],
+                "outputs": [
+                  "ConcatTestOK.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 217,
+                  "endByte": 266,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ConcatTestOK.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0035",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ConcatTestOK.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 217,
+                  "endByte": 266,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-9-ConcatTestFail",
+      "resource": "normal",
+      "fixtures": [
+        "ConcatTestFail.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ConcatTestFail",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ConcatTestFail.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ConcatTestFail.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ConcatTestFail.bsv"
+                ],
+                "outputs": [
+                  "ConcatTestFail.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 319,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ConcatTestFail.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0035",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ConcatTestFail.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 319,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-10-Invalid_Bit_Bin",
+      "resource": "normal",
+      "fixtures": [
+        "Invalid_Bit_Bin.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Invalid_Bit_Bin",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Invalid_Bit_Bin.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Invalid_Bit_Bin.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Bit_Bin.bsv"
+                ],
+                "outputs": [
+                  "Invalid_Bit_Bin.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 457,
+                  "endByte": 509,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Invalid_Bit_Bin.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Bit_Bin.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 457,
+                  "endByte": 509,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Invalid_Bit_Bin.bsv.bsc-vcomp-out",
+              "text": "'b10101",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Bit_Bin.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 510,
+                  "endByte": 585,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-11-Invalid_Bit_Hex",
+      "resource": "normal",
+      "fixtures": [
+        "Invalid_Bit_Hex.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Invalid_Bit_Hex",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Invalid_Bit_Hex.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Invalid_Bit_Hex.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Bit_Hex.bsv"
+                ],
+                "outputs": [
+                  "Invalid_Bit_Hex.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 587,
+                  "endByte": 639,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Invalid_Bit_Hex.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Bit_Hex.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 587,
+                  "endByte": 639,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Invalid_Bit_Hex.bsv.bsc-vcomp-out",
+              "text": "'hFF",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Bit_Hex.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 640,
+                  "endByte": 712,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-12-Invalid_Int_Oct",
+      "resource": "normal",
+      "fixtures": [
+        "Invalid_Int_Oct.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Invalid_Int_Oct",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Invalid_Int_Oct.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Invalid_Int_Oct.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Int_Oct.bsv"
+                ],
+                "outputs": [
+                  "Invalid_Int_Oct.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 714,
+                  "endByte": 766,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Invalid_Int_Oct.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Int_Oct.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 714,
+                  "endByte": 766,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Invalid_Int_Oct.bsv.bsc-vcomp-out",
+              "text": "'o777",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_Int_Oct.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 767,
+                  "endByte": 840,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 74
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-13-Invalid_UInt_Dec",
+      "resource": "normal",
+      "fixtures": [
+        "Invalid_UInt_Dec.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Invalid_UInt_Dec",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Invalid_UInt_Dec.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Invalid_UInt_Dec.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Invalid_UInt_Dec.bsv"
+                ],
+                "outputs": [
+                  "Invalid_UInt_Dec.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 842,
+                  "endByte": 895,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Invalid_UInt_Dec.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "T0051",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_UInt_Dec.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 842,
+                  "endByte": 895,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "Invalid_UInt_Dec.bsv.bsc-vcomp-out",
+              "text": "256",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Invalid_UInt_Dec.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 896,
+                  "endByte": 968,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

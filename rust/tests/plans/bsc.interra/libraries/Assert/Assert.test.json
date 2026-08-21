@@ -1,0 +1,694 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/libraries/Assert/Assert",
+  "origin": {
+    "path": "testsuite/bsc.interra/libraries/Assert/Assert.exp",
+    "sha256": "d1397073fd3caa61551f91ebf181ded32fc43675c4722693945934eb50cbf4fb"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/libraries/Assert",
+  "fixtures": [
+    {
+      "path": "ContinuousAssert.bsv",
+      "sha256": "d3779088649470accb16bbd117bb58b57878b2ac1bd6eee0c78d90ddbd83d5b4",
+      "role": "source"
+    },
+    {
+      "path": "DynamicAssert.bsv",
+      "sha256": "14c612af7440a8237b9813d705d968afbc91a2ea582a42e19d55fb4f97999243",
+      "role": "source"
+    },
+    {
+      "path": "StaticAssert.bsv",
+      "sha256": "9f0c75b0e1e0629fbdee766ab5779c2421f2a395ca841c64f52dfd0cdd01ef0c",
+      "role": "source"
+    },
+    {
+      "path": "StaticAssert.bsv.bsc-ccomp-out.expected",
+      "sha256": "cafad01b4c6627931c4879cc804411ad2b8f20130c5080a27206c7e35671d9c8",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_ContinuousAssert.out.expected",
+      "sha256": "a92441170d594f9302793d8239890ee7a5bde4b28c9cf29f4babfab7daebed1e",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_DynamicAssert.out.expected",
+      "sha256": "c27adc4595f0db402019cde046ebd80e982dd91c9eb13f3820e9797f203c9fed",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-DynamicAssert",
+      "resource": "heavy",
+      "fixtures": [
+        "DynamicAssert.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DynamicAssert",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DynamicAssert.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_DynamicAssert",
+              "args": [
+                "-check-assert",
+                "-system-verilog-tasks"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DynamicAssert.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DynamicAssert.bsv"
+                ],
+                "outputs": [
+                  "DynamicAssert.bo",
+                  "DynamicAssert.bsv.bsc-vcomp-out",
+                  "mkTestbench_DynamicAssert.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 399,
+                  "endByte": 501,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_DynamicAssert.v"
+              ],
+              "top": "mkTestbench_DynamicAssert",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_DynamicAssert.v"
+                ],
+                "outputs": [
+                  "mkTestbench_DynamicAssert.bsc-vcomp-out",
+                  "mkTestbench_DynamicAssert.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 502,
+                  "endByte": 573,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_DynamicAssert",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_DynamicAssert.out",
+              "expectedExits": {
+                "codes": [
+                  1
+                ]
+              },
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_DynamicAssert.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_DynamicAssert.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 574,
+                  "endByte": 631,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-ContinuousAssert",
+      "resource": "heavy",
+      "fixtures": [
+        "ContinuousAssert.bsv"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ContinuousAssert",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ContinuousAssert.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_ContinuousAssert",
+              "args": [
+                "-check-assert",
+                "-system-verilog-tasks"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ContinuousAssert.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ContinuousAssert.bsv"
+                ],
+                "outputs": [
+                  "ContinuousAssert.bo",
+                  "ContinuousAssert.bsv.bsc-vcomp-out",
+                  "mkTestbench_ContinuousAssert.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1058,
+                  "endByte": 1166,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 109
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_ContinuousAssert.v"
+              ],
+              "top": "mkTestbench_ContinuousAssert",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_ContinuousAssert.v"
+                ],
+                "outputs": [
+                  "mkTestbench_ContinuousAssert.bsc-vcomp-out",
+                  "mkTestbench_ContinuousAssert.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1167,
+                  "endByte": 1244,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_ContinuousAssert",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_ContinuousAssert.out",
+              "expectedExits": {
+                "codes": [
+                  1
+                ]
+              },
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_ContinuousAssert.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_ContinuousAssert.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1245,
+                  "endByte": 1305,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 61
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-StaticAssert",
+      "resource": "normal",
+      "fixtures": [
+        "StaticAssert.bsv",
+        "StaticAssert.bsv.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StaticAssert",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StaticAssert.bsv",
+              "mode": "bluesim_object",
+              "module": "mkTestbench_StaticAssert",
+              "args": [
+                "-check-assert"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "StaticAssert.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "StaticAssert.bsv"
+                ],
+                "outputs": [
+                  "StaticAssert.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1328,
+                  "endByte": 1403,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "StaticAssert.bsv.bsc-ccomp-out",
+              "expected": "StaticAssert.bsv.bsc-ccomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "StaticAssert.bsv.bsc-ccomp-out",
+                  "StaticAssert.bsv.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1404,
+                  "endByte": 1449,
+                  "startLine": 31,
+                  "startColumn": 1,
+                  "endLine": 31,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkTestbench_DynamicAssert",
+      "resource": "heavy",
+      "fixtures": [
+        "DynamicAssert.bsv",
+        "mkTestbench_DynamicAssert.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_DynamicAssert",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DynamicAssert.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_DynamicAssert",
+              "args": [
+                "-check-assert"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DynamicAssert.bsv"
+                ],
+                "outputs": [
+                  "DynamicAssert.bo",
+                  "DynamicAssert.bsv.bsc-ccomp-out",
+                  "mkTestbench_DynamicAssert.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_DynamicAssert"
+              ],
+              "top": "mkTestbench_DynamicAssert",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_DynamicAssert.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_DynamicAssert.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_DynamicAssert.cexe",
+                    "mkTestbench_DynamicAssert.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 97,
+                  "endByte": 170,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 74
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_DynamicAssert",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_DynamicAssert.out",
+              "expectedExits": {
+                "codes": [
+                  1
+                ]
+              },
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_DynamicAssert.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_DynamicAssert.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 276,
+                  "endByte": 332,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_DynamicAssert.out",
+              "expected": "mkTestbench_DynamicAssert.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_DynamicAssert.out",
+                  "mkTestbench_DynamicAssert.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 333,
+                  "endByte": 377,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-mkTestbench_ContinuousAssert",
+      "resource": "heavy",
+      "fixtures": [
+        "ContinuousAssert.bsv",
+        "mkTestbench_ContinuousAssert.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_ContinuousAssert",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ContinuousAssert.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_ContinuousAssert",
+              "args": [
+                "-check-assert"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "ContinuousAssert.bsv"
+                ],
+                "outputs": [
+                  "ContinuousAssert.bo",
+                  "ContinuousAssert.bsv.bsc-ccomp-out",
+                  "mkTestbench_ContinuousAssert.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 654,
+                  "endByte": 737,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_ContinuousAssert"
+              ],
+              "top": "mkTestbench_ContinuousAssert",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_ContinuousAssert.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_ContinuousAssert.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_ContinuousAssert.cexe",
+                    "mkTestbench_ContinuousAssert.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 738,
+                  "endByte": 817,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 80
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_ContinuousAssert",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_ContinuousAssert.out",
+              "expectedExits": {
+                "codes": [
+                  1
+                ]
+              },
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_ContinuousAssert.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_ContinuousAssert.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 929,
+                  "endByte": 988,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_ContinuousAssert.out",
+              "expected": "mkTestbench_ContinuousAssert.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_ContinuousAssert.out",
+                  "mkTestbench_ContinuousAssert.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 989,
+                  "endByte": 1036,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

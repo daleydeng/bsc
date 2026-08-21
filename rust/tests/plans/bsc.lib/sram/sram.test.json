@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/sram/sram",
+  "origin": {
+    "path": "testsuite/bsc.lib/sram/sram.exp",
+    "sha256": "87fee7df1b127ef6b6c168cbdde8f1a1429e1cdcfc6469bdae55b2205922594f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/sram",
+  "fixtures": [
+    {
+      "path": "Throughput.bs",
+      "sha256": "613f42764e016de06b9e2bfe12b96e54d1e3e18363404e19b7c4b5343c47f2ec",
+      "role": "source"
+    },
+    {
+      "path": "throughput.out.expected",
+      "sha256": "81590074622e4c726ff9c36a1964ffb3c6dbff3ec788267ce880e8bb97942ef0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-throughput",
+      "resource": "heavy",
+      "fixtures": [
+        "Throughput.bs",
+        "throughput.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-throughput",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Throughput.bs",
+              "mode": "bluesim",
+              "module": "throughput",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Throughput.bs"
+                ],
+                "outputs": [
+                  "Throughput.bo",
+                  "Throughput.bs.bsc-ccomp-out",
+                  "throughput.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 48,
+                  "endByte": 96,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "throughput"
+              ],
+              "top": "throughput",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "throughput.ba"
+                ],
+                "outputs": [
+                  "throughput.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "throughput.cexe",
+                    "throughput.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 97,
+                  "endByte": 138,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "throughput",
+              "args": [],
+              "stdout": "throughput.out",
+              "artifacts": {
+                "inputs": [
+                  "throughput.cexe"
+                ],
+                "outputs": [
+                  "throughput.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 166,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "throughput.out",
+              "expected": "throughput.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "throughput.out",
+                  "throughput.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 167,
+                  "endByte": 198,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Printf/Printf",
+  "origin": {
+    "path": "testsuite/bsc.lib/Printf/Printf.exp",
+    "sha256": "7b394ca1987939327f02af5cc7a86a97e4941a644a3ebd6503c45ae4e5230aa6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Printf",
+  "fixtures": [
+    {
+      "path": "PrintfTest.bsv",
+      "sha256": "72247c86d1f21669bb763af7808cbe82976d01c9f233b81170a2e5ffc96c031f",
+      "role": "source"
+    },
+    {
+      "path": "sysPrintfTest.out.expected",
+      "sha256": "2cd4d3e0b1b371302427486feadfb14aa2b3d767a1dfba7fb0b72ee181ed27d7",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysPrintfTest",
+      "resource": "heavy",
+      "fixtures": [
+        "PrintfTest.bsv",
+        "sysPrintfTest.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysPrintfTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "PrintfTest.bsv",
+              "mode": "verilog",
+              "module": "sysPrintfTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "PrintfTest.bsv"
+                ],
+                "outputs": [
+                  "PrintfTest.bo",
+                  "PrintfTest.bsv.bsc-vcomp-out",
+                  "sysPrintfTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 168,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysPrintfTest"
+              ],
+              "top": "sysPrintfTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysPrintfTest.v"
+                ],
+                "outputs": [
+                  "sysPrintfTest.bsc-vcomp-out",
+                  "sysPrintfTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 168,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysPrintfTest",
+              "args": [],
+              "stdout": "sysPrintfTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintfTest.vexe"
+                ],
+                "outputs": [
+                  "sysPrintfTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 168,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysPrintfTest.v.out",
+              "expected": "sysPrintfTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintfTest.v.out",
+                  "sysPrintfTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 168,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysPrintfTest",
+              "args": [],
+              "stdout": "sysPrintfTest.v-vcd.out",
+              "vcd": "sysPrintfTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintfTest.vexe"
+                ],
+                "outputs": [
+                  "sysPrintfTest.v-vcd.out",
+                  "sysPrintfTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 168,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysPrintfTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysPrintfTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 168,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

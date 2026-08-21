@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.if/split-execution/TurboFIFO/attribute/execute",
+  "origin": {
+    "path": "testsuite/bsc.if/split-execution/TurboFIFO/attribute/execute.exp",
+    "sha256": "d597abf9bd86235b10bff576bc2978ece8b80559b62b7c4acad8c1a4b84d6eee"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.if/split-execution/TurboFIFO/attribute",
+  "fixtures": [
+    {
+      "path": "TurboFIFO.bsv",
+      "sha256": "25048b0d5f68091c7076bcebd8372fb4ade69c439d797c40f77b7784225c7d47",
+      "role": "source"
+    },
+    {
+      "path": "TurboFIFOTest.bsv",
+      "sha256": "76714bb2d3e96501074ab8df5324b369fb31046fae15674d13516c8e4ace3763",
+      "role": "source"
+    },
+    {
+      "path": "sysTurboFIFOTest.out.expected",
+      "sha256": "ee89b54f5194898f3c434d21dbe280f4157377ba87f70a50ed9556aa487be6e8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTurboFIFOTest",
+      "resource": "heavy",
+      "fixtures": [
+        "TurboFIFO.bsv",
+        "TurboFIFOTest.bsv",
+        "sysTurboFIFOTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTurboFIFOTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TurboFIFOTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTurboFIFOTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TurboFIFOTest.bsv"
+                ],
+                "outputs": [
+                  "TurboFIFOTest.bo",
+                  "TurboFIFOTest.bsv.bsc-vcomp-out",
+                  "sysTurboFIFOTest.ba",
+                  "sysTurboFIFOTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTurboFIFOTest"
+              ],
+              "top": "sysTurboFIFOTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.v"
+                ],
+                "outputs": [
+                  "sysTurboFIFOTest.bsc-vcomp-out",
+                  "sysTurboFIFOTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTurboFIFOTest",
+              "args": [],
+              "stdout": "sysTurboFIFOTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.vexe"
+                ],
+                "outputs": [
+                  "sysTurboFIFOTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTurboFIFOTest.v.out",
+              "expected": "sysTurboFIFOTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.v.out",
+                  "sysTurboFIFOTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTurboFIFOTest",
+              "args": [],
+              "stdout": "sysTurboFIFOTest.v-vcd.out",
+              "vcd": "sysTurboFIFOTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.vexe"
+                ],
+                "outputs": [
+                  "sysTurboFIFOTest.v-vcd.out",
+                  "sysTurboFIFOTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTurboFIFOTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTurboFIFOTest"
+              ],
+              "top": "sysTurboFIFOTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.ba"
+                ],
+                "outputs": [
+                  "sysTurboFIFOTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTurboFIFOTest.cexe",
+                    "sysTurboFIFOTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTurboFIFOTest",
+              "args": [],
+              "stdout": "sysTurboFIFOTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.cexe"
+                ],
+                "outputs": [
+                  "sysTurboFIFOTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTurboFIFOTest.c.out",
+              "expected": "sysTurboFIFOTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.c.out",
+                  "sysTurboFIFOTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTurboFIFOTest",
+              "args": [],
+              "stdout": "sysTurboFIFOTest.c-vcd.out",
+              "vcd": "sysTurboFIFOTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.cexe"
+                ],
+                "outputs": [
+                  "sysTurboFIFOTest.c-vcd.out",
+                  "sysTurboFIFOTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTurboFIFOTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTurboFIFOTest.c-vcd.out",
+              "expected": "sysTurboFIFOTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTurboFIFOTest.c-vcd.out",
+                  "sysTurboFIFOTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

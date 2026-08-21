@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/ERTSOutOfMemory/ERTSOutOfMemory",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/ERTSOutOfMemory/ERTSOutOfMemory.exp",
+    "sha256": "9c8a20006ef67627724cc1bbbb1fe54615523be796e12a66b837a2001a3a059d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/ERTSOutOfMemory",
+  "fixtures": [
+    {
+      "path": "ERTSOutOfMemory1.bs",
+      "sha256": "594c37b810745b30bbb4727a99b57b4255aca366b16b9b149aa14ab81a08f7d4",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-ERTSOutOfMemory1",
+      "resource": "normal",
+      "fixtures": [
+        "ERTSOutOfMemory1.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ERTSOutOfMemory1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ERTSOutOfMemory1.bs",
+              "mode": "verilog",
+              "module": "mkERTSOutOfMemory1",
+              "args": [
+                "+RTS",
+                "-A128M",
+                "-M128M",
+                "-H128M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ERTSOutOfMemory1.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ERTSOutOfMemory1.bs"
+                ],
+                "outputs": [
+                  "ERTSOutOfMemory1.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 209,
+                  "startLine": 4,
+                  "startColumn": 5,
+                  "endLine": 4,
+                  "endColumn": 97
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "ERTSOutOfMemory1.bs.bsc-vcomp-out",
+              "text": "Heap exhausted",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ERTSOutOfMemory1.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 214,
+                  "endByte": 281,
+                  "startLine": 5,
+                  "startColumn": 5,
+                  "endLine": 5,
+                  "endColumn": 72
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/prims/isancestor/isancestor",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/prims/isancestor/isancestor.exp",
+    "sha256": "9f80c5ceacd67559054a0d5d4db52e12b4c9fa61571e9165d7b3122d6a91874c"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/prims/isancestor",
+  "fixtures": [
+    {
+      "path": "IsAncestor.bsv",
+      "sha256": "693e3cec748366d9de56a3860202bf4d7cec4e2529ff0856d12f9122f5824028",
+      "role": "source"
+    },
+    {
+      "path": "sysIsAncestor.out.expected",
+      "sha256": "25f3c8d3cb7d77bab2e01473009dd6f7f140f3d3d512896dd58688cd235b445d",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysIsAncestor",
+      "resource": "heavy",
+      "fixtures": [
+        "IsAncestor.bsv",
+        "sysIsAncestor.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysIsAncestor",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "IsAncestor.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysIsAncestor",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "IsAncestor.bsv"
+                ],
+                "outputs": [
+                  "IsAncestor.bo",
+                  "IsAncestor.bsv.bsc-vcomp-out",
+                  "sysIsAncestor.ba",
+                  "sysIsAncestor.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysIsAncestor"
+              ],
+              "top": "sysIsAncestor",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.v"
+                ],
+                "outputs": [
+                  "sysIsAncestor.bsc-vcomp-out",
+                  "sysIsAncestor.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIsAncestor",
+              "args": [],
+              "stdout": "sysIsAncestor.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.vexe"
+                ],
+                "outputs": [
+                  "sysIsAncestor.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIsAncestor.v.out",
+              "expected": "sysIsAncestor.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.v.out",
+                  "sysIsAncestor.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysIsAncestor",
+              "args": [],
+              "stdout": "sysIsAncestor.v-vcd.out",
+              "vcd": "sysIsAncestor.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.vexe"
+                ],
+                "outputs": [
+                  "sysIsAncestor.v-vcd.out",
+                  "sysIsAncestor.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysIsAncestor.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysIsAncestor"
+              ],
+              "top": "sysIsAncestor",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.ba"
+                ],
+                "outputs": [
+                  "sysIsAncestor.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysIsAncestor.cexe",
+                    "sysIsAncestor.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIsAncestor",
+              "args": [],
+              "stdout": "sysIsAncestor.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.cexe"
+                ],
+                "outputs": [
+                  "sysIsAncestor.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIsAncestor.c.out",
+              "expected": "sysIsAncestor.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.c.out",
+                  "sysIsAncestor.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysIsAncestor",
+              "args": [],
+              "stdout": "sysIsAncestor.c-vcd.out",
+              "vcd": "sysIsAncestor.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.cexe"
+                ],
+                "outputs": [
+                  "sysIsAncestor.c-vcd.out",
+                  "sysIsAncestor.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysIsAncestor.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysIsAncestor.c-vcd.out",
+              "expected": "sysIsAncestor.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysIsAncestor.c-vcd.out",
+                  "sysIsAncestor.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 58,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

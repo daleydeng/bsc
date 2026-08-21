@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluetcl/targeted/type/type",
+  "origin": {
+    "path": "testsuite/bsc.bluetcl/targeted/type/type.exp",
+    "sha256": "69e3ff92868d986ee7a39f25dd2f229d4d132adedad20453b5c2f606681223d1"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluetcl/targeted/type",
+  "fixtures": [
+    {
+      "path": "PolyField.bsv",
+      "sha256": "25f5f4373c89f6d8b38fd8a612195a287bdbfe36b8d99df906abcf78c43a9f82",
+      "role": "source"
+    },
+    {
+      "path": "polyfield.tcl",
+      "sha256": "3c4bda9d516e11f77cbb89cdb0ee7390423e122d9fe5292a1f217152f2f39180",
+      "role": "script"
+    },
+    {
+      "path": "polyfield.tcl.bluetcl-bh-out.expected",
+      "sha256": "599db27469a185bb984616567ddba53cf058f44c3f124cbd2663d3984d8375d2",
+      "role": "golden"
+    },
+    {
+      "path": "polyfield.tcl.bluetcl-out.expected",
+      "sha256": "db1ba2a97397a845afd19ee3e21c92b603f4515c26bbd0e0bd57332a9f8fd62e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bsc-compile-bluetcl",
+      "resource": "normal",
+      "fixtures": [
+        "PolyField.bsv",
+        "polyfield.tcl",
+        "polyfield.tcl.bluetcl-bh-out.expected",
+        "polyfield.tcl.bluetcl-out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "bluetcl"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-bsc-compile-bluetcl",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PolyField.bsv",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "PolyField.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "PolyField.bsv"
+                ],
+                "outputs": [
+                  "PolyField.bsv.bsc-out",
+                  "PolyField.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 131,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "polyfield.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "PolyField.bo"
+              ],
+              "stdout": "polyfield.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "polyfield.tcl",
+                  "PolyField.bo"
+                ],
+                "outputs": [
+                  "polyfield.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 170,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "polyfield.tcl.bluetcl-out",
+              "expected": "polyfield.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "polyfield.tcl.bluetcl-out",
+                  "polyfield.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 170,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "polyfield.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "PolyField.bo"
+              ],
+              "stdout": "polyfield.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "polyfield.tcl",
+                  "PolyField.bo"
+                ],
+                "outputs": [
+                  "polyfield.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 170,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "polyfield.tcl.bluetcl-bh-out",
+              "expected": "polyfield.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "polyfield.tcl.bluetcl-bh-out",
+                  "polyfield.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 170,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.driver/mult_errors/mult_errors",
+  "origin": {
+    "path": "testsuite/bsc.driver/mult_errors/mult_errors.exp",
+    "sha256": "e818d46b91c809776c567c07555a9a21d810a0ec3549f4daf8e62f1ec1a2b446"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.driver/mult_errors",
+  "fixtures": [
+    {
+      "path": "MultErrors1.bsv",
+      "sha256": "fb7fac274a98b3cb66ab2d55cedb1122d05271399cf076700356b810117f45b5",
+      "role": "source"
+    },
+    {
+      "path": "PoisonWarning.bsv",
+      "sha256": "14b3d9e5fad4c8fad5e0ce7009dd542977fd369b0f593c0174938bb90b2d0baf",
+      "role": "source"
+    },
+    {
+      "path": "PoisonedDef.bs",
+      "sha256": "29fa52cb57e2baa08dcb7e0e9a850838415ecf6ec9576d2cfe9ec72c4c5b4ffb",
+      "role": "source"
+    },
+    {
+      "path": "PoisonedDef.bs.bsc-ccomp-out.expected",
+      "sha256": "1a5df270f7b43d7e6a3947890a28a77c049d77b264e1f46878f4edb825616ead",
+      "role": "golden"
+    },
+    {
+      "path": "WrappedDefErr.bsv",
+      "sha256": "4e7667d2eb1d3218cfb169406bbcdaa411d9ea6755c8dae01e568f23e6bfb880",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-PoisonedDef",
+      "resource": "normal",
+      "fixtures": [
+        "PoisonedDef.bs",
+        "PoisonedDef.bs.bsc-ccomp-out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PoisonedDef",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PoisonedDef.bs",
+              "mode": "bluesim_object",
+              "args": [
+                "-continue-after-errors"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "PoisonedDef.bs.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "PoisonedDef.bs"
+                ],
+                "outputs": [
+                  "PoisonedDef.bs.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 93,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "PoisonedDef.bs.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0087",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "PoisonedDef.bs.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 93,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 75
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "PoisonedDef.bs.bsc-ccomp-out",
+              "expected": "PoisonedDef.bs.bsc-ccomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "PoisonedDef.bs.bsc-ccomp-out",
+                  "PoisonedDef.bs.bsc-ccomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 115,
+                  "endByte": 156,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-chain-2-MultErrors1",
+      "resource": "normal",
+      "fixtures": [
+        "MultErrors1.bsv",
+        "PoisonWarning.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MultErrors1",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MultErrors1.bsv",
+              "mode": "bluesim_object",
+              "args": [
+                "-continue-after-errors"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MultErrors1.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "MultErrors1.bsv"
+                ],
+                "outputs": [
+                  "MultErrors1.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 200,
+                  "endByte": 275,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultErrors1.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "S0015",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultErrors1.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 200,
+                  "endByte": 275,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 76
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultErrors1.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0047",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultErrors1.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 276,
+                  "endByte": 326,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MultErrors1.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0087",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MultErrors1.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 327,
+                  "endByte": 377,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "compile-PoisonWarning",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PoisonWarning.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "PoisonWarning.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "PoisonWarning.bsv"
+                ],
+                "outputs": [
+                  "PoisonWarning.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 553,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "PoisonWarning.bsv.bsc-out",
+              "kind": "error",
+              "code": "G0088",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "PoisonWarning.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 511,
+                  "endByte": 553,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "PoisonWarning.bsv.bsc-out",
+              "destination": "PoisonWarning.bsv.error.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "PoisonWarning.bsv.bsc-out"
+                ],
+                "outputs": [
+                  "PoisonWarning.bsv.error.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 554,
+                  "endByte": 616,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-PoisonWarning",
+      "resource": "normal",
+      "fixtures": [
+        "MultErrors1.bsv",
+        "PoisonWarning.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-PoisonWarning",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "PoisonWarning.bsv",
+              "mode": "frontend",
+              "args": [
+                "-continue-after-errors"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "PoisonWarning.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "PoisonWarning.bsv"
+                ],
+                "outputs": [
+                  "PoisonWarning.bsv.bsc-out",
+                  "PoisonWarning.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 617,
+                  "endByte": 686,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 70
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "PoisonWarning.bsv.bsc-out",
+              "kind": "warning",
+              "code": "G0088",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "PoisonWarning.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 617,
+                  "endByte": 686,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 70
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-WrappedDefErr",
+      "resource": "normal",
+      "fixtures": [
+        "WrappedDefErr.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-WrappedDefErr",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "WrappedDefErr.bsv",
+              "mode": "bluesim_object",
+              "args": [
+                "-continue-after-errors"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "WrappedDefErr.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "WrappedDefErr.bsv"
+                ],
+                "outputs": [
+                  "WrappedDefErr.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 710,
+                  "endByte": 787,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "WrappedDefErr.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "T0016",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "WrappedDefErr.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 710,
+                  "endByte": 787,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "WrappedDefErr.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0087",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "WrappedDefErr.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 809,
+                  "endByte": 861,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

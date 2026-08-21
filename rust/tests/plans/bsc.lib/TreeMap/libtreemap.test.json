@@ -1,0 +1,1494 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/TreeMap/libtreemap",
+  "origin": {
+    "path": "testsuite/bsc.lib/TreeMap/libtreemap.exp",
+    "sha256": "9c973dcc7da71c178c5ed0e834f706e24b11478b138beb531f5c0f3a7feda113"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/TreeMap",
+  "fixtures": [
+    {
+      "path": "TreeMapInsertWith.bsv",
+      "sha256": "29fa48062394bfee4d2c65d669804d78eaefa329b4be40d064c5e0b462543524",
+      "role": "source"
+    },
+    {
+      "path": "TreeMapLookup.bsv",
+      "sha256": "926f71dc90d35e61f0800f087fcbcdf33ca9263f8560664c2fb157fa6847a16f",
+      "role": "source"
+    },
+    {
+      "path": "TreeMapMember.bsv",
+      "sha256": "05db588a7e88b8fa42bc0a809e28f9c0f089e9386f94ac7d1a76cdb30b79a747",
+      "role": "source"
+    },
+    {
+      "path": "TreeMapOrder.bsv",
+      "sha256": "540fa730b4610573e7d4e7a311bd4960ec365834d527e7cd81dc5cdb3f426d1e",
+      "role": "source"
+    },
+    {
+      "path": "sysTreeMapInsertWith.out.expected",
+      "sha256": "6dc100ead71aa4bbee8171c7b85972f62dd66db595c0b1ccdffcf1a2e82e3b73",
+      "role": "golden"
+    },
+    {
+      "path": "sysTreeMapLookup.out.expected",
+      "sha256": "728d31968a185d477268f1f63b3944a723444138dcfd50a58d37c36c6e3f00a5",
+      "role": "golden"
+    },
+    {
+      "path": "sysTreeMapMember.out.expected",
+      "sha256": "5c02dfcf196f566b1773aa6b9c6fd4d366211d78041425e416e88a04f6753e49",
+      "role": "golden"
+    },
+    {
+      "path": "sysTreeMapOrder.out.expected",
+      "sha256": "0c9a7132e664e79bcfc4a533c62b4e8f90d8573b35e2da08def754becc7ac235",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTreeMapLookup",
+      "resource": "heavy",
+      "fixtures": [
+        "TreeMapLookup.bsv",
+        "sysTreeMapLookup.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTreeMapLookup",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TreeMapLookup.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTreeMapLookup",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TreeMapLookup.bsv"
+                ],
+                "outputs": [
+                  "TreeMapLookup.bo",
+                  "TreeMapLookup.bsv.bsc-vcomp-out",
+                  "sysTreeMapLookup.ba",
+                  "sysTreeMapLookup.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTreeMapLookup"
+              ],
+              "top": "sysTreeMapLookup",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.v"
+                ],
+                "outputs": [
+                  "sysTreeMapLookup.bsc-vcomp-out",
+                  "sysTreeMapLookup.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapLookup",
+              "args": [],
+              "stdout": "sysTreeMapLookup.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapLookup.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapLookup.v.out",
+              "expected": "sysTreeMapLookup.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.v.out",
+                  "sysTreeMapLookup.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapLookup",
+              "args": [],
+              "stdout": "sysTreeMapLookup.v-vcd.out",
+              "vcd": "sysTreeMapLookup.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapLookup.v-vcd.out",
+                  "sysTreeMapLookup.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTreeMapLookup.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTreeMapLookup"
+              ],
+              "top": "sysTreeMapLookup",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.ba"
+                ],
+                "outputs": [
+                  "sysTreeMapLookup.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTreeMapLookup.cexe",
+                    "sysTreeMapLookup.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapLookup",
+              "args": [],
+              "stdout": "sysTreeMapLookup.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapLookup.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapLookup.c.out",
+              "expected": "sysTreeMapLookup.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.c.out",
+                  "sysTreeMapLookup.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapLookup",
+              "args": [],
+              "stdout": "sysTreeMapLookup.c-vcd.out",
+              "vcd": "sysTreeMapLookup.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapLookup.c-vcd.out",
+                  "sysTreeMapLookup.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTreeMapLookup.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapLookup.c-vcd.out",
+              "expected": "sysTreeMapLookup.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapLookup.c-vcd.out",
+                  "sysTreeMapLookup.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTreeMapMember",
+      "resource": "heavy",
+      "fixtures": [
+        "TreeMapMember.bsv",
+        "sysTreeMapMember.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTreeMapMember",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TreeMapMember.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTreeMapMember",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TreeMapMember.bsv"
+                ],
+                "outputs": [
+                  "TreeMapMember.bo",
+                  "TreeMapMember.bsv.bsc-vcomp-out",
+                  "sysTreeMapMember.ba",
+                  "sysTreeMapMember.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTreeMapMember"
+              ],
+              "top": "sysTreeMapMember",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.v"
+                ],
+                "outputs": [
+                  "sysTreeMapMember.bsc-vcomp-out",
+                  "sysTreeMapMember.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapMember",
+              "args": [],
+              "stdout": "sysTreeMapMember.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapMember.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapMember.v.out",
+              "expected": "sysTreeMapMember.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.v.out",
+                  "sysTreeMapMember.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapMember",
+              "args": [],
+              "stdout": "sysTreeMapMember.v-vcd.out",
+              "vcd": "sysTreeMapMember.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapMember.v-vcd.out",
+                  "sysTreeMapMember.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTreeMapMember.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTreeMapMember"
+              ],
+              "top": "sysTreeMapMember",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.ba"
+                ],
+                "outputs": [
+                  "sysTreeMapMember.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTreeMapMember.cexe",
+                    "sysTreeMapMember.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapMember",
+              "args": [],
+              "stdout": "sysTreeMapMember.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapMember.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapMember.c.out",
+              "expected": "sysTreeMapMember.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.c.out",
+                  "sysTreeMapMember.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapMember",
+              "args": [],
+              "stdout": "sysTreeMapMember.c-vcd.out",
+              "vcd": "sysTreeMapMember.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapMember.c-vcd.out",
+                  "sysTreeMapMember.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTreeMapMember.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapMember.c-vcd.out",
+              "expected": "sysTreeMapMember.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapMember.c-vcd.out",
+                  "sysTreeMapMember.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 30,
+                  "endByte": 59,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTreeMapOrder",
+      "resource": "heavy",
+      "fixtures": [
+        "TreeMapOrder.bsv",
+        "sysTreeMapOrder.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTreeMapOrder",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TreeMapOrder.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTreeMapOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TreeMapOrder.bsv"
+                ],
+                "outputs": [
+                  "TreeMapOrder.bo",
+                  "TreeMapOrder.bsv.bsc-vcomp-out",
+                  "sysTreeMapOrder.ba",
+                  "sysTreeMapOrder.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTreeMapOrder"
+              ],
+              "top": "sysTreeMapOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.v"
+                ],
+                "outputs": [
+                  "sysTreeMapOrder.bsc-vcomp-out",
+                  "sysTreeMapOrder.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapOrder",
+              "args": [],
+              "stdout": "sysTreeMapOrder.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapOrder.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapOrder.v.out",
+              "expected": "sysTreeMapOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.v.out",
+                  "sysTreeMapOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapOrder",
+              "args": [],
+              "stdout": "sysTreeMapOrder.v-vcd.out",
+              "vcd": "sysTreeMapOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapOrder.v-vcd.out",
+                  "sysTreeMapOrder.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTreeMapOrder.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTreeMapOrder"
+              ],
+              "top": "sysTreeMapOrder",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.ba"
+                ],
+                "outputs": [
+                  "sysTreeMapOrder.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTreeMapOrder.cexe",
+                    "sysTreeMapOrder.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapOrder",
+              "args": [],
+              "stdout": "sysTreeMapOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapOrder.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapOrder.c.out",
+              "expected": "sysTreeMapOrder.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.c.out",
+                  "sysTreeMapOrder.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapOrder",
+              "args": [],
+              "stdout": "sysTreeMapOrder.c-vcd.out",
+              "vcd": "sysTreeMapOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapOrder.c-vcd.out",
+                  "sysTreeMapOrder.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTreeMapOrder.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapOrder.c-vcd.out",
+              "expected": "sysTreeMapOrder.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapOrder.c-vcd.out",
+                  "sysTreeMapOrder.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 88,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysTreeMapInsertWith",
+      "resource": "heavy",
+      "fixtures": [
+        "TreeMapInsertWith.bsv",
+        "sysTreeMapInsertWith.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTreeMapInsertWith",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TreeMapInsertWith.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTreeMapInsertWith",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TreeMapInsertWith.bsv"
+                ],
+                "outputs": [
+                  "TreeMapInsertWith.bo",
+                  "TreeMapInsertWith.bsv.bsc-vcomp-out",
+                  "sysTreeMapInsertWith.ba",
+                  "sysTreeMapInsertWith.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTreeMapInsertWith"
+              ],
+              "top": "sysTreeMapInsertWith",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.v"
+                ],
+                "outputs": [
+                  "sysTreeMapInsertWith.bsc-vcomp-out",
+                  "sysTreeMapInsertWith.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapInsertWith",
+              "args": [],
+              "stdout": "sysTreeMapInsertWith.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapInsertWith.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapInsertWith.v.out",
+              "expected": "sysTreeMapInsertWith.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.v.out",
+                  "sysTreeMapInsertWith.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTreeMapInsertWith",
+              "args": [],
+              "stdout": "sysTreeMapInsertWith.v-vcd.out",
+              "vcd": "sysTreeMapInsertWith.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.vexe"
+                ],
+                "outputs": [
+                  "sysTreeMapInsertWith.v-vcd.out",
+                  "sysTreeMapInsertWith.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTreeMapInsertWith.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTreeMapInsertWith"
+              ],
+              "top": "sysTreeMapInsertWith",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.ba"
+                ],
+                "outputs": [
+                  "sysTreeMapInsertWith.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTreeMapInsertWith.cexe",
+                    "sysTreeMapInsertWith.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapInsertWith",
+              "args": [],
+              "stdout": "sysTreeMapInsertWith.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapInsertWith.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapInsertWith.c.out",
+              "expected": "sysTreeMapInsertWith.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.c.out",
+                  "sysTreeMapInsertWith.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTreeMapInsertWith",
+              "args": [],
+              "stdout": "sysTreeMapInsertWith.c-vcd.out",
+              "vcd": "sysTreeMapInsertWith.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.cexe"
+                ],
+                "outputs": [
+                  "sysTreeMapInsertWith.c-vcd.out",
+                  "sysTreeMapInsertWith.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTreeMapInsertWith.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTreeMapInsertWith.c-vcd.out",
+              "expected": "sysTreeMapInsertWith.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTreeMapInsertWith.c-vcd.out",
+                  "sysTreeMapInsertWith.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 89,
+                  "endByte": 122,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

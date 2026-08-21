@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/Amba_dmac/amba_dmac",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/Amba_dmac/amba_dmac.exp",
+    "sha256": "bb6724d770f5c08b01ea43516750b70d309895596b51622ef73d67e4a53fab67"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/Amba_dmac",
+  "fixtures": [
+    {
+      "path": "AhbInterfaces.bsv",
+      "sha256": "59f18721ccc3cce0b48ed1832b9ba096e38d7910b8e305ca04c878d1a26a8189",
+      "role": "source"
+    },
+    {
+      "path": "DMAC.bsv",
+      "sha256": "9b64ecdb090263ae6fc2f002b42e662d59a4a3b5449315e37b386a174fcb7b8a",
+      "role": "source"
+    },
+    {
+      "path": "Slave.bsv",
+      "sha256": "b1c3b6796da70d28488c26389b51280a4d6f595da42015d0204d30e49f381c54",
+      "role": "source"
+    },
+    {
+      "path": "ahb_bus.v",
+      "sha256": "866fe906c77bd932dc53316b20d2318fc402c253024a834cb57193805f29dccc",
+      "role": "source"
+    },
+    {
+      "path": "ahb_default.v",
+      "sha256": "e699de04522740b3b0526ec0f44e96c6fdbaa530bbb215c26ece0d47d82fe422",
+      "role": "source"
+    },
+    {
+      "path": "ahb_ram.v",
+      "sha256": "5416ef329843355fafae562999ba8385308f217d4d6e11acbd4c75de8b831cc5",
+      "role": "source"
+    },
+    {
+      "path": "amba_tb.v",
+      "sha256": "352fecb6bc69981c394197786198466dddee8301b4b2627cac7f42afba8fa2af",
+      "role": "source"
+    },
+    {
+      "path": "ram_1024x32.v",
+      "sha256": "700202db79ca7f4f7ee4b3387bcdcde066e399c9b371dea8ed01ae8df39a4b7f",
+      "role": "source"
+    },
+    {
+      "path": "sysAmbaDmac.out.expected",
+      "sha256": "adebe807c16335b243c21cbd6dcff55b616fff8fb629e17df46c0311ec535c04",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "verilog-workflow-1-sysAmbaDmac",
+      "resource": "normal",
+      "fixtures": [
+        "AhbInterfaces.bsv",
+        "DMAC.bsv",
+        "Slave.bsv",
+        "ahb_bus.v",
+        "ahb_default.v",
+        "ahb_ram.v",
+        "amba_tb.v",
+        "ram_1024x32.v",
+        "sysAmbaDmac.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DMAC",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DMAC.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DMAC.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DMAC.bsv"
+                ],
+                "outputs": [
+                  "DMAC.bo",
+                  "DMAC.bsv.bsc-vcomp-out",
+                  "mkDMAC.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 31,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 31
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "compile-Slave",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Slave.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Slave.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Slave.bsv"
+                ],
+                "outputs": [
+                  "Slave.bo",
+                  "Slave.bsv.bsc-vcomp-out",
+                  "mkSlave.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 32,
+                  "endByte": 63,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "verilog-link-sysAmbaDmac",
+          "operations": [
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "mode": "no_main",
+              "objects": [
+                "mkDMAC.v",
+                "mkSlave.v",
+                "ahb_bus.v",
+                "ahb_default.v",
+                "ahb_ram.v",
+                "ram_1024x32.v",
+                "amba_tb.v"
+              ],
+              "top": "sysAmbaDmac",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkDMAC.v",
+                  "mkSlave.v",
+                  "ahb_bus.v",
+                  "ahb_default.v",
+                  "ahb_ram.v",
+                  "ram_1024x32.v",
+                  "amba_tb.v"
+                ],
+                "outputs": [
+                  "sysAmbaDmac.bsc-vcomp-out",
+                  "sysAmbaDmac.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 90,
+                  "endByte": 213,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 8,
+                  "endColumn": 13
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAmbaDmac",
+              "args": [],
+              "stdout": "sysAmbaDmac.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAmbaDmac.vexe"
+                ],
+                "outputs": [
+                  "sysAmbaDmac.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 219,
+                  "endByte": 242,
+                  "startLine": 10,
+                  "startColumn": 5,
+                  "endLine": 10,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAmbaDmac.out",
+              "expected": "sysAmbaDmac.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAmbaDmac.out",
+                  "sysAmbaDmac.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug Rob_Brown"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 249,
+                  "endByte": 296,
+                  "startLine": 12,
+                  "startColumn": 5,
+                  "endLine": 12,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/EResources/EResources",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/EResources/EResources.exp",
+    "sha256": "675a7301435b4dde90b28c7fdc30309ff72cf4fc43d2d096bead2a7c06301fa9"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/EResources",
+  "fixtures": [
+    {
+      "path": "EResources.bs",
+      "sha256": "2bf13fb6ae6679a564ab739cbf1a159f901c861e7add767ed364a942d3288090",
+      "role": "source"
+    },
+    {
+      "path": "EResources.bs.bsc-vcomp-out.expected",
+      "sha256": "9b6d4312cf1a9b4c07251cd1e19aa5558a07c61f2dd7cc59309c10c34e83cdc3",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-EResources",
+      "resource": "normal",
+      "fixtures": [
+        "EResources.bs",
+        "EResources.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EResources",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EResources.bs",
+              "mode": "verilog",
+              "module": "mkDifference",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "EResources.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EResources.bs"
+                ],
+                "outputs": [
+                  "EResources.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 66,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 48
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "EResources.bs.bsc-vcomp-out",
+              "expected": "EResources.bs.bsc-vcomp-out.expected",
+              "normalizations": [
+                "generated_ids"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "EResources.bs.bsc-vcomp-out",
+                  "EResources.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 67,
+                  "endByte": 118,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

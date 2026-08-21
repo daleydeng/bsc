@@ -1,0 +1,1665 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/tasks/interfacecalls/interfacecalls",
+  "origin": {
+    "path": "testsuite/bsc.verilog/tasks/interfacecalls/interfacecalls.exp",
+    "sha256": "07ebc473e9d59e3b272b4b6bb781c7d6eff10b1261f8bced9cb6cf5b1d8ffbba"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/tasks/interfacecalls",
+  "fixtures": [
+    {
+      "path": "InterfaceTaskCalls.bs",
+      "sha256": "113cc71f9e82e347c3a17c01da0cf2725442633b3875d8af0a37106876955186",
+      "role": "source"
+    },
+    {
+      "path": "LiftedInterfaceTaskCalls.bs",
+      "sha256": "f30062d57a576b6ff7d6581820664901597e740a57ddeec464d78884966f9f93",
+      "role": "source"
+    },
+    {
+      "path": "sysInterfaceTaskCalls.out.expected",
+      "sha256": "2aa7e0cf911e868841eebb8dc9f2d09e9761c64a948d69b625d04fbc5edb40b2",
+      "role": "golden"
+    },
+    {
+      "path": "sysInterfaceTaskCalls.sysBar.v.out.bug-expected",
+      "sha256": "241fc499a1f238f61ed254676046113c9bcb9f5e3ff2ca0f229dabb0a6d265b2",
+      "role": "golden"
+    },
+    {
+      "path": "sysLiftedInterfaceTaskCalls.out.expected",
+      "sha256": "b879fb2a3fcef2d4ff977c59ade42b986104504c2c06a7e99fcfc79edf41c08d",
+      "role": "golden"
+    },
+    {
+      "path": "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out.bug-expected",
+      "sha256": "87589b02fa1459d3acf2ea9edf0f1e317ab4291784434d499bdd4762c2003b54",
+      "role": "golden"
+    },
+    {
+      "path": "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out.bug-expected",
+      "sha256": "87589b02fa1459d3acf2ea9edf0f1e317ab4291784434d499bdd4762c2003b54",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysInterfaceTaskCalls",
+      "resource": "heavy",
+      "fixtures": [
+        "InterfaceTaskCalls.bs",
+        "sysInterfaceTaskCalls.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysInterfaceTaskCalls",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "InterfaceTaskCalls.bs",
+              "mode": "shared_elaboration",
+              "module": "sysInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "InterfaceTaskCalls.bs"
+                ],
+                "outputs": [
+                  "InterfaceTaskCalls.bo",
+                  "InterfaceTaskCalls.bs.bsc-vcomp-out",
+                  "sysInterfaceTaskCalls.ba",
+                  "sysInterfaceTaskCalls.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysInterfaceTaskCalls"
+              ],
+              "top": "sysInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.v"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.bsc-vcomp-out",
+                  "sysInterfaceTaskCalls.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysInterfaceTaskCalls.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.vexe"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInterfaceTaskCalls.v.out",
+              "expected": "sysInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.v.out",
+                  "sysInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysInterfaceTaskCalls.v-vcd.out",
+              "vcd": "sysInterfaceTaskCalls.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.vexe"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.v-vcd.out",
+                  "sysInterfaceTaskCalls.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysInterfaceTaskCalls.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysInterfaceTaskCalls"
+              ],
+              "top": "sysInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.ba"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysInterfaceTaskCalls.cexe",
+                    "sysInterfaceTaskCalls.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysInterfaceTaskCalls.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.cexe"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInterfaceTaskCalls.c.out",
+              "expected": "sysInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.c.out",
+                  "sysInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysInterfaceTaskCalls.c-vcd.out",
+              "vcd": "sysInterfaceTaskCalls.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.cexe"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.c-vcd.out",
+                  "sysInterfaceTaskCalls.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysInterfaceTaskCalls.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInterfaceTaskCalls.c-vcd.out",
+              "expected": "sysInterfaceTaskCalls.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.c-vcd.out",
+                  "sysInterfaceTaskCalls.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 184,
+                  "endByte": 214,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 31
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-InterfaceTaskCalls",
+      "resource": "heavy",
+      "fixtures": [
+        "InterfaceTaskCalls.bs",
+        "sysInterfaceTaskCalls.out.expected",
+        "sysInterfaceTaskCalls.sysBar.v.out.bug-expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-InterfaceTaskCalls",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InterfaceTaskCalls.bs",
+              "mode": "verilog",
+              "module": "sysInterfaceTaskCalls",
+              "args": [
+                "-g",
+                "sysBar"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "InterfaceTaskCalls.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "InterfaceTaskCalls.bs"
+                ],
+                "outputs": [
+                  "InterfaceTaskCalls.bo",
+                  "InterfaceTaskCalls.bs.bsc-vcomp-out",
+                  "sysBar.v",
+                  "sysInterfaceTaskCalls.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 276,
+                  "endByte": 352,
+                  "startLine": 11,
+                  "startColumn": 3,
+                  "endLine": 11,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysInterfaceTaskCalls.v",
+                "sysBar.v"
+              ],
+              "top": "sysInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.v",
+                  "sysBar.v"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.bsc-vcomp-out",
+                  "sysInterfaceTaskCalls.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 355,
+                  "endByte": 429,
+                  "startLine": 12,
+                  "startColumn": 3,
+                  "endLine": 12,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.vexe"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 432,
+                  "endByte": 465,
+                  "startLine": 13,
+                  "startColumn": 3,
+                  "endLine": 13,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysInterfaceTaskCalls.out",
+              "destination": "sysInterfaceTaskCalls.sysBar.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.out"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.sysBar.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 468,
+                  "endByte": 533,
+                  "startLine": 14,
+                  "startColumn": 3,
+                  "endLine": 14,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "sysInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysInterfaceTaskCalls.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 536,
+                  "endByte": 567,
+                  "startLine": 15,
+                  "startColumn": 3,
+                  "endLine": 15,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInterfaceTaskCalls.sysBar.v.out",
+              "expected": "sysInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.sysBar.v.out",
+                  "sysInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 215"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 623,
+                  "endByte": 713,
+                  "startLine": 17,
+                  "startColumn": 3,
+                  "endLine": 17,
+                  "endColumn": 93
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInterfaceTaskCalls.sysBar.v.out",
+              "expected": "sysInterfaceTaskCalls.sysBar.v.out.bug-expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.sysBar.v.out",
+                  "sysInterfaceTaskCalls.sysBar.v.out.bug-expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 862,
+                  "endByte": 957,
+                  "startLine": 20,
+                  "startColumn": 3,
+                  "endLine": 20,
+                  "endColumn": 98
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysLiftedInterfaceTaskCalls",
+      "resource": "heavy",
+      "fixtures": [
+        "LiftedInterfaceTaskCalls.bs",
+        "sysLiftedInterfaceTaskCalls.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLiftedInterfaceTaskCalls",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "LiftedInterfaceTaskCalls.bs",
+              "mode": "shared_elaboration",
+              "module": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "LiftedInterfaceTaskCalls.bs"
+                ],
+                "outputs": [
+                  "LiftedInterfaceTaskCalls.bo",
+                  "LiftedInterfaceTaskCalls.bs.bsc-vcomp-out",
+                  "sysLiftedInterfaceTaskCalls.ba",
+                  "sysLiftedInterfaceTaskCalls.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLiftedInterfaceTaskCalls"
+              ],
+              "top": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.v"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.bsc-vcomp-out",
+                  "sysLiftedInterfaceTaskCalls.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysLiftedInterfaceTaskCalls.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.vexe"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.v.out",
+              "expected": "sysLiftedInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.v.out",
+                  "sysLiftedInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysLiftedInterfaceTaskCalls.v-vcd.out",
+              "vcd": "sysLiftedInterfaceTaskCalls.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.vexe"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.v-vcd.out",
+                  "sysLiftedInterfaceTaskCalls.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLiftedInterfaceTaskCalls.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLiftedInterfaceTaskCalls"
+              ],
+              "top": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.ba"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLiftedInterfaceTaskCalls.cexe",
+                    "sysLiftedInterfaceTaskCalls.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysLiftedInterfaceTaskCalls.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.cexe"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.c.out",
+              "expected": "sysLiftedInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.c.out",
+                  "sysLiftedInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysLiftedInterfaceTaskCalls.c-vcd.out",
+              "vcd": "sysLiftedInterfaceTaskCalls.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.cexe"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.c-vcd.out",
+                  "sysLiftedInterfaceTaskCalls.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLiftedInterfaceTaskCalls.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.c-vcd.out",
+              "expected": "sysLiftedInterfaceTaskCalls.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.c-vcd.out",
+                  "sysLiftedInterfaceTaskCalls.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1489,
+                  "endByte": 1525,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-LiftedInterfaceTaskCalls",
+      "resource": "heavy",
+      "fixtures": [
+        "LiftedInterfaceTaskCalls.bs",
+        "sysLiftedInterfaceTaskCalls.out.expected",
+        "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out.bug-expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-LiftedInterfaceTaskCalls",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "LiftedInterfaceTaskCalls.bs",
+              "mode": "verilog",
+              "module": "sysLiftedInterfaceTaskCalls",
+              "args": [
+                "-g",
+                "sysLiftedBar"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "LiftedInterfaceTaskCalls.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "LiftedInterfaceTaskCalls.bs"
+                ],
+                "outputs": [
+                  "LiftedInterfaceTaskCalls.bo",
+                  "LiftedInterfaceTaskCalls.bs.bsc-vcomp-out",
+                  "sysLiftedBar.v",
+                  "sysLiftedInterfaceTaskCalls.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1587,
+                  "endByte": 1681,
+                  "startLine": 41,
+                  "startColumn": 3,
+                  "endLine": 41,
+                  "endColumn": 97
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLiftedInterfaceTaskCalls.v",
+                "sysLiftedBar.v"
+              ],
+              "top": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.v",
+                  "sysLiftedBar.v"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.bsc-vcomp-out",
+                  "sysLiftedInterfaceTaskCalls.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1684,
+                  "endByte": 1776,
+                  "startLine": 42,
+                  "startColumn": 3,
+                  "endLine": 42,
+                  "endColumn": 95
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysLiftedInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.vexe"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1779,
+                  "endByte": 1818,
+                  "startLine": 43,
+                  "startColumn": 3,
+                  "endLine": 43,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysLiftedInterfaceTaskCalls.out",
+              "destination": "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1822,
+                  "endByte": 1905,
+                  "startLine": 44,
+                  "startColumn": 3,
+                  "endLine": 44,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "sysLiftedInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1908,
+                  "endByte": 1945,
+                  "startLine": 45,
+                  "startColumn": 3,
+                  "endLine": 45,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out",
+              "expected": "sysLiftedInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out",
+                  "sysLiftedInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 215"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2001,
+                  "endByte": 2109,
+                  "startLine": 47,
+                  "startColumn": 3,
+                  "endLine": 47,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out",
+              "expected": "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out.bug-expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out",
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.v.out.bug-expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2258,
+                  "endByte": 2377,
+                  "startLine": 50,
+                  "startColumn": 3,
+                  "endLine": 50,
+                  "endColumn": 122
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysInterfaceTaskCalls",
+      "resource": "heavy",
+      "fixtures": [
+        "InterfaceTaskCalls.bs",
+        "sysInterfaceTaskCalls.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysInterfaceTaskCalls",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "InterfaceTaskCalls.bs",
+              "mode": "bluesim",
+              "module": "sysInterfaceTaskCalls",
+              "args": [
+                "-g",
+                "sysBar"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "InterfaceTaskCalls.bs"
+                ],
+                "outputs": [
+                  "InterfaceTaskCalls.bo",
+                  "InterfaceTaskCalls.bs.bsc-ccomp-out",
+                  "sysBar.ba",
+                  "sysInterfaceTaskCalls.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1020,
+                  "endByte": 1095,
+                  "startLine": 25,
+                  "startColumn": 3,
+                  "endLine": 25,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysInterfaceTaskCalls",
+                "sysBar"
+              ],
+              "top": "sysInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.ba",
+                  "sysBar.ba"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysInterfaceTaskCalls.cexe",
+                    "sysInterfaceTaskCalls.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1098,
+                  "endByte": 1168,
+                  "startLine": 26,
+                  "startColumn": 3,
+                  "endLine": 26,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.cexe"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1171,
+                  "endByte": 1203,
+                  "startLine": 27,
+                  "startColumn": 3,
+                  "endLine": 27,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysInterfaceTaskCalls.out",
+              "destination": "sysInterfaceTaskCalls.sysBar.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.out"
+                ],
+                "outputs": [
+                  "sysInterfaceTaskCalls.sysBar.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1206,
+                  "endByte": 1271,
+                  "startLine": 28,
+                  "startColumn": 3,
+                  "endLine": 28,
+                  "endColumn": 68
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "sysInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysInterfaceTaskCalls.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1274,
+                  "endByte": 1305,
+                  "startLine": 29,
+                  "startColumn": 3,
+                  "endLine": 29,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInterfaceTaskCalls.sysBar.c.out",
+              "expected": "sysInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInterfaceTaskCalls.sysBar.c.out",
+                  "sysInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1356,
+                  "endByte": 1438,
+                  "startLine": 31,
+                  "startColumn": 3,
+                  "endLine": 31,
+                  "endColumn": 85
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-sysLiftedInterfaceTaskCalls",
+      "resource": "heavy",
+      "fixtures": [
+        "LiftedInterfaceTaskCalls.bs",
+        "sysLiftedInterfaceTaskCalls.out.expected",
+        "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out.bug-expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysLiftedInterfaceTaskCalls",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "LiftedInterfaceTaskCalls.bs",
+              "mode": "bluesim",
+              "module": "sysLiftedInterfaceTaskCalls",
+              "args": [
+                "-g",
+                "sysLiftedBar"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "LiftedInterfaceTaskCalls.bs"
+                ],
+                "outputs": [
+                  "LiftedInterfaceTaskCalls.bo",
+                  "LiftedInterfaceTaskCalls.bs.bsc-ccomp-out",
+                  "sysLiftedBar.ba",
+                  "sysLiftedInterfaceTaskCalls.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2440,
+                  "endByte": 2533,
+                  "startLine": 55,
+                  "startColumn": 3,
+                  "endLine": 55,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLiftedInterfaceTaskCalls",
+                "sysLiftedBar"
+              ],
+              "top": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.ba",
+                  "sysLiftedBar.ba"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLiftedInterfaceTaskCalls.cexe",
+                    "sysLiftedInterfaceTaskCalls.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2536,
+                  "endByte": 2624,
+                  "startLine": 56,
+                  "startColumn": 3,
+                  "endLine": 56,
+                  "endColumn": 91
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLiftedInterfaceTaskCalls",
+              "args": [],
+              "stdout": "sysLiftedInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.cexe"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2627,
+                  "endByte": 2665,
+                  "startLine": 57,
+                  "startColumn": 3,
+                  "endLine": 57,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysLiftedInterfaceTaskCalls.out",
+              "destination": "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ],
+                "outputs": [
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2668,
+                  "endByte": 2751,
+                  "startLine": 58,
+                  "startColumn": 3,
+                  "endLine": 58,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "sysLiftedInterfaceTaskCalls.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysLiftedInterfaceTaskCalls.out"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2754,
+                  "endByte": 2791,
+                  "startLine": 59,
+                  "startColumn": 3,
+                  "endLine": 59,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out",
+              "expected": "sysLiftedInterfaceTaskCalls.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out",
+                  "sysLiftedInterfaceTaskCalls.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 220"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2920,
+                  "endByte": 3028,
+                  "startLine": 62,
+                  "startColumn": 3,
+                  "endLine": 62,
+                  "endColumn": 111
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out",
+              "expected": "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out.bug-expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out",
+                  "sysLiftedInterfaceTaskCalls.sysLiftedBar.c.out.bug-expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 3177,
+                  "endByte": 3296,
+                  "startLine": 65,
+                  "startColumn": 3,
+                  "endLine": 65,
+                  "endColumn": 122
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

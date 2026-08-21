@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b232/b232",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b232/b232.exp",
+    "sha256": "d9394b4910b32bfaa427bc1944f112c8746afcbc3101d76d2f865f77ef8855e3"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b232",
+  "fixtures": [
+    {
+      "path": "Design.bs",
+      "sha256": "36cd9ca87ee1c4a0d4eb214890fc47baac0fe2346d105fb20807cf8e584c085d",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Design",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bs"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Design",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bs",
+              "mode": "verilog",
+              "module": "mkDesign",
+              "args": [
+                "-remove-unused-modules"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Design.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bs"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bs.bsc-vcomp-out",
+                  "mkDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 85,
+                  "startLine": 2,
+                  "startColumn": 3,
+                  "endLine": 2,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkDesign.v",
+              "text": "nextState",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "mkDesign.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 168,
+                  "endByte": 205,
+                  "startLine": 4,
+                  "startColumn": 3,
+                  "endLine": 4,
+                  "endColumn": 40
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

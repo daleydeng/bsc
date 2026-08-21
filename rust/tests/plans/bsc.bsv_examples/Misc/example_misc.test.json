@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/Misc/example_misc",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/Misc/example_misc.exp",
+    "sha256": "07d473b9411be140f1dc9d29fc93e12ac3f3ad6891d5a38ccb732c2cfff9b3e5"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/Misc",
+  "fixtures": [
+    {
+      "path": "TestShifter64.bsv",
+      "sha256": "7cec978ea8bd7afff8e28e6e24f73e6b0e88e28af25f37666c033c93742559d2",
+      "role": "source"
+    },
+    {
+      "path": "sysTestShifter64.out.expected",
+      "sha256": "9b53594c551529ef0f7c4da56f2755091aad43c1881232a007c84b651797f04e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestShifter64",
+      "resource": "heavy",
+      "fixtures": [
+        "TestShifter64.bsv",
+        "sysTestShifter64.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestShifter64",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestShifter64.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestShifter64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestShifter64.bsv"
+                ],
+                "outputs": [
+                  "TestShifter64.bo",
+                  "TestShifter64.bsv.bsc-vcomp-out",
+                  "sysTestShifter64.ba",
+                  "sysTestShifter64.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestShifter64"
+              ],
+              "top": "sysTestShifter64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.v"
+                ],
+                "outputs": [
+                  "sysTestShifter64.bsc-vcomp-out",
+                  "sysTestShifter64.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestShifter64",
+              "args": [],
+              "stdout": "sysTestShifter64.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.vexe"
+                ],
+                "outputs": [
+                  "sysTestShifter64.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestShifter64.v.out",
+              "expected": "sysTestShifter64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.v.out",
+                  "sysTestShifter64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestShifter64",
+              "args": [],
+              "stdout": "sysTestShifter64.v-vcd.out",
+              "vcd": "sysTestShifter64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.vexe"
+                ],
+                "outputs": [
+                  "sysTestShifter64.v-vcd.out",
+                  "sysTestShifter64.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestShifter64.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestShifter64"
+              ],
+              "top": "sysTestShifter64",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.ba"
+                ],
+                "outputs": [
+                  "sysTestShifter64.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestShifter64.cexe",
+                    "sysTestShifter64.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestShifter64",
+              "args": [],
+              "stdout": "sysTestShifter64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.cexe"
+                ],
+                "outputs": [
+                  "sysTestShifter64.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestShifter64.c.out",
+              "expected": "sysTestShifter64.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.c.out",
+                  "sysTestShifter64.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestShifter64",
+              "args": [],
+              "stdout": "sysTestShifter64.c-vcd.out",
+              "vcd": "sysTestShifter64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.cexe"
+                ],
+                "outputs": [
+                  "sysTestShifter64.c-vcd.out",
+                  "sysTestShifter64.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestShifter64.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestShifter64.c-vcd.out",
+              "expected": "sysTestShifter64.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestShifter64.c-vcd.out",
+                  "sysTestShifter64.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

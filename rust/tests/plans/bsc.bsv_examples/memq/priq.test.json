@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/memq/priq",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/memq/priq.exp",
+    "sha256": "f044fc19c8ba9785824a4639699c9628bedd7971bd312866df7a09fd5468f677"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/memq",
+  "fixtures": [
+    {
+      "path": "DQueue.bsv",
+      "sha256": "952b0189dba65824d2aab155ad5c8735e95c8f0e7bbd0d3b775da1d2275a22ee",
+      "role": "source"
+    },
+    {
+      "path": "DQueueConfig.bsv",
+      "sha256": "0ad75412044b49887309a6861a715d9a37689975a15e956ad996904269843b83",
+      "role": "source"
+    },
+    {
+      "path": "DQueueTb.bsv",
+      "sha256": "08baf037408ab8099e70a604699b47666716eadbb4f469862fb28a2bb2a6bb0e",
+      "role": "source"
+    },
+    {
+      "path": "PriQ.bsv",
+      "sha256": "087f841c6942f23bbb7893a581a500932a86911c9a70c361c78275544fde2a41",
+      "role": "source"
+    },
+    {
+      "path": "Priority.bsv",
+      "sha256": "e8ef7b6c4ac5b77df0844c4fb93f66ff7e33bcb3458d6d86012b8cbe52545896",
+      "role": "source"
+    },
+    {
+      "path": "QType.bsv",
+      "sha256": "c78e3325a36db6109c58c9429defb9561427ce83c775d9e1615e6bc86077434b",
+      "role": "source"
+    },
+    {
+      "path": "sysDQueueTb.out.expected",
+      "sha256": "deb7e88354cac2a34473a673db2303b94ed5d4fb873f3627f4d89acc746975f0",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysDQueueTb",
+      "resource": "heavy",
+      "fixtures": [
+        "DQueue.bsv",
+        "DQueueConfig.bsv",
+        "DQueueTb.bsv",
+        "PriQ.bsv",
+        "Priority.bsv",
+        "QType.bsv",
+        "sysDQueueTb.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDQueueTb",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DQueueTb.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDQueueTb",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DQueueTb.bsv"
+                ],
+                "outputs": [
+                  "DQueueTb.bo",
+                  "DQueueTb.bsv.bsc-vcomp-out",
+                  "mkQueue.ba",
+                  "mkQueue.v",
+                  "sysDQueueTb.ba",
+                  "sysDQueueTb.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDQueueTb",
+                "mkQueue"
+              ],
+              "top": "sysDQueueTb",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.v",
+                  "mkQueue.v"
+                ],
+                "outputs": [
+                  "sysDQueueTb.bsc-vcomp-out",
+                  "sysDQueueTb.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDQueueTb",
+              "args": [],
+              "stdout": "sysDQueueTb.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.vexe"
+                ],
+                "outputs": [
+                  "sysDQueueTb.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDQueueTb.v.out",
+              "expected": "sysDQueueTb.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.v.out",
+                  "sysDQueueTb.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDQueueTb",
+              "args": [],
+              "stdout": "sysDQueueTb.v-vcd.out",
+              "vcd": "sysDQueueTb.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.vexe"
+                ],
+                "outputs": [
+                  "sysDQueueTb.v-vcd.out",
+                  "sysDQueueTb.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDQueueTb.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDQueueTb",
+                "mkQueue"
+              ],
+              "top": "sysDQueueTb",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.ba",
+                  "mkQueue.ba"
+                ],
+                "outputs": [
+                  "sysDQueueTb.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDQueueTb.cexe",
+                    "sysDQueueTb.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDQueueTb",
+              "args": [],
+              "stdout": "sysDQueueTb.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.cexe"
+                ],
+                "outputs": [
+                  "sysDQueueTb.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDQueueTb.c.out",
+              "expected": "sysDQueueTb.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.c.out",
+                  "sysDQueueTb.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDQueueTb",
+              "args": [],
+              "stdout": "sysDQueueTb.c-vcd.out",
+              "vcd": "sysDQueueTb.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.cexe"
+                ],
+                "outputs": [
+                  "sysDQueueTb.c-vcd.out",
+                  "sysDQueueTb.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDQueueTb.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDQueueTb.c-vcd.out",
+              "expected": "sysDQueueTb.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDQueueTb.c-vcd.out",
+                  "sysDQueueTb.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 42,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,956 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/pong/pong",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/pong/pong.exp",
+    "sha256": "190cb2ae77498626bddbfe02fa51ed79cb6a6321deda047f6cf45ca7abd09e8c"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/pong",
+  "fixtures": [
+    {
+      "path": "Ball0.bsv",
+      "sha256": "5a2785a63d1c50d38009e021757a14eabac393ba9cd147c63e425ee1690bf6c9",
+      "role": "data"
+    },
+    {
+      "path": "Ball1.bsv",
+      "sha256": "9c5c7a3a7fba9c57efd8c2be26971c68103233b3503cfa5a2348e1ece34e367e",
+      "role": "data"
+    },
+    {
+      "path": "Ball2.bsv",
+      "sha256": "9c5c7a3a7fba9c57efd8c2be26971c68103233b3503cfa5a2348e1ece34e367e",
+      "role": "data"
+    },
+    {
+      "path": "Island0.bsv",
+      "sha256": "519947e9139154d88dff78faf509ba7fa6fcebdc34452cb049ba6047a56b88c0",
+      "role": "data"
+    },
+    {
+      "path": "Island1.bsv",
+      "sha256": "596d378cb71547c65b40218fd4671d637ac9b547ddf55ad5e361694b082d9636",
+      "role": "data"
+    },
+    {
+      "path": "Island2.bsv",
+      "sha256": "b2b3476373d30372268b56230e06b2564a2f5672d77cd0aaf68063f929b0be33",
+      "role": "data"
+    },
+    {
+      "path": "TopLevel0.bsv",
+      "sha256": "3c427e0182cb21076c75a67cdaa619ecae532303181bfc21386b7f422a7c50c9",
+      "role": "data"
+    },
+    {
+      "path": "TopLevel1.bsv",
+      "sha256": "27b65c74eba16046336ec3908e81793b1475b1c21b65efb9656192dce654dabd",
+      "role": "data"
+    },
+    {
+      "path": "TopLevel2.bsv",
+      "sha256": "bbe02d63f0b476b39f945001290782379006cace1d44d4407942f2334e281b02",
+      "role": "data"
+    },
+    {
+      "path": "kbscan.v",
+      "sha256": "3159d36f6bdaeda5d090a753dd00b8f6634497229369a07dd3a4be8cd3c45a31",
+      "role": "source"
+    },
+    {
+      "path": "pong.v",
+      "sha256": "38325d081e5193e3fac8bb33795301ad7e83c902db12881d3b4cbb0f8723a647",
+      "role": "source"
+    },
+    {
+      "path": "reset.v",
+      "sha256": "6febd0482ce9d30eeb089cacf60f0d2f2a672e05397f088bebfa86e7a0d4ebaa",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-TopLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "Ball0.bsv",
+        "Island0.bsv",
+        "TopLevel0.bsv",
+        "kbscan.v",
+        "pong.v",
+        "reset.v"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TopLevel",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "TopLevel0.bsv",
+              "destination": "TopLevel.bsv",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel0.bsv"
+                ],
+                "outputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 12,
+                  "endByte": 43,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "Ball0.bsv",
+              "destination": "Ball.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Ball0.bsv"
+                ],
+                "outputs": [
+                  "Ball.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 67,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "Island0.bsv",
+              "destination": "Island.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Island0.bsv"
+                ],
+                "outputs": [
+                  "Island.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 68,
+                  "endByte": 95,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "TopLevel.bsv",
+              "mode": "verilog",
+              "module": "mkTopLevel",
+              "args": [
+                "+RTS",
+                "-K10M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TopLevel.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputs": [
+                  "TopLevel.bo",
+                  "TopLevel.bsv.bsc-vcomp-out",
+                  "kbscan.v",
+                  "mkTopLevel.v",
+                  "pong.v",
+                  "reset.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 96,
+                  "endByte": 158,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "mode": "no_main",
+              "objects": [
+                "pong.v",
+                "mkTopLevel.v",
+                "kbscan.v",
+                "reset.v"
+              ],
+              "top": "sysPong",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "pong.v",
+                  "mkTopLevel.v",
+                  "kbscan.v",
+                  "reset.v"
+                ],
+                "outputs": [
+                  "sysPong.bsc-vcomp-out",
+                  "sysPong.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 159,
+                  "endByte": 231,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "TopLevel.bsv.bsc-vcomp-out",
+              "destination": "TopLevel0.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "TopLevel0.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 232,
+                  "endByte": 291,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysPong.bsc-vcomp-out",
+              "destination": "sysPong0.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "sysPong.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "sysPong0.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 293,
+                  "endByte": 342,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "mkTopLevel.v",
+              "artifacts": {
+                "inputs": [
+                  "mkTopLevel.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTopLevel.v"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 344,
+                  "endByte": 362,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "sysPong",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysPong"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 363,
+                  "endByte": 376,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 14
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-TopLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "Ball1.bsv",
+        "Island1.bsv",
+        "TopLevel1.bsv",
+        "kbscan.v",
+        "pong.v",
+        "reset.v"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TopLevel",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "TopLevel1.bsv",
+              "destination": "TopLevel.bsv",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel1.bsv"
+                ],
+                "outputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 390,
+                  "endByte": 421,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "Ball1.bsv",
+              "destination": "Ball.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Ball1.bsv"
+                ],
+                "outputs": [
+                  "Ball.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 422,
+                  "endByte": 445,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "Island1.bsv",
+              "destination": "Island.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Island1.bsv"
+                ],
+                "outputs": [
+                  "Island.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 446,
+                  "endByte": 473,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "TopLevel.bsv",
+              "mode": "verilog",
+              "module": "mkTopLevel",
+              "args": [
+                "+RTS",
+                "-K10M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TopLevel.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputs": [
+                  "TopLevel.bo",
+                  "TopLevel.bsv.bsc-vcomp-out",
+                  "kbscan.v",
+                  "mkTopLevel.v",
+                  "pong.v",
+                  "reset.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 474,
+                  "endByte": 536,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "mode": "no_main",
+              "objects": [
+                "pong.v",
+                "mkTopLevel.v",
+                "kbscan.v",
+                "reset.v"
+              ],
+              "top": "sysPong",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "pong.v",
+                  "mkTopLevel.v",
+                  "kbscan.v",
+                  "reset.v"
+                ],
+                "outputs": [
+                  "sysPong.bsc-vcomp-out",
+                  "sysPong.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 537,
+                  "endByte": 609,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "TopLevel.bsv.bsc-vcomp-out",
+              "destination": "TopLevel1.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "TopLevel1.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 610,
+                  "endByte": 669,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysPong.bsc-vcomp-out",
+              "destination": "sysPong1.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "sysPong.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "sysPong1.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 671,
+                  "endByte": 720,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "mkTopLevel.v",
+              "artifacts": {
+                "inputs": [
+                  "mkTopLevel.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTopLevel.v"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 722,
+                  "endByte": 740,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "sysPong",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "sysPong"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 741,
+                  "endByte": 754,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 14
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-TopLevel",
+      "resource": "heavy",
+      "fixtures": [
+        "Ball2.bsv",
+        "Island2.bsv",
+        "TopLevel2.bsv",
+        "kbscan.v",
+        "pong.v",
+        "reset.v"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-TopLevel",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "TopLevel2.bsv",
+              "destination": "TopLevel.bsv",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel2.bsv"
+                ],
+                "outputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 768,
+                  "endByte": 799,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "Ball2.bsv",
+              "destination": "Ball.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Ball2.bsv"
+                ],
+                "outputs": [
+                  "Ball.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 800,
+                  "endByte": 823,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "Island2.bsv",
+              "destination": "Island.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Island2.bsv"
+                ],
+                "outputs": [
+                  "Island.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 824,
+                  "endByte": 851,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "TopLevel.bsv",
+              "mode": "verilog",
+              "module": "mkTopLevel",
+              "args": [
+                "+RTS",
+                "-K10M",
+                "-RTS"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "TopLevel.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputs": [
+                  "TopLevel.bo",
+                  "TopLevel.bsv.bsc-vcomp-out",
+                  "kbscan.v",
+                  "mkTopLevel.v",
+                  "pong.v",
+                  "reset.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 852,
+                  "endByte": 914,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "mode": "no_main",
+              "objects": [
+                "pong.v",
+                "mkTopLevel.v",
+                "kbscan.v",
+                "reset.v"
+              ],
+              "top": "sysPong",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "pong.v",
+                  "mkTopLevel.v",
+                  "kbscan.v",
+                  "reset.v"
+                ],
+                "outputs": [
+                  "sysPong.bsc-vcomp-out",
+                  "sysPong.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 915,
+                  "endByte": 987,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 73
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "TopLevel.bsv.bsc-vcomp-out",
+              "destination": "TopLevel2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "TopLevel2.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 988,
+                  "endByte": 1047,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "sysPong.bsc-vcomp-out",
+              "destination": "sysPong2.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "sysPong.bsc-vcomp-out"
+                ],
+                "outputs": [
+                  "sysPong2.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1049,
+                  "endByte": 1098,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "TopLevel.bsv",
+              "artifacts": {
+                "inputs": [
+                  "TopLevel.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "TopLevel.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1183,
+                  "endByte": 1201,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 19
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "Ball.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Ball.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Ball.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1202,
+                  "endByte": 1216,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 15
+                }
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "Island.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Island.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Island.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1217,
+                  "endByte": 1233,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 17
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

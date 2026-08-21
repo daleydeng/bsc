@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/Library_latency/SRAM/SRAM",
+  "origin": {
+    "path": "testsuite/bsc.interra/Library_latency/SRAM/SRAM.exp",
+    "sha256": "754b4db0df408adc1737890c44bd439673d66ab72baa6ca781837fcd2107ae4f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/Library_latency/SRAM",
+  "fixtures": [
+    {
+      "path": "MkWrapSRAM.bsv",
+      "sha256": "2ecc8acc2d54e4a6a629d3badd495d3254f479e2be87b478a75a4152593ebaff",
+      "role": "source"
+    },
+    {
+      "path": "MkWrapSTRAM.bsv",
+      "sha256": "ae3d8b3913eb56b9ed678a9ed3253838fb5b1b748db12ba6e9a39864b8a25ff6",
+      "role": "source"
+    },
+    {
+      "path": "Precedence.bs",
+      "sha256": "abf0fe4f4c221106a47c7d5e5f97a63e92ccf2eac1ed72a27958f4bf2d628779",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_MkWrapSRAM.out.expected",
+      "sha256": "34cb00549b55772767fdb73aa1f36b0440da09a4e4a07902045ffdcd34d3b7e8",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_MkWrapSTRAM.out.expected",
+      "sha256": "34cb00549b55772767fdb73aa1f36b0440da09a4e4a07902045ffdcd34d3b7e8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTestbench_MkWrapSRAM",
+      "resource": "heavy",
+      "fixtures": [
+        "MkWrapSRAM.bsv",
+        "Precedence.bs",
+        "mkTestbench_MkWrapSRAM.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_MkWrapSRAM",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkWrapSRAM.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_MkWrapSRAM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkWrapSRAM.bsv"
+                ],
+                "outputs": [
+                  "MkWrapSRAM.bo",
+                  "MkWrapSRAM.bsv.bsc-ccomp-out",
+                  "mkTestbench_MkWrapSRAM.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 76,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkWrapSRAM"
+              ],
+              "top": "mkTestbench_MkWrapSRAM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkWrapSRAM.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkWrapSRAM.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkWrapSRAM.cexe",
+                    "mkTestbench_MkWrapSRAM.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 77,
+                  "endByte": 144,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 68
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkWrapSRAM",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_MkWrapSRAM.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkWrapSRAM.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkWrapSRAM.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 244,
+                  "endByte": 288,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkWrapSRAM.out",
+              "expected": "mkTestbench_MkWrapSRAM.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkWrapSRAM.out",
+                  "mkTestbench_MkWrapSRAM.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 289,
+                  "endByte": 330,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-mkTestbench_MkWrapSTRAM",
+      "resource": "heavy",
+      "fixtures": [
+        "MkWrapSTRAM.bsv",
+        "Precedence.bs",
+        "mkTestbench_MkWrapSTRAM.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTestbench_MkWrapSTRAM",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MkWrapSTRAM.bsv",
+              "mode": "bluesim",
+              "module": "mkTestbench_MkWrapSTRAM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MkWrapSTRAM.bsv"
+                ],
+                "outputs": [
+                  "MkWrapSTRAM.bo",
+                  "MkWrapSTRAM.bsv.bsc-ccomp-out",
+                  "mkTestbench_MkWrapSTRAM.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 332,
+                  "endByte": 391,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTestbench_MkWrapSTRAM"
+              ],
+              "top": "mkTestbench_MkWrapSTRAM",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkWrapSTRAM.ba"
+                ],
+                "outputs": [
+                  "mkTestbench_MkWrapSTRAM.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTestbench_MkWrapSTRAM.cexe",
+                    "mkTestbench_MkWrapSTRAM.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 392,
+                  "endByte": 461,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 70
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTestbench_MkWrapSTRAM",
+              "args": [
+                "-m",
+                "10010"
+              ],
+              "stdout": "mkTestbench_MkWrapSTRAM.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkWrapSTRAM.cexe"
+                ],
+                "outputs": [
+                  "mkTestbench_MkWrapSTRAM.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 563,
+                  "endByte": 608,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_MkWrapSTRAM.out",
+              "expected": "mkTestbench_MkWrapSTRAM.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_MkWrapSTRAM.out",
+                  "mkTestbench_MkWrapSTRAM.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 609,
+                  "endByte": 651,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

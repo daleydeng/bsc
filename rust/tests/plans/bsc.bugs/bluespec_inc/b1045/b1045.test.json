@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1045/b1045",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1045/b1045.exp",
+    "sha256": "f7d1db4bb4ae3ccf43b5468eaf52f8aeb141c60975a9c1c428169bea96a612b2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1045",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "dd74dc58df64bb4dc98deeaaec684f0af78e864e26be087673035d9ee3b135ca",
+      "role": "source"
+    },
+    {
+      "path": "sysDesign.out.expected",
+      "sha256": "0029e884c6ae168ed4cd1d53bd7391151daf7e4f95e904f2a83892e50f47246c",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysDesign",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "sysDesign.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDesign",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Design.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysDesign",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-vcomp-out",
+                  "sysDesign.ba",
+                  "sysDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDesign"
+              ],
+              "top": "sysDesign",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.v"
+                ],
+                "outputs": [
+                  "sysDesign.bsc-vcomp-out",
+                  "sysDesign.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDesign",
+              "args": [],
+              "stdout": "sysDesign.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.vexe"
+                ],
+                "outputs": [
+                  "sysDesign.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDesign.v.out",
+              "expected": "sysDesign.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.v.out",
+                  "sysDesign.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDesign",
+              "args": [],
+              "stdout": "sysDesign.v-vcd.out",
+              "vcd": "sysDesign.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.vexe"
+                ],
+                "outputs": [
+                  "sysDesign.v-vcd.out",
+                  "sysDesign.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDesign.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysDesign"
+              ],
+              "top": "sysDesign",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.ba"
+                ],
+                "outputs": [
+                  "sysDesign.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysDesign.cexe",
+                    "sysDesign.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDesign",
+              "args": [],
+              "stdout": "sysDesign.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.cexe"
+                ],
+                "outputs": [
+                  "sysDesign.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDesign.c.out",
+              "expected": "sysDesign.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.c.out",
+                  "sysDesign.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysDesign",
+              "args": [],
+              "stdout": "sysDesign.c-vcd.out",
+              "vcd": "sysDesign.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.cexe"
+                ],
+                "outputs": [
+                  "sysDesign.c-vcd.out",
+                  "sysDesign.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysDesign.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDesign.c-vcd.out",
+              "expected": "sysDesign.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDesign.c-vcd.out",
+                  "sysDesign.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

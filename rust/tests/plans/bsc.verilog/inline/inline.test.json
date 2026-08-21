@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/inline/inline",
+  "origin": {
+    "path": "testsuite/bsc.verilog/inline/inline.exp",
+    "sha256": "f2e71ddfe45a687934b08e3af4df91955c933e89cad3bcef50dfe4f5f31a6397"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/inline",
+  "fixtures": [
+    {
+      "path": "NoReset.bsv",
+      "sha256": "fefed049fa667f30263f82681ac7e22fdc1b6d706f3ce0f021630216a1fd5704",
+      "role": "source"
+    },
+    {
+      "path": "ProbeTest.bsv",
+      "sha256": "96d15198484e2b575ec7c922df1da94e77e6719dc889a0016e8508094979c226",
+      "role": "source"
+    },
+    {
+      "path": "RWireOneUse.bsv",
+      "sha256": "d55bdfe6e05479a8e69b21aca6947c013992fb8571fbf85b45146cec9830f6ca",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-RWireOneUse",
+      "resource": "normal",
+      "fixtures": [
+        "RWireOneUse.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RWireOneUse",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RWireOneUse.bsv",
+              "mode": "verilog",
+              "args": [
+                "-keep-inlined-boundaries"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RWireOneUse.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RWireOneUse.bsv"
+                ],
+                "outputs": [
+                  "RWireOneUse.bo",
+                  "RWireOneUse.bsv.bsc-vcomp-out",
+                  "sysRWireOneUse.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 203,
+                  "endByte": 267,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 6,
+                  "endColumn": 69
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysRWireOneUse.v",
+              "text": "assign rw$wget = ",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysRWireOneUse.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 272,
+                  "endByte": 325,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 58
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysRWireOneUse.v",
+              "text": "assign rw$whas = ",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysRWireOneUse.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 330,
+                  "endByte": 383,
+                  "startLine": 8,
+                  "startColumn": 5,
+                  "endLine": 8,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-NoReset",
+      "resource": "normal",
+      "fixtures": [
+        "NoReset.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-NoReset",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "NoReset.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "NoReset.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "NoReset.bsv"
+                ],
+                "outputs": [
+                  "NoReset.bo",
+                  "NoReset.bsv.bsc-vcomp-out",
+                  "mkTestNoReset.v",
+                  "mkTestSubTop.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 578,
+                  "endByte": 610,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTestNoReset.v",
+              "text": "1'd1",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "mkTestNoReset.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 630,
+                  "endByte": 669,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "mkTestSubTop.v",
+              "text": "1'd1",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "mkTestSubTop.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 670,
+                  "endByte": 708,
+                  "startLine": 17,
+                  "startColumn": 1,
+                  "endLine": 17,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-ProbeTest",
+      "resource": "normal",
+      "fixtures": [
+        "ProbeTest.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ProbeTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ProbeTest.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ProbeTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ProbeTest.bsv"
+                ],
+                "outputs": [
+                  "ProbeTest.bo",
+                  "ProbeTest.bsv.bsc-vcomp-out",
+                  "sysProbeTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 780,
+                  "endByte": 814,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysProbeTest.v",
+              "text": "x$PROBE",
+              "count": 4,
+              "artifacts": {
+                "inputs": [
+                  "sysProbeTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 838,
+                  "endByte": 879,
+                  "startLine": 23,
+                  "startColumn": 5,
+                  "endLine": 23,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.text_count",
+              "path": "sysProbeTest.v",
+              "text": "assign x$PROBE = ",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysProbeTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 884,
+                  "endByte": 935,
+                  "startLine": 24,
+                  "startColumn": 5,
+                  "endLine": 24,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

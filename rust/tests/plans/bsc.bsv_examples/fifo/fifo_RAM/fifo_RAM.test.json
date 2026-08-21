@@ -1,0 +1,372 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/fifo/fifo_RAM/fifo_RAM",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/fifo/fifo_RAM/fifo_RAM.exp",
+    "sha256": "86fb23f0f27b3dd66ff3c660a960ea7ce3cc22ca283f6c30acafd2f1fcd47a10"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/fifo/fifo_RAM",
+  "fixtures": [
+    {
+      "path": "SFIFOSupport.bsv",
+      "sha256": "57eb62cc80a538af621dd981b58626a41b9b0c538acd26d35bfedf92e86aeb0e",
+      "role": "source"
+    },
+    {
+      "path": "SFIFOTest.bsv",
+      "sha256": "49f8414b0f4af21ff5592c81986694c30338a263793a3dadf61289dd2ea2a956",
+      "role": "source"
+    },
+    {
+      "path": "mkSFIFOTest.out.expected",
+      "sha256": "325a4fb46d73b7b19a253ad64fa8362b1cb3614b8210151b8fcbaac14d7e2ce8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-SFIFOTest",
+      "resource": "heavy",
+      "fixtures": [
+        "SFIFOSupport.bsv",
+        "SFIFOTest.bsv",
+        "mkSFIFOTest.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SFIFOTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SFIFOTest.bsv",
+              "mode": "verilog",
+              "module": "mkSFIFOTest",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SFIFOTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SFIFOTest.bsv"
+                ],
+                "outputs": [
+                  "SFIFOTest.bo",
+                  "SFIFOTest.bsv.bsc-vcomp-out",
+                  "mkSFIFOTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 249,
+                  "endByte": 295,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkSFIFOTest.v"
+              ],
+              "top": "mkSFIFOTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.v"
+                ],
+                "outputs": [
+                  "mkSFIFOTest.bsc-vcomp-out",
+                  "mkSFIFOTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 296,
+                  "endByte": 341,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkSFIFOTest",
+              "args": [],
+              "stdout": "mkSFIFOTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.vexe"
+                ],
+                "outputs": [
+                  "mkSFIFOTest.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 342,
+                  "endByte": 365,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkSFIFOTest.out",
+              "destination": "mkSFIFOTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.out"
+                ],
+                "outputs": [
+                  "mkSFIFOTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 367,
+                  "endByte": 405,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkSFIFOTest.v.out",
+              "expected": "mkSFIFOTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.v.out",
+                  "mkSFIFOTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 406,
+                  "endByte": 461,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-mkSFIFOTest",
+      "resource": "heavy",
+      "fixtures": [
+        "SFIFOSupport.bsv",
+        "SFIFOTest.bsv",
+        "mkSFIFOTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkSFIFOTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SFIFOTest.bsv",
+              "mode": "bluesim",
+              "module": "mkSFIFOTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SFIFOTest.bsv"
+                ],
+                "outputs": [
+                  "SFIFOTest.bo",
+                  "SFIFOTest.bsv.bsc-ccomp-out",
+                  "mkSFIFOTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 64,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkSFIFOTest"
+              ],
+              "top": "mkSFIFOTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.ba"
+                ],
+                "outputs": [
+                  "mkSFIFOTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkSFIFOTest.cexe",
+                    "mkSFIFOTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 65,
+                  "endByte": 108,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkSFIFOTest",
+              "args": [],
+              "stdout": "mkSFIFOTest.out",
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.cexe"
+                ],
+                "outputs": [
+                  "mkSFIFOTest.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 109,
+                  "endByte": 131,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "mkSFIFOTest.out",
+              "destination": "mkSFIFOTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.out"
+                ],
+                "outputs": [
+                  "mkSFIFOTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 132,
+                  "endByte": 170,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkSFIFOTest.c.out",
+              "expected": "mkSFIFOTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkSFIFOTest.c.out",
+                  "mkSFIFOTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 171,
+                  "endByte": 226,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

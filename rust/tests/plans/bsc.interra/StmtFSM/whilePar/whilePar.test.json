@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/whilePar/whilePar",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/whilePar/whilePar.exp",
+    "sha256": "380e0171d3435d8a7fdc002e88f178e8b9726cc179dbef43e320c9a4dc032199"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/whilePar",
+  "fixtures": [
+    {
+      "path": "whilePar.bsv",
+      "sha256": "09025fe1c2c058c0aa44d640a97bb87cac3816745396c49d6a3a0a71374d6356",
+      "role": "source"
+    },
+    {
+      "path": "whilePar.out.expected",
+      "sha256": "29b3f9e4fde955e4c3427aef223e75ad5ce378100a29b56ea454bf9a72f28c3a",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-whilePar",
+      "resource": "heavy",
+      "fixtures": [
+        "whilePar.bsv",
+        "whilePar.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "whilePar",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "whilePar.bsv",
+              "mode": "shared_elaboration",
+              "module": "whilePar",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "whilePar.bsv"
+                ],
+                "outputs": [
+                  "whilePar.ba",
+                  "whilePar.bo",
+                  "whilePar.bsv.bsc-vcomp-out",
+                  "whilePar.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "whilePar"
+              ],
+              "top": "whilePar",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "whilePar.v"
+                ],
+                "outputs": [
+                  "whilePar.bsc-vcomp-out",
+                  "whilePar.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "whilePar",
+              "args": [],
+              "stdout": "whilePar.v.out",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.vexe"
+                ],
+                "outputs": [
+                  "whilePar.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "whilePar.v.out",
+              "expected": "whilePar.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.v.out",
+                  "whilePar.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "whilePar",
+              "args": [],
+              "stdout": "whilePar.v-vcd.out",
+              "vcd": "whilePar.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.vexe"
+                ],
+                "outputs": [
+                  "whilePar.v-vcd.out",
+                  "whilePar.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "whilePar.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "whilePar"
+              ],
+              "top": "whilePar",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "whilePar.ba"
+                ],
+                "outputs": [
+                  "whilePar.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "whilePar.cexe",
+                    "whilePar.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "whilePar",
+              "args": [],
+              "stdout": "whilePar.c.out",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.cexe"
+                ],
+                "outputs": [
+                  "whilePar.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "whilePar.c.out",
+              "expected": "whilePar.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.c.out",
+                  "whilePar.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "whilePar",
+              "args": [],
+              "stdout": "whilePar.c-vcd.out",
+              "vcd": "whilePar.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.cexe"
+                ],
+                "outputs": [
+                  "whilePar.c-vcd.out",
+                  "whilePar.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "whilePar.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "whilePar.c-vcd.out",
+              "expected": "whilePar.c.out",
+              "artifacts": {
+                "inputs": [
+                  "whilePar.c-vcd.out",
+                  "whilePar.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 66,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 67
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1132 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/BRAM/Lat/Lat",
+  "origin": {
+    "path": "testsuite/bsc.lib/BRAM/Lat/Lat.exp",
+    "sha256": "0ac9f37eba2de1ec3eee3a7a476cd9bcc3441c85a2daee1073ef67174e42a440"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/BRAM/Lat",
+  "fixtures": [
+    {
+      "path": "Lat112.bsv",
+      "sha256": "f2feff109dad1f6725c332fa79763e3502b2a617080a52abb80579633ca2fab3",
+      "role": "source"
+    },
+    {
+      "path": "Lat122.bsv",
+      "sha256": "caaccd1642a5c70d048d9c8c9fdc1bf696de3aef78c460d1833ca58875ad3c4f",
+      "role": "source"
+    },
+    {
+      "path": "Lat124.bsv",
+      "sha256": "b779986dc75882a15b256bf1fa1ee0892a76aba2830573fb117e93de1e1dfb17",
+      "role": "source"
+    },
+    {
+      "path": "Latency1Port.bsv",
+      "sha256": "3c059144b3e6bdb58a9aef8a57918cae14182a309195192364c5274ca3fde7bf",
+      "role": "source"
+    },
+    {
+      "path": "sysLat112.out.expected",
+      "sha256": "23571ba20685c6e3095f9ab88003f69cbb93f5795042d795bfd88762bf8b30cd",
+      "role": "golden"
+    },
+    {
+      "path": "sysLat122.out.expected",
+      "sha256": "29d90ff2df562b8888ea36ed846451434c8b7471da11f5a6200eb57b20b4fa2c",
+      "role": "golden"
+    },
+    {
+      "path": "sysLat124.out.expected",
+      "sha256": "8e857d4f5080a1b0478ac7bb466a19a4e45a1bdfc6fb3eb3a08d88a32ef24eb1",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysLat112",
+      "resource": "heavy",
+      "fixtures": [
+        "Lat112.bsv",
+        "Latency1Port.bsv",
+        "sysLat112.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLat112",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Lat112.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysLat112",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Lat112.bsv"
+                ],
+                "outputs": [
+                  "Lat112.bo",
+                  "Lat112.bsv.bsc-vcomp-out",
+                  "sysLat112.ba",
+                  "sysLat112.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLat112"
+              ],
+              "top": "sysLat112",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.v"
+                ],
+                "outputs": [
+                  "sysLat112.bsc-vcomp-out",
+                  "sysLat112.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLat112",
+              "args": [],
+              "stdout": "sysLat112.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.vexe"
+                ],
+                "outputs": [
+                  "sysLat112.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat112.v.out",
+              "expected": "sysLat112.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.v.out",
+                  "sysLat112.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLat112",
+              "args": [],
+              "stdout": "sysLat112.v-vcd.out",
+              "vcd": "sysLat112.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.vexe"
+                ],
+                "outputs": [
+                  "sysLat112.v-vcd.out",
+                  "sysLat112.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLat112.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLat112"
+              ],
+              "top": "sysLat112",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.ba"
+                ],
+                "outputs": [
+                  "sysLat112.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLat112.cexe",
+                    "sysLat112.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLat112",
+              "args": [],
+              "stdout": "sysLat112.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.cexe"
+                ],
+                "outputs": [
+                  "sysLat112.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat112.c.out",
+              "expected": "sysLat112.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.c.out",
+                  "sysLat112.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLat112",
+              "args": [],
+              "stdout": "sysLat112.c-vcd.out",
+              "vcd": "sysLat112.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.cexe"
+                ],
+                "outputs": [
+                  "sysLat112.c-vcd.out",
+                  "sysLat112.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLat112.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat112.c-vcd.out",
+              "expected": "sysLat112.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat112.c-vcd.out",
+                  "sysLat112.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 22,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysLat122",
+      "resource": "heavy",
+      "fixtures": [
+        "Lat122.bsv",
+        "Latency1Port.bsv",
+        "sysLat122.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLat122",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Lat122.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysLat122",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Lat122.bsv"
+                ],
+                "outputs": [
+                  "Lat122.bo",
+                  "Lat122.bsv.bsc-vcomp-out",
+                  "sysLat122.ba",
+                  "sysLat122.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLat122"
+              ],
+              "top": "sysLat122",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.v"
+                ],
+                "outputs": [
+                  "sysLat122.bsc-vcomp-out",
+                  "sysLat122.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLat122",
+              "args": [],
+              "stdout": "sysLat122.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.vexe"
+                ],
+                "outputs": [
+                  "sysLat122.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat122.v.out",
+              "expected": "sysLat122.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.v.out",
+                  "sysLat122.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLat122",
+              "args": [],
+              "stdout": "sysLat122.v-vcd.out",
+              "vcd": "sysLat122.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.vexe"
+                ],
+                "outputs": [
+                  "sysLat122.v-vcd.out",
+                  "sysLat122.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLat122.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLat122"
+              ],
+              "top": "sysLat122",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.ba"
+                ],
+                "outputs": [
+                  "sysLat122.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLat122.cexe",
+                    "sysLat122.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLat122",
+              "args": [],
+              "stdout": "sysLat122.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.cexe"
+                ],
+                "outputs": [
+                  "sysLat122.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat122.c.out",
+              "expected": "sysLat122.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.c.out",
+                  "sysLat122.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLat122",
+              "args": [],
+              "stdout": "sysLat122.c-vcd.out",
+              "vcd": "sysLat122.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.cexe"
+                ],
+                "outputs": [
+                  "sysLat122.c-vcd.out",
+                  "sysLat122.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLat122.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat122.c-vcd.out",
+              "expected": "sysLat122.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat122.c-vcd.out",
+                  "sysLat122.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 45,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysLat124",
+      "resource": "heavy",
+      "fixtures": [
+        "Lat124.bsv",
+        "Latency1Port.bsv",
+        "sysLat124.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysLat124",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Lat124.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysLat124",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Lat124.bsv"
+                ],
+                "outputs": [
+                  "Lat124.bo",
+                  "Lat124.bsv.bsc-vcomp-out",
+                  "sysLat124.ba",
+                  "sysLat124.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysLat124"
+              ],
+              "top": "sysLat124",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.v"
+                ],
+                "outputs": [
+                  "sysLat124.bsc-vcomp-out",
+                  "sysLat124.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLat124",
+              "args": [],
+              "stdout": "sysLat124.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.vexe"
+                ],
+                "outputs": [
+                  "sysLat124.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat124.v.out",
+              "expected": "sysLat124.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.v.out",
+                  "sysLat124.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysLat124",
+              "args": [],
+              "stdout": "sysLat124.v-vcd.out",
+              "vcd": "sysLat124.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.vexe"
+                ],
+                "outputs": [
+                  "sysLat124.v-vcd.out",
+                  "sysLat124.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysLat124.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysLat124"
+              ],
+              "top": "sysLat124",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.ba"
+                ],
+                "outputs": [
+                  "sysLat124.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysLat124.cexe",
+                    "sysLat124.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLat124",
+              "args": [],
+              "stdout": "sysLat124.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.cexe"
+                ],
+                "outputs": [
+                  "sysLat124.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat124.c.out",
+              "expected": "sysLat124.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.c.out",
+                  "sysLat124.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysLat124",
+              "args": [],
+              "stdout": "sysLat124.c-vcd.out",
+              "vcd": "sysLat124.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.cexe"
+                ],
+                "outputs": [
+                  "sysLat124.c-vcd.out",
+                  "sysLat124.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysLat124.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysLat124.c-vcd.out",
+              "expected": "sysLat124.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysLat124.c-vcd.out",
+                  "sysLat124.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 46,
+                  "endByte": 68,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

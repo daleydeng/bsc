@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.real/evaluator/undef/undef",
+  "origin": {
+    "path": "testsuite/bsc.real/evaluator/undef/undef.exp",
+    "sha256": "a4543ceef3bd7b31a256e61df7ae52c696ca5b84e23d6ac951000d8f7483813b"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.real/evaluator/undef",
+  "fixtures": [
+    {
+      "path": "DontCareDynSelectStaticArrayReal.bsv",
+      "sha256": "143fa0faf39fd2b7141df0fae073717a806664b788437141c9b90a4362bbce41",
+      "role": "source"
+    },
+    {
+      "path": "DontCareRealPrim.bsv",
+      "sha256": "7f6ecb22ffa7755944cd39ad64aa9752182e17f51046ef4a071ef966a17e20a1",
+      "role": "source"
+    },
+    {
+      "path": "sysDontCareDynSelectStaticArrayReal.out.expected",
+      "sha256": "0878b88ea584b58f139d5013c1b382d394195b805fa31d194a42b539cbf59727",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-DontCareRealPrim",
+      "resource": "normal",
+      "fixtures": [
+        "DontCareRealPrim.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-DontCareRealPrim",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "DontCareRealPrim.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DontCareRealPrim.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "DontCareRealPrim.bsv"
+                ],
+                "outputs": [
+                  "DontCareRealPrim.bo",
+                  "DontCareRealPrim.bsv.bsc-vcomp-out",
+                  "sysDontCareRealPrim.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 87,
+                  "endByte": 128,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysDontCareDynSelectStaticArrayReal",
+      "resource": "heavy",
+      "fixtures": [
+        "DontCareDynSelectStaticArrayReal.bsv",
+        "sysDontCareDynSelectStaticArrayReal.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysDontCareDynSelectStaticArrayReal",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "DontCareDynSelectStaticArrayReal.bsv",
+              "mode": "verilog",
+              "module": "sysDontCareDynSelectStaticArrayReal",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "DontCareDynSelectStaticArrayReal.bsv"
+                ],
+                "outputs": [
+                  "DontCareDynSelectStaticArrayReal.bo",
+                  "DontCareDynSelectStaticArrayReal.bsv.bsc-vcomp-out",
+                  "sysDontCareDynSelectStaticArrayReal.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 272,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysDontCareDynSelectStaticArrayReal"
+              ],
+              "top": "sysDontCareDynSelectStaticArrayReal",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysDontCareDynSelectStaticArrayReal.v"
+                ],
+                "outputs": [
+                  "sysDontCareDynSelectStaticArrayReal.bsc-vcomp-out",
+                  "sysDontCareDynSelectStaticArrayReal.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 272,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDontCareDynSelectStaticArrayReal",
+              "args": [],
+              "stdout": "sysDontCareDynSelectStaticArrayReal.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysDontCareDynSelectStaticArrayReal.vexe"
+                ],
+                "outputs": [
+                  "sysDontCareDynSelectStaticArrayReal.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 272,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysDontCareDynSelectStaticArrayReal.v.out",
+              "expected": "sysDontCareDynSelectStaticArrayReal.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysDontCareDynSelectStaticArrayReal.v.out",
+                  "sysDontCareDynSelectStaticArrayReal.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 272,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysDontCareDynSelectStaticArrayReal",
+              "args": [],
+              "stdout": "sysDontCareDynSelectStaticArrayReal.v-vcd.out",
+              "vcd": "sysDontCareDynSelectStaticArrayReal.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDontCareDynSelectStaticArrayReal.vexe"
+                ],
+                "outputs": [
+                  "sysDontCareDynSelectStaticArrayReal.v-vcd.out",
+                  "sysDontCareDynSelectStaticArrayReal.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 272,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysDontCareDynSelectStaticArrayReal.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysDontCareDynSelectStaticArrayReal.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 221,
+                  "endByte": 272,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

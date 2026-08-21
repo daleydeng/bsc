@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.names/hierarchy/hierarchy",
+  "origin": {
+    "path": "testsuite/bsc.names/hierarchy/hierarchy.exp",
+    "sha256": "cda0e00a80e8f4d56db45ccd32b3a15ab1249d70f06c056ac48e753e9e1fa5fc"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.names/hierarchy",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "8abb3385a112bbc9315fc0bbdeab27559e6f5a99d694a1614c0c66c33a2a6d60",
+      "role": "source"
+    },
+    {
+      "path": "Example.bsv",
+      "sha256": "1f16cb0815b06c976bffd8d797c7d43233d9ab547fb01d5e30170bf8aab49e5c",
+      "role": "source"
+    },
+    {
+      "path": "Zow.bsv",
+      "sha256": "08c896c5e27c8491cf7a15a5d100fe298c3e187e33cb739a3542a01f1085505e",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Design",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Design",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Design.bsv",
+              "mode": "verilog",
+              "args": [
+                "-trace-inst-tree"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Design.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-vcomp-out",
+                  "mkDesign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 54,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Example",
+      "resource": "normal",
+      "fixtures": [
+        "Example.bsv",
+        "Zow.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Example",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Example.bsv",
+              "mode": "verilog",
+              "args": [
+                "-trace-inst-tree"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Example.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Example.bsv"
+                ],
+                "outputs": [
+                  "Example.bo",
+                  "Example.bsv.bsc-vcomp-out",
+                  "mkExample.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 234,
+                  "endByte": 289,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-1-Design",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-Design",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Design.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-trace-inst-tree"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Design.bsv"
+                ],
+                "outputs": [
+                  "Design.bo",
+                  "Design.bsv.bsc-ccomp-out",
+                  "mkDesign.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 170,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-2-Example",
+      "resource": "heavy",
+      "fixtures": [
+        "Example.bsv",
+        "Zow.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-Example",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Example.bsv",
+              "mode": "bluesim",
+              "args": [
+                "-trace-inst-tree"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Example.bsv"
+                ],
+                "outputs": [
+                  "Example.bo",
+                  "Example.bsv.bsc-ccomp-out",
+                  "mkExample.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 353,
+                  "endByte": 407,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1818 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/operators/operators",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/operators/operators.exp",
+    "sha256": "2ef6c6b2aec8376514da2a3e603d6501250593913bfba0257cc8f1b485993ac0"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/operators",
+  "fixtures": [
+    {
+      "path": "ExtractBounds.bsv",
+      "sha256": "221f3afa2530fa377b7807dd364444fce4c8a021fd61b469eff732c8915ea675",
+      "role": "source"
+    },
+    {
+      "path": "ExtractSizes.bsv",
+      "sha256": "1e4f28eb5c4009ea107526c6d31f588fcf2b917d9a8978511a563ff0a5a2c2da",
+      "role": "source"
+    },
+    {
+      "path": "ShiftL.bsv",
+      "sha256": "77914684d9d6297eaf08fbfd9317da6bba6e29127f111cb9bec9bf70fc7a65c4",
+      "role": "source"
+    },
+    {
+      "path": "ShiftR.bsv",
+      "sha256": "919bd608859b3433fde3b039d59b976e818c31d0059488b4ef7c63cb629b8025",
+      "role": "source"
+    },
+    {
+      "path": "ShiftRA.bsv",
+      "sha256": "fca6aea20a63025090a4ef3079c330ac1a85d29ae062c6958b8aef38384b4164",
+      "role": "source"
+    },
+    {
+      "path": "sysExtractBounds.out.expected",
+      "sha256": "c15665f6e201da9c75fdf1cea810b9d0db15b72aae8e12cf27da102b044e725d",
+      "role": "golden"
+    },
+    {
+      "path": "sysExtractSizes.out.expected",
+      "sha256": "c15665f6e201da9c75fdf1cea810b9d0db15b72aae8e12cf27da102b044e725d",
+      "role": "golden"
+    },
+    {
+      "path": "sysShiftL.out.expected",
+      "sha256": "ef0c4129cf4397a741072c110d40f807f269d96b92a7612e83a77b8ffc9659d7",
+      "role": "golden"
+    },
+    {
+      "path": "sysShiftR.out.expected",
+      "sha256": "8ff5b1b78bbba53bc0ee773336a5a1a5963d69ff16793ed1de9c49e56bffdfa8",
+      "role": "golden"
+    },
+    {
+      "path": "sysShiftRA.out.expected",
+      "sha256": "fe5485b35cbfcb6f981d52f99fd37a2902103777961fe38230a6c88a97ba3cea",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysExtractSizes",
+      "resource": "heavy",
+      "fixtures": [
+        "ExtractSizes.bsv",
+        "sysExtractSizes.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysExtractSizes",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ExtractSizes.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysExtractSizes",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ExtractSizes.bsv"
+                ],
+                "outputs": [
+                  "ExtractSizes.bo",
+                  "ExtractSizes.bsv.bsc-vcomp-out",
+                  "sysExtractSizes.ba",
+                  "sysExtractSizes.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysExtractSizes"
+              ],
+              "top": "sysExtractSizes",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.v"
+                ],
+                "outputs": [
+                  "sysExtractSizes.bsc-vcomp-out",
+                  "sysExtractSizes.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysExtractSizes",
+              "args": [],
+              "stdout": "sysExtractSizes.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.vexe"
+                ],
+                "outputs": [
+                  "sysExtractSizes.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysExtractSizes.v.out",
+              "expected": "sysExtractSizes.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.v.out",
+                  "sysExtractSizes.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysExtractSizes",
+              "args": [],
+              "stdout": "sysExtractSizes.v-vcd.out",
+              "vcd": "sysExtractSizes.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.vexe"
+                ],
+                "outputs": [
+                  "sysExtractSizes.v-vcd.out",
+                  "sysExtractSizes.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysExtractSizes.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysExtractSizes"
+              ],
+              "top": "sysExtractSizes",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.ba"
+                ],
+                "outputs": [
+                  "sysExtractSizes.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysExtractSizes.cexe",
+                    "sysExtractSizes.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysExtractSizes",
+              "args": [],
+              "stdout": "sysExtractSizes.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.cexe"
+                ],
+                "outputs": [
+                  "sysExtractSizes.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysExtractSizes.c.out",
+              "expected": "sysExtractSizes.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.c.out",
+                  "sysExtractSizes.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysExtractSizes",
+              "args": [],
+              "stdout": "sysExtractSizes.c-vcd.out",
+              "vcd": "sysExtractSizes.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.cexe"
+                ],
+                "outputs": [
+                  "sysExtractSizes.c-vcd.out",
+                  "sysExtractSizes.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysExtractSizes.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysExtractSizes.c-vcd.out",
+              "expected": "sysExtractSizes.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractSizes.c-vcd.out",
+                  "sysExtractSizes.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 50,
+                  "endByte": 78,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysExtractBounds",
+      "resource": "heavy",
+      "fixtures": [
+        "ExtractBounds.bsv",
+        "sysExtractBounds.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysExtractBounds",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ExtractBounds.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysExtractBounds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ExtractBounds.bsv"
+                ],
+                "outputs": [
+                  "ExtractBounds.bo",
+                  "ExtractBounds.bsv.bsc-vcomp-out",
+                  "sysExtractBounds.ba",
+                  "sysExtractBounds.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysExtractBounds"
+              ],
+              "top": "sysExtractBounds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.v"
+                ],
+                "outputs": [
+                  "sysExtractBounds.bsc-vcomp-out",
+                  "sysExtractBounds.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysExtractBounds",
+              "args": [],
+              "stdout": "sysExtractBounds.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.vexe"
+                ],
+                "outputs": [
+                  "sysExtractBounds.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysExtractBounds.v.out",
+              "expected": "sysExtractBounds.out.expected",
+              "reason": "upstream bug 1575",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.v.out",
+                  "sysExtractBounds.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysExtractBounds",
+              "args": [],
+              "stdout": "sysExtractBounds.v-vcd.out",
+              "vcd": "sysExtractBounds.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.vexe"
+                ],
+                "outputs": [
+                  "sysExtractBounds.v-vcd.out",
+                  "sysExtractBounds.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysExtractBounds"
+              ],
+              "top": "sysExtractBounds",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.ba"
+                ],
+                "outputs": [
+                  "sysExtractBounds.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysExtractBounds.cexe",
+                    "sysExtractBounds.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysExtractBounds",
+              "args": [],
+              "stdout": "sysExtractBounds.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.cexe"
+                ],
+                "outputs": [
+                  "sysExtractBounds.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.golden_xfail",
+              "actual": "sysExtractBounds.c.out",
+              "expected": "sysExtractBounds.out.expected",
+              "reason": "upstream bug 1548",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.c.out",
+                  "sysExtractBounds.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysExtractBounds",
+              "args": [],
+              "stdout": "sysExtractBounds.c-vcd.out",
+              "vcd": "sysExtractBounds.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.cexe"
+                ],
+                "outputs": [
+                  "sysExtractBounds.c-vcd.out",
+                  "sysExtractBounds.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysExtractBounds.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysExtractBounds.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 158,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysShiftL",
+      "resource": "heavy",
+      "fixtures": [
+        "ShiftL.bsv",
+        "sysShiftL.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysShiftL",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ShiftL.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysShiftL",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ShiftL.bsv"
+                ],
+                "outputs": [
+                  "ShiftL.bo",
+                  "ShiftL.bsv.bsc-vcomp-out",
+                  "sysShiftL.ba",
+                  "sysShiftL.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysShiftL"
+              ],
+              "top": "sysShiftL",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.v"
+                ],
+                "outputs": [
+                  "sysShiftL.bsc-vcomp-out",
+                  "sysShiftL.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysShiftL",
+              "args": [],
+              "stdout": "sysShiftL.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.vexe"
+                ],
+                "outputs": [
+                  "sysShiftL.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftL.v.out",
+              "expected": "sysShiftL.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.v.out",
+                  "sysShiftL.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysShiftL",
+              "args": [],
+              "stdout": "sysShiftL.v-vcd.out",
+              "vcd": "sysShiftL.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.vexe"
+                ],
+                "outputs": [
+                  "sysShiftL.v-vcd.out",
+                  "sysShiftL.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysShiftL.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysShiftL"
+              ],
+              "top": "sysShiftL",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.ba"
+                ],
+                "outputs": [
+                  "sysShiftL.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysShiftL.cexe",
+                    "sysShiftL.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysShiftL",
+              "args": [],
+              "stdout": "sysShiftL.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.cexe"
+                ],
+                "outputs": [
+                  "sysShiftL.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftL.c.out",
+              "expected": "sysShiftL.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.c.out",
+                  "sysShiftL.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysShiftL",
+              "args": [],
+              "stdout": "sysShiftL.c-vcd.out",
+              "vcd": "sysShiftL.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.cexe"
+                ],
+                "outputs": [
+                  "sysShiftL.c-vcd.out",
+                  "sysShiftL.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysShiftL.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftL.c-vcd.out",
+              "expected": "sysShiftL.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftL.c-vcd.out",
+                  "sysShiftL.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 256,
+                  "endByte": 278,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysShiftR",
+      "resource": "heavy",
+      "fixtures": [
+        "ShiftR.bsv",
+        "sysShiftR.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysShiftR",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ShiftR.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysShiftR",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ShiftR.bsv"
+                ],
+                "outputs": [
+                  "ShiftR.bo",
+                  "ShiftR.bsv.bsc-vcomp-out",
+                  "sysShiftR.ba",
+                  "sysShiftR.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysShiftR"
+              ],
+              "top": "sysShiftR",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.v"
+                ],
+                "outputs": [
+                  "sysShiftR.bsc-vcomp-out",
+                  "sysShiftR.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysShiftR",
+              "args": [],
+              "stdout": "sysShiftR.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.vexe"
+                ],
+                "outputs": [
+                  "sysShiftR.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftR.v.out",
+              "expected": "sysShiftR.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.v.out",
+                  "sysShiftR.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysShiftR",
+              "args": [],
+              "stdout": "sysShiftR.v-vcd.out",
+              "vcd": "sysShiftR.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.vexe"
+                ],
+                "outputs": [
+                  "sysShiftR.v-vcd.out",
+                  "sysShiftR.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysShiftR.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysShiftR"
+              ],
+              "top": "sysShiftR",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.ba"
+                ],
+                "outputs": [
+                  "sysShiftR.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysShiftR.cexe",
+                    "sysShiftR.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysShiftR",
+              "args": [],
+              "stdout": "sysShiftR.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.cexe"
+                ],
+                "outputs": [
+                  "sysShiftR.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftR.c.out",
+              "expected": "sysShiftR.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.c.out",
+                  "sysShiftR.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysShiftR",
+              "args": [],
+              "stdout": "sysShiftR.c-vcd.out",
+              "vcd": "sysShiftR.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.cexe"
+                ],
+                "outputs": [
+                  "sysShiftR.c-vcd.out",
+                  "sysShiftR.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysShiftR.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftR.c-vcd.out",
+              "expected": "sysShiftR.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftR.c-vcd.out",
+                  "sysShiftR.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 279,
+                  "endByte": 301,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysShiftRA",
+      "resource": "heavy",
+      "fixtures": [
+        "ShiftRA.bsv",
+        "sysShiftRA.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysShiftRA",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ShiftRA.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysShiftRA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ShiftRA.bsv"
+                ],
+                "outputs": [
+                  "ShiftRA.bo",
+                  "ShiftRA.bsv.bsc-vcomp-out",
+                  "sysShiftRA.ba",
+                  "sysShiftRA.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysShiftRA"
+              ],
+              "top": "sysShiftRA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.v"
+                ],
+                "outputs": [
+                  "sysShiftRA.bsc-vcomp-out",
+                  "sysShiftRA.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysShiftRA",
+              "args": [],
+              "stdout": "sysShiftRA.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.vexe"
+                ],
+                "outputs": [
+                  "sysShiftRA.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftRA.v.out",
+              "expected": "sysShiftRA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.v.out",
+                  "sysShiftRA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysShiftRA",
+              "args": [],
+              "stdout": "sysShiftRA.v-vcd.out",
+              "vcd": "sysShiftRA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.vexe"
+                ],
+                "outputs": [
+                  "sysShiftRA.v-vcd.out",
+                  "sysShiftRA.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysShiftRA.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysShiftRA"
+              ],
+              "top": "sysShiftRA",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.ba"
+                ],
+                "outputs": [
+                  "sysShiftRA.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysShiftRA.cexe",
+                    "sysShiftRA.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysShiftRA",
+              "args": [],
+              "stdout": "sysShiftRA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.cexe"
+                ],
+                "outputs": [
+                  "sysShiftRA.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftRA.c.out",
+              "expected": "sysShiftRA.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.c.out",
+                  "sysShiftRA.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysShiftRA",
+              "args": [],
+              "stdout": "sysShiftRA.c-vcd.out",
+              "vcd": "sysShiftRA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.cexe"
+                ],
+                "outputs": [
+                  "sysShiftRA.c-vcd.out",
+                  "sysShiftRA.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysShiftRA.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysShiftRA.c-vcd.out",
+              "expected": "sysShiftRA.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysShiftRA.c-vcd.out",
+                  "sysShiftRA.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 302,
+                  "endByte": 325,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

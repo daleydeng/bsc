@@ -1,0 +1,1160 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/gcd/gcd",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/gcd/gcd.exp",
+    "sha256": "7d116518251958673e61db8d56708c6932800c5f038fd7c472f4f4a837fdd6c6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/gcd",
+  "fixtures": [
+    {
+      "path": "DIV3.bsv",
+      "sha256": "d36f9ef747cc75c882e88376b4df9c350d7e07cf1c9752e35c0b5fac38e6b7a4",
+      "role": "source"
+    },
+    {
+      "path": "GCD.bsv",
+      "sha256": "a8e33b5279bfffedb503230ae3573cd8b5623adfda0182326f7f505dc9720894",
+      "role": "source"
+    },
+    {
+      "path": "TbDIV3.bsv",
+      "sha256": "90353f086a620089e81a6c8be223748be5c9b6b7a4699c10c4a18c301b9540fb",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "4e064862773328c94aeb7e41bbae7916d7f1f5c08d4a80b77b12e6de2516d8f0",
+      "role": "source"
+    },
+    {
+      "path": "TbWideGCD.bsv",
+      "sha256": "40997fadffb85813ea169678a347cbbdf7d6703c8c8debebc8e04c0197ae3e82",
+      "role": "source"
+    },
+    {
+      "path": "WideGCD.bsv",
+      "sha256": "b98b2f298f889e9f8064c5463c4166ec277551f7651dd4553363e9bcae84a842",
+      "role": "source"
+    },
+    {
+      "path": "mkTbDIV3.out.expected",
+      "sha256": "ca51c8cb57e180a1015588789455e6bf6e05ccd5b4378fddf48f37c2f2171919",
+      "role": "golden"
+    },
+    {
+      "path": "mkTbGCD.out.expected",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "golden"
+    },
+    {
+      "path": "mkTbWideGCD.out.expected",
+      "sha256": "5118a8e31b893f7e7c8c4752e5807c9d50449252bd8eaf1810ee11af6e6ebde5",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTbGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv",
+        "mkTbGCD.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTbGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-vcomp-out",
+                  "mkGCD.ba",
+                  "mkGCD.v",
+                  "mkTbGCD.ba",
+                  "mkTbGCD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTbGCD",
+                "mkGCD"
+              ],
+              "top": "mkTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.v",
+                  "mkGCD.v"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-vcomp-out",
+                  "mkTbGCD.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.vexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbGCD.v.out",
+              "expected": "mkTbGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.v.out",
+                  "mkTbGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.v-vcd.out",
+              "vcd": "mkTbGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.vexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.v-vcd.out",
+                  "mkTbGCD.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTbGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTbGCD",
+                "mkGCD"
+              ],
+              "top": "mkTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.ba",
+                  "mkGCD.ba"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbGCD.c.out",
+              "expected": "mkTbGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.c.out",
+                  "mkTbGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbGCD",
+              "args": [],
+              "stdout": "mkTbGCD.c-vcd.out",
+              "vcd": "mkTbGCD.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbGCD.c-vcd.out",
+                  "mkTbGCD.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTbGCD.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbGCD.c-vcd.out",
+              "expected": "mkTbGCD.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.c-vcd.out",
+                  "mkTbGCD.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 41,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 42
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTbWideGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "TbWideGCD.bsv",
+        "WideGCD.bsv",
+        "mkTbWideGCD.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTbWideGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbWideGCD.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTbWideGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbWideGCD.bsv"
+                ],
+                "outputs": [
+                  "TbWideGCD.bo",
+                  "TbWideGCD.bsv.bsc-vcomp-out",
+                  "mkTbWideGCD.ba",
+                  "mkTbWideGCD.v",
+                  "mkWideGCD.ba",
+                  "mkWideGCD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTbWideGCD",
+                "mkWideGCD"
+              ],
+              "top": "mkTbWideGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.v",
+                  "mkWideGCD.v"
+                ],
+                "outputs": [
+                  "mkTbWideGCD.bsc-vcomp-out",
+                  "mkTbWideGCD.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbWideGCD",
+              "args": [],
+              "stdout": "mkTbWideGCD.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.vexe"
+                ],
+                "outputs": [
+                  "mkTbWideGCD.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbWideGCD.v.out",
+              "expected": "mkTbWideGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.v.out",
+                  "mkTbWideGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbWideGCD",
+              "args": [],
+              "stdout": "mkTbWideGCD.v-vcd.out",
+              "vcd": "mkTbWideGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.vexe"
+                ],
+                "outputs": [
+                  "mkTbWideGCD.v-vcd.out",
+                  "mkTbWideGCD.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTbWideGCD.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTbWideGCD",
+                "mkWideGCD"
+              ],
+              "top": "mkTbWideGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.ba",
+                  "mkWideGCD.ba"
+                ],
+                "outputs": [
+                  "mkTbWideGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbWideGCD.cexe",
+                    "mkTbWideGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbWideGCD",
+              "args": [],
+              "stdout": "mkTbWideGCD.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbWideGCD.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbWideGCD.c.out",
+              "expected": "mkTbWideGCD.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.c.out",
+                  "mkTbWideGCD.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbWideGCD",
+              "args": [],
+              "stdout": "mkTbWideGCD.c-vcd.out",
+              "vcd": "mkTbWideGCD.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.cexe"
+                ],
+                "outputs": [
+                  "mkTbWideGCD.c-vcd.out",
+                  "mkTbWideGCD.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTbWideGCD.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbWideGCD.c-vcd.out",
+              "expected": "mkTbWideGCD.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbWideGCD.c-vcd.out",
+                  "mkTbWideGCD.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 44,
+                  "endByte": 97,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTbDIV3",
+      "resource": "heavy",
+      "fixtures": [
+        "DIV3.bsv",
+        "TbDIV3.bsv",
+        "mkTbDIV3.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTbDIV3",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbDIV3.bsv",
+              "mode": "shared_elaboration",
+              "module": "mkTbDIV3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbDIV3.bsv"
+                ],
+                "outputs": [
+                  "TbDIV3.bo",
+                  "TbDIV3.bsv.bsc-vcomp-out",
+                  "mkDIV3.ba",
+                  "mkDIV3.v",
+                  "mkTbDIV3.ba",
+                  "mkTbDIV3.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTbDIV3",
+                "mkDIV3"
+              ],
+              "top": "mkTbDIV3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.v",
+                  "mkDIV3.v"
+                ],
+                "outputs": [
+                  "mkTbDIV3.bsc-vcomp-out",
+                  "mkTbDIV3.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbDIV3",
+              "args": [],
+              "stdout": "mkTbDIV3.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.vexe"
+                ],
+                "outputs": [
+                  "mkTbDIV3.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbDIV3.v.out",
+              "expected": "mkTbDIV3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.v.out",
+                  "mkTbDIV3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTbDIV3",
+              "args": [],
+              "stdout": "mkTbDIV3.v-vcd.out",
+              "vcd": "mkTbDIV3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.vexe"
+                ],
+                "outputs": [
+                  "mkTbDIV3.v-vcd.out",
+                  "mkTbDIV3.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTbDIV3.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTbDIV3",
+                "mkDIV3"
+              ],
+              "top": "mkTbDIV3",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.ba",
+                  "mkDIV3.ba"
+                ],
+                "outputs": [
+                  "mkTbDIV3.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbDIV3.cexe",
+                    "mkTbDIV3.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbDIV3",
+              "args": [],
+              "stdout": "mkTbDIV3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.cexe"
+                ],
+                "outputs": [
+                  "mkTbDIV3.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbDIV3.c.out",
+              "expected": "mkTbDIV3.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.c.out",
+                  "mkTbDIV3.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "mkTbDIV3",
+              "args": [],
+              "stdout": "mkTbDIV3.c-vcd.out",
+              "vcd": "mkTbDIV3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.cexe"
+                ],
+                "outputs": [
+                  "mkTbDIV3.c-vcd.out",
+                  "mkTbDIV3.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "mkTbDIV3.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTbDIV3.c-vcd.out",
+              "expected": "mkTbDIV3.c.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTbDIV3.c-vcd.out",
+                  "mkTbDIV3.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 100,
+                  "endByte": 144,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

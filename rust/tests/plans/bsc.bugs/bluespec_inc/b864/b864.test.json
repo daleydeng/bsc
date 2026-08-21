@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b864/b864",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b864/b864.exp",
+    "sha256": "64cfb6b04b1ac50e4b636a54af1ca95c5e92e4296e057082c04eb1efb6f40dd0"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b864",
+  "fixtures": [
+    {
+      "path": "D.bsv",
+      "sha256": "24099a6a5353ee81e1d0498ea051c93bf89adacc7b04e903586ab0ecf4e12f82",
+      "role": "source"
+    },
+    {
+      "path": "OptAcrossRWireInDefs.bsv",
+      "sha256": "01591cebcaf7e85789b4e1273637153032a8d5664c37a215e484c7425a6af91a",
+      "role": "source"
+    },
+    {
+      "path": "OptAcrossRWireInForeign.bsv",
+      "sha256": "0e1e3e57cdcacaaa1d90537abc2b412ee6b32f9868f658c6ce6759be22599674",
+      "role": "source"
+    },
+    {
+      "path": "OptAcrossRWireInInst.bsv",
+      "sha256": "996958467d22f9fffb25b4a8237fb47f46e06eae0011e21a2d05f7c79257b39e",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-D",
+      "resource": "normal",
+      "fixtures": [
+        "D.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-D",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "D.bsv",
+              "mode": "verilog",
+              "module": "mkD",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "D.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "D.bsv"
+                ],
+                "outputs": [
+                  "D.bo",
+                  "D.bsv.bsc-vcomp-out",
+                  "mkD.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 53,
+                  "startLine": 2,
+                  "startColumn": 5,
+                  "endLine": 2,
+                  "endColumn": 35
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkD.v",
+              "pattern": "display.*4'd1",
+              "artifacts": {
+                "inputs": [
+                  "mkD.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 94,
+                  "endByte": 128,
+                  "startLine": 4,
+                  "startColumn": 5,
+                  "endLine": 4,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-OptAcrossRWireInDefs",
+      "resource": "normal",
+      "fixtures": [
+        "OptAcrossRWireInDefs.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OptAcrossRWireInDefs",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OptAcrossRWireInDefs.bsv",
+              "mode": "verilog",
+              "module": "sysOptAcrossRWireInDefs",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "OptAcrossRWireInDefs.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OptAcrossRWireInDefs.bsv"
+                ],
+                "outputs": [
+                  "OptAcrossRWireInDefs.bo",
+                  "OptAcrossRWireInDefs.bsv.bsc-vcomp-out",
+                  "sysOptAcrossRWireInDefs.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 134,
+                  "endByte": 203,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 6,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "sysOptAcrossRWireInDefs.v",
+              "text": "x$D_IN = x",
+              "artifacts": {
+                "inputs": [
+                  "sysOptAcrossRWireInDefs.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 234,
+                  "endByte": 286,
+                  "startLine": 8,
+                  "startColumn": 5,
+                  "endLine": 8,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-OptAcrossRWireInForeign",
+      "resource": "normal",
+      "fixtures": [
+        "OptAcrossRWireInForeign.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OptAcrossRWireInForeign",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OptAcrossRWireInForeign.bsv",
+              "mode": "verilog",
+              "module": "sysOptAcrossRWireInForeign",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "OptAcrossRWireInForeign.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OptAcrossRWireInForeign.bsv"
+                ],
+                "outputs": [
+                  "OptAcrossRWireInForeign.bo",
+                  "OptAcrossRWireInForeign.bsv.bsc-vcomp-out",
+                  "sysOptAcrossRWireInForeign.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 292,
+                  "endByte": 367,
+                  "startLine": 10,
+                  "startColumn": 5,
+                  "endLine": 10,
+                  "endColumn": 80
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "sysOptAcrossRWireInForeign.v",
+              "text": "display(x)",
+              "artifacts": {
+                "inputs": [
+                  "sysOptAcrossRWireInForeign.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 408,
+                  "endByte": 463,
+                  "startLine": 12,
+                  "startColumn": 5,
+                  "endLine": 12,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-OptAcrossRWireInInst",
+      "resource": "normal",
+      "fixtures": [
+        "OptAcrossRWireInInst.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-OptAcrossRWireInInst",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "OptAcrossRWireInInst.bsv",
+              "mode": "verilog",
+              "module": "sysOptAcrossRWireInInst",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "OptAcrossRWireInInst.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "OptAcrossRWireInInst.bsv"
+                ],
+                "outputs": [
+                  "OptAcrossRWireInInst.bo",
+                  "OptAcrossRWireInInst.bsv.bsc-vcomp-out",
+                  "mkOptAcrossRWireInInst_Sub.v",
+                  "sysOptAcrossRWireInInst.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 469,
+                  "endByte": 538,
+                  "startLine": 14,
+                  "startColumn": 5,
+                  "endLine": 14,
+                  "endColumn": 74
+                }
+              }
+            },
+            {
+              "op": "assert.text_contains",
+              "path": "sysOptAcrossRWireInInst.v",
+              "text": "foo(.x(x)",
+              "artifacts": {
+                "inputs": [
+                  "sysOptAcrossRWireInInst.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 591,
+                  "endByte": 642,
+                  "startLine": 16,
+                  "startColumn": 5,
+                  "endLine": 16,
+                  "endColumn": 56
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

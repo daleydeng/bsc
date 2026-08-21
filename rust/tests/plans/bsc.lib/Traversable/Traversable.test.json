@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Traversable/Traversable",
+  "origin": {
+    "path": "testsuite/bsc.lib/Traversable/Traversable.exp",
+    "sha256": "70600247e86e69c3bb2dfdb9d0e25d5cb3bfb3242a1d09eb2a7f3707fe94f8c3"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Traversable",
+  "fixtures": [
+    {
+      "path": "TraversableTest.bs",
+      "sha256": "572881a3ffe22ac7d8107333f65ff75adfe9030b39cdcf4571fec7fddf3cfd29",
+      "role": "source"
+    },
+    {
+      "path": "sysTraversableTest.out.expected",
+      "sha256": "8c330cdd4facd7339fbf99c5090eeec7b577400eca8af02dca8d56a924d00717",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTraversableTest",
+      "resource": "heavy",
+      "fixtures": [
+        "TraversableTest.bs",
+        "sysTraversableTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTraversableTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TraversableTest.bs",
+              "mode": "shared_elaboration",
+              "module": "sysTraversableTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TraversableTest.bs"
+                ],
+                "outputs": [
+                  "TraversableTest.bo",
+                  "TraversableTest.bs.bsc-vcomp-out",
+                  "sysTraversableTest.ba",
+                  "sysTraversableTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTraversableTest"
+              ],
+              "top": "sysTraversableTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.v"
+                ],
+                "outputs": [
+                  "sysTraversableTest.bsc-vcomp-out",
+                  "sysTraversableTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTraversableTest",
+              "args": [],
+              "stdout": "sysTraversableTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.vexe"
+                ],
+                "outputs": [
+                  "sysTraversableTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTraversableTest.v.out",
+              "expected": "sysTraversableTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.v.out",
+                  "sysTraversableTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTraversableTest",
+              "args": [],
+              "stdout": "sysTraversableTest.v-vcd.out",
+              "vcd": "sysTraversableTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.vexe"
+                ],
+                "outputs": [
+                  "sysTraversableTest.v-vcd.out",
+                  "sysTraversableTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTraversableTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTraversableTest"
+              ],
+              "top": "sysTraversableTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.ba"
+                ],
+                "outputs": [
+                  "sysTraversableTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTraversableTest.cexe",
+                    "sysTraversableTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTraversableTest",
+              "args": [],
+              "stdout": "sysTraversableTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.cexe"
+                ],
+                "outputs": [
+                  "sysTraversableTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTraversableTest.c.out",
+              "expected": "sysTraversableTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.c.out",
+                  "sysTraversableTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTraversableTest",
+              "args": [],
+              "stdout": "sysTraversableTest.c-vcd.out",
+              "vcd": "sysTraversableTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.cexe"
+                ],
+                "outputs": [
+                  "sysTraversableTest.c-vcd.out",
+                  "sysTraversableTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTraversableTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTraversableTest.c-vcd.out",
+              "expected": "sysTraversableTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTraversableTest.c-vcd.out",
+                  "sysTraversableTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 43,
+                  "endByte": 70,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

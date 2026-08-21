@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/to_systemc/mcd/mcd",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/to_systemc/mcd/mcd.exp",
+    "sha256": "342ddd1a978201685fab9bed062502977bed01320c1141c6b71e9d6c2957ea89"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/to_systemc/mcd",
+  "fixtures": [
+    {
+      "path": "MCD.bsv",
+      "sha256": "fe56aad3d18be851b9b6164b4bc35f7016a9103f44ad6dfce182f51c9a9b1a17",
+      "role": "source"
+    },
+    {
+      "path": "mcd.out.expected",
+      "sha256": "385e7f97bbd3b47e59dc273291a0e43207e2d49f5b11f3fce25e980cc3597246",
+      "role": "golden"
+    },
+    {
+      "path": "tb.sc",
+      "sha256": "0d0b7745b49c3fbf6a6ca37416b2935296f93d7cc4aea48a8fbff93cf329a6f7",
+      "role": "data"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "systemc-workflow-mcd",
+      "resource": "heavy",
+      "fixtures": [
+        "MCD.bsv",
+        "mcd.out.expected",
+        "tb.sc"
+      ],
+      "requires": [
+        "bluesim",
+        "system_c"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "systemc-run",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MCD.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MCD.bsv"
+                ],
+                "outputs": [
+                  "MCD.bsv.bsc-ccomp-out",
+                  "MCD.bo",
+                  "mkMCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 74,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 28
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "mkMCD.ba"
+              ],
+              "top": "mkMCD",
+              "artifacts": {
+                "inputs": [
+                  "mkMCD.ba"
+                ],
+                "outputs": [
+                  "mkMCD.bsc-ccomp-out",
+                  "mkMCD.o",
+                  "mkMCD_systemc.o",
+                  "model_mkMCD.o"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 75,
+                  "endByte": 117,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "systemc.cxx_link",
+              "executable": "mcd",
+              "sources": [
+                "tb.sc"
+              ],
+              "topModules": [
+                "mkMCD"
+              ],
+              "otherModules": [],
+              "defines": [],
+              "artifacts": {
+                "inputs": [
+                  "tb.sc",
+                  "mkMCD.o",
+                  "mkMCD_systemc.o",
+                  "model_mkMCD.o"
+                ],
+                "outputs": [
+                  "mcd.syscexe",
+                  "mcd.cxx-comp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 118,
+                  "endByte": 163,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "systemc.run",
+              "executable": "mcd",
+              "stdout": "mcd.out",
+              "sortOutput": true,
+              "artifacts": {
+                "inputs": [
+                  "mcd.syscexe"
+                ],
+                "outputs": [
+                  "mcd.out",
+                  "mcd.raw.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 201,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mcd.out",
+              "expected": "mcd.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mcd.out",
+                  "mcd.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 164,
+                  "endByte": 201,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

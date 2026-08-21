@@ -1,0 +1,436 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/StmtFSM/CycleTest/cycletest",
+  "origin": {
+    "path": "testsuite/bsc.interra/StmtFSM/CycleTest/cycletest.exp",
+    "sha256": "fb6a549c25a0ec775a5e5d7e56d9d8725e1666e671c293b849d47c1b638b12ff"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/StmtFSM/CycleTest",
+  "fixtures": [
+    {
+      "path": "CycleTest.bsv",
+      "sha256": "1575916e92fefd47c3eebea49eec2ddb9986fdf9bfbff32b7b336b3454799593",
+      "role": "source"
+    },
+    {
+      "path": "sysCycleTest.out.expected",
+      "sha256": "954caef08186af25b36caf8f7e9d36f3a0fa53a875d5bdb14c04ad58e4c03ac4",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysCycleTest",
+      "resource": "heavy",
+      "fixtures": [
+        "CycleTest.bsv",
+        "sysCycleTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCycleTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CycleTest.bsv",
+              "mode": "bluesim",
+              "module": "sysCycleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CycleTest.bsv"
+                ],
+                "outputs": [
+                  "CycleTest.bo",
+                  "CycleTest.bsv.bsc-ccomp-out",
+                  "sysCycleTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCycleTest"
+              ],
+              "top": "sysCycleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.ba"
+                ],
+                "outputs": [
+                  "sysCycleTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCycleTest.cexe",
+                    "sysCycleTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCycleTest",
+              "args": [],
+              "stdout": "sysCycleTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.cexe"
+                ],
+                "outputs": [
+                  "sysCycleTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCycleTest.c.out",
+              "expected": "sysCycleTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.c.out",
+                  "sysCycleTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCycleTest",
+              "args": [],
+              "stdout": "sysCycleTest.c-vcd.out",
+              "vcd": "sysCycleTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.cexe"
+                ],
+                "outputs": [
+                  "sysCycleTest.c-vcd.out",
+                  "sysCycleTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysCycleTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCycleTest.c-vcd.out",
+              "expected": "sysCycleTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.c-vcd.out",
+                  "sysCycleTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysCycleTest-2",
+      "resource": "heavy",
+      "fixtures": [
+        "CycleTest.bsv",
+        "sysCycleTest.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysCycleTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CycleTest.bsv",
+              "mode": "verilog",
+              "module": "sysCycleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CycleTest.bsv"
+                ],
+                "outputs": [
+                  "CycleTest.bo",
+                  "CycleTest.bsv.bsc-vcomp-out",
+                  "sysCycleTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysCycleTest"
+              ],
+              "top": "sysCycleTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.v"
+                ],
+                "outputs": [
+                  "sysCycleTest.bsc-vcomp-out",
+                  "sysCycleTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCycleTest",
+              "args": [],
+              "stdout": "sysCycleTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.vexe"
+                ],
+                "outputs": [
+                  "sysCycleTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysCycleTest.v.out",
+              "expected": "sysCycleTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.v.out",
+                  "sysCycleTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysCycleTest",
+              "args": [],
+              "stdout": "sysCycleTest.v-vcd.out",
+              "vcd": "sysCycleTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.vexe"
+                ],
+                "outputs": [
+                  "sysCycleTest.v-vcd.out",
+                  "sysCycleTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysCycleTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysCycleTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 62,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 63
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

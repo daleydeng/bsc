@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1894/b1894",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1894/b1894.exp",
+    "sha256": "f6649c7e003a549d8172819533514886cb3209c54fc119db57a70546c88a723d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1894",
+  "fixtures": [
+    {
+      "path": "Bug1894.bsv",
+      "sha256": "48d010b9b83c2e4293129b9349595c461090f0baf2c6d4c44495fa256bd4cbeb",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-sequence",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug1894.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTop",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug1894.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug1894.bsv"
+                ],
+                "outputs": [
+                  "Bug1894.bo",
+                  "Bug1894.bsv.bsc-ccomp-out",
+                  "mkSub.ba",
+                  "mkTop.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 47,
+                  "endByte": 78,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTop",
+              "args": [
+                "-unspecified-to",
+                "A"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out",
+                  "mkTop.cxx"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 79,
+                  "endByte": 125,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTop.cxx",
+              "pattern": "2047u & \\(\\(\\(\\(\\(tUInt32\\)\\(\\(tUInt8\\)0u\\)\\) << 3u\\) \\| \\(\\(\\(tUInt32\\)\\(DEF_cond__h\\d+\\)\\) << 2u\\)\\) \\| \\(tUInt32\\)\\(DEF_AVMeth_s_m\\)\\);",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cxx"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 772,
+                  "endByte": 935,
+                  "startLine": 21,
+                  "startColumn": 5,
+                  "endLine": 21,
+                  "endColumn": 168
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mkTop-2",
+          "operations": [
+            {
+              "op": "fs.move",
+              "source": "mkTop.cxx",
+              "destination": "mkTop.A.cxx",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cxx"
+                ],
+                "outputs": [
+                  "mkTop.A.cxx"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.cxx"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1070,
+                  "endByte": 1096,
+                  "startLine": 28,
+                  "startColumn": 5,
+                  "endLine": 28,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTop.A.cxx",
+              "pattern": "if \\(DEF_cond__h\\d+\\)\\n +DEF_AVMeth_s_m = INST_s.METH_m\\(\\);\\n +else\\n +DEF_AVMeth_s_m = \\(tUInt8\\)2u;",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.A.cxx"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1101,
+                  "endByte": 1229,
+                  "startLine": 29,
+                  "startColumn": 5,
+                  "endLine": 29,
+                  "endColumn": 133
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "mkTop.o",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.o"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1292,
+                  "endByte": 1305,
+                  "startLine": 32,
+                  "startColumn": 5,
+                  "endLine": 32,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTop",
+              "args": [
+                "-unspecified-to",
+                "0"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out",
+                  "mkTop.cxx"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1328,
+                  "endByte": 1374,
+                  "startLine": 34,
+                  "startColumn": 5,
+                  "endLine": 34,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.cxx",
+              "destination": "mkTop.0.cxx",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cxx"
+                ],
+                "outputs": [
+                  "mkTop.0.cxx"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.cxx"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1379,
+                  "endByte": 1405,
+                  "startLine": 35,
+                  "startColumn": 5,
+                  "endLine": 35,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTop.0.cxx",
+              "pattern": "if \\(DEF_cond__h\\d+\\)\\n +DEF_AVMeth_s_m = INST_s.METH_m\\(\\);\\n +else\\n +DEF_AVMeth_s_m = \\(tUInt8\\)0u;",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.0.cxx"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1410,
+                  "endByte": 1538,
+                  "startLine": 36,
+                  "startColumn": 5,
+                  "endLine": 36,
+                  "endColumn": 133
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mkTop-3",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "mkTop.o",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.o"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1601,
+                  "endByte": 1614,
+                  "startLine": 39,
+                  "startColumn": 5,
+                  "endLine": 39,
+                  "endColumn": 18
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [],
+              "top": "mkTop",
+              "args": [
+                "-unspecified-to",
+                "1"
+              ],
+              "artifacts": {
+                "inputs": [],
+                "outputs": [
+                  "mkTop.bsc-ccomp-out",
+                  "mkTop.cxx"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTop.cexe",
+                    "mkTop.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1637,
+                  "endByte": 1683,
+                  "startLine": 41,
+                  "startColumn": 5,
+                  "endLine": 41,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "fs.move",
+              "source": "mkTop.cxx",
+              "destination": "mkTop.1.cxx",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.cxx"
+                ],
+                "outputs": [
+                  "mkTop.1.cxx"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "mkTop.cxx"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1688,
+                  "endByte": 1714,
+                  "startLine": 42,
+                  "startColumn": 5,
+                  "endLine": 42,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTop.1.cxx",
+              "pattern": "if \\(DEF_cond__h\\d+\\)\\n +DEF_AVMeth_s_m = INST_s.METH_m\\(\\);\\n +else\\n +DEF_AVMeth_s_m = \\(tUInt8\\)3u;",
+              "artifacts": {
+                "inputs": [
+                  "mkTop.1.cxx"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1719,
+                  "endByte": 1847,
+                  "startLine": 43,
+                  "startColumn": 5,
+                  "endLine": 43,
+                  "endColumn": 133
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID142/bugID142",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID142/bugID142.exp",
+    "sha256": "43e32dac713636ad076fcbc57ae986dfd02cdf1b7350e56605c0502456f8cedd"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID142",
+  "fixtures": [
+    {
+      "path": "GCD.bs",
+      "sha256": "59ea9b2e6924812899b8cf48e157263b7f95d3b6c7f271a2ff838339fb985cfb",
+      "role": "source"
+    },
+    {
+      "path": "GCD.bs.bsc-vcomp-out.expected",
+      "sha256": "65855cf08bbb751e8ea8b9a2d26deaf1aa8edac01b0947c39943ba8f1f2095db",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-GCD",
+      "resource": "normal",
+      "fixtures": [
+        "GCD.bs",
+        "GCD.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-GCD",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "GCD.bs",
+              "mode": "verilog",
+              "module": "mkGCD",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "GCD.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "GCD.bs"
+                ],
+                "outputs": [
+                  "GCD.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 52,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "GCD.bs.bsc-vcomp-out",
+              "expected": "GCD.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "GCD.bs.bsc-vcomp-out",
+                  "GCD.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 53,
+                  "endByte": 86,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

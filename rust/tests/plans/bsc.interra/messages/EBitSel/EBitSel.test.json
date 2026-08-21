@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/messages/EBitSel/EBitSel",
+  "origin": {
+    "path": "testsuite/bsc.interra/messages/EBitSel/EBitSel.exp",
+    "sha256": "97b4451ca33601b32505ec24fd4ae70f5404ea563d20c183613f68c221a73599"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/messages/EBitSel",
+  "fixtures": [
+    {
+      "path": "EBitSel.bs",
+      "sha256": "8cf8f7440270fc57f20a971d0581fe61d873cd4ba28f1c81e0b3dc71ec9435bd",
+      "role": "source"
+    },
+    {
+      "path": "EBitSel.bs.bsc-vcomp-out.expected",
+      "sha256": "8617be12aeaf443bfe0dc76750e67b60d4b53b1e8422a9dc19f5651176883475",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-EBitSel",
+      "resource": "normal",
+      "fixtures": [
+        "EBitSel.bs",
+        "EBitSel.bs.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-EBitSel",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "EBitSel.bs",
+              "mode": "verilog",
+              "module": "mkShifter64",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "EBitSel.bs.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "EBitSel.bs"
+                ],
+                "outputs": [
+                  "EBitSel.bs.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 19,
+                  "endByte": 62,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 44
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "EBitSel.bs.bsc-vcomp-out",
+              "expected": "EBitSel.bs.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "EBitSel.bs.bsc-vcomp-out",
+                  "EBitSel.bs.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 63,
+                  "endByte": 100,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

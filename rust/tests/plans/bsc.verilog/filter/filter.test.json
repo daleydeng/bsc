@@ -1,0 +1,592 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.verilog/filter/filter",
+  "origin": {
+    "path": "testsuite/bsc.verilog/filter/filter.exp",
+    "sha256": "dab5a0a4a05da9f969e530881ee5b08e2cca0e8900bff469d44b55293e492dd0"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.verilog/filter",
+  "fixtures": [
+    {
+      "path": "RenameTest.bsv",
+      "sha256": "ff97147821190074739e5489f80ccbcc2206599857a0dae2a4da02612fe35b67",
+      "role": "source"
+    },
+    {
+      "path": "mkRenameTest.v.renamed.expected",
+      "sha256": "2b792d1efa89005eda7d88e61e1a9aebceacced858c43b4ef07565432415745b",
+      "role": "golden"
+    },
+    {
+      "path": "mkRenameTest.v.renamed2.expected",
+      "sha256": "3cc9f17bfc9657a973bfac7b25a0cdce56b4c959fc34478671c289dc761d23c4",
+      "role": "golden"
+    },
+    {
+      "path": "mkRenameTest.v.renamed3.expected",
+      "sha256": "dc4c4ec4b24ac1fdb9cada33efc8fb97d2f5f2e7b30b229e47eefa4a149518fc",
+      "role": "golden"
+    },
+    {
+      "path": "order.sed",
+      "sha256": "803debcb5f068580aa849149f0ba05c11479e62a35bbd38669f8837444de8521",
+      "role": "script"
+    },
+    {
+      "path": "renamefire.pl",
+      "sha256": "5398737fa77b72096bb53911440092d131577c879a541bb00e519e8b9a59a90f",
+      "role": "script"
+    },
+    {
+      "path": "simple.sed",
+      "sha256": "c70b664117172046bbbf2ddd9c2cd3616a9de7c1a7598601bd381eb91c794946",
+      "role": "script"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "ordered-workspace-compile-1",
+      "resource": "normal",
+      "fixtures": [
+        "RenameTest.bsv",
+        "mkRenameTest.v.renamed.expected",
+        "mkRenameTest.v.renamed2.expected",
+        "mkRenameTest.v.renamed3.expected",
+        "order.sed",
+        "renamefire.pl",
+        "simple.sed"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-workspace",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RenameTest.bsv",
+              "mode": "verilog",
+              "args": [
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RenameTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RenameTest.bsv"
+                ],
+                "outputs": [
+                  "RenameTest.bo",
+                  "RenameTest.bsv.bsc-vcomp-out",
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 624,
+                  "endByte": 706,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "verilog.filter",
+              "path": "mkRenameTest.v",
+              "profiles": [
+                "rename_fire"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "renamefire.pl"
+                ],
+                "outputs": [
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 624,
+                  "endByte": 706,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 83
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkRenameTest.v",
+              "expected": "mkRenameTest.v.renamed.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "mkRenameTest.v.renamed.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 707,
+                  "endByte": 769,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "RenameTest.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "RenameTest.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 882,
+                  "endByte": 901,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "RenameTest.bsv",
+              "mode": "verilog",
+              "args": [
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RenameTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RenameTest.bsv"
+                ],
+                "outputs": [
+                  "RenameTest.bo",
+                  "RenameTest.bsv.bsc-vcomp-out",
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 902,
+                  "endByte": 1009,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "verilog.filter",
+              "path": "mkRenameTest.v",
+              "profiles": [
+                "rename_fire",
+                "rename_fire"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "renamefire.pl"
+                ],
+                "outputs": [
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 902,
+                  "endByte": 1009,
+                  "startLine": 24,
+                  "startColumn": 1,
+                  "endLine": 24,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkRenameTest.v",
+              "expected": "mkRenameTest.v.renamed.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "mkRenameTest.v.renamed.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1010,
+                  "endByte": 1072,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 63
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "RenameTest.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "RenameTest.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1141,
+                  "endByte": 1160,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "RenameTest.bsv",
+              "mode": "verilog",
+              "args": [
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RenameTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RenameTest.bsv"
+                ],
+                "outputs": [
+                  "RenameTest.bo",
+                  "RenameTest.bsv.bsc-vcomp-out",
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1161,
+                  "endByte": 1268,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "verilog.filter",
+              "path": "mkRenameTest.v",
+              "profiles": [
+                "rename_fire",
+                "clock_to_clock"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "renamefire.pl",
+                  "simple.sed"
+                ],
+                "outputs": [
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1161,
+                  "endByte": 1268,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkRenameTest.v",
+              "expected": "mkRenameTest.v.renamed2.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "mkRenameTest.v.renamed2.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1269,
+                  "endByte": 1332,
+                  "startLine": 30,
+                  "startColumn": 1,
+                  "endLine": 30,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "RenameTest.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "RenameTest.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1578,
+                  "endByte": 1597,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "RenameTest.bsv",
+              "mode": "verilog",
+              "args": [
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RenameTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RenameTest.bsv"
+                ],
+                "outputs": [
+                  "RenameTest.bo",
+                  "RenameTest.bsv.bsc-vcomp-out",
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1598,
+                  "endByte": 1705,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "verilog.filter",
+              "path": "mkRenameTest.v",
+              "profiles": [
+                "rename_fire",
+                "wf_to_w_f"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "renamefire.pl",
+                  "order.sed"
+                ],
+                "outputs": [
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1598,
+                  "endByte": 1705,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkRenameTest.v",
+              "expected": "mkRenameTest.v.renamed3.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "mkRenameTest.v.renamed3.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1706,
+                  "endByte": 1769,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 64
+                }
+              }
+            },
+            {
+              "op": "fs.ensure_absent",
+              "path": "RenameTest.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "RenameTest.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1845,
+                  "endByte": 1864,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 41,
+                  "endColumn": 20
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "RenameTest.bsv",
+              "mode": "verilog",
+              "args": [
+                "-keep-fires"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RenameTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RenameTest.bsv"
+                ],
+                "outputs": [
+                  "RenameTest.bo",
+                  "RenameTest.bsv.bsc-vcomp-out",
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1865,
+                  "endByte": 1972,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 108
+                }
+              }
+            },
+            {
+              "op": "verilog.filter",
+              "path": "mkRenameTest.v",
+              "profiles": [
+                "rename_fire",
+                "missing_sed"
+              ],
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "mkRenameTest.v",
+                  "renamefire.pl"
+                ],
+                "outputs": [
+                  "mkRenameTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1865,
+                  "endByte": 1972,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 108
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b834/b834",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b834/b834.exp",
+    "sha256": "52656a413ebe3e271709d8ba5be74204b5cedcae6c6d307da46dd3d5efaf9623"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b834",
+  "fixtures": [
+    {
+      "path": "PPC_Datatypes.bsv",
+      "sha256": "6f922968f42bb69679b91b739126b49112ab9c89733156b80d38003e9b281f8c",
+      "role": "source"
+    },
+    {
+      "path": "RegisterFile.bsv",
+      "sha256": "ca461c8bde4363c481e9b09edb21abdcf470cae1151bf71972f784e95989d9bf",
+      "role": "source"
+    },
+    {
+      "path": "UNUM.bsv",
+      "sha256": "9d97965cf48af7e997d0a057b0ba3cc74fa23c21fbc876a3ae4eaf1a1d579417",
+      "role": "source"
+    },
+    {
+      "path": "mkRegisterFileFixed_3_2.v.expected",
+      "sha256": "9bfca0034df27388da106edb2d6df663c7d4917906b3c652eb66122835768c14",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-RegisterFile",
+      "resource": "normal",
+      "fixtures": [
+        "PPC_Datatypes.bsv",
+        "RegisterFile.bsv",
+        "UNUM.bsv",
+        "mkRegisterFileFixed_3_2.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-RegisterFile",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "RegisterFile.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "RegisterFile.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "RegisterFile.bsv"
+                ],
+                "outputs": [
+                  "RegisterFile.bo",
+                  "RegisterFile.bsv.bsc-vcomp-out",
+                  "mkRegisterFileFixed_3_2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2,
+                  "endByte": 39,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkRegisterFileFixed_3_2.v",
+              "expected": "mkRegisterFileFixed_3_2.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkRegisterFileFixed_3_2.v",
+                  "mkRegisterFileFixed_3_2.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1341"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 41,
+                  "endByte": 91,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

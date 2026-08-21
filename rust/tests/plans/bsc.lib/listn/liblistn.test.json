@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/listn/liblistn",
+  "origin": {
+    "path": "testsuite/bsc.lib/listn/liblistn.exp",
+    "sha256": "9cb45fb332b7b41d2b52dda30c83f787072add92ce1661182fb596ef61632924"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/listn",
+  "fixtures": [
+    {
+      "path": "ApplicativeListN.bs",
+      "sha256": "d072dda173514e3bb8b92ed6bc27f3ac1a5c6a8ec4da1e580bab8595c109ad81",
+      "role": "source"
+    },
+    {
+      "path": "sysApplicativeListN.out.expected",
+      "sha256": "ad6f0e79f1df476398b2614da39d125945c7f7b1bd59369a9c85969e5d45b1eb",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysApplicativeListN",
+      "resource": "heavy",
+      "fixtures": [
+        "ApplicativeListN.bs",
+        "sysApplicativeListN.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysApplicativeListN",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ApplicativeListN.bs",
+              "mode": "shared_elaboration",
+              "module": "sysApplicativeListN",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ApplicativeListN.bs"
+                ],
+                "outputs": [
+                  "ApplicativeListN.bo",
+                  "ApplicativeListN.bs.bsc-vcomp-out",
+                  "sysApplicativeListN.ba",
+                  "sysApplicativeListN.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysApplicativeListN"
+              ],
+              "top": "sysApplicativeListN",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.v"
+                ],
+                "outputs": [
+                  "sysApplicativeListN.bsc-vcomp-out",
+                  "sysApplicativeListN.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysApplicativeListN",
+              "args": [],
+              "stdout": "sysApplicativeListN.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.vexe"
+                ],
+                "outputs": [
+                  "sysApplicativeListN.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysApplicativeListN.v.out",
+              "expected": "sysApplicativeListN.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.v.out",
+                  "sysApplicativeListN.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysApplicativeListN",
+              "args": [],
+              "stdout": "sysApplicativeListN.v-vcd.out",
+              "vcd": "sysApplicativeListN.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.vexe"
+                ],
+                "outputs": [
+                  "sysApplicativeListN.v-vcd.out",
+                  "sysApplicativeListN.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysApplicativeListN.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysApplicativeListN"
+              ],
+              "top": "sysApplicativeListN",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.ba"
+                ],
+                "outputs": [
+                  "sysApplicativeListN.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysApplicativeListN.cexe",
+                    "sysApplicativeListN.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysApplicativeListN",
+              "args": [],
+              "stdout": "sysApplicativeListN.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.cexe"
+                ],
+                "outputs": [
+                  "sysApplicativeListN.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysApplicativeListN.c.out",
+              "expected": "sysApplicativeListN.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.c.out",
+                  "sysApplicativeListN.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysApplicativeListN",
+              "args": [],
+              "stdout": "sysApplicativeListN.c-vcd.out",
+              "vcd": "sysApplicativeListN.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.cexe"
+                ],
+                "outputs": [
+                  "sysApplicativeListN.c-vcd.out",
+                  "sysApplicativeListN.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysApplicativeListN.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysApplicativeListN.c-vcd.out",
+              "expected": "sysApplicativeListN.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysApplicativeListN.c-vcd.out",
+                  "sysApplicativeListN.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

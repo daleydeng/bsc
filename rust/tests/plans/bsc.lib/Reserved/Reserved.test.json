@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/Reserved/Reserved",
+  "origin": {
+    "path": "testsuite/bsc.lib/Reserved/Reserved.exp",
+    "sha256": "c9f9e9c8571cddf7d35df8157ea51cf9402724455eabb348babf4810cfe29770"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/Reserved",
+  "fixtures": [
+    {
+      "path": "ReservedTest.bsv",
+      "sha256": "eba461864c9d6e2765b9822601a7bdb4ba3ce6f272b0991930c11d105c9d8abd",
+      "role": "source"
+    },
+    {
+      "path": "sysReservedTest.out.expected",
+      "sha256": "657c7625b07adb19d992597df5849a8cb38d5f23dc7844a12a506661cecf8d8e",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysReservedTest",
+      "resource": "heavy",
+      "fixtures": [
+        "ReservedTest.bsv",
+        "sysReservedTest.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysReservedTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ReservedTest.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysReservedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ReservedTest.bsv"
+                ],
+                "outputs": [
+                  "ReservedTest.bo",
+                  "ReservedTest.bsv.bsc-vcomp-out",
+                  "sysReservedTest.ba",
+                  "sysReservedTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysReservedTest"
+              ],
+              "top": "sysReservedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.v"
+                ],
+                "outputs": [
+                  "sysReservedTest.bsc-vcomp-out",
+                  "sysReservedTest.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysReservedTest",
+              "args": [],
+              "stdout": "sysReservedTest.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.vexe"
+                ],
+                "outputs": [
+                  "sysReservedTest.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysReservedTest.v.out",
+              "expected": "sysReservedTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.v.out",
+                  "sysReservedTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysReservedTest",
+              "args": [],
+              "stdout": "sysReservedTest.v-vcd.out",
+              "vcd": "sysReservedTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.vexe"
+                ],
+                "outputs": [
+                  "sysReservedTest.v-vcd.out",
+                  "sysReservedTest.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysReservedTest.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysReservedTest"
+              ],
+              "top": "sysReservedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.ba"
+                ],
+                "outputs": [
+                  "sysReservedTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysReservedTest.cexe",
+                    "sysReservedTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysReservedTest",
+              "args": [],
+              "stdout": "sysReservedTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.cexe"
+                ],
+                "outputs": [
+                  "sysReservedTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysReservedTest.c.out",
+              "expected": "sysReservedTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.c.out",
+                  "sysReservedTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysReservedTest",
+              "args": [],
+              "stdout": "sysReservedTest.c-vcd.out",
+              "vcd": "sysReservedTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.cexe"
+                ],
+                "outputs": [
+                  "sysReservedTest.c-vcd.out",
+                  "sysReservedTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysReservedTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysReservedTest.c-vcd.out",
+              "expected": "sysReservedTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysReservedTest.c-vcd.out",
+                  "sysReservedTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 29,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

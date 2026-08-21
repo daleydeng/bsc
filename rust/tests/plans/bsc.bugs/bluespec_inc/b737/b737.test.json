@@ -1,0 +1,744 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b737/b737",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b737/b737.exp",
+    "sha256": "9c7eb2bb4d2e3d10ad474f30521211f6398cdefacf4a583688bb74d4c5243121"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b737",
+  "fixtures": [
+    {
+      "path": "ActionMethodRegClash.bsv",
+      "sha256": "c89e2c729c0ff78eaf099d712b21c5284b75169059814ee4fb15a39986bde4f4",
+      "role": "source"
+    },
+    {
+      "path": "ActionMethodRegClash_SubIfc.bsv",
+      "sha256": "d5cc80b3700501c9ab12dd561bdadc650e28761baaf3234e6d8f3745fe0d4545",
+      "role": "source"
+    },
+    {
+      "path": "MethodExternalNameClash.bsv",
+      "sha256": "6d28960f87c885a742e7277751d73167dff4b1891d0e38ccf5d9e7c825a16c91",
+      "role": "source"
+    },
+    {
+      "path": "MethodExternalNameClash.bsv.bsc-out.expected",
+      "sha256": "8180fcded1de20070b52492712956b4ef7bc87fdb370d6a5fac38a08d20b563d",
+      "role": "golden"
+    },
+    {
+      "path": "MethodInternalNameClash.bsv",
+      "sha256": "807a1c1a8216c964b76955680da3c2e83ea8cc55d0fb6d4cd8d43ea0064510ca",
+      "role": "source"
+    },
+    {
+      "path": "MethodInternalNameClash.bsv.bsc-out.expected",
+      "sha256": "75207cd044e6adfd4915df5a3b475b03cce10a6974d4e774c6dd0f9189a66c40",
+      "role": "golden"
+    },
+    {
+      "path": "MethodSelfReference.bsv",
+      "sha256": "47f9e4bb0b601fd674cf28fa7d3b11d47b93097c755990e5cc7ce5723bf466bc",
+      "role": "source"
+    },
+    {
+      "path": "MethodSelfReference.bsv.bsc-out.expected",
+      "sha256": "8113b8a21edc1543498613c3ef8893f354d3c6ff227f0f426cdfaf384361968f",
+      "role": "golden"
+    },
+    {
+      "path": "MethodToMethodReference.bsv",
+      "sha256": "c7c978cafaa80033362c69e7ef91b88412c3277da2b47e24ef66994af2cfe5a0",
+      "role": "source"
+    },
+    {
+      "path": "MethodToMethodReference.bsv.bsc-out.expected",
+      "sha256": "cd00691b20b4807d76a9b09e9608ae49440825b9aedd8109a2d527850f39b21c",
+      "role": "golden"
+    },
+    {
+      "path": "ValueMethodInItsCondition.bsv",
+      "sha256": "822ab5d94218b6549ecf6adeaea3b672c8cd7735f623c51a66c9b72e00f62da6",
+      "role": "source"
+    },
+    {
+      "path": "ValueMethodInItsCondition_SubIfc.bsv",
+      "sha256": "e431522ab8f33f589d8cd2694c555d66844b7ecc0f8c6d2a77f50ac2e2358228",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-MethodSelfReference",
+      "resource": "normal",
+      "fixtures": [
+        "MethodSelfReference.bsv",
+        "MethodSelfReference.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodSelfReference",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodSelfReference.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MethodSelfReference.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodSelfReference.bsv"
+                ],
+                "outputs": [
+                  "MethodSelfReference.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 92,
+                  "endByte": 140,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodSelfReference.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0004",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodSelfReference.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 92,
+                  "endByte": 140,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 49
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MethodSelfReference.bsv.bsc-out",
+              "expected": "MethodSelfReference.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MethodSelfReference.bsv.bsc-out",
+                  "MethodSelfReference.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 141,
+                  "endByte": 200,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-MethodToMethodReference",
+      "resource": "normal",
+      "fixtures": [
+        "MethodToMethodReference.bsv",
+        "MethodToMethodReference.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodToMethodReference",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodToMethodReference.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MethodToMethodReference.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodToMethodReference.bsv"
+                ],
+                "outputs": [
+                  "MethodToMethodReference.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 253,
+                  "endByte": 305,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodToMethodReference.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0004",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodToMethodReference.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 253,
+                  "endByte": 305,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MethodToMethodReference.bsv.bsc-out",
+              "expected": "MethodToMethodReference.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MethodToMethodReference.bsv.bsc-out",
+                  "MethodToMethodReference.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 306,
+                  "endByte": 369,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-MethodInternalNameClash",
+      "resource": "normal",
+      "fixtures": [
+        "MethodInternalNameClash.bsv",
+        "MethodInternalNameClash.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodInternalNameClash",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodInternalNameClash.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MethodInternalNameClash.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodInternalNameClash.bsv"
+                ],
+                "outputs": [
+                  "MethodInternalNameClash.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 504,
+                  "endByte": 556,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodInternalNameClash.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0011",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodInternalNameClash.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 504,
+                  "endByte": 556,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MethodInternalNameClash.bsv.bsc-out",
+              "expected": "MethodInternalNameClash.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MethodInternalNameClash.bsv.bsc-out",
+                  "MethodInternalNameClash.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 557,
+                  "endByte": 620,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-MethodExternalNameClash",
+      "resource": "normal",
+      "fixtures": [
+        "MethodExternalNameClash.bsv",
+        "MethodExternalNameClash.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-MethodExternalNameClash",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "MethodExternalNameClash.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "MethodExternalNameClash.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "MethodExternalNameClash.bsv"
+                ],
+                "outputs": [
+                  "MethodExternalNameClash.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 747,
+                  "endByte": 799,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "MethodExternalNameClash.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0011",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "MethodExternalNameClash.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 747,
+                  "endByte": 799,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 53
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "MethodExternalNameClash.bsv.bsc-out",
+              "expected": "MethodExternalNameClash.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "MethodExternalNameClash.bsv.bsc-out",
+                  "MethodExternalNameClash.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 800,
+                  "endByte": 863,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 64
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-ActionMethodRegClash",
+      "resource": "normal",
+      "fixtures": [
+        "ActionMethodRegClash.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ActionMethodRegClash",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ActionMethodRegClash.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ActionMethodRegClash.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ActionMethodRegClash.bsv"
+                ],
+                "outputs": [
+                  "ActionMethodRegClash.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1216,
+                  "endByte": 1265,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 50
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ActionMethodRegClash.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0011",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ActionMethodRegClash.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1216,
+                  "endByte": 1265,
+                  "startLine": 33,
+                  "startColumn": 1,
+                  "endLine": 33,
+                  "endColumn": 50
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-ActionMethodRegClash_SubIfc",
+      "resource": "normal",
+      "fixtures": [
+        "ActionMethodRegClash_SubIfc.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ActionMethodRegClash_SubIfc",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ActionMethodRegClash_SubIfc.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ActionMethodRegClash_SubIfc.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ActionMethodRegClash_SubIfc.bsv"
+                ],
+                "outputs": [
+                  "ActionMethodRegClash_SubIfc.bo",
+                  "ActionMethodRegClash_SubIfc.bsv.bsc-vcomp-out",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1380,
+                  "endByte": 1432,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 53
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-ValueMethodInItsCondition",
+      "resource": "normal",
+      "fixtures": [
+        "ValueMethodInItsCondition.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ValueMethodInItsCondition",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ValueMethodInItsCondition.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "ValueMethodInItsCondition.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ValueMethodInItsCondition.bsv"
+                ],
+                "outputs": [
+                  "ValueMethodInItsCondition.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1475,
+                  "endByte": 1529,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 55
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "ValueMethodInItsCondition.bsv.bsc-out",
+              "kind": "error",
+              "code": "T0011",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "ValueMethodInItsCondition.bsv.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1475,
+                  "endByte": 1529,
+                  "startLine": 39,
+                  "startColumn": 1,
+                  "endLine": 39,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-8-ValueMethodInItsCondition_SubIfc",
+      "resource": "normal",
+      "fixtures": [
+        "ValueMethodInItsCondition_SubIfc.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-ValueMethodInItsCondition_SubIfc",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "ValueMethodInItsCondition_SubIfc.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "ValueMethodInItsCondition_SubIfc.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "ValueMethodInItsCondition_SubIfc.bsv"
+                ],
+                "outputs": [
+                  "ValueMethodInItsCondition_SubIfc.bo",
+                  "ValueMethodInItsCondition_SubIfc.bsv.bsc-vcomp-out",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1644,
+                  "endByte": 1701,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 58
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1390/b1390",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1390/b1390.exp",
+    "sha256": "20940fee01493473216b1c29b1b286d753921dd80d6043080f4643dbf3aa5ad2"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1390",
+  "fixtures": [
+    {
+      "path": "Test.bsv",
+      "sha256": "f8e870a582bb06048ada4144185b22a31b406246a8d31e21b6f82777e11d8b48",
+      "role": "source"
+    },
+    {
+      "path": "Test.bsv.bsc-vcomp-out.expected",
+      "sha256": "8ce0bb3067798b5cff97dd0e191099d14feaf5fdbf18d14407586164b7266831",
+      "role": "golden"
+    },
+    {
+      "path": "Test2.bsv",
+      "sha256": "daa37f50eb71451de1380cb4a29625148d580e2471ded89e84d0abee6ad7a6ab",
+      "role": "source"
+    },
+    {
+      "path": "Test2.bsv.bsc-vcomp-out.expected",
+      "sha256": "f0e3777527cf903c679a80a6899edfaea396e454852a9cb3581b8364095e11d4",
+      "role": "golden"
+    },
+    {
+      "path": "mkTest.sched.expected",
+      "sha256": "35622a706bbab7b982221395f0f8718d5248ebfe8c8966e52b72a3ce72c6ee73",
+      "role": "golden"
+    },
+    {
+      "path": "mkTest.v.expected",
+      "sha256": "8744293e830f890889f1f6c71dc6be8f8b072d2f319c19473d2cc8e4e2c32aaa",
+      "role": "golden"
+    },
+    {
+      "path": "mkTest2.sched.expected",
+      "sha256": "30cae619c2d0102add55a93a3dca7e037c2d54f7fc18409b4eec35c9e5e0bedf",
+      "role": "golden"
+    },
+    {
+      "path": "mkTest2.v.expected",
+      "sha256": "c03b9fd38ea884543d5716b8a9d488693ed46df33aa56596691bdb81a956b35b",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "Test.bsv",
+        "Test.bsv.bsc-vcomp-out.expected",
+        "mkTest.sched.expected",
+        "mkTest.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bo",
+                  "Test.bsv.bsc-vcomp-out",
+                  "mkTest.sched",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 22,
+                  "endByte": 51,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Test.bsv.bsc-vcomp-out",
+              "expected": "Test.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv.bsc-vcomp-out",
+                  "Test.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 52,
+                  "endByte": 87,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTest.sched",
+              "expected": "mkTest.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTest.sched",
+                  "mkTest.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 88,
+                  "endByte": 113,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkTest.v",
+              "expected": "mkTest.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTest.v",
+                  "mkTest.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 138,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Test2",
+      "resource": "normal",
+      "fixtures": [
+        "Test2.bsv",
+        "Test2.bsv.bsc-vcomp-out.expected",
+        "mkTest2.sched.expected",
+        "mkTest2.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test2.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test2.bsv"
+                ],
+                "outputs": [
+                  "Test2.bo",
+                  "Test2.bsv.bsc-vcomp-out",
+                  "mkTest2.sched",
+                  "mkTest2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 140,
+                  "endByte": 170,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 31
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "Test2.bsv.bsc-vcomp-out",
+              "expected": "Test2.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "Test2.bsv.bsc-vcomp-out",
+                  "Test2.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 171,
+                  "endByte": 207,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "mkTest2.v",
+              "expected": "mkTest2.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTest2.v",
+                  "mkTest2.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 208,
+                  "endByte": 233,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 26
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTest2.sched",
+              "expected": "mkTest2.sched.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTest2.sched",
+                  "mkTest2.sched.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 234,
+                  "endByte": 260,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

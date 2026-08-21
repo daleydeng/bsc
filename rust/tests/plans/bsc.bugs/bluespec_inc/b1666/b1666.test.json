@@ -1,0 +1,596 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1666/b1666",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1666/b1666.exp",
+    "sha256": "34b29e322f81bad862dab9023b61f6836bca8d822312868f35aeda0dfcca0801"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1666",
+  "fixtures": [
+    {
+      "path": "Bug1666.bsv",
+      "sha256": "a3c88b175ec4e8949969cc8d63601f00241232121e2c8c7cc6efae203de35ec9",
+      "role": "source"
+    },
+    {
+      "path": "SignedTest.bsv",
+      "sha256": "cd66ddfbf2a941052aec1527fe39ea4fe98418ac097cfdcb449f0a2e9acfb15e",
+      "role": "source"
+    },
+    {
+      "path": "sysBug1666.out.expected",
+      "sha256": "1765f52aa3328a7a0a16cac1483e33984ef57ad7a45c6d11168ac68b57debaf5",
+      "role": "golden"
+    },
+    {
+      "path": "sysSignedTest.out.expected",
+      "sha256": "1834c99a8296e924121915c11985f4dacfc3f190d9a3a537efd3131d866c9102",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysBug1666",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug1666.bsv",
+        "sysBug1666.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysBug1666",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug1666.bsv",
+              "mode": "bluesim",
+              "module": "sysBug1666",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug1666.bsv"
+                ],
+                "outputs": [
+                  "Bug1666.bo",
+                  "Bug1666.bsv.bsc-ccomp-out",
+                  "mkBug1666Reg.ba",
+                  "sysBug1666.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysBug1666"
+              ],
+              "top": "sysBug1666",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysBug1666.ba"
+                ],
+                "outputs": [
+                  "sysBug1666.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysBug1666.cexe",
+                    "sysBug1666.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug1666",
+              "args": [],
+              "stdout": "sysBug1666.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1666.cexe"
+                ],
+                "outputs": [
+                  "sysBug1666.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug1666.c.out",
+              "expected": "sysBug1666.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1666.c.out",
+                  "sysBug1666.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysBug1666",
+              "args": [],
+              "stdout": "sysBug1666.c-vcd.out",
+              "vcd": "sysBug1666.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1666.cexe"
+                ],
+                "outputs": [
+                  "sysBug1666.c-vcd.out",
+                  "sysBug1666.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysBug1666.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1666.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysBug1666.c-vcd.out",
+              "expected": "sysBug1666.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysBug1666.c-vcd.out",
+                  "sysBug1666.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 36,
+                  "endByte": 59,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Bug1666",
+      "resource": "normal",
+      "fixtures": [
+        "Bug1666.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug1666",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug1666.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Bug1666.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug1666.bsv"
+                ],
+                "outputs": [
+                  "Bug1666.bo",
+                  "Bug1666.bsv.bsc-vcomp-out",
+                  "mkBug1666Reg.v",
+                  "sysBug1666.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1666"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 127,
+                  "endByte": 171,
+                  "startLine": 8,
+                  "startColumn": 1,
+                  "endLine": 8,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSignedTest",
+      "resource": "heavy",
+      "fixtures": [
+        "SignedTest.bsv",
+        "sysSignedTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSignedTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SignedTest.bsv",
+              "mode": "bluesim",
+              "module": "sysSignedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SignedTest.bsv"
+                ],
+                "outputs": [
+                  "SignedTest.bo",
+                  "SignedTest.bsv.bsc-ccomp-out",
+                  "mkSignedTest_Sub.ba",
+                  "sysSignedTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSignedTest"
+              ],
+              "top": "sysSignedTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSignedTest.ba"
+                ],
+                "outputs": [
+                  "sysSignedTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSignedTest.cexe",
+                    "sysSignedTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSignedTest",
+              "args": [],
+              "stdout": "sysSignedTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSignedTest.cexe"
+                ],
+                "outputs": [
+                  "sysSignedTest.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSignedTest.c.out",
+              "expected": "sysSignedTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSignedTest.c.out",
+                  "sysSignedTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSignedTest",
+              "args": [],
+              "stdout": "sysSignedTest.c-vcd.out",
+              "vcd": "sysSignedTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSignedTest.cexe"
+                ],
+                "outputs": [
+                  "sysSignedTest.c-vcd.out",
+                  "sysSignedTest.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSignedTest.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSignedTest.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSignedTest.c-vcd.out",
+              "expected": "sysSignedTest.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSignedTest.c-vcd.out",
+                  "sysSignedTest.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 209,
+                  "endByte": 235,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 27
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-SignedTest",
+      "resource": "normal",
+      "fixtures": [
+        "SignedTest.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-SignedTest",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "SignedTest.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "SignedTest.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "SignedTest.bsv"
+                ],
+                "outputs": [
+                  "SignedTest.bo",
+                  "SignedTest.bsv.bsc-vcomp-out",
+                  "mkSignedTest_Sub.v",
+                  "sysSignedTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 1666"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 275,
+                  "endByte": 322,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 48
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

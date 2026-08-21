@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b405/b405",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b405/b405.exp",
+    "sha256": "f2df79f63277a37b42c1883635607d515c5a1f8de564aecf37576b9bd48f80b3"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b405",
+  "fixtures": [
+    {
+      "path": "Bug405_1.bsv",
+      "sha256": "197257c34ed7fa41e5f94edcd9ff13abab6f8f385f2d4f26c39ebb6205d6db75",
+      "role": "source"
+    },
+    {
+      "path": "Bug405_2.bsv",
+      "sha256": "e6481b45ccb2cfe4f9c465e06f4eaaa2fc741a95f38907bbb2e5e830c0905d7e",
+      "role": "source"
+    },
+    {
+      "path": "module_cmsb.v.expected",
+      "sha256": "8aff866d9552648768ab4521ac47b666ff582dacb77a3d4c9bde684b35b96078",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Bug405_2",
+      "resource": "normal",
+      "fixtures": [
+        "Bug405_2.bsv",
+        "module_cmsb.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Bug405_2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Bug405_2.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Bug405_2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Bug405_2.bsv"
+                ],
+                "outputs": [
+                  "Bug405_2.bo",
+                  "Bug405_2.bsv.bsc-vcomp-out",
+                  "module_cmsb.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 147,
+                  "endByte": 180,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "module_cmsb.v",
+              "expected": "module_cmsb.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "module_cmsb.v",
+                  "module_cmsb.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 226,
+                  "endByte": 255,
+                  "startLine": 8,
+                  "startColumn": 5,
+                  "endLine": 8,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-generation-1-Bug405_1",
+      "resource": "heavy",
+      "fixtures": [
+        "Bug405_1.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "generate-Bug405_1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Bug405_1.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Bug405_1.bsv"
+                ],
+                "outputs": [
+                  "Bug405_1.bo",
+                  "Bug405_1.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 146,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

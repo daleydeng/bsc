@@ -1,0 +1,2577 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.typechecker/typeclasses/coherence/coherence",
+  "origin": {
+    "path": "testsuite/bsc.typechecker/typeclasses/coherence/coherence.exp",
+    "sha256": "1bf57a112f4ea67a0ed343032faa2b73e2f3b1c26a6c5f2bfbfaccee263f3d44"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.typechecker/typeclasses/coherence",
+  "fixtures": [
+    {
+      "path": "IncoherentBase.bs",
+      "sha256": "ed15c377e8315dfa6a19037b8e2e8c618e2c1277ba79f442ed2304cba9bbd236",
+      "role": "source"
+    },
+    {
+      "path": "Instance_Coherent.bs",
+      "sha256": "936a966c6767e120bf3979d8dd71eca868355f07a77d25970a671f80791ffcf1",
+      "role": "source"
+    },
+    {
+      "path": "Instance_Default.bs",
+      "sha256": "78c6a56e6b7a431695c82943581600c0e3f2059c127d45e24188c3a44b2aa202",
+      "role": "source"
+    },
+    {
+      "path": "Instance_Incoherent.bs",
+      "sha256": "92d6f566e73a4ec401c61426f46bb1b87f148c61729ece1682a04030e0182513",
+      "role": "source"
+    },
+    {
+      "path": "Super_Coherent.bs",
+      "sha256": "b8b67e7e77f9bbb4deebe6e70f13f7b2fd13b8f946341aeab0c2a53f2907588f",
+      "role": "source"
+    },
+    {
+      "path": "Super_Default.bs",
+      "sha256": "972b29585f1921b2a628e4c1dd957e9b11a52c0b96cd6380e5fc41689da6cde2",
+      "role": "source"
+    },
+    {
+      "path": "Super_Incoherent.bs",
+      "sha256": "9811d7f42907c89ddd5ea06f991b908d1e4194f2890eca2ab61d406f5294558b",
+      "role": "source"
+    },
+    {
+      "path": "sysInstance_Default.out.expected",
+      "sha256": "2c6b47b92aea688103ddb4d6ad10f870472dc6c3c26965cd8ac8ca0119c8cb78",
+      "role": "golden"
+    },
+    {
+      "path": "sysInstance_Incoherent.out.expected",
+      "sha256": "580cc37512de3449e3e28bb02172f41e4970cc48253bed10bfb7c880eb963f46",
+      "role": "golden"
+    },
+    {
+      "path": "sysSuper_Coherent.out.expected",
+      "sha256": "2881a565af0455ee4a8f30b2cef648768c2709ededc91284a99a13ff652f99a0",
+      "role": "golden"
+    },
+    {
+      "path": "sysSuper_Default.out.expected",
+      "sha256": "fed2a8e418c5f337a5e722de654ecc70e1620dcbb7fc92088e04dbe60abcae6e",
+      "role": "golden"
+    },
+    {
+      "path": "sysSuper_Incoherent.out.expected",
+      "sha256": "7253156b6ecfdd237c96f3614c41843f9af459833ef147867deedccd8152dab1",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Instance_Coherent",
+      "resource": "normal",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Instance_Coherent.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Instance_Coherent",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Instance_Coherent.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Instance_Coherent.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Instance_Coherent.bs"
+                ],
+                "outputs": [
+                  "Instance_Coherent.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 623,
+                  "endByte": 668,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Instance_Coherent.bs.bsc-out",
+              "kind": "error",
+              "code": "T0158",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Instance_Coherent.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 623,
+                  "endByte": 668,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Instance_Default",
+      "resource": "normal",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Instance_Default.bs"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Instance_Default",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Instance_Default.bs",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Instance_Default.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Instance_Default.bs"
+                ],
+                "outputs": [
+                  "Instance_Default.bs.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 910,
+                  "endByte": 954,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 45
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Instance_Default.bs.bsc-out",
+              "kind": "error",
+              "code": "T0158",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Instance_Default.bs.bsc-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 910,
+                  "endByte": 954,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysInstance_Default",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Instance_Default.bs",
+        "sysInstance_Default.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysInstance_Default",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Instance_Default.bs",
+              "mode": "shared_elaboration",
+              "module": "sysInstance_Default",
+              "args": [
+                "-incoherent-instance-matches"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Instance_Default.bs"
+                ],
+                "outputs": [
+                  "Instance_Default.bo",
+                  "Instance_Default.bs.bsc-vcomp-out",
+                  "sysInstance_Default.ba",
+                  "sysInstance_Default.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysInstance_Default"
+              ],
+              "top": "sysInstance_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.v"
+                ],
+                "outputs": [
+                  "sysInstance_Default.bsc-vcomp-out",
+                  "sysInstance_Default.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInstance_Default",
+              "args": [],
+              "stdout": "sysInstance_Default.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.vexe"
+                ],
+                "outputs": [
+                  "sysInstance_Default.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInstance_Default.v.out",
+              "expected": "sysInstance_Default.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.v.out",
+                  "sysInstance_Default.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInstance_Default",
+              "args": [],
+              "stdout": "sysInstance_Default.v-vcd.out",
+              "vcd": "sysInstance_Default.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.vexe"
+                ],
+                "outputs": [
+                  "sysInstance_Default.v-vcd.out",
+                  "sysInstance_Default.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysInstance_Default.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysInstance_Default"
+              ],
+              "top": "sysInstance_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.ba"
+                ],
+                "outputs": [
+                  "sysInstance_Default.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysInstance_Default.cexe",
+                    "sysInstance_Default.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInstance_Default",
+              "args": [],
+              "stdout": "sysInstance_Default.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.cexe"
+                ],
+                "outputs": [
+                  "sysInstance_Default.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInstance_Default.c.out",
+              "expected": "sysInstance_Default.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.c.out",
+                  "sysInstance_Default.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInstance_Default",
+              "args": [],
+              "stdout": "sysInstance_Default.c-vcd.out",
+              "vcd": "sysInstance_Default.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.cexe"
+                ],
+                "outputs": [
+                  "sysInstance_Default.c-vcd.out",
+                  "sysInstance_Default.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysInstance_Default.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInstance_Default.c-vcd.out",
+              "expected": "sysInstance_Default.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Default.c-vcd.out",
+                  "sysInstance_Default.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 956,
+                  "endByte": 1037,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Instance_Default.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0158",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Instance_Default.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1038,
+                  "endByte": 1094,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysInstance_Incoherent",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Instance_Incoherent.bs",
+        "sysInstance_Incoherent.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysInstance_Incoherent",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Instance_Incoherent.bs",
+              "mode": "shared_elaboration",
+              "module": "sysInstance_Incoherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Instance_Incoherent.bs"
+                ],
+                "outputs": [
+                  "Instance_Incoherent.bo",
+                  "Instance_Incoherent.bs.bsc-vcomp-out",
+                  "sysInstance_Incoherent.ba",
+                  "sysInstance_Incoherent.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysInstance_Incoherent"
+              ],
+              "top": "sysInstance_Incoherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.v"
+                ],
+                "outputs": [
+                  "sysInstance_Incoherent.bsc-vcomp-out",
+                  "sysInstance_Incoherent.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInstance_Incoherent",
+              "args": [],
+              "stdout": "sysInstance_Incoherent.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.vexe"
+                ],
+                "outputs": [
+                  "sysInstance_Incoherent.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInstance_Incoherent.v.out",
+              "expected": "sysInstance_Incoherent.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.v.out",
+                  "sysInstance_Incoherent.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysInstance_Incoherent",
+              "args": [],
+              "stdout": "sysInstance_Incoherent.v-vcd.out",
+              "vcd": "sysInstance_Incoherent.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.vexe"
+                ],
+                "outputs": [
+                  "sysInstance_Incoherent.v-vcd.out",
+                  "sysInstance_Incoherent.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysInstance_Incoherent.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysInstance_Incoherent"
+              ],
+              "top": "sysInstance_Incoherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.ba"
+                ],
+                "outputs": [
+                  "sysInstance_Incoherent.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysInstance_Incoherent.cexe",
+                    "sysInstance_Incoherent.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInstance_Incoherent",
+              "args": [],
+              "stdout": "sysInstance_Incoherent.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.cexe"
+                ],
+                "outputs": [
+                  "sysInstance_Incoherent.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInstance_Incoherent.c.out",
+              "expected": "sysInstance_Incoherent.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.c.out",
+                  "sysInstance_Incoherent.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysInstance_Incoherent",
+              "args": [],
+              "stdout": "sysInstance_Incoherent.c-vcd.out",
+              "vcd": "sysInstance_Incoherent.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.cexe"
+                ],
+                "outputs": [
+                  "sysInstance_Incoherent.c-vcd.out",
+                  "sysInstance_Incoherent.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysInstance_Incoherent.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysInstance_Incoherent.c-vcd.out",
+              "expected": "sysInstance_Incoherent.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysInstance_Incoherent.c-vcd.out",
+                  "sysInstance_Incoherent.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1229,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 57
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Instance_Incoherent.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0158",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "Instance_Incoherent.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1230,
+                  "endByte": 1289,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSuper_Coherent",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Super_Coherent.bs",
+        "sysSuper_Coherent.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSuper_Coherent",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Super_Coherent.bs",
+              "mode": "shared_elaboration",
+              "module": "sysSuper_Coherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Super_Coherent.bs"
+                ],
+                "outputs": [
+                  "Super_Coherent.bo",
+                  "Super_Coherent.bs.bsc-vcomp-out",
+                  "sysSuper_Coherent.ba",
+                  "sysSuper_Coherent.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSuper_Coherent"
+              ],
+              "top": "sysSuper_Coherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.v"
+                ],
+                "outputs": [
+                  "sysSuper_Coherent.bsc-vcomp-out",
+                  "sysSuper_Coherent.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Coherent",
+              "args": [],
+              "stdout": "sysSuper_Coherent.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Coherent.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Coherent.v.out",
+              "expected": "sysSuper_Coherent.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.v.out",
+                  "sysSuper_Coherent.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Coherent",
+              "args": [],
+              "stdout": "sysSuper_Coherent.v-vcd.out",
+              "vcd": "sysSuper_Coherent.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Coherent.v-vcd.out",
+                  "sysSuper_Coherent.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSuper_Coherent.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSuper_Coherent"
+              ],
+              "top": "sysSuper_Coherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.ba"
+                ],
+                "outputs": [
+                  "sysSuper_Coherent.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSuper_Coherent.cexe",
+                    "sysSuper_Coherent.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Coherent",
+              "args": [],
+              "stdout": "sysSuper_Coherent.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Coherent.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Coherent.c.out",
+              "expected": "sysSuper_Coherent.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.c.out",
+                  "sysSuper_Coherent.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Coherent",
+              "args": [],
+              "stdout": "sysSuper_Coherent.c-vcd.out",
+              "vcd": "sysSuper_Coherent.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Coherent.c-vcd.out",
+                  "sysSuper_Coherent.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSuper_Coherent.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Coherent.c-vcd.out",
+              "expected": "sysSuper_Coherent.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Coherent.c-vcd.out",
+                  "sysSuper_Coherent.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1592,
+                  "endByte": 1643,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 52
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Super_Coherent.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0158",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "Super_Coherent.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1644,
+                  "endByte": 1698,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 55
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSuper_Default",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Super_Default.bs",
+        "sysSuper_Default.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSuper_Default",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Super_Default.bs",
+              "mode": "shared_elaboration",
+              "module": "sysSuper_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Super_Default.bs"
+                ],
+                "outputs": [
+                  "Super_Default.bo",
+                  "Super_Default.bs.bsc-vcomp-out",
+                  "sysSuper_Default.ba",
+                  "sysSuper_Default.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSuper_Default"
+              ],
+              "top": "sysSuper_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.v"
+                ],
+                "outputs": [
+                  "sysSuper_Default.bsc-vcomp-out",
+                  "sysSuper_Default.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Default.v.out",
+              "expected": "sysSuper_Default.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.v.out",
+                  "sysSuper_Default.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.v-vcd.out",
+              "vcd": "sysSuper_Default.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.v-vcd.out",
+                  "sysSuper_Default.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSuper_Default.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSuper_Default"
+              ],
+              "top": "sysSuper_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.ba"
+                ],
+                "outputs": [
+                  "sysSuper_Default.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSuper_Default.cexe",
+                    "sysSuper_Default.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Default.c.out",
+              "expected": "sysSuper_Default.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.c.out",
+                  "sysSuper_Default.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.c-vcd.out",
+              "vcd": "sysSuper_Default.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.c-vcd.out",
+                  "sysSuper_Default.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSuper_Default.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Default.c-vcd.out",
+              "expected": "sysSuper_Default.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.c-vcd.out",
+                  "sysSuper_Default.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1978,
+                  "endByte": 2028,
+                  "startLine": 42,
+                  "startColumn": 1,
+                  "endLine": 42,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Super_Default.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0158",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "Super_Default.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2029,
+                  "endByte": 2082,
+                  "startLine": 43,
+                  "startColumn": 1,
+                  "endLine": 43,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSuper_Default-2",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Super_Default.bs",
+        "sysSuper_Default.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSuper_Default",
+          "operations": [
+            {
+              "op": "fs.ensure_absent",
+              "path": "Super_Default.bo",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Super_Default.bo"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2084,
+                  "endByte": 2106,
+                  "startLine": 45,
+                  "startColumn": 1,
+                  "endLine": 45,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Super_Default.bs",
+              "mode": "shared_elaboration",
+              "module": "sysSuper_Default",
+              "args": [
+                "-incoherent-instance-matches"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Super_Default.bs"
+                ],
+                "outputs": [
+                  "Super_Default.bo",
+                  "Super_Default.bs.bsc-vcomp-out",
+                  "sysSuper_Default.ba",
+                  "sysSuper_Default.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSuper_Default"
+              ],
+              "top": "sysSuper_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.v"
+                ],
+                "outputs": [
+                  "sysSuper_Default.bsc-vcomp-out",
+                  "sysSuper_Default.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Default.v.out",
+              "expected": "sysSuper_Default.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.v.out",
+                  "sysSuper_Default.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.v-vcd.out",
+              "vcd": "sysSuper_Default.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.v-vcd.out",
+                  "sysSuper_Default.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSuper_Default.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSuper_Default"
+              ],
+              "top": "sysSuper_Default",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.ba"
+                ],
+                "outputs": [
+                  "sysSuper_Default.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSuper_Default.cexe",
+                    "sysSuper_Default.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Default.c.out",
+              "expected": "sysSuper_Default.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.c.out",
+                  "sysSuper_Default.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Default",
+              "args": [],
+              "stdout": "sysSuper_Default.c-vcd.out",
+              "vcd": "sysSuper_Default.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Default.c-vcd.out",
+                  "sysSuper_Default.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSuper_Default.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Default.c-vcd.out",
+              "expected": "sysSuper_Default.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Default.c-vcd.out",
+                  "sysSuper_Default.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2107,
+                  "endByte": 2185,
+                  "startLine": 46,
+                  "startColumn": 1,
+                  "endLine": 46,
+                  "endColumn": 79
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Super_Default.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0158",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "Super_Default.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2186,
+                  "endByte": 2239,
+                  "startLine": 47,
+                  "startColumn": 1,
+                  "endLine": 47,
+                  "endColumn": 54
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysSuper_Incoherent",
+      "resource": "heavy",
+      "fixtures": [
+        "IncoherentBase.bs",
+        "Super_Incoherent.bs",
+        "sysSuper_Incoherent.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysSuper_Incoherent",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Super_Incoherent.bs",
+              "mode": "shared_elaboration",
+              "module": "sysSuper_Incoherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Super_Incoherent.bs"
+                ],
+                "outputs": [
+                  "Super_Incoherent.bo",
+                  "Super_Incoherent.bs.bsc-vcomp-out",
+                  "sysSuper_Incoherent.ba",
+                  "sysSuper_Incoherent.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysSuper_Incoherent"
+              ],
+              "top": "sysSuper_Incoherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.v"
+                ],
+                "outputs": [
+                  "sysSuper_Incoherent.bsc-vcomp-out",
+                  "sysSuper_Incoherent.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Incoherent",
+              "args": [],
+              "stdout": "sysSuper_Incoherent.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Incoherent.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Incoherent.v.out",
+              "expected": "sysSuper_Incoherent.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.v.out",
+                  "sysSuper_Incoherent.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysSuper_Incoherent",
+              "args": [],
+              "stdout": "sysSuper_Incoherent.v-vcd.out",
+              "vcd": "sysSuper_Incoherent.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.vexe"
+                ],
+                "outputs": [
+                  "sysSuper_Incoherent.v-vcd.out",
+                  "sysSuper_Incoherent.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysSuper_Incoherent.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSuper_Incoherent"
+              ],
+              "top": "sysSuper_Incoherent",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.ba"
+                ],
+                "outputs": [
+                  "sysSuper_Incoherent.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSuper_Incoherent.cexe",
+                    "sysSuper_Incoherent.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Incoherent",
+              "args": [],
+              "stdout": "sysSuper_Incoherent.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Incoherent.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Incoherent.c.out",
+              "expected": "sysSuper_Incoherent.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.c.out",
+                  "sysSuper_Incoherent.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSuper_Incoherent",
+              "args": [],
+              "stdout": "sysSuper_Incoherent.c-vcd.out",
+              "vcd": "sysSuper_Incoherent.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.cexe"
+                ],
+                "outputs": [
+                  "sysSuper_Incoherent.c-vcd.out",
+                  "sysSuper_Incoherent.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysSuper_Incoherent.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysSuper_Incoherent.c-vcd.out",
+              "expected": "sysSuper_Incoherent.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSuper_Incoherent.c-vcd.out",
+                  "sysSuper_Incoherent.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2241,
+                  "endByte": 2294,
+                  "startLine": 49,
+                  "startColumn": 1,
+                  "endLine": 49,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Super_Incoherent.bs.bsc-vcomp-out",
+              "kind": "warning",
+              "code": "T0158",
+              "count": 0,
+              "artifacts": {
+                "inputs": [
+                  "Super_Incoherent.bs.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2295,
+                  "endByte": 2351,
+                  "startLine": 50,
+                  "startColumn": 1,
+                  "endLine": 50,
+                  "endColumn": 57
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

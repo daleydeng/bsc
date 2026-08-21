@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.lib/ClientServer/ClientServer",
+  "origin": {
+    "path": "testsuite/bsc.lib/ClientServer/ClientServer.exp",
+    "sha256": "d37ad437203b345b42522b2367a45a5b0c6cc835ae8efeeee2ad6717112246b5"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.lib/ClientServer",
+  "fixtures": [
+    {
+      "path": "TestToGPClientServer.bsv",
+      "sha256": "88c68e28a89451f85061298fac3dd0ba09c37a02787f8d811c5be82ce5361b42",
+      "role": "source"
+    },
+    {
+      "path": "sysTestToGPClientServer.out.expected",
+      "sha256": "94df839b1f3ef317756fa4fddd3ba859c6bea1c330bee99556ada138c63426fe",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysTestToGPClientServer",
+      "resource": "heavy",
+      "fixtures": [
+        "TestToGPClientServer.bsv",
+        "sysTestToGPClientServer.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysTestToGPClientServer",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TestToGPClientServer.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysTestToGPClientServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TestToGPClientServer.bsv"
+                ],
+                "outputs": [
+                  "TestToGPClientServer.bo",
+                  "TestToGPClientServer.bsv.bsc-vcomp-out",
+                  "sysTestToGPClientServer.ba",
+                  "sysTestToGPClientServer.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysTestToGPClientServer"
+              ],
+              "top": "sysTestToGPClientServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.v"
+                ],
+                "outputs": [
+                  "sysTestToGPClientServer.bsc-vcomp-out",
+                  "sysTestToGPClientServer.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestToGPClientServer",
+              "args": [],
+              "stdout": "sysTestToGPClientServer.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.vexe"
+                ],
+                "outputs": [
+                  "sysTestToGPClientServer.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestToGPClientServer.v.out",
+              "expected": "sysTestToGPClientServer.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.v.out",
+                  "sysTestToGPClientServer.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysTestToGPClientServer",
+              "args": [],
+              "stdout": "sysTestToGPClientServer.v-vcd.out",
+              "vcd": "sysTestToGPClientServer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.vexe"
+                ],
+                "outputs": [
+                  "sysTestToGPClientServer.v-vcd.out",
+                  "sysTestToGPClientServer.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysTestToGPClientServer.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysTestToGPClientServer"
+              ],
+              "top": "sysTestToGPClientServer",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.ba"
+                ],
+                "outputs": [
+                  "sysTestToGPClientServer.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysTestToGPClientServer.cexe",
+                    "sysTestToGPClientServer.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestToGPClientServer",
+              "args": [],
+              "stdout": "sysTestToGPClientServer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.cexe"
+                ],
+                "outputs": [
+                  "sysTestToGPClientServer.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestToGPClientServer.c.out",
+              "expected": "sysTestToGPClientServer.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.c.out",
+                  "sysTestToGPClientServer.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysTestToGPClientServer",
+              "args": [],
+              "stdout": "sysTestToGPClientServer.c-vcd.out",
+              "vcd": "sysTestToGPClientServer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.cexe"
+                ],
+                "outputs": [
+                  "sysTestToGPClientServer.c-vcd.out",
+                  "sysTestToGPClientServer.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysTestToGPClientServer.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysTestToGPClientServer.c-vcd.out",
+              "expected": "sysTestToGPClientServer.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysTestToGPClientServer.c-vcd.out",
+                  "sysTestToGPClientServer.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 37,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

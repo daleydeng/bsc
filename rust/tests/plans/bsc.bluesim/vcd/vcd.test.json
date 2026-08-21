@@ -1,0 +1,1097 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/vcd/vcd",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/vcd/vcd.exp",
+    "sha256": "a71937903e87bbb0433795e2235f5776df618a370d50f50da6af3c4d34dc56ee"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/vcd",
+  "fixtures": [
+    {
+      "path": "CounterTest.bsv",
+      "sha256": "6756bb9c2c194576b8fd55be9c03741d799951334ab2b9a03eec0cfe6228c51c",
+      "role": "source"
+    },
+    {
+      "path": "SameCanFire.bsv",
+      "sha256": "1ea45e1e5f0268dfb467cd26d58b7d2d34884bf803e51c8eeedd53f698889d59",
+      "role": "source"
+    },
+    {
+      "path": "VCDTest1.bsv",
+      "sha256": "15b2212f59880a19584b1f2240df9ab3b84cb93e7c292e0576f3bb2fe62d3308",
+      "role": "source"
+    },
+    {
+      "path": "VCDTest2.bsv",
+      "sha256": "66e655da138d850d3e5d1fccf45f656927306e0e48efe993ae60855a184cd24b",
+      "role": "source"
+    },
+    {
+      "path": "sysVCDTest1.out.expected",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "golden"
+    },
+    {
+      "path": "sysVCDTest2.out.expected",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysVCDTest1",
+      "resource": "heavy",
+      "fixtures": [
+        "VCDTest1.bsv",
+        "sysVCDTest1.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysVCDTest1",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "VCDTest1.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysVCDTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "VCDTest1.bsv"
+                ],
+                "outputs": [
+                  "VCDTest1.bo",
+                  "VCDTest1.bsv.bsc-vcomp-out",
+                  "mkVCDTest1_Mid.ba",
+                  "mkVCDTest1_Mid.v",
+                  "mkVCDTest1_Sub.ba",
+                  "mkVCDTest1_Sub.v",
+                  "sysVCDTest1.ba",
+                  "sysVCDTest1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysVCDTest1"
+              ],
+              "top": "sysVCDTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.v"
+                ],
+                "outputs": [
+                  "sysVCDTest1.bsc-vcomp-out",
+                  "sysVCDTest1.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysVCDTest1",
+              "args": [],
+              "stdout": "sysVCDTest1.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.vexe"
+                ],
+                "outputs": [
+                  "sysVCDTest1.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysVCDTest1.v.out",
+              "expected": "sysVCDTest1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.v.out",
+                  "sysVCDTest1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysVCDTest1",
+              "args": [],
+              "stdout": "sysVCDTest1.v-vcd.out",
+              "vcd": "sysVCDTest1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.vexe"
+                ],
+                "outputs": [
+                  "sysVCDTest1.v-vcd.out",
+                  "sysVCDTest1.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysVCDTest1.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysVCDTest1"
+              ],
+              "top": "sysVCDTest1",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.ba"
+                ],
+                "outputs": [
+                  "sysVCDTest1.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysVCDTest1.cexe",
+                    "sysVCDTest1.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysVCDTest1",
+              "args": [],
+              "stdout": "sysVCDTest1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.cexe"
+                ],
+                "outputs": [
+                  "sysVCDTest1.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysVCDTest1.c.out",
+              "expected": "sysVCDTest1.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.c.out",
+                  "sysVCDTest1.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysVCDTest1",
+              "args": [],
+              "stdout": "sysVCDTest1.c-vcd.out",
+              "vcd": "sysVCDTest1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.cexe"
+                ],
+                "outputs": [
+                  "sysVCDTest1.c-vcd.out",
+                  "sysVCDTest1.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysVCDTest1.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysVCDTest1.c-vcd.out",
+              "expected": "sysVCDTest1.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest1.c-vcd.out",
+                  "sysVCDTest1.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2138,
+                  "endByte": 2162,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysVCDTest2",
+      "resource": "heavy",
+      "fixtures": [
+        "VCDTest2.bsv",
+        "sysVCDTest2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysVCDTest2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "VCDTest2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysVCDTest2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "VCDTest2.bsv"
+                ],
+                "outputs": [
+                  "VCDTest2.bo",
+                  "VCDTest2.bsv.bsc-vcomp-out",
+                  "mkVCDTest2_Mid.ba",
+                  "mkVCDTest2_Mid.v",
+                  "mkVCDTest2_Sub.ba",
+                  "mkVCDTest2_Sub.v",
+                  "sysVCDTest2.ba",
+                  "sysVCDTest2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysVCDTest2"
+              ],
+              "top": "sysVCDTest2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.v"
+                ],
+                "outputs": [
+                  "sysVCDTest2.bsc-vcomp-out",
+                  "sysVCDTest2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysVCDTest2",
+              "args": [],
+              "stdout": "sysVCDTest2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.vexe"
+                ],
+                "outputs": [
+                  "sysVCDTest2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysVCDTest2.v.out",
+              "expected": "sysVCDTest2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.v.out",
+                  "sysVCDTest2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysVCDTest2",
+              "args": [],
+              "stdout": "sysVCDTest2.v-vcd.out",
+              "vcd": "sysVCDTest2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.vexe"
+                ],
+                "outputs": [
+                  "sysVCDTest2.v-vcd.out",
+                  "sysVCDTest2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysVCDTest2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysVCDTest2"
+              ],
+              "top": "sysVCDTest2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.ba"
+                ],
+                "outputs": [
+                  "sysVCDTest2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysVCDTest2.cexe",
+                    "sysVCDTest2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysVCDTest2",
+              "args": [],
+              "stdout": "sysVCDTest2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.cexe"
+                ],
+                "outputs": [
+                  "sysVCDTest2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysVCDTest2.c.out",
+              "expected": "sysVCDTest2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.c.out",
+                  "sysVCDTest2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysVCDTest2",
+              "args": [],
+              "stdout": "sysVCDTest2.c-vcd.out",
+              "vcd": "sysVCDTest2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.cexe"
+                ],
+                "outputs": [
+                  "sysVCDTest2.c-vcd.out",
+                  "sysVCDTest2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysVCDTest2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysVCDTest2.c-vcd.out",
+              "expected": "sysVCDTest2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysVCDTest2.c-vcd.out",
+                  "sysVCDTest2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 2164,
+                  "endByte": 2188,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 25
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-sysSameCanFire",
+      "resource": "heavy",
+      "fixtures": [
+        "SameCanFire.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysSameCanFire",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "SameCanFire.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "SameCanFire.bsv"
+                ],
+                "outputs": [
+                  "SameCanFire.bo",
+                  "SameCanFire.bsv.bsc-ccomp-out",
+                  "sysSameCanFire.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 91,
+                  "endByte": 126,
+                  "startLine": 4,
+                  "startColumn": 5,
+                  "endLine": 4,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysSameCanFire"
+              ],
+              "top": "sysSameCanFire",
+              "args": [
+                "-keep-fires"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysSameCanFire.ba"
+                ],
+                "outputs": [
+                  "sysSameCanFire.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysSameCanFire.cexe",
+                    "sysSameCanFire.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 131,
+                  "endByte": 192,
+                  "startLine": 5,
+                  "startColumn": 5,
+                  "endLine": 5,
+                  "endColumn": 66
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysSameCanFire",
+              "args": [
+                "-V",
+                "sysSameCanFire.vcd"
+              ],
+              "stdout": "sysSameCanFire.out",
+              "artifacts": {
+                "inputs": [
+                  "sysSameCanFire.cexe"
+                ],
+                "outputs": [
+                  "sysSameCanFire.out",
+                  "sysSameCanFire.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 197,
+                  "endByte": 246,
+                  "startLine": 6,
+                  "startColumn": 5,
+                  "endLine": 6,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "sysSameCanFire.vcd",
+              "checks": [
+                "main.top.CAN_FIRE_RL_r1 exists",
+                "main.top.CAN_FIRE_RL_r2 exists"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysSameCanFire.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 312,
+                  "endByte": 459,
+                  "startLine": 8,
+                  "startColumn": 5,
+                  "endLine": 9,
+                  "endColumn": 76
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-sysCounterTest",
+      "resource": "heavy",
+      "fixtures": [
+        "CounterTest.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-sysCounterTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "CounterTest.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "CounterTest.bsv"
+                ],
+                "outputs": [
+                  "CounterTest.bo",
+                  "CounterTest.bsv.bsc-ccomp-out",
+                  "sysCounterTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 532,
+                  "endByte": 567,
+                  "startLine": 12,
+                  "startColumn": 5,
+                  "endLine": 12,
+                  "endColumn": 40
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysCounterTest"
+              ],
+              "top": "sysCounterTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysCounterTest.ba"
+                ],
+                "outputs": [
+                  "sysCounterTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysCounterTest.cexe",
+                    "sysCounterTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 572,
+                  "endByte": 619,
+                  "startLine": 13,
+                  "startColumn": 5,
+                  "endLine": 13,
+                  "endColumn": 52
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-1",
+          "operations": [
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysCounterTest",
+              "args": [
+                "-V",
+                "sysCounterTest.vcd"
+              ],
+              "stdout": "sysCounterTest.out",
+              "artifacts": {
+                "inputs": [
+                  "sysCounterTest.cexe"
+                ],
+                "outputs": [
+                  "sysCounterTest.out",
+                  "sysCounterTest.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 624,
+                  "endByte": 673,
+                  "startLine": 14,
+                  "startColumn": 5,
+                  "endLine": 14,
+                  "endColumn": 54
+                }
+              }
+            },
+            {
+              "op": "vcd.check",
+              "path": "sysCounterTest.vcd",
+              "checks": [
+                "main.top.counter.ADDA becomes 1 @30",
+                "main.top.counter.DATA_A equals 100 @40",
+                "main.top.counter.ADDA becomes 0 @40",
+                "main.top.counter.Q_OUT becomes 100 @40",
+                "main.top.counter.ADDB becomes 1 @70",
+                "main.top.counter.q_state becomes 50 @80",
+                "main.top.counter.ADDB becomes 0 @80",
+                "main.top.counter.ADDA remains 1 @120",
+                "main.top.counter.DATA_A remains 1 @120",
+                "main.top.counter.SETC becomes 1 @300",
+                "main.top.counter.DATA_C equals 70 @310",
+                "main.top.counter.Q_OUT becomes 75 @310",
+                "main.top.counter.SETC becomes 0 @310",
+                "main.top.counter.SETF becomes 1 @600",
+                "main.top.counter.DATA_F equals 150 @610",
+                "main.top.counter becomes 150 @610",
+                "main.top.counter.SETF becomes 0 @610"
+              ],
+              "requires": [
+                "internal_checks"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "sysCounterTest.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 736,
+                  "endByte": 2134,
+                  "startLine": 16,
+                  "startColumn": 5,
+                  "endLine": 32,
+                  "endColumn": 82
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

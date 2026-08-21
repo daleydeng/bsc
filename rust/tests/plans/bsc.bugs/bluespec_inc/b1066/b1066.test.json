@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1066/b1066",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1066/b1066.exp",
+    "sha256": "cacdcbcd5049807ddadfc08c781e46facf6ba9b892012a14638b63b80f52291a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1066",
+  "fixtures": [
+    {
+      "path": "Sub1.bsv",
+      "sha256": "acc1e35a6af3a6c12b28649e08c0b9c4efa98fa288bb3b853f5f95363927a421",
+      "role": "source"
+    },
+    {
+      "path": "Sub2.bsv",
+      "sha256": "bf13c0f60974d96745dbb3bfd2008106abf91b0b94b8c91036e4368ba35d89f7",
+      "role": "source"
+    },
+    {
+      "path": "Test.bsv",
+      "sha256": "1a57beb9a0dd032edaf9fd69ee6c88083f979aceb8257ce9554369a84938d57c",
+      "role": "source"
+    },
+    {
+      "path": "Test2.bsv",
+      "sha256": "916aa7001fdc711ccf7f9da26af27fca69798c8f34cab4fab9bd8135575bd925",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test",
+      "resource": "normal",
+      "fixtures": [
+        "Sub1.bsv",
+        "Sub2.bsv",
+        "Test.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test.bsv"
+                ],
+                "outputs": [
+                  "Test.bo",
+                  "Test.bsv.bsc-vcomp-out",
+                  "mkTest.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 29,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "assert.regex",
+              "path": "mkTest.v",
+              "pattern": "input  \\[7 : 0\\] VAL;",
+              "artifacts": {
+                "inputs": [
+                  "mkTest.v"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 55,
+                  "endByte": 101,
+                  "startLine": 3,
+                  "startColumn": 5,
+                  "endLine": 3,
+                  "endColumn": 51
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Test2",
+      "resource": "normal",
+      "fixtures": [
+        "Sub1.bsv",
+        "Sub2.bsv",
+        "Test2.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test2",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Test2.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Test2.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test2.bsv"
+                ],
+                "outputs": [
+                  "Test2.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 145,
+                  "endByte": 187,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 43
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Test2.bsv.bsc-vcomp-out",
+              "kind": "error",
+              "code": "G0107",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Test2.bsv.bsc-vcomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 145,
+                  "endByte": 187,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 43
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,629 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.preprocessor/include/include",
+  "origin": {
+    "path": "testsuite/bsc.preprocessor/include/include.exp",
+    "sha256": "e743e1f61a9d0e47de92b50c32151a3e8fde6ed58af68c550be06b8568cae37b"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.preprocessor/include",
+  "fixtures": [
+    {
+      "path": "DupInclude.bsv",
+      "sha256": "d05d02f5f1f013800f477e590ff46f756389f3b1fcc3f3ad6ffb87f6f2eff02c",
+      "role": "source"
+    },
+    {
+      "path": "DupInclude.bsv.bsc-out.expected",
+      "sha256": "71281d852a6c884a4057f7cbc268f590ef1f08dd015295f3bd2b502e66fa8b5e",
+      "role": "golden"
+    },
+    {
+      "path": "DupInclude.defines",
+      "sha256": "17a2ac5fad63efc28c6f0c5aee13ea44be390a16d3a821fbf7f8564af93f732b",
+      "role": "data"
+    },
+    {
+      "path": "IncludeAbsolute.bsv.bsc-vcomp-out.expected.pre-m4",
+      "sha256": "07f023b2cfd4f6d2d3a159b88cec279389fb73b134faa48240a7ffd5990fbcbd",
+      "role": "build_input"
+    },
+    {
+      "path": "IncludeAbsolute.bsv.pre-m4",
+      "sha256": "f1ff92fa24c5a28ba6e4415266cd0f187cdc33ffb94bb89e511041c65557f33f",
+      "role": "build_input"
+    },
+    {
+      "path": "IncludeNoPath.bsv",
+      "sha256": "7ce82b86c192e2602289db35b91498ae7279b3f6a646f974e6bc1f8d5cfee4f3",
+      "role": "source"
+    },
+    {
+      "path": "IncludeNoPath.bsv.bsc-vcomp-out.expected",
+      "sha256": "e1774ff649d9fbfe6bd872810e4c3792e71d024cbb5cee8364e5904c7ab45905",
+      "role": "golden"
+    },
+    {
+      "path": "IncludeSubdir.bsv",
+      "sha256": "0fb43baf7c5f11c754d9ca40001dc4dad58604228ba8585f6b6c0514f59bdf9b",
+      "role": "source"
+    },
+    {
+      "path": "IncludeSubdir.bsv.bsc-vcomp-out.expected",
+      "sha256": "bc4a84fe7442d4dc19b842da6cc259532aa6baccd7968526bf030ac8ca31ac88",
+      "role": "golden"
+    },
+    {
+      "path": "IncludeVendor.bsv",
+      "sha256": "0baa0a9f24dd383f200b142ba600669bf4a3301ea0878ab93896c2549e416729",
+      "role": "source"
+    },
+    {
+      "path": "IncludeVendor_MissingCloseDelim.bsv",
+      "sha256": "badf641f2b22873f319d8fa541cf967327d919a49af7c7b8069e60bc2cdaa699",
+      "role": "source"
+    },
+    {
+      "path": "defines1",
+      "sha256": "9b21931eea0c2e7b0180c558c7f49e54beedc6ce28f1e82b96de8619763fd411",
+      "role": "data"
+    },
+    {
+      "path": "subdir/defines2",
+      "sha256": "d2cf353124527c41a146ae15583a5b69b18c0d7d32f25250263489915d7cbc97",
+      "role": "data"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-IncludeVendor",
+      "resource": "normal",
+      "fixtures": [
+        "IncludeVendor.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-IncludeVendor",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IncludeVendor.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "IncludeVendor.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "IncludeVendor.bsv"
+                ],
+                "outputs": [
+                  "IncludeVendor.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream unannotated known failure"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 87,
+                  "endByte": 121,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 35
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ordered-workspace-compile-2",
+      "resource": "normal",
+      "fixtures": [
+        "IncludeAbsolute.bsv.bsc-vcomp-out.expected.pre-m4",
+        "IncludeAbsolute.bsv.pre-m4",
+        "IncludeNoPath.bsv",
+        "IncludeNoPath.bsv.bsc-vcomp-out.expected",
+        "IncludeSubdir.bsv",
+        "IncludeSubdir.bsv.bsc-vcomp-out.expected",
+        "defines1",
+        "subdir/defines2"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-workspace",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "IncludeSubdir.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IncludeSubdir.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "IncludeSubdir.bsv"
+                ],
+                "outputs": [
+                  "IncludeSubdir.bo",
+                  "IncludeSubdir.bsv.bsc-vcomp-out",
+                  "sysIncludeSubdir.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 238,
+                  "endByte": 276,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "IncludeSubdir.bsv.bsc-vcomp-out",
+              "expected": "IncludeSubdir.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "IncludeSubdir.bsv.bsc-vcomp-out",
+                  "IncludeSubdir.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 277,
+                  "endByte": 336,
+                  "startLine": 14,
+                  "startColumn": 1,
+                  "endLine": 14,
+                  "endColumn": 60
+                }
+              }
+            },
+            {
+              "op": "template.m4_curdir",
+              "template": "IncludeAbsolute.bsv.pre-m4",
+              "output": "IncludeAbsolute.bsv",
+              "artifacts": {
+                "inputs": [
+                  "IncludeAbsolute.bsv.pre-m4"
+                ],
+                "outputs": [
+                  "IncludeAbsolute.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 428,
+                  "endByte": 504,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "IncludeAbsolute.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IncludeAbsolute.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "IncludeAbsolute.bsv"
+                ],
+                "outputs": [
+                  "IncludeAbsolute.bo",
+                  "IncludeAbsolute.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 505,
+                  "endByte": 545,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "template.m4_curdir",
+              "template": "IncludeAbsolute.bsv.bsc-vcomp-out.expected.pre-m4",
+              "output": "IncludeAbsolute.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "IncludeAbsolute.bsv.bsc-vcomp-out.expected.pre-m4"
+                ],
+                "outputs": [
+                  "IncludeAbsolute.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 607,
+                  "endByte": 683,
+                  "startLine": 21,
+                  "startColumn": 1,
+                  "endLine": 21,
+                  "endColumn": 77
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "IncludeAbsolute.bsv.bsc-vcomp-out",
+              "expected": "IncludeAbsolute.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "IncludeAbsolute.bsv.bsc-vcomp-out",
+                  "IncludeAbsolute.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 684,
+                  "endByte": 707,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "IncludeNoPath.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "IncludeNoPath.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "IncludeNoPath.bsv"
+                ],
+                "outputs": [
+                  "IncludeNoPath.bo",
+                  "IncludeNoPath.bsv.bsc-vcomp-out",
+                  "sysIncludeNoPath.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 741,
+                  "endByte": 779,
+                  "startLine": 25,
+                  "startColumn": 1,
+                  "endLine": 25,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "IncludeNoPath.bsv.bsc-vcomp-out",
+              "expected": "IncludeNoPath.bsv.bsc-vcomp-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "IncludeNoPath.bsv.bsc-vcomp-out",
+                  "IncludeNoPath.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 780,
+                  "endByte": 839,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 60
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ordered-workspace-compile-5",
+      "resource": "normal",
+      "fixtures": [
+        "DupInclude.bsv",
+        "DupInclude.bsv.bsc-out.expected",
+        "DupInclude.defines",
+        "IncludeVendor_MissingCloseDelim.bsv"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-workspace",
+          "operations": [
+            {
+              "op": "fs.create_dir_all",
+              "path": "libdir1",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir1"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 972,
+                  "endByte": 985,
+                  "startLine": 35,
+                  "startColumn": 1,
+                  "endLine": 35,
+                  "endColumn": 14
+                }
+              }
+            },
+            {
+              "op": "fs.create_dir_all",
+              "path": "libdir2",
+              "artifacts": {
+                "inputs": [],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [
+                  "libdir2"
+                ],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 986,
+                  "endByte": 999,
+                  "startLine": 36,
+                  "startColumn": 1,
+                  "endLine": 36,
+                  "endColumn": 14
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "DupInclude.defines",
+              "destination": "libdir1/DupInclude.defines",
+              "artifacts": {
+                "inputs": [
+                  "DupInclude.defines"
+                ],
+                "outputs": [
+                  "libdir1/DupInclude.defines"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1000,
+                  "endByte": 1031,
+                  "startLine": 37,
+                  "startColumn": 1,
+                  "endLine": 37,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.copy",
+              "source": "DupInclude.defines",
+              "destination": "libdir2/DupInclude.defines",
+              "artifacts": {
+                "inputs": [
+                  "DupInclude.defines"
+                ],
+                "outputs": [
+                  "libdir2/DupInclude.defines"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1032,
+                  "endByte": 1063,
+                  "startLine": 38,
+                  "startColumn": 1,
+                  "endLine": 38,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "fs.remove_user_read",
+              "path": "libdir1/DupInclude.defines",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "libdir1/DupInclude.defines"
+                ],
+                "outputs": [
+                  "libdir1/DupInclude.defines"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1087,
+                  "endByte": 1125,
+                  "startLine": 41,
+                  "startColumn": 1,
+                  "endLine": 41,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "DupInclude.bsv",
+              "mode": "frontend",
+              "args": [
+                "-p",
+                "libdir1:+:libdir2"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "DupInclude.bsv.bsc-out",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DupInclude.bsv"
+                ],
+                "outputs": [
+                  "DupInclude.bsv.bsc-out",
+                  "DupInclude.bo"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1173,
+                  "endByte": 1223,
+                  "startLine": 44,
+                  "startColumn": 1,
+                  "endLine": 44,
+                  "endColumn": 51
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "DupInclude.bsv.bsc-out",
+              "expected": "DupInclude.bsv.bsc-out.expected",
+              "requires": [
+                "posix_unreadability"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "DupInclude.bsv.bsc-out",
+                  "DupInclude.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1336,
+                  "endByte": 1371,
+                  "startLine": 48,
+                  "startColumn": 1,
+                  "endLine": 48,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "IncludeVendor_MissingCloseDelim.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "IncludeVendor_MissingCloseDelim.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "IncludeVendor_MissingCloseDelim.bsv"
+                ],
+                "outputs": [
+                  "IncludeVendor_MissingCloseDelim.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1480,
+                  "endByte": 1528,
+                  "startLine": 54,
+                  "startColumn": 1,
+                  "endLine": 54,
+                  "endColumn": 49
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

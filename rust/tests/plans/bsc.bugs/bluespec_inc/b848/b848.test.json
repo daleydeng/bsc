@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b848/b848",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b848/b848.exp",
+    "sha256": "958504c877591c31f79f1c209f37d1c91ea8b9fb3104acea19f6ad82876ce03b"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b848",
+  "fixtures": [
+    {
+      "path": "FIFOPush.bsv",
+      "sha256": "3ce47dcbddb6614df0b66b64a55363adaaa97512868e198d45a317d729050217",
+      "role": "source"
+    },
+    {
+      "path": "sysFIFOPush.v.expected",
+      "sha256": "d01b4a34947a0b4f49ad11aeb9aecd73f1ef4aa9fb78ffaa2fd7d441ff29fe9a",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-FIFOPush",
+      "resource": "normal",
+      "fixtures": [
+        "FIFOPush.bsv",
+        "sysFIFOPush.v.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-FIFOPush",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "FIFOPush.bsv",
+              "mode": "verilog",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "FIFOPush.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "FIFOPush.bsv"
+                ],
+                "outputs": [
+                  "FIFOPush.bo",
+                  "FIFOPush.bsv.bsc-vcomp-out",
+                  "sysFIFOPush.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 33,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "assert.verilog",
+              "actual": "sysFIFOPush.v",
+              "expected": "sysFIFOPush.v.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysFIFOPush.v",
+                  "sysFIFOPush.v.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "expectation": {
+                "kind": "xfail",
+                "reason": "upstream bug 848"
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 34,
+                  "endByte": 71,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

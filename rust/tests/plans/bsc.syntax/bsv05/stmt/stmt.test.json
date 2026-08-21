@@ -1,0 +1,2234 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.syntax/bsv05/stmt/stmt",
+  "origin": {
+    "path": "testsuite/bsc.syntax/bsv05/stmt/stmt.exp",
+    "sha256": "cd9e4afec253a3b6a00cb8372976cf8904cff15ee0317bfece515495316c3ee7"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.syntax/bsv05/stmt",
+  "fixtures": [
+    {
+      "path": "StmtFor.bsv",
+      "sha256": "11402af6ba6faf354dff61664bffe8927e9899d71d82647ed1c46033d58a1a41",
+      "role": "source"
+    },
+    {
+      "path": "StmtFor_ArrayUpd_Elem.bsv",
+      "sha256": "2266949e12f5a4e6200664c9fc479948c36fe7fb8552c550faabc4babde67ef2",
+      "role": "source"
+    },
+    {
+      "path": "StmtFor_ArrayUpd_Reg.bsv",
+      "sha256": "37f6f88133fd42fd3801d149fc5bea927306db528bc7125a1a1f9edb85a90516",
+      "role": "source"
+    },
+    {
+      "path": "StmtFor_FieldUpd_Field.bsv",
+      "sha256": "4bf99842f048060c9e576f3a534efa7c17f998780ccefd56eb0299e4e08cd329",
+      "role": "source"
+    },
+    {
+      "path": "StmtFor_FieldUpd_Reg.bsv",
+      "sha256": "c56abfd4dd7e522eed8e47087252a28f09e5443d8890a501e6fd627928c8fdbb",
+      "role": "source"
+    },
+    {
+      "path": "StmtFor_RangeUpd.bsv",
+      "sha256": "ba0369e2c9eefa42cce144917bfc2a347c950597be7e9f311dfae9a4ab92b9c5",
+      "role": "source"
+    },
+    {
+      "path": "sysStmtFor.out.expected",
+      "sha256": "5b64f3f3d044e1b7a69333c4f2411906eb523bdd0472e878b11cd6673b056757",
+      "role": "golden"
+    },
+    {
+      "path": "sysStmtFor_ArrayUpd_Elem.out.expected",
+      "sha256": "84b2e004a5b33edb6c3a1ae86cf47431d5f3185c8e399ced2f08306a11e0e258",
+      "role": "golden"
+    },
+    {
+      "path": "sysStmtFor_ArrayUpd_Reg.out.expected",
+      "sha256": "c2c0ae42c4a4c3f6b7642a0eb15868326e9ce493278fce6da37d0cbd3c63f838",
+      "role": "golden"
+    },
+    {
+      "path": "sysStmtFor_FieldUpd_Field.out.expected",
+      "sha256": "db65a1b386362f5e7c865b5aed3beea7341780f8c8d002af633f5ab79b2d997c",
+      "role": "golden"
+    },
+    {
+      "path": "sysStmtFor_FieldUpd_Reg.out.expected",
+      "sha256": "72abf5f77ab8132398e403a4b8a295f137eb8e49f254a916129ff6570680b902",
+      "role": "golden"
+    },
+    {
+      "path": "sysStmtFor_RangeUpd.out.expected",
+      "sha256": "a71c754ae85331ba16c5a5dd63d37632369daa94460ef0e0ef45fb55c50c61ba",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysStmtFor",
+      "resource": "heavy",
+      "fixtures": [
+        "StmtFor.bsv",
+        "sysStmtFor.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStmtFor",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StmtFor.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStmtFor",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StmtFor.bsv"
+                ],
+                "outputs": [
+                  "StmtFor.bo",
+                  "StmtFor.bsv.bsc-vcomp-out",
+                  "sysStmtFor.ba",
+                  "sysStmtFor.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStmtFor"
+              ],
+              "top": "sysStmtFor",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.v"
+                ],
+                "outputs": [
+                  "sysStmtFor.bsc-vcomp-out",
+                  "sysStmtFor.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor",
+              "args": [],
+              "stdout": "sysStmtFor.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor.v.out",
+              "expected": "sysStmtFor.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.v.out",
+                  "sysStmtFor.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor",
+              "args": [],
+              "stdout": "sysStmtFor.v-vcd.out",
+              "vcd": "sysStmtFor.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor.v-vcd.out",
+                  "sysStmtFor.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStmtFor.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStmtFor"
+              ],
+              "top": "sysStmtFor",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.ba"
+                ],
+                "outputs": [
+                  "sysStmtFor.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStmtFor.cexe",
+                    "sysStmtFor.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor",
+              "args": [],
+              "stdout": "sysStmtFor.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor.c.out",
+              "expected": "sysStmtFor.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.c.out",
+                  "sysStmtFor.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor",
+              "args": [],
+              "stdout": "sysStmtFor.c-vcd.out",
+              "vcd": "sysStmtFor.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor.c-vcd.out",
+                  "sysStmtFor.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStmtFor.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor.c-vcd.out",
+              "expected": "sysStmtFor.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor.c-vcd.out",
+                  "sysStmtFor.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 162,
+                  "endByte": 185,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStmtFor_ArrayUpd_Reg",
+      "resource": "heavy",
+      "fixtures": [
+        "StmtFor_ArrayUpd_Reg.bsv",
+        "sysStmtFor_ArrayUpd_Reg.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStmtFor_ArrayUpd_Reg",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StmtFor_ArrayUpd_Reg.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StmtFor_ArrayUpd_Reg.bsv"
+                ],
+                "outputs": [
+                  "StmtFor_ArrayUpd_Reg.bo",
+                  "StmtFor_ArrayUpd_Reg.bsv.bsc-vcomp-out",
+                  "sysStmtFor_ArrayUpd_Reg.ba",
+                  "sysStmtFor_ArrayUpd_Reg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStmtFor_ArrayUpd_Reg"
+              ],
+              "top": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.v"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Reg.bsc-vcomp-out",
+                  "sysStmtFor_ArrayUpd_Reg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Reg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Reg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_ArrayUpd_Reg.v.out",
+              "expected": "sysStmtFor_ArrayUpd_Reg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.v.out",
+                  "sysStmtFor_ArrayUpd_Reg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Reg.v-vcd.out",
+              "vcd": "sysStmtFor_ArrayUpd_Reg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Reg.v-vcd.out",
+                  "sysStmtFor_ArrayUpd_Reg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStmtFor_ArrayUpd_Reg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStmtFor_ArrayUpd_Reg"
+              ],
+              "top": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.ba"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Reg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStmtFor_ArrayUpd_Reg.cexe",
+                    "sysStmtFor_ArrayUpd_Reg.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Reg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Reg.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_ArrayUpd_Reg.c.out",
+              "expected": "sysStmtFor_ArrayUpd_Reg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.c.out",
+                  "sysStmtFor_ArrayUpd_Reg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_ArrayUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Reg.c-vcd.out",
+              "vcd": "sysStmtFor_ArrayUpd_Reg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Reg.c-vcd.out",
+                  "sysStmtFor_ArrayUpd_Reg.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStmtFor_ArrayUpd_Reg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_ArrayUpd_Reg.c-vcd.out",
+              "expected": "sysStmtFor_ArrayUpd_Reg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Reg.c-vcd.out",
+                  "sysStmtFor_ArrayUpd_Reg.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 268,
+                  "endByte": 304,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStmtFor_ArrayUpd_Elem",
+      "resource": "heavy",
+      "fixtures": [
+        "StmtFor_ArrayUpd_Elem.bsv",
+        "sysStmtFor_ArrayUpd_Elem.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStmtFor_ArrayUpd_Elem",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StmtFor_ArrayUpd_Elem.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StmtFor_ArrayUpd_Elem.bsv"
+                ],
+                "outputs": [
+                  "StmtFor_ArrayUpd_Elem.bo",
+                  "StmtFor_ArrayUpd_Elem.bsv.bsc-vcomp-out",
+                  "sysStmtFor_ArrayUpd_Elem.ba",
+                  "sysStmtFor_ArrayUpd_Elem.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStmtFor_ArrayUpd_Elem"
+              ],
+              "top": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.v"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Elem.bsc-vcomp-out",
+                  "sysStmtFor_ArrayUpd_Elem.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Elem.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Elem.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_ArrayUpd_Elem.v.out",
+              "expected": "sysStmtFor_ArrayUpd_Elem.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.v.out",
+                  "sysStmtFor_ArrayUpd_Elem.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Elem.v-vcd.out",
+              "vcd": "sysStmtFor_ArrayUpd_Elem.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Elem.v-vcd.out",
+                  "sysStmtFor_ArrayUpd_Elem.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStmtFor_ArrayUpd_Elem.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStmtFor_ArrayUpd_Elem"
+              ],
+              "top": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.ba"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Elem.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStmtFor_ArrayUpd_Elem.cexe",
+                    "sysStmtFor_ArrayUpd_Elem.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Elem.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Elem.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_ArrayUpd_Elem.c.out",
+              "expected": "sysStmtFor_ArrayUpd_Elem.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.c.out",
+                  "sysStmtFor_ArrayUpd_Elem.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_ArrayUpd_Elem",
+              "args": [],
+              "stdout": "sysStmtFor_ArrayUpd_Elem.c-vcd.out",
+              "vcd": "sysStmtFor_ArrayUpd_Elem.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_ArrayUpd_Elem.c-vcd.out",
+                  "sysStmtFor_ArrayUpd_Elem.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStmtFor_ArrayUpd_Elem.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_ArrayUpd_Elem.c-vcd.out",
+              "expected": "sysStmtFor_ArrayUpd_Elem.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_ArrayUpd_Elem.c-vcd.out",
+                  "sysStmtFor_ArrayUpd_Elem.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 369,
+                  "endByte": 406,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 38
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStmtFor_RangeUpd",
+      "resource": "heavy",
+      "fixtures": [
+        "StmtFor_RangeUpd.bsv",
+        "sysStmtFor_RangeUpd.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStmtFor_RangeUpd",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StmtFor_RangeUpd.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStmtFor_RangeUpd",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StmtFor_RangeUpd.bsv"
+                ],
+                "outputs": [
+                  "StmtFor_RangeUpd.bo",
+                  "StmtFor_RangeUpd.bsv.bsc-vcomp-out",
+                  "sysStmtFor_RangeUpd.ba",
+                  "sysStmtFor_RangeUpd.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStmtFor_RangeUpd"
+              ],
+              "top": "sysStmtFor_RangeUpd",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.v"
+                ],
+                "outputs": [
+                  "sysStmtFor_RangeUpd.bsc-vcomp-out",
+                  "sysStmtFor_RangeUpd.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_RangeUpd",
+              "args": [],
+              "stdout": "sysStmtFor_RangeUpd.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_RangeUpd.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_RangeUpd.v.out",
+              "expected": "sysStmtFor_RangeUpd.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.v.out",
+                  "sysStmtFor_RangeUpd.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_RangeUpd",
+              "args": [],
+              "stdout": "sysStmtFor_RangeUpd.v-vcd.out",
+              "vcd": "sysStmtFor_RangeUpd.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_RangeUpd.v-vcd.out",
+                  "sysStmtFor_RangeUpd.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStmtFor_RangeUpd.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStmtFor_RangeUpd"
+              ],
+              "top": "sysStmtFor_RangeUpd",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.ba"
+                ],
+                "outputs": [
+                  "sysStmtFor_RangeUpd.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStmtFor_RangeUpd.cexe",
+                    "sysStmtFor_RangeUpd.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_RangeUpd",
+              "args": [],
+              "stdout": "sysStmtFor_RangeUpd.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_RangeUpd.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_RangeUpd.c.out",
+              "expected": "sysStmtFor_RangeUpd.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.c.out",
+                  "sysStmtFor_RangeUpd.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_RangeUpd",
+              "args": [],
+              "stdout": "sysStmtFor_RangeUpd.c-vcd.out",
+              "vcd": "sysStmtFor_RangeUpd.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_RangeUpd.c-vcd.out",
+                  "sysStmtFor_RangeUpd.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStmtFor_RangeUpd.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_RangeUpd.c-vcd.out",
+              "expected": "sysStmtFor_RangeUpd.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_RangeUpd.c-vcd.out",
+                  "sysStmtFor_RangeUpd.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 439,
+                  "endByte": 471,
+                  "startLine": 23,
+                  "startColumn": 1,
+                  "endLine": 23,
+                  "endColumn": 33
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStmtFor_FieldUpd_Field",
+      "resource": "heavy",
+      "fixtures": [
+        "StmtFor_FieldUpd_Field.bsv",
+        "sysStmtFor_FieldUpd_Field.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStmtFor_FieldUpd_Field",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StmtFor_FieldUpd_Field.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StmtFor_FieldUpd_Field.bsv"
+                ],
+                "outputs": [
+                  "StmtFor_FieldUpd_Field.bo",
+                  "StmtFor_FieldUpd_Field.bsv.bsc-vcomp-out",
+                  "sysStmtFor_FieldUpd_Field.ba",
+                  "sysStmtFor_FieldUpd_Field.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStmtFor_FieldUpd_Field"
+              ],
+              "top": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.v"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Field.bsc-vcomp-out",
+                  "sysStmtFor_FieldUpd_Field.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Field.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Field.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_FieldUpd_Field.v.out",
+              "expected": "sysStmtFor_FieldUpd_Field.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.v.out",
+                  "sysStmtFor_FieldUpd_Field.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Field.v-vcd.out",
+              "vcd": "sysStmtFor_FieldUpd_Field.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Field.v-vcd.out",
+                  "sysStmtFor_FieldUpd_Field.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStmtFor_FieldUpd_Field.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStmtFor_FieldUpd_Field"
+              ],
+              "top": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.ba"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Field.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStmtFor_FieldUpd_Field.cexe",
+                    "sysStmtFor_FieldUpd_Field.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Field.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Field.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_FieldUpd_Field.c.out",
+              "expected": "sysStmtFor_FieldUpd_Field.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.c.out",
+                  "sysStmtFor_FieldUpd_Field.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_FieldUpd_Field",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Field.c-vcd.out",
+              "vcd": "sysStmtFor_FieldUpd_Field.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Field.c-vcd.out",
+                  "sysStmtFor_FieldUpd_Field.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStmtFor_FieldUpd_Field.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_FieldUpd_Field.c-vcd.out",
+              "expected": "sysStmtFor_FieldUpd_Field.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Field.c-vcd.out",
+                  "sysStmtFor_FieldUpd_Field.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 566,
+                  "endByte": 604,
+                  "startLine": 29,
+                  "startColumn": 1,
+                  "endLine": 29,
+                  "endColumn": 39
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-sysStmtFor_FieldUpd_Reg",
+      "resource": "heavy",
+      "fixtures": [
+        "StmtFor_FieldUpd_Reg.bsv",
+        "sysStmtFor_FieldUpd_Reg.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysStmtFor_FieldUpd_Reg",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "StmtFor_FieldUpd_Reg.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "StmtFor_FieldUpd_Reg.bsv"
+                ],
+                "outputs": [
+                  "StmtFor_FieldUpd_Reg.bo",
+                  "StmtFor_FieldUpd_Reg.bsv.bsc-vcomp-out",
+                  "sysStmtFor_FieldUpd_Reg.ba",
+                  "sysStmtFor_FieldUpd_Reg.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysStmtFor_FieldUpd_Reg"
+              ],
+              "top": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.v"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Reg.bsc-vcomp-out",
+                  "sysStmtFor_FieldUpd_Reg.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Reg.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Reg.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_FieldUpd_Reg.v.out",
+              "expected": "sysStmtFor_FieldUpd_Reg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.v.out",
+                  "sysStmtFor_FieldUpd_Reg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Reg.v-vcd.out",
+              "vcd": "sysStmtFor_FieldUpd_Reg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.vexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Reg.v-vcd.out",
+                  "sysStmtFor_FieldUpd_Reg.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysStmtFor_FieldUpd_Reg.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysStmtFor_FieldUpd_Reg"
+              ],
+              "top": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.ba"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Reg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysStmtFor_FieldUpd_Reg.cexe",
+                    "sysStmtFor_FieldUpd_Reg.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Reg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Reg.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_FieldUpd_Reg.c.out",
+              "expected": "sysStmtFor_FieldUpd_Reg.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.c.out",
+                  "sysStmtFor_FieldUpd_Reg.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysStmtFor_FieldUpd_Reg",
+              "args": [],
+              "stdout": "sysStmtFor_FieldUpd_Reg.c-vcd.out",
+              "vcd": "sysStmtFor_FieldUpd_Reg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.cexe"
+                ],
+                "outputs": [
+                  "sysStmtFor_FieldUpd_Reg.c-vcd.out",
+                  "sysStmtFor_FieldUpd_Reg.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysStmtFor_FieldUpd_Reg.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysStmtFor_FieldUpd_Reg.c-vcd.out",
+              "expected": "sysStmtFor_FieldUpd_Reg.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysStmtFor_FieldUpd_Reg.c-vcd.out",
+                  "sysStmtFor_FieldUpd_Reg.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 642,
+                  "endByte": 678,
+                  "startLine": 32,
+                  "startColumn": 1,
+                  "endLine": 32,
+                  "endColumn": 37
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

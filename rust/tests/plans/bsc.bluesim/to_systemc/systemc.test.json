@@ -1,0 +1,553 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/to_systemc/systemc",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/to_systemc/systemc.exp",
+    "sha256": "301db3c1b54a2bef74e0a6d68c0cd8bd8d3a8f5b3a46672891ead586ff6b2b7f"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/to_systemc",
+  "fixtures": [
+    {
+      "path": "Methods.bsv",
+      "sha256": "ff9f1817a9450f3cdee9b1e2ce0c7fa01b652365f23794fedb24cb033fc81f52",
+      "role": "source"
+    },
+    {
+      "path": "ModuleArg.bsv",
+      "sha256": "c418fe1fe9f2a640cf2f19711ea0d5efccb22ceacc8ea3a6e098ee2e17944620",
+      "role": "source"
+    },
+    {
+      "path": "ModuleParam.bsv",
+      "sha256": "890a5cb2cfc76f150ee4b124fc8d1d015ab094ecdad5d944bf0d3aa11cba4da5",
+      "role": "source"
+    },
+    {
+      "path": "Path.bsv",
+      "sha256": "b7e2c7ed5084bed6a6a03817553c10e85dee4217dd86f5be36d9907d460e161f",
+      "role": "source"
+    },
+    {
+      "path": "RenamedClockClash.bsv",
+      "sha256": "6199e5ffbe82957d7ad7e6c88e0c147e8cbcb432c3de2e38455564898711b200",
+      "role": "source"
+    },
+    {
+      "path": "RuleBeforeMethod.bsv",
+      "sha256": "4d1a191913a5af4f8fda7e14f2a22e2d5e4a141252bbcbf0920d72a4e6002728",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "systemc-link-sysRenamedClockClash",
+      "resource": "heavy",
+      "fixtures": [
+        "Methods.bsv",
+        "ModuleArg.bsv",
+        "ModuleParam.bsv",
+        "Path.bsv",
+        "RenamedClockClash.bsv",
+        "RuleBeforeMethod.bsv"
+      ],
+      "requires": [
+        "bluesim",
+        "system_c"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "systemc-build",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Methods.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Methods.bsv"
+                ],
+                "outputs": [
+                  "Methods.bsv.bsc-ccomp-out",
+                  "Methods.bo",
+                  "sysMethods.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 28,
+                  "endByte": 59,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 32
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "sysMethods.ba"
+              ],
+              "top": "sysMethods",
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "sysMethods.ba"
+                ],
+                "outputs": [
+                  "sysMethods.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 137,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysMethods.bsc-ccomp-out",
+              "kind": "error",
+              "code": "S0064",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysMethods.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 60,
+                  "endByte": 137,
+                  "startLine": 4,
+                  "startColumn": 1,
+                  "endLine": 4,
+                  "endColumn": 78
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "Path.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Path.bsv"
+                ],
+                "outputs": [
+                  "Path.bsv.bsc-ccomp-out",
+                  "Path.bo",
+                  "sysPath.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 139,
+                  "endByte": 167,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 29
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "sysPath.ba"
+              ],
+              "top": "sysPath",
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "sysPath.ba"
+                ],
+                "outputs": [
+                  "sysPath.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 168,
+                  "endByte": 239,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysPath.bsc-ccomp-out",
+              "kind": "error",
+              "code": "S0063",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysPath.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 168,
+                  "endByte": 239,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 72
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "ModuleArg.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ModuleArg.bsv"
+                ],
+                "outputs": [
+                  "ModuleArg.bsv.bsc-ccomp-out",
+                  "ModuleArg.bo",
+                  "sysModuleArg.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 241,
+                  "endByte": 274,
+                  "startLine": 9,
+                  "startColumn": 1,
+                  "endLine": 9,
+                  "endColumn": 34
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "sysModuleArg.ba"
+              ],
+              "top": "sysModuleArg",
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "sysModuleArg.ba"
+                ],
+                "outputs": [
+                  "sysModuleArg.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 275,
+                  "endByte": 356,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysModuleArg.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0099",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysModuleArg.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 275,
+                  "endByte": 356,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 82
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "ModuleParam.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ModuleParam.bsv"
+                ],
+                "outputs": [
+                  "ModuleParam.bsv.bsc-ccomp-out",
+                  "ModuleParam.bo",
+                  "sysModuleParam.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 358,
+                  "endByte": 393,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "sysModuleParam.ba"
+              ],
+              "top": "sysModuleParam",
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "sysModuleParam.ba"
+                ],
+                "outputs": [
+                  "sysModuleParam.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 394,
+                  "endByte": 479,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysModuleParam.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0099",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysModuleParam.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 394,
+                  "endByte": 479,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "RuleBeforeMethod.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RuleBeforeMethod.bsv"
+                ],
+                "outputs": [
+                  "RuleBeforeMethod.bsv.bsc-ccomp-out",
+                  "RuleBeforeMethod.bo",
+                  "sysRuleBeforeMethod.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 481,
+                  "endByte": 521,
+                  "startLine": 15,
+                  "startColumn": 1,
+                  "endLine": 15,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "sysRuleBeforeMethod.ba"
+              ],
+              "top": "sysRuleBeforeMethod",
+              "expectedExit": "failure",
+              "artifacts": {
+                "inputs": [
+                  "sysRuleBeforeMethod.ba"
+                ],
+                "outputs": [
+                  "sysRuleBeforeMethod.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 522,
+                  "endByte": 617,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "sysRuleBeforeMethod.bsc-ccomp-out",
+              "kind": "error",
+              "code": "S0067",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "sysRuleBeforeMethod.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 522,
+                  "endByte": 617,
+                  "startLine": 16,
+                  "startColumn": 1,
+                  "endLine": 16,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "bsc.generate",
+              "source": "RenamedClockClash.bsv",
+              "mode": "bluesim",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RenamedClockClash.bsv"
+                ],
+                "outputs": [
+                  "RenamedClockClash.bsv.bsc-ccomp-out",
+                  "RenamedClockClash.bo",
+                  "sysRenamedClockClash.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 619,
+                  "endByte": 660,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.systemc_link",
+              "objects": [
+                "sysRenamedClockClash.ba"
+              ],
+              "top": "sysRenamedClockClash",
+              "artifacts": {
+                "inputs": [
+                  "sysRenamedClockClash.ba"
+                ],
+                "outputs": [
+                  "sysRenamedClockClash.bsc-ccomp-out",
+                  "sysRenamedClockClash.o",
+                  "sysRenamedClockClash_systemc.o",
+                  "model_sysRenamedClockClash.o"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 661,
+                  "endByte": 733,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 73
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

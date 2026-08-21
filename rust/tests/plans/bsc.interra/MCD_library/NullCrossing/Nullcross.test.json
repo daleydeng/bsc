@@ -1,0 +1,939 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/MCD_library/NullCrossing/Nullcross",
+  "origin": {
+    "path": "testsuite/bsc.interra/MCD_library/NullCrossing/Nullcross.exp",
+    "sha256": "5031d525d81e97b0d5dd096aaf75d30c7fd40ac5e76783c0e222300696639961"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/MCD_library/NullCrossing",
+  "fixtures": [
+    {
+      "path": "Design.bsv",
+      "sha256": "3b2c8b1385eec2cd34823c3b38e840a8ae51c20dc0d0e3411238de09dbfb9b36",
+      "role": "source"
+    },
+    {
+      "path": "Negative.bsv",
+      "sha256": "66f182cb27fe8c04422a1a460338c53e4bb163f66f31678d577b6630b62f2cd7",
+      "role": "source"
+    },
+    {
+      "path": "Testbench_fast_to_slow.bsv",
+      "sha256": "7d87dba5d25581132c91d6f72c038d49f22f8b08b9c680e6758d65b2393b619f",
+      "role": "source"
+    },
+    {
+      "path": "Testbench_same_with_phase_diff.bsv",
+      "sha256": "fd661ee089aa4da12589b29b8b9bf79c88e0a9a18d11c450fc6892586e7ad040",
+      "role": "source"
+    },
+    {
+      "path": "Testbench_slow_to_fast.bsv",
+      "sha256": "6b9e485fcf1d95bbeef4d45c257adf838054adc62e541b6d848c6ba37b3750cb",
+      "role": "source"
+    },
+    {
+      "path": "mkTestbench_fast_to_slow.out.expected",
+      "sha256": "7b66e3760e21c678d6e025be44f45426992e35ea5584f6030852e314f9a8ef48",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_same_with_phase_diff.out.expected",
+      "sha256": "d20cf1c6f581bdafcc2da15acc3762c17933b678f64c3965e5463880e915b74f",
+      "role": "golden"
+    },
+    {
+      "path": "mkTestbench_slow_to_fast.out.expected",
+      "sha256": "5b6ee60f2c323a7537feebb06a57dec618a609c7be64216bd0e0226b1dfef606",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-mkTestbench_fast_to_slow",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench_fast_to_slow.bsv",
+        "mkTestbench_fast_to_slow.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_fast_to_slow",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench_fast_to_slow.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_fast_to_slow",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench_fast_to_slow.bsv"
+                ],
+                "outputs": [
+                  "Testbench_fast_to_slow.bo",
+                  "Testbench_fast_to_slow.bsv.bsc-vcomp-out",
+                  "mkDesign.v",
+                  "mkTestbench_fast_to_slow.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 83,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_fast_to_slow",
+                "mkDesign"
+              ],
+              "top": "mkTestbench_fast_to_slow",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_fast_to_slow.v",
+                  "mkDesign.v"
+                ],
+                "outputs": [
+                  "mkTestbench_fast_to_slow.bsc-vcomp-out",
+                  "mkTestbench_fast_to_slow.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 83,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_fast_to_slow",
+              "args": [],
+              "stdout": "mkTestbench_fast_to_slow.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_fast_to_slow.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_fast_to_slow.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 83,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_fast_to_slow.v.out",
+              "expected": "mkTestbench_fast_to_slow.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_fast_to_slow.v.out",
+                  "mkTestbench_fast_to_slow.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 83,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_fast_to_slow",
+              "args": [],
+              "stdout": "mkTestbench_fast_to_slow.v-vcd.out",
+              "vcd": "mkTestbench_fast_to_slow.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_fast_to_slow.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_fast_to_slow.v-vcd.out",
+                  "mkTestbench_fast_to_slow.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 83,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_fast_to_slow.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_fast_to_slow.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 83,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 84
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_slow_to_fast",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench_slow_to_fast.bsv",
+        "mkTestbench_slow_to_fast.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_slow_to_fast",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench_slow_to_fast.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_slow_to_fast",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench_slow_to_fast.bsv"
+                ],
+                "outputs": [
+                  "Testbench_slow_to_fast.bo",
+                  "Testbench_slow_to_fast.bsv.bsc-vcomp-out",
+                  "mkDesign.v",
+                  "mkTestbench_slow_to_fast.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 168,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_slow_to_fast",
+                "mkDesign"
+              ],
+              "top": "mkTestbench_slow_to_fast",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_slow_to_fast.v",
+                  "mkDesign.v"
+                ],
+                "outputs": [
+                  "mkTestbench_slow_to_fast.bsc-vcomp-out",
+                  "mkTestbench_slow_to_fast.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 168,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_slow_to_fast",
+              "args": [],
+              "stdout": "mkTestbench_slow_to_fast.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_slow_to_fast.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_slow_to_fast.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 168,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_slow_to_fast.v.out",
+              "expected": "mkTestbench_slow_to_fast.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_slow_to_fast.v.out",
+                  "mkTestbench_slow_to_fast.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 168,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_slow_to_fast",
+              "args": [],
+              "stdout": "mkTestbench_slow_to_fast.v-vcd.out",
+              "vcd": "mkTestbench_slow_to_fast.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_slow_to_fast.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_slow_to_fast.v-vcd.out",
+                  "mkTestbench_slow_to_fast.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 168,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 84
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_slow_to_fast.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_slow_to_fast.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 85,
+                  "endByte": 168,
+                  "startLine": 3,
+                  "startColumn": 1,
+                  "endLine": 3,
+                  "endColumn": 84
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "simulation-mkTestbench_same_with_phase_diff",
+      "resource": "heavy",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench_same_with_phase_diff.bsv",
+        "mkTestbench_same_with_phase_diff.out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "mkTestbench_same_with_phase_diff",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Testbench_same_with_phase_diff.bsv",
+              "mode": "verilog",
+              "module": "mkTestbench_same_with_phase_diff",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "Testbench_same_with_phase_diff.bsv"
+                ],
+                "outputs": [
+                  "Testbench_same_with_phase_diff.bo",
+                  "Testbench_same_with_phase_diff.bsv.bsc-vcomp-out",
+                  "mkDesign.v",
+                  "mkTestbench_same_with_phase_diff.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 170,
+                  "endByte": 269,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "mkTestbench_same_with_phase_diff",
+                "mkDesign"
+              ],
+              "top": "mkTestbench_same_with_phase_diff",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_same_with_phase_diff.v",
+                  "mkDesign.v"
+                ],
+                "outputs": [
+                  "mkTestbench_same_with_phase_diff.bsc-vcomp-out",
+                  "mkTestbench_same_with_phase_diff.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 170,
+                  "endByte": 269,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_same_with_phase_diff",
+              "args": [],
+              "stdout": "mkTestbench_same_with_phase_diff.v.out",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_same_with_phase_diff.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_same_with_phase_diff.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 170,
+                  "endByte": 269,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "mkTestbench_same_with_phase_diff.v.out",
+              "expected": "mkTestbench_same_with_phase_diff.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_same_with_phase_diff.v.out",
+                  "mkTestbench_same_with_phase_diff.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 170,
+                  "endByte": 269,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "mkTestbench_same_with_phase_diff",
+              "args": [],
+              "stdout": "mkTestbench_same_with_phase_diff.v-vcd.out",
+              "vcd": "mkTestbench_same_with_phase_diff.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_same_with_phase_diff.vexe"
+                ],
+                "outputs": [
+                  "mkTestbench_same_with_phase_diff.v-vcd.out",
+                  "mkTestbench_same_with_phase_diff.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 170,
+                  "endByte": 269,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 100
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "mkTestbench_same_with_phase_diff.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "mkTestbench_same_with_phase_diff.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 170,
+                  "endByte": 269,
+                  "startLine": 5,
+                  "startColumn": 1,
+                  "endLine": 5,
+                  "endColumn": 100
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-Negative",
+      "resource": "normal",
+      "fixtures": [
+        "Negative.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Negative",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Negative.bsv",
+              "mode": "verilog",
+              "module": "mkDesign",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Negative.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Negative.bsv"
+                ],
+                "outputs": [
+                  "Negative.bsv.bsc-vcomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 271,
+                  "endByte": 315,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 45
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-5-Testbench_fast_to_slow",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench_fast_to_slow.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Testbench_fast_to_slow",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Testbench_fast_to_slow.bsv",
+              "mode": "bluesim_object",
+              "module": "mkTestbench_fast_to_slow",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Testbench_fast_to_slow.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Testbench_fast_to_slow.bsv"
+                ],
+                "outputs": [
+                  "Testbench_fast_to_slow.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 366,
+                  "endByte": 451,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Testbench_fast_to_slow.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0058",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Testbench_fast_to_slow.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 366,
+                  "endByte": 451,
+                  "startLine": 10,
+                  "startColumn": 1,
+                  "endLine": 10,
+                  "endColumn": 86
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-6-Testbench_slow_to_fast",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench_slow_to_fast.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Testbench_slow_to_fast",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Testbench_slow_to_fast.bsv",
+              "mode": "bluesim_object",
+              "module": "mkTestbench_slow_to_fast",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Testbench_slow_to_fast.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Testbench_slow_to_fast.bsv"
+                ],
+                "outputs": [
+                  "Testbench_slow_to_fast.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 537,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 86
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Testbench_slow_to_fast.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0058",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Testbench_slow_to_fast.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 452,
+                  "endByte": 537,
+                  "startLine": 11,
+                  "startColumn": 1,
+                  "endLine": 11,
+                  "endColumn": 86
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-7-Testbench_same_with_phase_diff",
+      "resource": "normal",
+      "fixtures": [
+        "Design.bsv",
+        "Testbench_same_with_phase_diff.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Testbench_same_with_phase_diff",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "Testbench_same_with_phase_diff.bsv",
+              "mode": "bluesim_object",
+              "module": "mkTestbench_same_with_phase_diff",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "Testbench_same_with_phase_diff.bsv.bsc-ccomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Testbench_same_with_phase_diff.bsv"
+                ],
+                "outputs": [
+                  "Testbench_same_with_phase_diff.bsv.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 538,
+                  "endByte": 640,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 103
+                }
+              }
+            },
+            {
+              "op": "assert.diagnostic_count",
+              "path": "Testbench_same_with_phase_diff.bsv.bsc-ccomp-out",
+              "kind": "error",
+              "code": "G0058",
+              "count": 1,
+              "artifacts": {
+                "inputs": [
+                  "Testbench_same_with_phase_diff.bsv.bsc-ccomp-out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 538,
+                  "endByte": 640,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 103
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.interra/bugs/bugID277/bugID277",
+  "origin": {
+    "path": "testsuite/bsc.interra/bugs/bugID277/bugID277.exp",
+    "sha256": "b30825e8f11ad4fb8408e01980472dfacd8661be9fddde2b22255c078f153b6a"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.interra/bugs/bugID277",
+  "fixtures": [
+    {
+      "path": "bug.bsv",
+      "sha256": "af0bfca9683098f62c1283281511dd973624fc33b21182b961a3d715ce6eaca9",
+      "role": "source"
+    },
+    {
+      "path": "bug.bsv.bsc-out.expected",
+      "sha256": "4e872a5af707f4f8a740bf828175b70349af8809bb82e796518d6341c21e8133",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-bug",
+      "resource": "normal",
+      "fixtures": [
+        "bug.bsv",
+        "bug.bsv.bsc-out.expected"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-bug",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "bug.bsv",
+              "mode": "frontend",
+              "args": [],
+              "dependencyMode": "update",
+              "expectedExit": "failure",
+              "stdout": "bug.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "bug.bsv"
+                ],
+                "outputs": [
+                  "bug.bsv.bsc-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 0,
+                  "endByte": 20,
+                  "startLine": 1,
+                  "startColumn": 1,
+                  "endLine": 1,
+                  "endColumn": 21
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "bug.bsv.bsc-out",
+              "expected": "bug.bsv.bsc-out.expected",
+              "artifacts": {
+                "inputs": [
+                  "bug.bsv.bsc-out",
+                  "bug.bsv.bsc-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 21,
+                  "endByte": 49,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 29
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

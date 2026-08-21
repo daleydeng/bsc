@@ -1,0 +1,581 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.evaluator/show-progress/show-progress",
+  "origin": {
+    "path": "testsuite/bsc.evaluator/show-progress/show-progress.exp",
+    "sha256": "68f6b64a452bd50ad89ead1326a3dc2ca08dbe93e646059af4c84478d4444bd6"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.evaluator/show-progress",
+  "fixtures": [
+    {
+      "path": "BuildModule.bsv",
+      "sha256": "115ab59902739fa3b69e874e0d7beeb38e509979a2dd80f6399f19034d37ffe1",
+      "role": "source"
+    },
+    {
+      "path": "BuildModule.bsv.bsc-vcomp-out.expected",
+      "sha256": "04c91c5e45b1e7e6561e116b001031f918f909f7885d40ecea4fa7128640e6d8",
+      "role": "golden"
+    },
+    {
+      "path": "StaticAssert.bsv",
+      "sha256": "f45c43e2b37669b3d6c2229d4ea7bb661a5a8417fbb522ec0f34366bced6b62a",
+      "role": "source"
+    },
+    {
+      "path": "StaticAssert.bsv.bsc-vcomp-out.expected",
+      "sha256": "0f138a329080fc95174fcafd91942a13c25cc86892896f2910da3223a2b0d869",
+      "role": "golden"
+    },
+    {
+      "path": "Test1-hide.bsv.bsc-vcomp-out.expected",
+      "sha256": "5813ed2ad1be3b478c1065eb7fa18cd22d47495443d3fc5f38b70f993d91d736",
+      "role": "golden"
+    },
+    {
+      "path": "Test1-show.bsv.bsc-vcomp-out.expected",
+      "sha256": "2966bbb750baca7dc470f253266fb6f588e1254bc265c92ca8e35df816c51ed6",
+      "role": "golden"
+    },
+    {
+      "path": "Test1.bsv",
+      "sha256": "0ef1f3535af6baf86abb61100b76f6cf4f7fb917d2a88d40cd9f3a515a94b36c",
+      "role": "data"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "compile-1-Test1-hide",
+      "resource": "normal",
+      "fixtures": [
+        "Test1-hide.bsv.bsc-vcomp-out.expected",
+        "Test1.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test1-hide",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "Test1.bsv",
+              "destination": "Test1-hide.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Test1.bsv"
+                ],
+                "outputs": [
+                  "Test1-hide.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 430,
+                  "endByte": 459,
+                  "startLine": 20,
+                  "startColumn": 1,
+                  "endLine": 20,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Test1-hide.bsv",
+              "mode": "verilog",
+              "module": "sysTest1",
+              "args": [
+                "-show-elab-progress"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test1-hide.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test1-hide.bsv"
+                ],
+                "outputs": [
+                  "Test1-hide.bo",
+                  "Test1-hide.bsv.bsc-vcomp-out",
+                  "sysTest1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 184,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 72
+                },
+                "expansion": [
+                  {
+                    "startByte": 460,
+                    "endByte": 493,
+                    "startLine": 21,
+                    "startColumn": 1,
+                    "endLine": 21,
+                    "endColumn": 34
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "Test1-hide.bsv.bsc-vcomp-out",
+              "expected": "Test1-hide.bsv.bsc-vcomp-out.expected",
+              "normalizations": [
+                "bracketed_times"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Test1-hide.bsv.bsc-vcomp-out",
+                  "Test1-hide.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 324,
+                  "endByte": 372,
+                  "startLine": 11,
+                  "startColumn": 2,
+                  "endLine": 11,
+                  "endColumn": 50
+                },
+                "expansion": [
+                  {
+                    "startByte": 460,
+                    "endByte": 493,
+                    "startLine": 21,
+                    "startColumn": 1,
+                    "endLine": 21,
+                    "endColumn": 34
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "Test1-hide.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Test1-hide.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Test1-hide.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 494,
+                  "endByte": 514,
+                  "startLine": 22,
+                  "startColumn": 1,
+                  "endLine": 22,
+                  "endColumn": 21
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-2-Test1-show",
+      "resource": "normal",
+      "fixtures": [
+        "Test1-show.bsv.bsc-vcomp-out.expected",
+        "Test1.bsv"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-Test1-show",
+          "operations": [
+            {
+              "op": "fs.copy",
+              "source": "Test1.bsv",
+              "destination": "Test1-show.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Test1.bsv"
+                ],
+                "outputs": [
+                  "Test1-show.bsv"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 540,
+                  "endByte": 569,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 30
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Test1-show.bsv",
+              "mode": "verilog",
+              "module": "sysTest1",
+              "args": [
+                "-show-elab-progress",
+                "-tcl-show-hidden"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "Test1-show.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "Test1-show.bsv"
+                ],
+                "outputs": [
+                  "Test1-show.bo",
+                  "Test1-show.bsv.bsc-vcomp-out",
+                  "sysTest1.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 184,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 72
+                },
+                "expansion": [
+                  {
+                    "startByte": 570,
+                    "endByte": 622,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 53
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "Test1-show.bsv.bsc-vcomp-out",
+              "expected": "Test1-show.bsv.bsc-vcomp-out.expected",
+              "normalizations": [
+                "bracketed_times"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Test1-show.bsv.bsc-vcomp-out",
+                  "Test1-show.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 324,
+                  "endByte": 372,
+                  "startLine": 11,
+                  "startColumn": 2,
+                  "endLine": 11,
+                  "endColumn": 50
+                },
+                "expansion": [
+                  {
+                    "startByte": 570,
+                    "endByte": 622,
+                    "startLine": 27,
+                    "startColumn": 1,
+                    "endLine": 27,
+                    "endColumn": 53
+                  }
+                ]
+              }
+            },
+            {
+              "op": "fs.remove",
+              "path": "Test1-show.bsv",
+              "artifacts": {
+                "inputs": [
+                  "Test1-show.bsv"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": [
+                  "Test1-show.bsv"
+                ]
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 623,
+                  "endByte": 643,
+                  "startLine": 28,
+                  "startColumn": 1,
+                  "endLine": 28,
+                  "endColumn": 21
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-3-StaticAssert",
+      "resource": "normal",
+      "fixtures": [
+        "StaticAssert.bsv",
+        "StaticAssert.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-StaticAssert",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "StaticAssert.bsv",
+              "mode": "verilog",
+              "module": "sysStaticAssert",
+              "args": [
+                "-show-elab-progress",
+                "-check-assert"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "StaticAssert.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "StaticAssert.bsv"
+                ],
+                "outputs": [
+                  "StaticAssert.bo",
+                  "StaticAssert.bsv.bsc-vcomp-out",
+                  "sysStaticAssert.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 184,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 72
+                },
+                "expansion": [
+                  {
+                    "startByte": 705,
+                    "endByte": 763,
+                    "startLine": 33,
+                    "startColumn": 1,
+                    "endLine": 33,
+                    "endColumn": 59
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "StaticAssert.bsv.bsc-vcomp-out",
+              "expected": "StaticAssert.bsv.bsc-vcomp-out.expected",
+              "normalizations": [
+                "bracketed_times"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "StaticAssert.bsv.bsc-vcomp-out",
+                  "StaticAssert.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 324,
+                  "endByte": 372,
+                  "startLine": 11,
+                  "startColumn": 2,
+                  "endLine": 11,
+                  "endColumn": 50
+                },
+                "expansion": [
+                  {
+                    "startByte": 705,
+                    "endByte": 763,
+                    "startLine": 33,
+                    "startColumn": 1,
+                    "endLine": 33,
+                    "endColumn": 59
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compile-4-BuildModule",
+      "resource": "normal",
+      "fixtures": [
+        "BuildModule.bsv",
+        "BuildModule.bsv.bsc-vcomp-out.expected"
+      ],
+      "requires": [
+        "verilog"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "compile-BuildModule",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "BuildModule.bsv",
+              "mode": "verilog",
+              "module": "sysBuildModule",
+              "args": [
+                "-show-elab-progress"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "success",
+              "stdout": "BuildModule.bsv.bsc-vcomp-out",
+              "artifacts": {
+                "inputs": [
+                  "BuildModule.bsv"
+                ],
+                "outputs": [
+                  "BuildModule.bo",
+                  "BuildModule.bsv.bsc-vcomp-out",
+                  "sysBuildModule.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 117,
+                  "endByte": 184,
+                  "startLine": 7,
+                  "startColumn": 5,
+                  "endLine": 7,
+                  "endColumn": 72
+                },
+                "expansion": [
+                  {
+                    "startByte": 802,
+                    "endByte": 842,
+                    "startLine": 38,
+                    "startColumn": 1,
+                    "endLine": 38,
+                    "endColumn": 41
+                  }
+                ]
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "BuildModule.bsv.bsc-vcomp-out",
+              "expected": "BuildModule.bsv.bsc-vcomp-out.expected",
+              "normalizations": [
+                "bracketed_times"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "BuildModule.bsv.bsc-vcomp-out",
+                  "BuildModule.bsv.bsc-vcomp-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 324,
+                  "endByte": 372,
+                  "startLine": 11,
+                  "startColumn": 2,
+                  "endLine": 11,
+                  "endColumn": 50
+                },
+                "expansion": [
+                  {
+                    "startByte": 802,
+                    "endByte": 842,
+                    "startLine": 38,
+                    "startColumn": 1,
+                    "endLine": 38,
+                    "endColumn": 41
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

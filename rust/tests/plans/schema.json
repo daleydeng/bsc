@@ -1,0 +1,2103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TestPlan",
+  "type": "object",
+  "properties": {
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ImportDiagnostic"
+      }
+    },
+    "fixtureDir": {
+      "type": "string"
+    },
+    "fixtures": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Fixture"
+      }
+    },
+    "id": {
+      "type": "string"
+    },
+    "origin": {
+      "$ref": "#/$defs/Origin"
+    },
+    "scenarios": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Scenario"
+      }
+    },
+    "schemaVersion": {
+      "type": "integer",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "status": {
+      "$ref": "#/$defs/PlanStatus"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "origin",
+    "status",
+    "fixtureDir"
+  ],
+  "$defs": {
+    "ArtifactContract": {
+      "type": "object",
+      "properties": {
+        "directories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outputAlternatives": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "removes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "inputs",
+        "outputs",
+        "outputAlternatives",
+        "directories",
+        "removes"
+      ]
+    },
+    "BluetclInstalledScript": {
+      "type": "string",
+      "enum": [
+        "expand_ports"
+      ]
+    },
+    "BluetclInvocation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "kind": {
+              "type": "string",
+              "const": "script"
+            },
+            "script": {
+              "type": "string"
+            },
+            "syntax": {
+              "$ref": "#/$defs/BluetclSyntax"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "script",
+            "args",
+            "syntax"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "kind": {
+              "type": "string",
+              "const": "exec"
+            },
+            "script": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "script",
+            "args"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "kind": {
+              "type": "string",
+              "const": "installed_script"
+            },
+            "script": {
+              "$ref": "#/$defs/BluetclInstalledScript"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "script",
+            "args"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "command": {
+              "$ref": "#/$defs/BluetclMakedependCommand"
+            },
+            "kind": {
+              "type": "string",
+              "const": "makedepend"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "command",
+            "args"
+          ]
+        }
+      ]
+    },
+    "BluetclMakedependCommand": {
+      "type": "string",
+      "enum": [
+        "makedepend",
+        "makedepend_tcl"
+      ]
+    },
+    "BluetclPackage": {
+      "type": "string",
+      "enum": [
+        "inst_synth",
+        "expand_ports"
+      ]
+    },
+    "BluetclSyntax": {
+      "type": "string",
+      "enum": [
+        "bsv",
+        "bh"
+      ]
+    },
+    "BscCompileEnvironment": {
+      "type": "string",
+      "enum": [
+        "ghcrts_m1_2g"
+      ]
+    },
+    "BscCompileMode": {
+      "type": "string",
+      "enum": [
+        "frontend",
+        "bluesim_object",
+        "verilog",
+        "verilog_schedule",
+        "synthesize"
+      ]
+    },
+    "BscFlagPreflightMode": {
+      "type": "string",
+      "enum": [
+        "verilog_no_opt_undetermined",
+        "bluesim_link"
+      ]
+    },
+    "BscLinkMode": {
+      "type": "string",
+      "enum": [
+        "standard",
+        "no_main"
+      ]
+    },
+    "DependencyMode": {
+      "type": "string",
+      "enum": [
+        "update",
+        "no_deps"
+      ]
+    },
+    "DiagnosticKind": {
+      "type": "string",
+      "enum": [
+        "error",
+        "warning"
+      ]
+    },
+    "DiagnosticSeverity": {
+      "type": "string",
+      "enum": [
+        "warning",
+        "error"
+      ]
+    },
+    "ExpectedExit": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failure",
+        "unchecked"
+      ]
+    },
+    "ExpectedExitSet": {
+      "type": "object",
+      "properties": {
+        "aarch64Codes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "codes": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "windowsCodes": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "codes"
+      ]
+    },
+    "Fixture": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "role": {
+          "$ref": "#/$defs/FixtureRole"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "role"
+      ]
+    },
+    "FixtureRole": {
+      "type": "string",
+      "enum": [
+        "source",
+        "golden",
+        "script",
+        "command_file",
+        "data",
+        "build_input"
+      ]
+    },
+    "GoldenNormalization": {
+      "type": "string",
+      "enum": [
+        "generated_ids",
+        "sat_solver_names",
+        "vr_wire_ids",
+        "prelude_positions",
+        "prelude_bsv_line_numbers",
+        "compiler_banner_lines",
+        "workspace_root",
+        "line_directive_positions",
+        "bluetcl_output",
+        "bluetcl_position_digits",
+        "bluetcl_creg_positions",
+        "bluetcl_libraries",
+        "bluetcl_prelude_library",
+        "bracketed_times",
+        "split_if_rules",
+        "system_verilog_task_diagnostics"
+      ]
+    },
+    "GoldenReplacement": {
+      "type": "string",
+      "enum": [
+        "bluespec_dir",
+        "work_dir",
+        "fifo_warning_locations"
+      ]
+    },
+    "IcarusSimulatorSelector": {
+      "type": "string",
+      "enum": [
+        "default",
+        "bluespec_dir_installed_builder",
+        "posix_echo_probe",
+        "literal_bogus",
+        "bluespec_dir_bogus"
+      ]
+    },
+    "ImportDiagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "severity": {
+          "$ref": "#/$defs/DiagnosticSeverity"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "severity",
+        "code",
+        "message",
+        "provenance"
+      ]
+    },
+    "IntermediateDumpView": {
+      "type": "string",
+      "enum": [
+        "bi",
+        "bo"
+      ]
+    },
+    "InterraOperatorSuite": {
+      "type": "string",
+      "enum": [
+        "arith",
+        "bit_sel",
+        "logic"
+      ]
+    },
+    "OperationExpectation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "required"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "xfail"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "reason"
+          ]
+        }
+      ]
+    },
+    "OperationRecord": {
+      "type": "object",
+      "properties": {
+        "artifacts": {
+          "$ref": "#/$defs/ArtifactContract"
+        },
+        "expectation": {
+          "$ref": "#/$defs/OperationExpectation"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "absoluteImportPaths": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "dependencyMode": {
+              "$ref": "#/$defs/DependencyMode"
+            },
+            "environment": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/BscCompileEnvironment"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "mode": {
+              "$ref": "#/$defs/BscCompileMode"
+            },
+            "module": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.compile"
+            },
+            "source": {
+              "type": "string"
+            },
+            "stdout": {
+              "type": "string"
+            },
+            "unexpectedSuccessForbiddenRegex": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "workingDirectory": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "mode",
+            "args",
+            "dependencyMode",
+            "expectedExit",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "bscOptionsPrepend": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.options"
+            },
+            "stdout": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "args",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "string"
+            },
+            "mode": {
+              "$ref": "#/$defs/BscFlagPreflightMode"
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.flag_preflight"
+            },
+            "stdout": {
+              "type": "string"
+            },
+            "top": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "unspecifiedTo": {
+              "$ref": "#/$defs/UndeterminedValue"
+            }
+          },
+          "required": [
+            "op",
+            "mode",
+            "input",
+            "unspecifiedTo",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "artifactInputs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "artifactOutputs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "invocation": {
+              "$ref": "#/$defs/BluetclInvocation"
+            },
+            "op": {
+              "type": "string",
+              "const": "bluetcl.run"
+            },
+            "stdout": {
+              "type": "string"
+            },
+            "workingDirectory": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "op",
+            "invocation",
+            "artifactInputs",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "upstream.make_test_data"
+            }
+          },
+          "required": [
+            "op"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fixture.interra_operator_vectors"
+            },
+            "suite": {
+              "$ref": "#/$defs/InterraOperatorSuite"
+            }
+          },
+          "required": [
+            "op",
+            "suite"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "golden.render"
+            },
+            "output": {
+              "type": "string"
+            },
+            "replacement": {
+              "$ref": "#/$defs/GoldenReplacement"
+            },
+            "template": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "template",
+            "output",
+            "replacement"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "template.m4_curdir"
+            },
+            "output": {
+              "type": "string"
+            },
+            "template": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "template",
+            "output"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "destination": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "text.normalize"
+            },
+            "source": {
+              "type": "string"
+            },
+            "transform": {
+              "$ref": "#/$defs/TextNormalization"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "destination",
+            "transform"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "op": {
+              "type": "string",
+              "const": "verilog.filter"
+            },
+            "path": {
+              "type": "string"
+            },
+            "profiles": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/VerilogFilterProfile"
+              }
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "profiles"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "mode": {
+              "$ref": "#/$defs/SimulationGenerationMode"
+            },
+            "module": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.generate"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "mode",
+            "args"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "makefile": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "c.compile_object"
+            },
+            "output": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "makefile",
+            "output"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "backend": {
+              "$ref": "#/$defs/SimulationBackend"
+            },
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "missingObjects": {
+              "description": "Objects that are deliberately passed to the linker even though\nnothing produces them, because the plan asserts the resulting\nmissing-module (G0084) link failure. They stay in the argv but are\nexempt from the produced-or-fixture input requirement.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "mode": {
+              "$ref": "#/$defs/BscLinkMode"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.link"
+            },
+            "simulator": {
+              "$ref": "#/$defs/IcarusSimulatorSelector"
+            },
+            "top": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "backend",
+            "objects",
+            "top",
+            "args"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "objects": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.systemc_link"
+            },
+            "top": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "objects",
+            "top"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "defines": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "executable": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "systemc.cxx_link"
+            },
+            "otherModules": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "topModules": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "op",
+            "executable",
+            "sources",
+            "topModules",
+            "otherModules",
+            "defines"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "executable": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "systemc.run"
+            },
+            "sortOutput": {
+              "type": "boolean"
+            },
+            "stdout": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "executable",
+            "stdout",
+            "sortOutput"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "internal.bsc2bsv"
+            },
+            "source": {
+              "type": "string"
+            },
+            "stdout": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "op": {
+              "type": "string",
+              "const": "bsc.parse_pretty_roundtrip"
+            },
+            "prettyOutput": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "args",
+            "prettyOutput"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "input": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "internal.dump"
+            },
+            "output": {
+              "type": "string"
+            },
+            "view": {
+              "$ref": "#/$defs/IntermediateDumpView"
+            }
+          },
+          "required": [
+            "op",
+            "input",
+            "output",
+            "view"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "args": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "backend": {
+              "$ref": "#/$defs/SimulationBackend"
+            },
+            "executable": {
+              "type": "string"
+            },
+            "expectedExits": {
+              "$ref": "#/$defs/ExpectedExitSet"
+            },
+            "op": {
+              "type": "string",
+              "const": "simulation.run"
+            },
+            "stdout": {
+              "type": "string"
+            },
+            "vcd": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "op",
+            "backend",
+            "executable",
+            "args",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "designInputs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "input": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "vcd.showrules"
+            },
+            "output": {
+              "type": "string"
+            },
+            "stdout": {
+              "type": "string"
+            },
+            "top": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "top",
+            "input",
+            "output",
+            "designInputs",
+            "stdout"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "checks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "expectedExit": {
+              "$ref": "#/$defs/ExpectedExit"
+            },
+            "op": {
+              "type": "string",
+              "const": "vcd.check"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "checks"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "destination": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "fs.copy"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "destination": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "fs.copy_replace"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "destination": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "fs.rewrite_darwin_cpp_include_path"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "destination": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "fs.move"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "destination": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "fs.move_replace"
+            },
+            "source": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "source",
+            "destination"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.remove"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.ensure_absent"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.ensure_dir_absent"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.mkdir"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.create_dir_all"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.touch"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "delayMilliseconds": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "op": {
+              "type": "string",
+              "const": "fs.touch_create"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "delayMilliseconds"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "fs.remove_user_read"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "milliseconds": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0
+            },
+            "op": {
+              "type": "string",
+              "const": "time.delay"
+            }
+          },
+          "required": [
+            "op",
+            "milliseconds"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.exists"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.text_contains"
+            },
+            "path": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "text"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.text_absent"
+            },
+            "path": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "text"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.regex"
+            },
+            "path": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "pattern"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.regex_absent"
+            },
+            "path": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "pattern"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.text_count"
+            },
+            "path": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "text",
+            "count"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.regex_count"
+            },
+            "path": {
+              "type": "string"
+            },
+            "pattern": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "pattern",
+            "count"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "count": {
+              "type": "integer",
+              "format": "uint",
+              "minimum": 0
+            },
+            "kind": {
+              "$ref": "#/$defs/DiagnosticKind"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.diagnostic_count"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path",
+            "kind",
+            "count"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden_missing_xfail"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected",
+            "reason"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden_any"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden_native"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "normalizations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/GoldenNormalization"
+              }
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden_normalized"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected",
+            "normalizations"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden_sorted_lines"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.golden_xfail"
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected",
+            "reason"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.verilog"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "actual": {
+              "type": "string"
+            },
+            "expected": {
+              "type": "string"
+            },
+            "op": {
+              "type": "string",
+              "const": "assert.vcd"
+            }
+          },
+          "required": [
+            "op",
+            "actual",
+            "expected"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.vcd_valid"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "const": "assert.vcd_valid_if_present"
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op",
+            "path"
+          ]
+        }
+      ],
+      "required": [
+        "artifacts",
+        "provenance"
+      ]
+    },
+    "Origin": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ]
+    },
+    "PlanStatus": {
+      "type": "string",
+      "enum": [
+        "complete",
+        "disabled",
+        "blocked"
+      ]
+    },
+    "Provenance": {
+      "type": "object",
+      "properties": {
+        "expansion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SourceSpan"
+          }
+        },
+        "span": {
+          "$ref": "#/$defs/SourceSpan"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "span"
+      ]
+    },
+    "Requirement": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "bluesim",
+            "verilog",
+            "frontend",
+            "icarus",
+            "bluetcl",
+            "system_c",
+            "show_rules",
+            "non_windows",
+            "internal_checks",
+            "posix_unreadability",
+            "darwin"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "bluetcl_package": {
+              "$ref": "#/$defs/BluetclPackage"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "bluetcl_package"
+          ]
+        }
+      ]
+    },
+    "ResourceClass": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "heavy"
+      ]
+    },
+    "Scenario": {
+      "type": "object",
+      "properties": {
+        "bscOptionsAppend": {
+          "description": "Static arguments appended to the inherited BSC_OPTIONS for BSC child processes only.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fixtures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "requires": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          }
+        },
+        "resource": {
+          "$ref": "#/$defs/ResourceClass"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Stage"
+          }
+        },
+        "timeouts": {
+          "$ref": "#/$defs/Timeouts"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "resource",
+        "fixtures",
+        "timeouts",
+        "stages"
+      ]
+    },
+    "SimulationBackend": {
+      "type": "string",
+      "enum": [
+        "bluesim",
+        "icarus"
+      ]
+    },
+    "SimulationGenerationMode": {
+      "type": "string",
+      "enum": [
+        "bluesim",
+        "verilog",
+        "shared_elaboration"
+      ]
+    },
+    "SourceSpan": {
+      "type": "object",
+      "properties": {
+        "endByte": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "endColumn": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "endLine": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "startByte": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "startColumn": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        },
+        "startLine": {
+          "type": "integer",
+          "format": "uint",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "startByte",
+        "endByte",
+        "startLine",
+        "startColumn",
+        "endLine",
+        "endColumn"
+      ]
+    },
+    "Stage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OperationRecord"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "operations"
+      ]
+    },
+    "TextNormalization": {
+      "type": "string",
+      "enum": [
+        "sort_numeric_field1_then_field2",
+        "verilog_task_projection",
+        "bluesim_task_projection",
+        "if_nested_to_split_if_nested",
+        "if_nested_to_no_split_if_nested",
+        "make_directory_messages",
+        "iverilog_quiet_output"
+      ]
+    },
+    "Timeouts": {
+      "type": "object",
+      "properties": {
+        "assertionSeconds": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "generationSeconds": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "linkSeconds": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        },
+        "simulationSeconds": {
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "generationSeconds",
+        "linkSeconds",
+        "simulationSeconds",
+        "assertionSeconds"
+      ]
+    },
+    "UndeterminedValue": {
+      "type": "string",
+      "enum": [
+        "X",
+        "Z"
+      ]
+    },
+    "VerilogFilterProfile": {
+      "type": "string",
+      "enum": [
+        "rename_fire",
+        "clock_to_clock",
+        "wf_to_w_f",
+        "missing_sed"
+      ]
+    }
+  }
+}

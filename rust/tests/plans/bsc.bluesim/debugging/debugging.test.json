@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluesim/debugging/debugging",
+  "origin": {
+    "path": "testsuite/bsc.bluesim/debugging/debugging.exp",
+    "sha256": "a81f2a8e2bad89fb1889d6a1ed1b26551ba3598f98af952ebaf38f6ef19f5bf4"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluesim/debugging",
+  "fixtures": [
+    {
+      "path": "GCD.bsv",
+      "sha256": "2c62c0bbbf6f23beefaa39abe776a5a2c286c470e17c762179e7861948bfbe95",
+      "role": "source"
+    },
+    {
+      "path": "MCDTest.bsv",
+      "sha256": "641e9c9a1b30428fc1b50e8549be8d54781cb450967ba592d72880406f022c29",
+      "role": "source"
+    },
+    {
+      "path": "RF.bsv",
+      "sha256": "dd1015373f78ef47ec357848843672a2fe5c6f188668365b140f9dbb2c764083",
+      "role": "source"
+    },
+    {
+      "path": "TbGCD.bsv",
+      "sha256": "682affb1c93e315523171dbe49c836bc4e8fa0e905f887307f2b4309a37d58f4",
+      "role": "source"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bluesim-workflow-mkTbGCD",
+      "resource": "heavy",
+      "fixtures": [
+        "GCD.bsv",
+        "TbGCD.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkTbGCD",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "TbGCD.bsv",
+              "mode": "bluesim",
+              "module": "mkTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "TbGCD.bsv"
+                ],
+                "outputs": [
+                  "TbGCD.bo",
+                  "TbGCD.bsv.bsc-ccomp-out",
+                  "mkGCD.ba",
+                  "mkTbGCD.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 23,
+                  "endByte": 60,
+                  "startLine": 2,
+                  "startColumn": 5,
+                  "endLine": 2,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkTbGCD",
+                "mkGCD"
+              ],
+              "top": "mkTbGCD",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkTbGCD.ba",
+                  "mkGCD.ba"
+                ],
+                "outputs": [
+                  "mkTbGCD.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkTbGCD.cexe",
+                    "mkTbGCD.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 65,
+                  "endByte": 106,
+                  "startLine": 3,
+                  "startColumn": 5,
+                  "endLine": 3,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-2-mkRF",
+      "resource": "heavy",
+      "fixtures": [
+        "RF.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkRF",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RF.bsv",
+              "mode": "bluesim",
+              "module": "mkRF",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RF.bsv"
+                ],
+                "outputs": [
+                  "RF.bo",
+                  "RF.bsv.bsc-ccomp-out",
+                  "mkRF.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 451,
+                  "endByte": 482,
+                  "startLine": 16,
+                  "startColumn": 5,
+                  "endLine": 16,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkRF"
+              ],
+              "top": "mkRF",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkRF.ba"
+                ],
+                "outputs": [
+                  "mkRF.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkRF.cexe",
+                    "mkRF.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 487,
+                  "endByte": 516,
+                  "startLine": 17,
+                  "startColumn": 5,
+                  "endLine": 17,
+                  "endColumn": 34
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesim-workflow-3-mkMCDTest",
+      "resource": "heavy",
+      "fixtures": [
+        "MCDTest.bsv"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "build-mkMCDTest",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "MCDTest.bsv",
+              "mode": "bluesim",
+              "module": "mkMCDTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "MCDTest.bsv"
+                ],
+                "outputs": [
+                  "MCDTest.bo",
+                  "MCDTest.bsv.bsc-ccomp-out",
+                  "mkMCDTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 783,
+                  "endByte": 824,
+                  "startLine": 27,
+                  "startColumn": 5,
+                  "endLine": 27,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "mkMCDTest"
+              ],
+              "top": "mkMCDTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "mkMCDTest.ba"
+                ],
+                "outputs": [
+                  "mkMCDTest.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "mkMCDTest.cexe",
+                    "mkMCDTest.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 829,
+                  "endByte": 868,
+                  "startLine": 28,
+                  "startColumn": 5,
+                  "endLine": 28,
+                  "endColumn": 44
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

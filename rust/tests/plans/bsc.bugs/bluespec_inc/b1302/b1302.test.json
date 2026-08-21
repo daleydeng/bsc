@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bugs/bluespec_inc/b1302/b1302",
+  "origin": {
+    "path": "testsuite/bsc.bugs/bluespec_inc/b1302/b1302.exp",
+    "sha256": "ffca9d08e25bc281978e023cbae9ef28661618228d227ef43c5d2235d8727711"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bugs/bluespec_inc/b1302",
+  "fixtures": [
+    {
+      "path": "EHR2.bsv",
+      "sha256": "4fb62202328f01aef07e2632d760746eccdfa6395d023764cfd7abbed8838067",
+      "role": "source"
+    },
+    {
+      "path": "EHR_new.bsv",
+      "sha256": "bc4e855da5c35b1891bbe6404d56343b205cc798ac85c62ff81284fb8e7efbfe",
+      "role": "source"
+    },
+    {
+      "path": "RFile2.bsv",
+      "sha256": "1564510e7f937e2b8a8e15d29cc15cdec3473cb7e5642a6ff4ac92d8aa71dfca",
+      "role": "source"
+    },
+    {
+      "path": "sysRFile2.out.expected",
+      "sha256": "4c3ca4dc06886ef1e23e985ec7ab8c6aea1f3811d93704150bd9fab4b915fedb",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysRFile2",
+      "resource": "heavy",
+      "fixtures": [
+        "EHR2.bsv",
+        "EHR_new.bsv",
+        "RFile2.bsv",
+        "sysRFile2.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysRFile2",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "RFile2.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysRFile2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "RFile2.bsv"
+                ],
+                "outputs": [
+                  "RFile2.bo",
+                  "RFile2.bsv.bsc-vcomp-out",
+                  "mkEHR2.ba",
+                  "mkEHR2.v",
+                  "mkRFile2.ba",
+                  "mkRFile2.v",
+                  "sysRFile2.ba",
+                  "sysRFile2.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysRFile2"
+              ],
+              "top": "sysRFile2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.v"
+                ],
+                "outputs": [
+                  "sysRFile2.bsc-vcomp-out",
+                  "sysRFile2.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRFile2",
+              "args": [],
+              "stdout": "sysRFile2.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.vexe"
+                ],
+                "outputs": [
+                  "sysRFile2.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRFile2.v.out",
+              "expected": "sysRFile2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.v.out",
+                  "sysRFile2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysRFile2",
+              "args": [],
+              "stdout": "sysRFile2.v-vcd.out",
+              "vcd": "sysRFile2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.vexe"
+                ],
+                "outputs": [
+                  "sysRFile2.v-vcd.out",
+                  "sysRFile2.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysRFile2.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysRFile2"
+              ],
+              "top": "sysRFile2",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.ba"
+                ],
+                "outputs": [
+                  "sysRFile2.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysRFile2.cexe",
+                    "sysRFile2.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRFile2",
+              "args": [],
+              "stdout": "sysRFile2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.cexe"
+                ],
+                "outputs": [
+                  "sysRFile2.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRFile2.c.out",
+              "expected": "sysRFile2.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.c.out",
+                  "sysRFile2.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysRFile2",
+              "args": [],
+              "stdout": "sysRFile2.c-vcd.out",
+              "vcd": "sysRFile2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.cexe"
+                ],
+                "outputs": [
+                  "sysRFile2.c-vcd.out",
+                  "sysRFile2.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysRFile2.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysRFile2.c-vcd.out",
+              "expected": "sysRFile2.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysRFile2.c-vcd.out",
+                  "sysRFile2.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 23,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 23
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

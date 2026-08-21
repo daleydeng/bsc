@@ -1,0 +1,773 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bluetcl/targeted/port_types/port_types",
+  "origin": {
+    "path": "testsuite/bsc.bluetcl/targeted/port_types/port_types.exp",
+    "sha256": "412ac1a5e4ca33e81214cc89517bd5f726640bcece416588240c1325282e0abf"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bluetcl/targeted/port_types",
+  "fixtures": [
+    {
+      "path": "InhighEnable.bsv",
+      "sha256": "0af1a06d5dab6704c9865e38aaf0fe979abb948def2a41af79d9959b6f6580b7",
+      "role": "source"
+    },
+    {
+      "path": "Prims.bsv",
+      "sha256": "b09d55c9b946254951b51f680b085b277947889754c156b73d614704af2e353a",
+      "role": "source"
+    },
+    {
+      "path": "SplitPortTypes.bs",
+      "sha256": "1739cf5b061465a888b8527942d88e10e4d508998280f06e31c581de5652a091",
+      "role": "source"
+    },
+    {
+      "path": "ZeroSize.bsv",
+      "sha256": "22f159a956b0ef29fd495fc1c60dc8fb804dc471c3e5a0a142f98f25675656a2",
+      "role": "source"
+    },
+    {
+      "path": "inhigh.tcl",
+      "sha256": "5b859c0e8dfab0b66098f184ea75aff1276a07f24c1d0bd46d865dc263910d78",
+      "role": "script"
+    },
+    {
+      "path": "inhigh.tcl.bluetcl-bh-out.expected",
+      "sha256": "f3fa2019bd12efffa6c4bc1c07e4280a0764d1a1e9618e6875d0c8c4c4e7e4c5",
+      "role": "golden"
+    },
+    {
+      "path": "inhigh.tcl.bluetcl-out.expected",
+      "sha256": "0f98586e1c9e489366768c1ce55258a7dc3e2c515b0379e6360021fee356d6fc",
+      "role": "golden"
+    },
+    {
+      "path": "prims.tcl",
+      "sha256": "0ac666052a25b79a14fd4d0cab358ede05435cd004bba2f601636dcf80d379bc",
+      "role": "script"
+    },
+    {
+      "path": "prims.tcl.bluetcl-bh-out.expected",
+      "sha256": "2e9df273e3e443376767ca5c30b15898d0d78104ca607c49f9aa96ad843ec392",
+      "role": "golden"
+    },
+    {
+      "path": "prims.tcl.bluetcl-out.expected",
+      "sha256": "9b4ea379aefd671ae34ab67a640bd447bb1b82a33380ce493646a4c7aeb1cdf7",
+      "role": "golden"
+    },
+    {
+      "path": "split_port_types.tcl",
+      "sha256": "cb1c8170901c6330ad2dab57c665317c03d6d615e5f03eadd87c9b95994d0da5",
+      "role": "script"
+    },
+    {
+      "path": "split_port_types.tcl.bluetcl-bh-out.expected",
+      "sha256": "69db143bc76dd8b80d171c1d9beadf44b79af551e3e388ad7c4777f8dbb89671",
+      "role": "golden"
+    },
+    {
+      "path": "split_port_types.tcl.bluetcl-out.expected",
+      "sha256": "0559aa64c5f140767b26e3f488d91ffdb800dc28faa08e5a13a3479945b79558",
+      "role": "golden"
+    },
+    {
+      "path": "zero_size.tcl",
+      "sha256": "6316834c00e65b8fe5c97c4866416fb6888bba6fcb676fad1f4c2397e8773fdf",
+      "role": "script"
+    },
+    {
+      "path": "zero_size.tcl.bluetcl-bh-out.expected",
+      "sha256": "261aeda37df890c8a7eb780faf7b8c569f50a1ec0715526035ef7dbb62f2e19b",
+      "role": "golden"
+    },
+    {
+      "path": "zero_size.tcl.bluetcl-out.expected",
+      "sha256": "ac48d52053a84159b626f2568d8d1a73ca2aba9675ae5e030b35adb94a50e0ad",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "bsc-compile-bluetcl",
+      "resource": "normal",
+      "fixtures": [
+        "InhighEnable.bsv",
+        "Prims.bsv",
+        "SplitPortTypes.bs",
+        "ZeroSize.bsv",
+        "inhigh.tcl",
+        "inhigh.tcl.bluetcl-bh-out.expected",
+        "inhigh.tcl.bluetcl-out.expected",
+        "prims.tcl",
+        "prims.tcl.bluetcl-bh-out.expected",
+        "prims.tcl.bluetcl-out.expected",
+        "split_port_types.tcl",
+        "split_port_types.tcl.bluetcl-bh-out.expected",
+        "split_port_types.tcl.bluetcl-out.expected",
+        "zero_size.tcl",
+        "zero_size.tcl.bluetcl-bh-out.expected",
+        "zero_size.tcl.bluetcl-out.expected"
+      ],
+      "requires": [
+        "verilog",
+        "bluetcl"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "ordered-bsc-compile-bluetcl",
+          "operations": [
+            {
+              "op": "bsc.compile",
+              "source": "InhighEnable.bsv",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "InhighEnable.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "InhighEnable.bsv"
+                ],
+                "outputs": [
+                  "InhighEnable.bsv.bsc-out",
+                  "sysInhighEnable.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 114,
+                  "endByte": 159,
+                  "startLine": 6,
+                  "startColumn": 1,
+                  "endLine": 6,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "inhigh.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "sysInhighEnable.ba"
+              ],
+              "stdout": "inhigh.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "inhigh.tcl",
+                  "sysInhighEnable.ba"
+                ],
+                "outputs": [
+                  "inhigh.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 160,
+                  "endByte": 195,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "inhigh.tcl.bluetcl-out",
+              "expected": "inhigh.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "inhigh.tcl.bluetcl-out",
+                  "inhigh.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 160,
+                  "endByte": 195,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "inhigh.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "sysInhighEnable.ba"
+              ],
+              "stdout": "inhigh.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "inhigh.tcl",
+                  "sysInhighEnable.ba"
+                ],
+                "outputs": [
+                  "inhigh.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 160,
+                  "endByte": 195,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "inhigh.tcl.bluetcl-bh-out",
+              "expected": "inhigh.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "inhigh.tcl.bluetcl-bh-out",
+                  "inhigh.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 160,
+                  "endByte": 195,
+                  "startLine": 7,
+                  "startColumn": 1,
+                  "endLine": 7,
+                  "endColumn": 36
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "ZeroSize.bsv",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "ZeroSize.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "ZeroSize.bsv"
+                ],
+                "outputs": [
+                  "ZeroSize.bsv.bsc-out",
+                  "sysZeroSize.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 261,
+                  "endByte": 302,
+                  "startLine": 12,
+                  "startColumn": 1,
+                  "endLine": 12,
+                  "endColumn": 42
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "zero_size.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "sysZeroSize.ba"
+              ],
+              "stdout": "zero_size.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "zero_size.tcl",
+                  "sysZeroSize.ba"
+                ],
+                "outputs": [
+                  "zero_size.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 303,
+                  "endByte": 341,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "zero_size.tcl.bluetcl-out",
+              "expected": "zero_size.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "zero_size.tcl.bluetcl-out",
+                  "zero_size.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 303,
+                  "endByte": 341,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "zero_size.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "sysZeroSize.ba"
+              ],
+              "stdout": "zero_size.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "zero_size.tcl",
+                  "sysZeroSize.ba"
+                ],
+                "outputs": [
+                  "zero_size.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 303,
+                  "endByte": 341,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "zero_size.tcl.bluetcl-bh-out",
+              "expected": "zero_size.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "zero_size.tcl.bluetcl-bh-out",
+                  "zero_size.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 303,
+                  "endByte": 341,
+                  "startLine": 13,
+                  "startColumn": 1,
+                  "endLine": 13,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "Prims.bsv",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "Prims.bsv.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "Prims.bsv"
+                ],
+                "outputs": [
+                  "Prims.bsv.bsc-out",
+                  "sysPrims.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 415,
+                  "endByte": 453,
+                  "startLine": 18,
+                  "startColumn": 1,
+                  "endLine": 18,
+                  "endColumn": 39
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "prims.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "sysPrims.ba"
+              ],
+              "stdout": "prims.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "prims.tcl",
+                  "sysPrims.ba"
+                ],
+                "outputs": [
+                  "prims.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 494,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "prims.tcl.bluetcl-out",
+              "expected": "prims.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "prims.tcl.bluetcl-out",
+                  "prims.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 494,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "prims.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "sysPrims.ba"
+              ],
+              "stdout": "prims.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "prims.tcl",
+                  "sysPrims.ba"
+                ],
+                "outputs": [
+                  "prims.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 494,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "prims.tcl.bluetcl-bh-out",
+              "expected": "prims.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "prims.tcl.bluetcl-bh-out",
+                  "prims.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 454,
+                  "endByte": 494,
+                  "startLine": 19,
+                  "startColumn": 1,
+                  "endLine": 19,
+                  "endColumn": 41
+                }
+              }
+            },
+            {
+              "op": "bsc.compile",
+              "source": "SplitPortTypes.bs",
+              "mode": "frontend",
+              "args": [
+                "-verilog",
+                "-elab"
+              ],
+              "dependencyMode": "update",
+              "expectedExit": "unchecked",
+              "stdout": "SplitPortTypes.bs.bsc-out",
+              "artifacts": {
+                "inputs": [
+                  "SplitPortTypes.bs"
+                ],
+                "outputs": [
+                  "SplitPortTypes.bs.bsc-out",
+                  "mkSplitPortTypes.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 688,
+                  "endByte": 734,
+                  "startLine": 26,
+                  "startColumn": 1,
+                  "endLine": 26,
+                  "endColumn": 47
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "split_port_types.tcl",
+                "args": [],
+                "syntax": "bsv"
+              },
+              "artifactInputs": [
+                "mkSplitPortTypes.ba"
+              ],
+              "stdout": "split_port_types.tcl.bluetcl-out",
+              "artifacts": {
+                "inputs": [
+                  "split_port_types.tcl",
+                  "mkSplitPortTypes.ba"
+                ],
+                "outputs": [
+                  "split_port_types.tcl.bluetcl-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 735,
+                  "endByte": 780,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "split_port_types.tcl.bluetcl-out",
+              "expected": "split_port_types.tcl.bluetcl-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "split_port_types.tcl.bluetcl-out",
+                  "split_port_types.tcl.bluetcl-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 735,
+                  "endByte": 780,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "bluetcl.run",
+              "invocation": {
+                "kind": "script",
+                "script": "split_port_types.tcl",
+                "args": [],
+                "syntax": "bh"
+              },
+              "artifactInputs": [
+                "mkSplitPortTypes.ba"
+              ],
+              "stdout": "split_port_types.tcl.bluetcl-bh-out",
+              "artifacts": {
+                "inputs": [
+                  "split_port_types.tcl",
+                  "mkSplitPortTypes.ba"
+                ],
+                "outputs": [
+                  "split_port_types.tcl.bluetcl-bh-out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 735,
+                  "endByte": 780,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 46
+                }
+              }
+            },
+            {
+              "op": "assert.golden_normalized",
+              "actual": "split_port_types.tcl.bluetcl-bh-out",
+              "expected": "split_port_types.tcl.bluetcl-bh-out.expected",
+              "normalizations": [
+                "bluetcl_output"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "split_port_types.tcl.bluetcl-bh-out",
+                  "split_port_types.tcl.bluetcl-bh-out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 735,
+                  "endByte": 780,
+                  "startLine": 27,
+                  "startColumn": 1,
+                  "endLine": 27,
+                  "endColumn": 46
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 49,
+  "id": "bsc.bsv_examples/AES/aes",
+  "origin": {
+    "path": "testsuite/bsc.bsv_examples/AES/aes.exp",
+    "sha256": "0bf40393023178a6b50f36ac4462ae4912f1921e2d920f983ed946209fc2163d"
+  },
+  "status": "complete",
+  "fixtureDir": "testsuite/bsc.bsv_examples/AES",
+  "fixtures": [
+    {
+      "path": "Aes.bsv",
+      "sha256": "882f53a8a4db164ff202b03a4c669e35a0a36dae50e2f6c058b366faff4239d8",
+      "role": "source"
+    },
+    {
+      "path": "Aes_TB.bsv",
+      "sha256": "f7b8abc81ca7b0506f4138efedb1e1b2b277783d3b0c9c58fbf6929dcb97d400",
+      "role": "source"
+    },
+    {
+      "path": "Defines.bsv",
+      "sha256": "8e1c4b1608b2aa4dc39f62a7e84d907b12db31d03072d43f221c73934131c533",
+      "role": "source"
+    },
+    {
+      "path": "InvSboxComb.bsv",
+      "sha256": "734425ac3a4758a6319905d90d8a012167ff1ebe0cfdc79b1e4d842b2c8456a9",
+      "role": "source"
+    },
+    {
+      "path": "ProbeWire.bsv",
+      "sha256": "378d1a440d6559f217276de1a2e326c543ea07add14e779e20ee03d362b05075",
+      "role": "source"
+    },
+    {
+      "path": "RconComb.bsv",
+      "sha256": "c7f032586b2e87a531fbda3e7374ac6426a30a301565385710630fb528f6b886",
+      "role": "source"
+    },
+    {
+      "path": "SboxComb.bsv",
+      "sha256": "9b2b56993ae993601a6bcdde5a10cb11e96c118fa296296ab1777365d73f9d64",
+      "role": "source"
+    },
+    {
+      "path": "dat.vectors",
+      "sha256": "71cffe32bd7e51c3d274eeef766e10a902323551edefabddb7981919631d13e3",
+      "role": "data"
+    },
+    {
+      "path": "key128.vectors",
+      "sha256": "195264607cc879cd8cda311e2d6e16889170a8f49c0db94dc6bfec022e02a1e0",
+      "role": "data"
+    },
+    {
+      "path": "key192.vectors",
+      "sha256": "df8e741803e29b5a091055636970b6c9af7cc4b39bb070d326381390753905bf",
+      "role": "data"
+    },
+    {
+      "path": "key256.vectors",
+      "sha256": "5ab0856d780c532dc7a47f359f63ebe976f30c3f710d618835c4c47b1e6bc135",
+      "role": "data"
+    },
+    {
+      "path": "sysAes_TB.out.expected",
+      "sha256": "4a624b92616904c2caa2b711d66bf2676d22175ee30af44c0e4a5ad0b97963c8",
+      "role": "golden"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "simulation-sysAes_TB",
+      "resource": "heavy",
+      "fixtures": [
+        "Aes.bsv",
+        "Aes_TB.bsv",
+        "Defines.bsv",
+        "InvSboxComb.bsv",
+        "ProbeWire.bsv",
+        "RconComb.bsv",
+        "SboxComb.bsv",
+        "dat.vectors",
+        "key128.vectors",
+        "key192.vectors",
+        "key256.vectors",
+        "sysAes_TB.out.expected"
+      ],
+      "requires": [
+        "bluesim",
+        "verilog",
+        "icarus"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "sysAes_TB",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "Aes_TB.bsv",
+              "mode": "shared_elaboration",
+              "module": "sysAes_TB",
+              "args": [
+                "-steps",
+                "500000"
+              ],
+              "artifacts": {
+                "inputs": [
+                  "Aes_TB.bsv"
+                ],
+                "outputs": [
+                  "Aes_TB.bo",
+                  "Aes_TB.bsv.bsc-vcomp-out",
+                  "mkAes.ba",
+                  "mkAes.v",
+                  "mkInvSboxRom.ba",
+                  "mkInvSboxRom.v",
+                  "mkRconRom.ba",
+                  "mkRconRom.v",
+                  "mkSboxRom.ba",
+                  "mkSboxRom.v",
+                  "sysAes_TB.ba",
+                  "sysAes_TB.v"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "icarus",
+              "objects": [
+                "sysAes_TB",
+                "mkRconRom",
+                "mkSboxRom",
+                "mkInvSboxRom",
+                "mkAes"
+              ],
+              "top": "sysAes_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.v",
+                  "mkRconRom.v",
+                  "mkSboxRom.v",
+                  "mkInvSboxRom.v",
+                  "mkAes.v"
+                ],
+                "outputs": [
+                  "sysAes_TB.bsc-vcomp-out",
+                  "sysAes_TB.vexe"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAes_TB",
+              "args": [],
+              "stdout": "sysAes_TB.v.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.vexe"
+                ],
+                "outputs": [
+                  "sysAes_TB.v.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAes_TB.v.out",
+              "expected": "sysAes_TB.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.v.out",
+                  "sysAes_TB.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "icarus",
+              "executable": "sysAes_TB",
+              "args": [],
+              "stdout": "sysAes_TB.v-vcd.out",
+              "vcd": "sysAes_TB.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.vexe"
+                ],
+                "outputs": [
+                  "sysAes_TB.v-vcd.out",
+                  "sysAes_TB.v.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid_if_present",
+              "path": "sysAes_TB.v.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.v.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "bsc.link",
+              "backend": "bluesim",
+              "objects": [
+                "sysAes_TB",
+                "mkRconRom",
+                "mkSboxRom",
+                "mkInvSboxRom",
+                "mkAes"
+              ],
+              "top": "sysAes_TB",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.ba",
+                  "mkRconRom.ba",
+                  "mkSboxRom.ba",
+                  "mkInvSboxRom.ba",
+                  "mkAes.ba"
+                ],
+                "outputs": [
+                  "sysAes_TB.bsc-ccomp-out"
+                ],
+                "outputAlternatives": [
+                  [
+                    "sysAes_TB.cexe",
+                    "sysAes_TB.cexe.exe"
+                  ]
+                ],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysAes_TB",
+              "args": [],
+              "stdout": "sysAes_TB.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.cexe"
+                ],
+                "outputs": [
+                  "sysAes_TB.c.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAes_TB.c.out",
+              "expected": "sysAes_TB.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.c.out",
+                  "sysAes_TB.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "simulation.run",
+              "backend": "bluesim",
+              "executable": "sysAes_TB",
+              "args": [],
+              "stdout": "sysAes_TB.c-vcd.out",
+              "vcd": "sysAes_TB.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.cexe"
+                ],
+                "outputs": [
+                  "sysAes_TB.c-vcd.out",
+                  "sysAes_TB.c.vcd"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "assert.vcd_valid",
+              "path": "sysAes_TB.c.vcd",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.c.vcd"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysAes_TB.c-vcd.out",
+              "expected": "sysAes_TB.c.out",
+              "artifacts": {
+                "inputs": [
+                  "sysAes_TB.c-vcd.out",
+                  "sysAes_TB.c.out"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1,
+                  "endByte": 96,
+                  "startLine": 2,
+                  "startColumn": 1,
+                  "endLine": 2,
+                  "endColumn": 96
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
