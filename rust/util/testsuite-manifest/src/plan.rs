@@ -155,6 +155,8 @@ pub fn build_test_plans_from_manifest(
 const TINY_M0_SIMIR_ORIGIN: &str = "testsuite/bsc.bluesim/interactive/interactive.exp";
 const TINY_M0_SIMIR_SHA256: &str =
     "9d3ec0fbb8fd0de5fc024703c64ef8d282570cf9b3875191352a32aed4d59fda";
+const MCD_M2_SIMIR_SHA256: &str =
+    "9d3ec0fbb8fd0de5fc024703c64ef8d282570cf9b3875191352a32aed4d59fda";
 
 const OPTIONS_PLAN_ORIGIN: &str = "testsuite/bsc.options/options.exp";
 const OPTIONS_PLAN_SHA256: &str =
@@ -536,6 +538,11 @@ fn plan_from_script(project_root: &Path, script: &ScriptManifest) -> GeneratedTe
         }
     }
     match tiny_m0_simir_scenario(&script, &fixture_root) {
+        Ok(Some(scenario)) => assembly.scenarios.push(scenario),
+        Ok(None) => {}
+        Err(diagnostic) => diagnostics.push(diagnostic),
+    }
+    match mcd_m2_simir_scenario(&script, &fixture_root) {
         Ok(Some(scenario)) => assembly.scenarios.push(scenario),
         Ok(None) => {}
         Err(diagnostic) => diagnostics.push(diagnostic),
@@ -1031,6 +1038,101 @@ fn tiny_m0_simir_scenario(
                         step_provenance,
                     ),
                 ],
+            },
+        ],
+    }))
+}
+
+fn mcd_m2_simir_scenario(
+    script: &ScriptManifest,
+    fixture_root: &Path,
+) -> Result<Option<Scenario>, ImportDiagnostic> {
+    if script.origin != TINY_M0_SIMIR_ORIGIN {
+        return Ok(None);
+    }
+    if script.source_sha256 != MCD_M2_SIMIR_SHA256 {
+        return Err(global_error(
+            "import.mcd_m2_simir_pin",
+            "the interactive Bluesim origin changed; review the M2 SimIR workflow shape".to_owned(),
+        ));
+    }
+    let workflows = script
+        .bluesim_workflows
+        .iter()
+        .filter(|workflow| {
+            workflow.top == "mkMCDTest"
+                && workflow.link.top == "mkMCDTest"
+                && workflow.generations.len() == 1
+                && workflow.generations[0].source == "MCDTest.bsv"
+                && workflow.generations[0].module.as_deref() == Some("mkMCDTest")
+        })
+        .collect::<Vec<_>>();
+    let [workflow] = workflows.as_slice() else {
+        return Err(global_error(
+            "import.mcd_m2_simir_shape",
+            "expected exactly one mkMCDTest Bluesim workflow generated from MCDTest.bsv".to_owned(),
+        ));
+    };
+    if !fixture_root.join("MCDTest.bsv").is_file() {
+        return Err(global_error(
+            "import.mcd_m2_simir_fixture",
+            "MCDTest M2 SimIR fixture is missing".to_owned(),
+        ));
+    }
+
+    let generation = &workflow.generations[0];
+    let generation_provenance = provenance(generation.span, &generation.expansion);
+    let link_provenance = provenance(workflow.link.span, &workflow.link.expansion);
+    let run_provenance = workflow
+        .runs
+        .iter()
+        .find(|run| run.action.stdout == "mkMCDTest.out")
+        .map(|run| provenance(run.action.span, &run.action.expansion))
+        .unwrap_or_else(|| link_provenance.clone());
+    Ok(Some(Scenario {
+        id: "simir-m2-mkMCDTest".to_owned(),
+        resource: ResourceClass::Normal,
+        fixtures: Vec::new(),
+        requires: vec![Requirement::Bluesim],
+        bsc_options_append: None,
+        timeouts: Timeouts::default(),
+        stages: vec![
+            Stage {
+                id: "export-m2".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::BscGenerate {
+                            source: "MCDTest.bsv".to_owned(),
+                            mode: SimulationGenerationMode::Bluesim,
+                            module: Some("mkMCDTest".to_owned()),
+                            args: Vec::new(),
+                        },
+                        OperationExpectation::Required,
+                        generation_provenance,
+                    ),
+                    OperationRecord::new(
+                        Action::BscSimirExport {
+                            top: "mkMCDTest".to_owned(),
+                            output: "mkMCDTest.m2.bsim.json".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        link_provenance,
+                    ),
+                ],
+            },
+            Stage {
+                id: "run-m2".to_owned(),
+                operations: vec![OperationRecord::new(
+                    Action::SimirM2Run {
+                        model: "mkMCDTest.m2.bsim.json".to_owned(),
+                        max_events: 100,
+                        expected_finish: 0,
+                        expected_time: 163,
+                        stdout: "mkMCDTest_m2_run.out".to_owned(),
+                    },
+                    OperationExpectation::Required,
+                    run_provenance,
+                )],
             },
         ],
     }))

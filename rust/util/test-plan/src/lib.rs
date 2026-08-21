@@ -303,7 +303,8 @@ impl ArtifactContract {
                 inputs.push(format!("{top}.ba"));
                 outputs.push(output.clone());
             }
-            Action::SimirM0Step { model, stdout, .. } => {
+            Action::SimirM0Step { model, stdout, .. }
+            | Action::SimirM2Run { model, stdout, .. } => {
                 inputs.push(model.clone());
                 outputs.push(stdout.clone());
             }
@@ -680,6 +681,15 @@ pub enum Action {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         expected_finish: Option<i32>,
     },
+    /// Run a generated M2 SimIR model in-process until it finishes or reaches its event limit.
+    #[serde(rename = "simir.m2_run")]
+    SimirM2Run {
+        model: String,
+        max_events: u64,
+        expected_finish: i32,
+        expected_time: u64,
+        stdout: String,
+    },
     #[serde(rename = "c.compile_object")]
     CObjectBuild {
         source: String,
@@ -905,6 +915,7 @@ impl Action {
             | Self::BscGenerate { .. }
             | Self::BscSimirExport { .. }
             | Self::SimirM0Step { .. }
+            | Self::SimirM2Run { .. }
             | Self::CObjectBuild { .. }
             | Self::BscLink { .. }
             | Self::SimulationRun { .. }
@@ -2268,6 +2279,20 @@ fn validate_action(action: &Action) -> Result<(), ValidationError> {
                 ));
             }
         }
+        Action::SimirM2Run {
+            model, max_events, ..
+        } => {
+            if !model.ends_with(".m2.bsim.json") {
+                return Err(ValidationError::new(
+                    "simir.m2_run model must end with .m2.bsim.json",
+                ));
+            }
+            if !(1..=1_000_000).contains(max_events) {
+                return Err(ValidationError::new(
+                    "simir.m2_run maxEvents must be between 1 and 1000000",
+                ));
+            }
+        }
         Action::CObjectBuild {
             source,
             makefile,
@@ -2738,7 +2763,9 @@ fn action_paths(action: &Action) -> Vec<&str> {
         }
         Action::BscGenerate { source, .. } => vec![source],
         Action::BscSimirExport { top, output } => vec![top, output],
-        Action::SimirM0Step { model, stdout, .. } => vec![model, stdout],
+        Action::SimirM0Step { model, stdout, .. } | Action::SimirM2Run { model, stdout, .. } => {
+            vec![model, stdout]
+        }
         Action::CObjectBuild {
             source,
             makefile,
@@ -3252,6 +3279,60 @@ mod tests {
             *input = "missing.ba".to_owned();
         }
         assert!(validate_action(&invalid).is_err());
+    }
+
+    #[test]
+    fn simir_m2_run_is_closed_and_has_fixed_artifacts() {
+        let action = Action::SimirM2Run {
+            model: "mkMCDTest.m2.bsim.json".to_owned(),
+            max_events: 100,
+            expected_finish: 0,
+            expected_time: 163,
+            stdout: "mkMCDTest_m2_run.out".to_owned(),
+        };
+        validate_action(&action).unwrap();
+        assert_eq!(
+            ArtifactContract::for_action(&action),
+            ArtifactContract {
+                inputs: vec!["mkMCDTest.m2.bsim.json".to_owned()],
+                outputs: vec!["mkMCDTest_m2_run.out".to_owned()],
+                output_alternatives: Vec::new(),
+                directories: Vec::new(),
+                removes: Vec::new(),
+            }
+        );
+        let encoded = serde_json::to_value(&action).unwrap();
+        assert_eq!(encoded["op"], "simir.m2_run");
+        assert_eq!(encoded["maxEvents"], 100);
+        assert_eq!(encoded["expectedFinish"], 0);
+        assert_eq!(encoded["expectedTime"], 163);
+        assert_eq!(serde_json::from_value::<Action>(encoded).unwrap(), action);
+
+        for action in [
+            Action::SimirM2Run {
+                model: "mkMCDTest.bsim.json".to_owned(),
+                max_events: 100,
+                expected_finish: 0,
+                expected_time: 163,
+                stdout: "mkMCDTest_m2_run.out".to_owned(),
+            },
+            Action::SimirM2Run {
+                model: "mkMCDTest.m2.bsim.json".to_owned(),
+                max_events: 0,
+                expected_finish: 0,
+                expected_time: 163,
+                stdout: "mkMCDTest_m2_run.out".to_owned(),
+            },
+            Action::SimirM2Run {
+                model: "mkMCDTest.m2.bsim.json".to_owned(),
+                max_events: 1_000_001,
+                expected_finish: 0,
+                expected_time: 163,
+                stdout: "mkMCDTest_m2_run.out".to_owned(),
+            },
+        ] {
+            assert!(validate_action(&action).is_err(), "accepted {action:?}");
+        }
     }
 
     #[test]
