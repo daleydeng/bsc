@@ -27,6 +27,85 @@ const UNARY_NOT: &str = r#"
 "#;
 const UPSTREAM_STEP_GOLDEN: &str =
     include_str!("../../../testsuite/bsc.bluesim/interactive/mkTest_step.out.expected");
+const MCD_M2: &str = r#"
+{
+  "schemaVersion": 2,
+  "producer": { "name": "bluesim-test", "version": "m2" },
+  "top": "mkMCDTest",
+  "clocks": [
+    {
+      "id": "CLK", "period": 10, "activeEdge": "posedge", "order": 0,
+      "initialValue": "low", "firstEdge": 0, "highDuration": 5, "lowDuration": 5
+    },
+    {
+      "id": "clk2$CLK_OUT", "period": 7, "activeEdge": "posedge", "order": 1,
+      "initialValue": "low", "firstEdge": 2, "highDuration": 3, "lowDuration": 4
+    }
+  ],
+  "state": [
+    { "id": "flip", "width": 1, "initialValue": 0 },
+    { "id": "count", "width": 8, "initialValue": 0 },
+    { "id": "rst2$OUT_RST", "width": 1, "initialValue": 0 }
+  ],
+  "resets": [{
+    "id": "rst2", "signal": "rst2$OUT_RST", "clock": "clk2$CLK_OUT", "cycles": 2,
+    "targets": [{ "state": "count", "value": 0 }]
+  }],
+  "schedules": [
+    {
+      "clock": "CLK",
+      "actions": [{
+        "kind": "write", "state": "flip",
+        "value": {
+          "kind": "unary", "width": 1, "op": "not",
+          "arg": { "kind": "state", "id": "flip" }
+        }
+      }]
+    },
+    {
+      "clock": "clk2$CLK_OUT",
+      "actions": [
+        {
+          "kind": "if",
+          "condition": {
+            "kind": "binary", "width": 1, "op": "unsigned_less_than",
+            "args": [
+              { "kind": "state", "id": "count" },
+              { "kind": "const", "width": 8, "value": 21 }
+            ]
+          },
+          "then": [{
+            "kind": "write", "state": "count",
+            "value": {
+              "kind": "binary", "width": 8, "op": "add",
+              "args": [
+                { "kind": "state", "id": "count" },
+                { "kind": "const", "width": 8, "value": 1 }
+              ]
+            }
+          }],
+          "else": [{
+            "kind": "if",
+            "condition": {
+              "kind": "unary", "width": 1, "op": "not",
+              "arg": {
+                "kind": "binary", "width": 1, "op": "equal",
+                "args": [
+                  { "kind": "state", "id": "rst2$OUT_RST" },
+                  { "kind": "const", "width": 1, "value": 0 }
+                ]
+              }
+            },
+            "then": [{ "kind": "finish", "status": 0 }],
+            "else": []
+          }]
+        },
+        { "kind": "reset_tick", "reset": "rst2" }
+      ]
+    }
+  ]
+}
+"#;
 
 #[test]
 fn tiny_step_matches_the_legacy_interactive_golden() {
@@ -77,6 +156,18 @@ fn unary_not_controls_a_guard() {
     let result = engine.step(1).unwrap();
 
     assert_eq!(result.exit_status, Some(0));
+}
+
+#[test]
+fn m2_clockgen_and_initial_reset_finish_at_the_legacy_time() {
+    let model = Model::from_json(MCD_M2).expect("valid M2 SimIR fixture");
+    let mut engine = Engine::new(model).unwrap();
+    let result = engine.run(100).expect("MCD fixture should finish");
+
+    assert_eq!(result.exit_status, Some(0));
+    assert_eq!(result.time, 163);
+    assert_eq!(result.cycles, 41);
+    assert!(result.output.is_empty());
 }
 
 #[test]

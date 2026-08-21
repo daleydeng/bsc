@@ -1,10 +1,9 @@
-//! Versioned SimIR loading and the deliberately small M0 Bluesim interpreter.
+//! Versioned SimIR loading and the deliberately small Bluesim interpreter.
 //!
-//! Schema version 1 is intentionally limited to the `tiny.bsv` vertical slice:
-//! 64-bit-or-narrow unsigned values, periodic positive-edge clocks, state reads,
-//! add/equality/unsigned-less-than expressions, conditional actions, writes,
-//! `$display`, and `$finish`.  Unsupported semantics must require a schema/runtime
-//! extension; they must never be guessed or silently delegated to legacy Bluesim.
+//! Schema version 1 is intentionally limited to the `tiny.bsv` vertical slice.
+//! Schema version 2 adds a closed, event-ordered two-clock/initial-reset slice.
+//! Unsupported semantics must require a schema/runtime extension; they must never
+//! be guessed or silently delegated to legacy Bluesim.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -14,6 +13,8 @@ use serde::Deserialize;
 use thiserror::Error;
 
 pub const SIMIR_SCHEMA_VERSION: u32 = 1;
+pub const SIMIR_M2_SCHEMA_VERSION: u32 = 2;
+pub const SIMIR_M0_SCHEMA_VERSION: u32 = SIMIR_SCHEMA_VERSION;
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -40,6 +41,8 @@ pub struct Model {
     pub clocks: Vec<Clock>,
     pub state: Vec<StateCell>,
     pub schedules: Vec<Schedule>,
+    #[serde(default)]
+    pub resets: Vec<InitialReset>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -55,12 +58,46 @@ pub struct Clock {
     pub id: String,
     pub period: u64,
     pub active_edge: ActiveEdge,
+    #[serde(default)]
+    pub order: Option<u32>,
+    #[serde(default)]
+    pub initial_value: Option<ClockValue>,
+    #[serde(default)]
+    pub first_edge: Option<u64>,
+    #[serde(default)]
+    pub high_duration: Option<u64>,
+    #[serde(default)]
+    pub low_duration: Option<u64>,
 }
 
 #[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum ActiveEdge {
     Posedge,
+}
+
+#[derive(Debug, Clone, Copy, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ClockValue {
+    Low,
+    High,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct InitialReset {
+    pub id: String,
+    pub signal: String,
+    pub clock: String,
+    pub cycles: u64,
+    pub targets: Vec<ResetTarget>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ResetTarget {
+    pub state: String,
+    pub value: u64,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -101,6 +138,9 @@ pub enum Action {
     },
     Finish {
         status: i32,
+    },
+    ResetTick {
+        reset: String,
     },
 }
 
@@ -168,9 +208,12 @@ impl Model {
     }
 
     pub fn validate(&self) -> Result<(), Error> {
-        if self.schema_version != SIMIR_SCHEMA_VERSION {
+        if !matches!(
+            self.schema_version,
+            SIMIR_M0_SCHEMA_VERSION | SIMIR_M2_SCHEMA_VERSION
+        ) {
             return invalid(format!(
-                "unsupported schema version {}; expected {SIMIR_SCHEMA_VERSION}",
+                "unsupported schema version {}; expected {SIMIR_M0_SCHEMA_VERSION} or {SIMIR_M2_SCHEMA_VERSION}",
                 self.schema_version
             ));
         }
@@ -193,6 +236,7 @@ impl Model {
             if clock.period == 0 {
                 return invalid(format!("clock {:?} has a zero period", clock.id));
             }
+            validate_clock_version(self.schema_version, clock)?;
         }
 
         let mut state = BTreeMap::new();
@@ -215,6 +259,7 @@ impl Model {
             }
         }
 
+        let resets = validate_resets(self.schema_version, &self.resets, &clocks, &state)?;
         let mut scheduled_clocks = BTreeSet::new();
         for schedule in &self.schedules {
             if !clocks.contains(schedule.clock.as_str()) {
@@ -227,9 +272,138 @@ impl Model {
                 return invalid(format!("multiple schedules for clock {:?}", schedule.clock));
             }
             validate_actions(&schedule.actions, &state, &mut BTreeMap::new())?;
+            validate_reset_ticks(self.schema_version, schedule, &resets, &state)?;
+        }
+        if self.schema_version == SIMIR_M2_SCHEMA_VERSION && scheduled_clocks.len() != clocks.len()
+        {
+            return invalid("M2 requires exactly one schedule for every clock");
         }
         Ok(())
     }
+}
+
+fn validate_clock_version(version: u32, clock: &Clock) -> Result<(), Error> {
+    let waveform = (
+        clock.order,
+        clock.initial_value,
+        clock.first_edge,
+        clock.high_duration,
+        clock.low_duration,
+    );
+    if version == SIMIR_M0_SCHEMA_VERSION {
+        if waveform != (None, None, None, None, None) {
+            return invalid("M0 clock contains M2 waveform fields");
+        }
+        return Ok(());
+    }
+    let (Some(_), Some(_), Some(_), Some(high), Some(low)) = waveform else {
+        return invalid(format!(
+            "M2 clock {:?} is missing waveform fields",
+            clock.id
+        ));
+    };
+    if high == 0 || low == 0 || clock.period != high.saturating_add(low) {
+        return invalid(format!(
+            "M2 clock {:?} has inconsistent period/high/low durations",
+            clock.id
+        ));
+    }
+    Ok(())
+}
+
+fn validate_resets<'a>(
+    version: u32,
+    resets: &'a [InitialReset],
+    clocks: &BTreeSet<&str>,
+    state: &BTreeMap<String, u8>,
+) -> Result<BTreeMap<String, &'a InitialReset>, Error> {
+    if version == SIMIR_M0_SCHEMA_VERSION && !resets.is_empty() {
+        return invalid("M0 model contains M2 resets");
+    }
+    let mut ids = BTreeMap::new();
+    for reset in resets {
+        nonempty(&reset.id, "reset id")?;
+        nonempty(&reset.signal, "reset signal")?;
+        if !clocks.contains(reset.clock.as_str()) {
+            return invalid(format!("reset {:?} references unknown clock", reset.id));
+        }
+        if reset.cycles == 0 {
+            return invalid(format!("reset {:?} has zero cycles", reset.id));
+        }
+        if state.get(&reset.signal) != Some(&1) {
+            return invalid(format!(
+                "reset {:?} signal {:?} must be a 1-bit state",
+                reset.id, reset.signal
+            ));
+        }
+        if ids.insert(reset.id.clone(), reset).is_some() {
+            return invalid(format!("duplicate reset id {:?}", reset.id));
+        }
+        let mut targets = BTreeSet::new();
+        for target in &reset.targets {
+            let Some(width) = state.get(&target.state) else {
+                return invalid(format!(
+                    "reset {:?} references unknown target state {:?}",
+                    reset.id, target.state
+                ));
+            };
+            if target.value > value_mask(*width) {
+                return invalid(format!(
+                    "reset {:?} value does not fit target state {:?}",
+                    reset.id, target.state
+                ));
+            }
+            if !targets.insert(target.state.as_str()) {
+                return invalid(format!(
+                    "reset {:?} has duplicate target state {:?}",
+                    reset.id, target.state
+                ));
+            }
+        }
+    }
+    Ok(ids)
+}
+
+fn validate_reset_ticks(
+    version: u32,
+    schedule: &Schedule,
+    resets: &BTreeMap<String, &InitialReset>,
+    state: &BTreeMap<String, u8>,
+) -> Result<(), Error> {
+    let ticks = schedule
+        .actions
+        .iter()
+        .filter_map(|action| match action {
+            Action::ResetTick { reset } => Some(reset),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    if version == SIMIR_M0_SCHEMA_VERSION && !ticks.is_empty() {
+        return invalid("M0 schedule contains M2 reset tick");
+    }
+    for reset in ticks {
+        let Some(definition) = resets.get(reset.as_str()) else {
+            return invalid(format!("reset tick references unknown reset {reset:?}"));
+        };
+        if definition.clock != schedule.clock {
+            return invalid(format!(
+                "reset tick {:?} is not on its clock {:?}",
+                reset, definition.clock
+            ));
+        }
+        if schedule.actions.last().is_none_or(
+            |action| !matches!(action, Action::ResetTick { reset: last } if last == reset),
+        ) {
+            return invalid(format!(
+                "reset tick {:?} must be the final schedule action",
+                reset
+            ));
+        }
+        if state.get(&definition.signal) != Some(&1) {
+            return invalid(format!("reset {:?} signal has invalid width", reset));
+        }
+    }
+    Ok(())
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -243,6 +417,8 @@ pub struct RunResult {
 pub struct Engine {
     model: Model,
     state: BTreeMap<String, u64>,
+    next_edges: BTreeMap<String, u64>,
+    reset_remaining: BTreeMap<String, u64>,
     time: u64,
     cycles: u64,
     exit_status: Option<i32>,
@@ -257,6 +433,23 @@ impl Engine {
                 .iter()
                 .map(|cell| (cell.id.clone(), cell.initial_value))
                 .collect(),
+            next_edges: model
+                .clocks
+                .iter()
+                .filter_map(|clock| {
+                    (model.schema_version == SIMIR_M2_SCHEMA_VERSION).then(|| {
+                        (
+                            clock.id.clone(),
+                            initial_posedge(clock).expect("validated M2 clock"),
+                        )
+                    })
+                })
+                .collect(),
+            reset_remaining: model
+                .resets
+                .iter()
+                .map(|reset| (reset.id.clone(), reset.cycles))
+                .collect(),
             model,
             time: 0,
             cycles: 0,
@@ -270,7 +463,11 @@ impl Engine {
             if self.exit_status.is_some() {
                 break;
             }
-            self.step_once(&mut output)?;
+            if self.model.schema_version == SIMIR_M0_SCHEMA_VERSION {
+                self.step_once_m0(&mut output)?;
+            } else {
+                self.step_once_m2(&mut output)?;
+            }
         }
         Ok(self.result(output))
     }
@@ -283,7 +480,7 @@ impl Engine {
         Ok(result)
     }
 
-    fn step_once(&mut self, output: &mut Vec<String>) -> Result<(), Error> {
+    fn step_once_m0(&mut self, output: &mut Vec<String>) -> Result<(), Error> {
         let snapshot = self.state.clone();
         let mut writes = BTreeMap::new();
         for schedule in &self.model.schedules {
@@ -323,6 +520,67 @@ impl Engine {
         Ok(())
     }
 
+    fn step_once_m2(&mut self, output: &mut Vec<String>) -> Result<(), Error> {
+        let (clock_id, time) = self
+            .next_edges
+            .iter()
+            .min_by_key(|(id, time)| {
+                let order = self
+                    .model
+                    .clocks
+                    .iter()
+                    .find(|clock| &clock.id == *id)
+                    .expect("validated M2 clock")
+                    .order
+                    .expect("validated M2 clock order");
+                (**time, order)
+            })
+            .map(|(id, time)| (id.clone(), *time))
+            .expect("validated M2 model has clocks");
+        let schedule = self
+            .model
+            .schedules
+            .iter()
+            .find(|schedule| schedule.clock == clock_id)
+            .expect("validated M2 schedule")
+            .clone();
+        let clock = self
+            .model
+            .clocks
+            .iter()
+            .find(|clock| clock.id == clock_id)
+            .expect("validated M2 clock");
+        self.time = time;
+        let snapshot = self.state.clone();
+        let mut writes = BTreeMap::new();
+        execute_actions_m2(
+            &schedule.actions,
+            &snapshot,
+            &mut BTreeMap::new(),
+            self.time,
+            &mut writes,
+            output,
+            &mut self.exit_status,
+            &clock_id,
+            &self.model.resets,
+            &mut self.reset_remaining,
+        );
+        for (id, value) in writes {
+            let width = self
+                .model
+                .state
+                .iter()
+                .find(|cell| cell.id == id)
+                .expect("validated write state")
+                .width;
+            self.state.insert(id, value & value_mask(width));
+        }
+        self.next_edges
+            .insert(clock_id, time.saturating_add(clock.period));
+        self.cycles += 1;
+        Ok(())
+    }
+
     fn result(&self, output: Vec<String>) -> RunResult {
         RunResult {
             output,
@@ -330,6 +588,16 @@ impl Engine {
             cycles: self.cycles,
             time: self.time,
         }
+    }
+}
+
+fn initial_posedge(clock: &Clock) -> Option<u64> {
+    match (clock.initial_value, clock.first_edge, clock.low_duration) {
+        (Some(ClockValue::Low), Some(first_edge), _) => Some(first_edge),
+        (Some(ClockValue::High), Some(first_edge), Some(low_duration)) => {
+            Some(first_edge.saturating_add(low_duration))
+        }
+        _ => None,
     }
 }
 
@@ -394,6 +662,98 @@ fn execute_actions(
                 output.push(line);
             }
             Action::Finish { status } => *exit_status = Some(*status),
+            Action::ResetTick { .. } => unreachable!("M0 validation rejects reset ticks"),
+        }
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn execute_actions_m2(
+    actions: &[Action],
+    state: &BTreeMap<String, u64>,
+    locals: &mut BTreeMap<String, u64>,
+    time: u64,
+    writes: &mut BTreeMap<String, u64>,
+    output: &mut Vec<String>,
+    exit_status: &mut Option<i32>,
+    clock: &str,
+    resets: &[InitialReset],
+    reset_remaining: &mut BTreeMap<String, u64>,
+) {
+    for action in actions {
+        if exit_status.is_some() {
+            return;
+        }
+        match action {
+            Action::If {
+                condition,
+                then_actions,
+                else_actions,
+            } => {
+                let selected = if eval(condition, state, locals, time) != 0 {
+                    then_actions
+                } else {
+                    else_actions
+                };
+                let mut branch_locals = locals.clone();
+                execute_actions_m2(
+                    selected,
+                    state,
+                    &mut branch_locals,
+                    time,
+                    writes,
+                    output,
+                    exit_status,
+                    clock,
+                    resets,
+                    reset_remaining,
+                );
+            }
+            Action::Let { local, value } => {
+                locals.insert(local.clone(), eval(value, state, locals, time));
+            }
+            Action::Write { state: id, value } => {
+                writes.insert(id.clone(), eval(value, state, locals, time));
+            }
+            Action::Display { items } => {
+                let mut line = String::new();
+                for item in items {
+                    match item {
+                        DisplayItem::Text { text } => line.push_str(text),
+                        DisplayItem::Time { width } => {
+                            line.push_str(&format!("{:>width$}", time, width = *width as usize));
+                        }
+                        DisplayItem::Decimal { width, value } => {
+                            line.push_str(&format!(
+                                "{:>width$}",
+                                eval(value, state, locals, time),
+                                width = *width as usize
+                            ));
+                        }
+                    }
+                }
+                output.push(line);
+            }
+            Action::Finish { status } => *exit_status = Some(*status),
+            Action::ResetTick { reset } => {
+                let definition = resets
+                    .iter()
+                    .find(|definition| definition.id == *reset)
+                    .expect("validated M2 reset tick");
+                debug_assert_eq!(definition.clock, clock);
+                if state[&definition.signal] == 0 {
+                    for target in &definition.targets {
+                        writes.insert(target.state.clone(), target.value);
+                    }
+                    let remaining = reset_remaining
+                        .get_mut(reset)
+                        .expect("validated M2 reset state");
+                    if *remaining == 1 {
+                        writes.insert(definition.signal.clone(), 1);
+                    }
+                    *remaining = remaining.saturating_sub(1);
+                }
+            }
         }
     }
 }
@@ -472,7 +832,7 @@ fn validate_actions(
                     }
                 }
             }
-            Action::Finish { .. } => {}
+            Action::Finish { .. } | Action::ResetTick { .. } => {}
         }
     }
     Ok(())
