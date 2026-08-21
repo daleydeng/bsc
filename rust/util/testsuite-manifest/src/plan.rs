@@ -158,6 +158,9 @@ const TINY_M0_SIMIR_SHA256: &str =
 const MCD_M2_SIMIR_SHA256: &str =
     "9d3ec0fbb8fd0de5fc024703c64ef8d282570cf9b3875191352a32aed4d59fda";
 const TBGCD_M3_SIMIR_SHA256: &str = MCD_M2_SIMIR_SHA256;
+const CLKTEST_M0_SIMIR_ORIGIN: &str = "testsuite/bsc.bluesim/misc/misc.exp";
+const CLKTEST_M0_SIMIR_SHA256: &str =
+    "21fabedb180b9e0d87af131a9f14d1710834a2ae60ebbc980b06e50d241d28ce";
 
 const OPTIONS_PLAN_ORIGIN: &str = "testsuite/bsc.options/options.exp";
 const OPTIONS_PLAN_SHA256: &str =
@@ -549,6 +552,11 @@ fn plan_from_script(project_root: &Path, script: &ScriptManifest) -> GeneratedTe
         Err(diagnostic) => diagnostics.push(diagnostic),
     }
     match tbgcd_m3_simir_scenario(&script, &fixture_root) {
+        Ok(Some(scenario)) => assembly.scenarios.push(scenario),
+        Ok(None) => {}
+        Err(diagnostic) => diagnostics.push(diagnostic),
+    }
+    match clktest_m0_simir_scenario(&script, &fixture_root, &assembly.scenarios) {
         Ok(Some(scenario)) => assembly.scenarios.push(scenario),
         Ok(None) => {}
         Err(diagnostic) => diagnostics.push(diagnostic),
@@ -1233,6 +1241,130 @@ fn tbgcd_m3_simir_scenario(
                     OperationExpectation::Required,
                     run_provenance,
                 )],
+            },
+        ],
+    }))
+}
+
+fn clktest_m0_simir_scenario(
+    script: &ScriptManifest,
+    fixture_root: &Path,
+    scenarios: &[Scenario],
+) -> Result<Option<Scenario>, ImportDiagnostic> {
+    if script.origin != CLKTEST_M0_SIMIR_ORIGIN {
+        return Ok(None);
+    }
+    if script.source_sha256 != CLKTEST_M0_SIMIR_SHA256 {
+        return Err(global_error(
+            "import.clktest_m0_simir_pin",
+            "the misc Bluesim origin changed; review the ClkTest SimIR workflow shape".to_owned(),
+        ));
+    }
+    if !fixture_root.join("ClkTest.bsv").is_file()
+        || !fixture_root.join("sysClkTest.out.expected").is_file()
+    {
+        return Err(global_error(
+            "import.clktest_m0_simir_fixture",
+            "ClkTest M0 SimIR fixture or stdout golden is missing".to_owned(),
+        ));
+    }
+    let legacy = scenarios
+        .iter()
+        .filter(|scenario| scenario.id == "simulation-sysClkTest")
+        .collect::<Vec<_>>();
+    let [legacy] = legacy.as_slice() else {
+        return Err(global_error(
+            "import.clktest_m0_simir_shape",
+            "expected exactly one simulation-sysClkTest scenario".to_owned(),
+        ));
+    };
+    let operations = legacy
+        .stages
+        .iter()
+        .flat_map(|stage| &stage.operations)
+        .collect::<Vec<_>>();
+    let generation = operations.iter().find(|operation| {
+        matches!(
+            &operation.action,
+            Action::BscGenerate { source, module, .. }
+                if source == "ClkTest.bsv" && module.as_deref() == Some("sysClkTest")
+        )
+    });
+    let run = operations.iter().find(|operation| {
+        matches!(
+            &operation.action,
+            Action::SimulationRun { backend: bsc_test_plan::SimulationBackend::Bluesim, stdout, .. }
+                if stdout == "sysClkTest.c.out"
+        )
+    });
+    let golden = operations.iter().find(|operation| {
+        matches!(
+            &operation.action,
+            Action::AssertGolden { actual, expected }
+                if actual == "sysClkTest.c.out" && expected == "sysClkTest.out.expected"
+        )
+    });
+    let (Some(generation), Some(run), Some(golden)) = (generation, run, golden) else {
+        return Err(global_error(
+            "import.clktest_m0_simir_shape",
+            "simulation-sysClkTest no longer has the expected generate/run/golden operations"
+                .to_owned(),
+        ));
+    };
+
+    Ok(Some(Scenario {
+        id: "simir-m0-sysClkTest".to_owned(),
+        resource: ResourceClass::Normal,
+        fixtures: Vec::new(),
+        requires: vec![Requirement::Bluesim],
+        bsc_options_append: None,
+        timeouts: Timeouts::default(),
+        stages: vec![
+            Stage {
+                id: "export-m0".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::BscGenerate {
+                            source: "ClkTest.bsv".to_owned(),
+                            mode: SimulationGenerationMode::Bluesim,
+                            module: Some("sysClkTest".to_owned()),
+                            args: Vec::new(),
+                        },
+                        OperationExpectation::Required,
+                        generation.provenance.clone(),
+                    ),
+                    OperationRecord::new(
+                        Action::BscSimirExport {
+                            top: "sysClkTest".to_owned(),
+                            output: "sysClkTest.m0.bsim.json".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        generation.provenance.clone(),
+                    ),
+                ],
+            },
+            Stage {
+                id: "run-m0".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::SimirM0Step {
+                            model: "sysClkTest.m0.bsim.json".to_owned(),
+                            cycles: 102,
+                            stdout: "sysClkTest_m0_run.out".to_owned(),
+                            expected_finish: Some(0),
+                        },
+                        OperationExpectation::Required,
+                        run.provenance.clone(),
+                    ),
+                    OperationRecord::new(
+                        Action::AssertGolden {
+                            actual: "sysClkTest_m0_run.out".to_owned(),
+                            expected: "sysClkTest.out.expected".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        golden.provenance.clone(),
+                    ),
+                ],
             },
         ],
     }))

@@ -4834,6 +4834,144 @@
           ]
         }
       ]
+    },
+    {
+      "id": "simir-m0-sysClkTest",
+      "resource": "normal",
+      "fixtures": [
+        "ClkTest.bsv",
+        "sysClkTest.out.expected"
+      ],
+      "requires": [
+        "bluesim"
+      ],
+      "timeouts": {
+        "generationSeconds": 300,
+        "linkSeconds": 300,
+        "simulationSeconds": 300,
+        "assertionSeconds": 30
+      },
+      "stages": [
+        {
+          "id": "export-m0",
+          "operations": [
+            {
+              "op": "bsc.generate",
+              "source": "ClkTest.bsv",
+              "mode": "bluesim",
+              "module": "sysClkTest",
+              "args": [],
+              "artifacts": {
+                "inputs": [
+                  "ClkTest.bsv"
+                ],
+                "outputs": [
+                  "ClkTest.bo",
+                  "ClkTest.bsv.bsc-ccomp-out",
+                  "sysClkTest.ba"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1982,
+                  "endByte": 2005,
+                  "startLine": 56,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "bsc.simir_export",
+              "top": "sysClkTest",
+              "output": "sysClkTest.m0.bsim.json",
+              "artifacts": {
+                "inputs": [
+                  "sysClkTest.ba"
+                ],
+                "outputs": [
+                  "sysClkTest.m0.bsim.json"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1982,
+                  "endByte": 2005,
+                  "startLine": 56,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "run-m0",
+          "operations": [
+            {
+              "op": "simir.m0_step",
+              "model": "sysClkTest.m0.bsim.json",
+              "cycles": 102,
+              "stdout": "sysClkTest_m0_run.out",
+              "expectedFinish": 0,
+              "artifacts": {
+                "inputs": [
+                  "sysClkTest.m0.bsim.json"
+                ],
+                "outputs": [
+                  "sysClkTest_m0_run.out"
+                ],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1982,
+                  "endByte": 2005,
+                  "startLine": 56,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 24
+                }
+              }
+            },
+            {
+              "op": "assert.golden",
+              "actual": "sysClkTest_m0_run.out",
+              "expected": "sysClkTest.out.expected",
+              "artifacts": {
+                "inputs": [
+                  "sysClkTest_m0_run.out",
+                  "sysClkTest.out.expected"
+                ],
+                "outputs": [],
+                "outputAlternatives": [],
+                "directories": [],
+                "removes": []
+              },
+              "provenance": {
+                "span": {
+                  "startByte": 1982,
+                  "endByte": 2005,
+                  "startLine": 56,
+                  "startColumn": 1,
+                  "endLine": 56,
+                  "endColumn": 24
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

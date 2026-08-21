@@ -359,7 +359,8 @@ candidate 失败不得回退到 legacy。
 2026-08-21 验证：
 
 - `simir-m0-mkTest --bluesim-engine rust` 已通过；
-- `bluesim-workflow-mkTest` 与 `simir-m0-mkTest --bluesim-engine both` 已通过，legacy 与 Rust 工作目录、artifacts 和 cache identity 相互隔离。
+- `bluesim-workflow-mkTest` 与 `simir-m0-mkTest --bluesim-engine both` 已通过，legacy 与 Rust 工作目录、artifacts 和 cache identity 相互隔离；
+- `testsuite/bsc.bluesim/misc/ClkTest.bsv` 已作为 M1 的第二条真实 fixture：沿用 schema v1，新增仅含静态文本且无 `%` 格式指令的 `$display` lowering，验证重命名 `clk`/`rst`、101 行 `tick!` golden、`finish = 0` 与终止周期优先级；`simulation-sysClkTest` + `simir-m0-sysClkTest --bluesim-engine both` 已通过（3 stages、0 skipped）。
 
 退出条件：
 
@@ -568,4 +569,4 @@ Bluesim 重写完成需要：
 
 M0 `tiny`、M2a `MCDTest` 与 M2b `TbGCD/GCD` 均已通过 canonical Rust Test Plan 的真实 `bsc.generate → bsc.simir_export → in-process Rust bluesim` 闭环；对应 legacy/Rust scenarios 已在 `--bluesim-engine both` 下共同通过，并保持隔离 workspace/artifacts/cache。默认候选路径不启动 Tcl、不生成/编译 per-design C++、不调用 per-design `rustc`，失败也不回退 legacy。
 
-下一步应选择覆盖 wire/Reg primitive interaction 或更丰富 system task/output 的最小 run-to-finish fixture，继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进。不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计；不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。
+下一步优先 probe `testsuite/bsc.bluesim/misc/MulTest.bsv` 的 signed 23/43-bit operands、66-bit result 与 `%0d` 输出；只有先引入正确的 wide/signed value representation 才能接入，禁止因为该 fixture 的具体结果碰巧可放进 `u64` 就截断语义。之后再进入 `interactive/prims.bsv` 的 Wire/FIFO/RegFile/Probe 同周期交互。继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进；不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计，不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。

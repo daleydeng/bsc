@@ -891,6 +891,16 @@ displayToJson state_widths args = do
     (ASStr _ _ string:exprs) -> return (string, exprs)
     _ -> Left "$display must have a static format string"
   display <- case (format, values) of
+    (text, [])
+      | '%' `notElem` text -> return $ object
+          [ field "kind" (jsonString "display")
+          , field "items" $ array
+              [ object
+                [ field "kind" (jsonString "text")
+                , field "text" (jsonString text)
+                ]
+              ]
+          ]
     ("%t: %d", [time_value, decimal_value]) -> do
       time_json <- exprToJson state_widths time_value
       decimal_json <- exprToJson state_widths decimal_value
