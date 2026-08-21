@@ -1,6 +1,6 @@
 # Bluesim Rust 重写计划
 
-状态：M0/M1 最小 vertical slice 与 engine selector 已验证；通用 cross-engine artifact diff 待实现
+状态：M0/M1 最小 vertical slice 与 engine selector 已验证；M2a 双时钟/reset 合同已钉定，待实现；通用 cross-engine artifact diff 待实现
 所属总体计划：[`OVERALL.md`](OVERALL.md) Phase 1
 更新时间：2026-08-21
 
@@ -380,6 +380,41 @@ candidate 失败不得回退到 legacy。
 6. ordered state commit；
 7. stop/finish/fatal；
 8. plusargs。
+
+### M2a：双时钟和 initial reset 的已钉定切片
+
+2026-08-21 选择 `testsuite/bsc.bluesim/interactive/MCDTest.bsv` 作为 M2 的首个 fixture。它是当前 testsuite 中最小的真实组合：默认 `CLK`、`mkAbsoluteClock(2, 7)` 产生的 `clk2$CLK_OUT`、一个 default-domain Reg、一个 `clk2` domain Reg，以及 `mkInitialReset(2, clocked_by clk2)`。
+
+`-dsimCOpt` 观察到的 SimCC 只接受以下闭合子集：
+
+- `ClockGen` 的常量参数 `[v1Width, v2Width, initDelay, initValue, otherValue] = [3, 4, 2, 0, 1]`；对应 output clock 的初始 low、首正沿 `t=2`、high phase `3`、low phase `4`，之后正沿为 `2, 9, 16, …`；
+- `InitialReset(cycles = 2)`，在 `t=0` assert，在其绑定 clock 的第 2 个有效正沿后于 timeslice 尾部 deassert；
+- 两个 `posedge` schedule，固定 source order `CLK` 再 `clk2$CLK_OUT`，无 negedge/after-edge schedule、gating、clock mux/divider 或 async reset；
+- normal rule action 后的 InitialReset tick 与 synchronous Reg reset tick；reset tick 覆盖同 edge 的普通 Reg write；
+- 既有 M0 expressions/actions 与 `$finish(0)`。
+
+legacy generated model 的该 fixture 最终在 `t=163` `$finish(0)`。这会成为 Rust M2 companion scenario 的 `expectedFinish = 0` 和 `expectedTime = 163`，而非仅检查“跑了若干 cycles”。
+
+M2 使用 **SimIR schema v2**；v1 M0 文件保持原样兼容。v2 显式表示：
+
+- clock `order`、initial value、first edge、high/low duration；
+- initial/default reset 的 assert/deassert 及绑定目标；
+- schedule 内受限 `initial_reset_tick` / `reset_tick` actions；
+- event sort key `(time, phase, clock.order, sequence)`。
+
+不得从 `SBId`、state tuple 排列、clock name 拼接或 C++ heap 偶然顺序推断语义。exporter 通过 primitive type、精确常量参数、SimCC reset function body、schedule edge/order 和 constant-true gate 逐项验证；任一不匹配即 fail closed。对默认 `CLK`/`RST_N`，M2 仅接受此 fixture 已观察到的 legacy kernel waveform/reset 配置，其他配置先拒绝、后续单独建模。
+
+Rust M2 runtime 将处理一个真实的、稳定排序的 edge event queue：负沿只更新 waveform，正沿运行对应 schedule，普通 action 依 source order 执行，随后 reset tick 覆盖 writes，timeslice 尾部才应用 reset deassert。它不建立 Tcl interpreter、通用 VM 或第二个 test runner。
+
+现有 `clock.cmd` / `mkMCDTest_clock.out.expected` 继续作为 legacy interactive API oracle；M2 Rust companion 只做 SimIR run-to-finish/time differential，不宣称实现 `sim clock` Tcl compatibility。
+
+实施时必须同步：
+
+1. `src/comp/SimIR.hs` 的 v2 fail-closed projection；
+2. `rust/bluesim` 的 v1/v2 loader、validator、event queue 和 unit tests；
+3. typed Test Plan action 及 `scenario_engine` 识别；
+4. `rust/util/testsuite-manifest/src/plan.rs` 的 hash-pinned `simir-m2-mkMCDTest` companion scenario；
+5. generated plans/schema/index（通过既有更新命令生成，不手改）。
 
 退出条件：
 
