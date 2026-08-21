@@ -1,0 +1,499 @@
+# Bluesim Rust 重写计划
+
+状态：M0/M1 进行中
+所属总体计划：[`OVERALL.md`](OVERALL.md) Phase 1
+更新时间：2026-08-21
+
+## 1. 最终目标
+
+最终默认链路：
+
+```text
+BSV/BH source
+→ Rust BSC
+→ versioned Bluesim IR artifact (.bsim)
+→ Rust bluesim binary
+→ stdout/stderr/VCD/exit status
+```
+
+最终默认路径不需要：
+
+- generated C++ model；
+- C++ Bluesim kernel/primitives；
+- Tcl、HTcl 或 `bluesim.tcl`；
+- 为每个设计调用外部 C++ compiler；
+- 为每个设计生成 Rust source 再调用 `rustc`。
+
+Rust `bluesim` 是通用仿真 binary，直接加载 `.bsim`。如果用户需要单文件 executable，可以后续提供将预构建 Rust launcher 与 `.bsim` 打包的模式，但 canonical artifact 仍是 versioned `.bsim`。
+
+## 2. 为什么 Bluesim 可以先于 Rust BSC
+
+不需要等 BSC 全部重写完才开始 Bluesim。
+
+迁移期链路：
+
+```text
+legacy Haskell BSC
+→ 临时 SimIR exporter
+→ .bsim
+→ Rust bluesim binary
+```
+
+最终只替换 producer：
+
+```text
+Rust BSC
+→ 同一 versioned .bsim
+→ 同一 Rust bluesim binary
+```
+
+这样 Bluesim 与 BSC 通过稳定 artifact 解耦。Rust Bluesim 不读取 Haskell heap，不直接解码当前 `.ba`，也不链接 generated C++。
+
+## 3. 当前 legacy 链路
+
+```text
+.ba
+→ src/comp/SimExpand.hs
+→ SimPackage / SimSystem
+→ SimMakeCBlocks.hs
+→ SimCCBlock
+→ SimCOpt.hs
+→ SimBlocksToC.hs
+→ generated .h/.cxx
+→ C++ compiler
+→ model shared library
+→ src/bluetcl/bluesim.tcl
+→ Bluetcl sim command
+→ C++ Bluesim runtime
+```
+
+当前 C++/Tcl 的作用仅是：
+
+1. 在迁移期继续提供可工作的 legacy engine；
+2. 作为 Rust engine 的 differential oracle；
+3. 给旧用户脚本提供有期限的 compatibility path。
+
+新架构不围绕旧 `Model` vtable、`MOD_*` class 或 Tcl object 设计。
+
+## 4. 目标架构
+
+```mermaid
+flowchart TD
+    SRC[BSV/BH source] --> PRODUCER[Legacy exporter, later Rust BSC]
+    PRODUCER --> IR[Versioned .bsim SimIR]
+    IR --> CLI[Rust bluesim binary and library]
+    CLI --> ENGINE[Rust simulation engine]
+    ENGINE --> EVENT[Event and clock engine]
+    ENGINE --> STATE[State and primitives]
+    ENGINE --> FFI[BDPI C ABI]
+    ENGINE --> VCD[VCD and symbols]
+    CLI --> OUT[Output, VCD, exit status]
+```
+
+迁移期对跑：
+
+```mermaid
+flowchart TD
+    INPUT[Same BSV fixture] --> LEGACY[Legacy BSC + C++ + Tcl]
+    INPUT --> EXPORT[Legacy BSC SimIR exporter]
+    EXPORT --> RUST[Rust bluesim + .bsim]
+    LEGACY --> A[Legacy result]
+    RUST --> B[Rust result]
+    A --> DIFF[Differential assertions]
+    B --> DIFF
+```
+
+Rust 与 legacy C++ 不在同一进程互调。C++ 是黑盒 oracle，不需要临时 C++ `Model` adapter。
+
+## 5. `.bsim` / SimIR 契约
+
+SimIR 是 BSC 与 Bluesim 的稳定边界，不是 Haskell `SimSystem` 或 C++ class 的直接序列化。
+
+首版使用 versioned JSON，方便审计和 differential debugging。性能与体积成为实测 blocker 后，再增加兼容的 binary encoding；语义 schema 不随 encoding 改变。
+
+### 5.1 必要内容
+
+- schema/version 和 producer metadata；
+- top module 与 module hierarchy；
+- state cells、bit width、signedness、initial value；
+- clocks、resets、period、phase 和 edge schedules；
+- rules/methods 的已确定执行顺序；
+- combinational expressions；
+- state update actions；
+- primitive instance 与参数；
+- BDPI import signature；
+- `$display`、`$time`、`$stop`、`$finish` 等 system tasks；
+- symbol/debug metadata；
+- VCD signal metadata；
+- source/provenance，仅用于诊断和调试。
+
+### 5.2 不包含
+
+- Haskell constructor tags；
+- C++ class/vtable/layout；
+- Rust struct memory layout；
+- host pointer；
+- 任意 shell/Tcl command；
+- 未版本化 opaque blob。
+
+### 5.3 执行表示
+
+首版采用最小、确定的 Bluesim domain bytecode/table：
+
+- expression stack/register instructions；
+- explicit bit widths；
+- branch/call-free 或受限控制流；
+- ordered state updates；
+- stable numeric IDs；
+- 不允许 host code injection。
+
+这是仿真语义本身需要的领域 IR，不扩展成通用 VM。只有性能数据证明解释执行不足时，才评估 Cranelift 对相同 SimIR 做 AOT/JIT；不提前维护双后端。
+
+## 6. Rust runtime 边界
+
+### 6.1 Engine
+
+负责：
+
+- lifecycle；
+- event queue；
+- clock/reset；
+- rule/method schedule execution；
+- combinational evaluation；
+- ordered state commit；
+- stop/finish/fatal；
+- plusargs。
+
+### 6.2 State/primitives
+
+Rust 原生实现：
+
+- bit vectors 和 wide values；
+- reg/wire/probe；
+- FIFO/counter；
+- clock/reset/synchronizer；
+- RegFile/BRAM；
+- primitive arithmetic/logic；
+- system tasks。
+
+不暴露 Rust crate 内部 layout 为外部 ABI。
+
+### 6.3 BDPI
+
+BDPI 保持稳定 C ABI，因为用户 foreign functions 仍可能是 C/C++：
+
+- scalar width mapping；
+- wide `u32` word order；
+- return buffer convention；
+- string ownership/lifetime；
+- dynamic/static foreign library loading。
+
+这不意味着 Bluesim 本身依赖 C++；它只是与用户 native code 的语言中立边界。
+
+### 6.4 SystemC
+
+SystemC 本身是 C++ 生态。若继续支持，保留独立可选 adapter，通过稳定 C ABI 驱动 Rust engine；默认 Bluesim binary 不依赖 SystemC。
+
+### 6.5 CLI/API
+
+Rust `bluesim` 提供：
+
+```text
+bluesim run model.bsim
+bluesim step model.bsim --cycles N
+bluesim inspect model.bsim
+bluesim symbols model.bsim --json
+bluesim vcd model.bsim --output dump.vcd
+```
+
+library API 使用相同 engine，不另建一套 CLI-specific runtime。
+
+## 7. Tcl 迁移
+
+迁移期：
+
+```text
+legacy bluetcl/bluesim.tcl → legacy engine
+optional bluetcl adapter   → Rust bluesim CLI/API
+```
+
+最终：
+
+```text
+Rust bluesim CLI/API only
+```
+
+原则：
+
+- 不在 Rust 中实现 Tcl interpreter；
+- 不把 Tcl list/object 作为新内部协议；
+- 旧 `.tcl` automation 迁到 Rust CLI/JSON/library API；
+- upstream Bluetcl tests 在迁移期验证 compatibility adapter；
+- 默认安装最终移除 Tcl、HTcl 和 `bluesim.tcl`。
+
+## 8. Differential 测试
+
+现有 Rust testsuite 是 Bluesim 重写的迁移控制平面。只扩展当前 canonical Test Plan runner，不建立第二套 Bluesim runner。
+
+开发期 runner 提供显式 engine selector：
+
+```text
+--bluesim-engine legacy
+--bluesim-engine rust
+--bluesim-engine both
+```
+
+`both` 必须在两个隔离 workspace 中运行同一个 scenario；cache key、logs 和 artifacts 都包含 engine identity，禁止不同 engine 互相命中缓存或覆盖产物。
+
+复用：
+
+- `rust/tests/plans`；
+- `rust/tests/src/test_plan.rs`；
+- `rust/tests/src/bluesim.rs`；
+- upstream `testsuite/bsc.bluesim`；
+- 所有声明 Bluesim backend/requirement 的 generated plans。
+
+同一 BSV fixture 生成两套结果：
+
+```text
+legacy full stack → result A
+SimIR + Rust      → result B
+```
+
+比较：
+
+- exit status；
+- stdout/stderr 与顺序；
+- simulation time/clock count；
+- state/symbol values；
+- VCD；
+- `$stop/$finish/$fatal`；
+- BDPI calls/results；
+- multiple-model isolation；
+- error diagnostics。
+
+candidate 失败不得回退到 legacy。
+
+门禁逐步扩大：
+
+1. M0：SimIR exporter/loader validation；
+2. M1：一个最小 scenario dual-run；
+3. M2：clock/reset/schedule 子集；
+4. M3：values/primitives/BDPI；
+5. M4：interactive/VCD/symbols；
+6. M5：全部 Bluesim 相关 complete plans。
+
+新增测试只覆盖端到端测试难以隔离的不变量：
+
+- event queue timestamp/priority/tie order；
+- clock/reset edge order；
+- state read-before-write/commit semantics；
+- bit widths 0/1/31/32/33/63/64/65；
+- signed/wide arithmetic；
+- BDPI buffer ownership；
+- VCD same-timestamp updates；
+- SimIR validation/fuzz/property tests。
+
+## 9. 里程碑
+
+## M0：定义最小 SimIR vertical slice
+
+选择一个只包含：
+
+- 一个 top module；
+- 一个 clock/reset；
+- 一个 register；
+- 一条 rule；
+- 一个 `$display`/`$finish`；
+
+的现有 testsuite fixture。
+
+行动：
+
+1. 从 legacy `SimSystem`/`SimCCBlock` 路径识别该 fixture 实际需要的信息；
+2. 定义最小 versioned JSON schema；
+3. legacy Haskell 临时 exporter 输出 `.bsim`；
+4. Rust loader 严格验证 schema、IDs、widths 和 references；
+5. 不实现完整 engine，只证明 artifact 可稳定生成和读取。
+
+2026-08-21 侦察结果：
+
+- fixture 选定 `testsuite/bsc.bluesim/interactive/tiny.bsv`；
+- exporter seam 已确认在 `src/comp/bsc.hs` 的 `simCOpt` 后、`simBlocksToC` 前；
+- legacy `-dsimCOpt` dump 的 M0 语义是：16-bit `count`、周期 10 的 `CLK` 正沿、`count == 100` 优先 `$finish(0)`、否则 `count < 100` 时写入 `count + 1` 并显示写入前值；
+- `rust/bluesim` 已实现 schema v1 的严格 loader、`bluesim step/run/inspect` 和上述受限解释器；其 `tiny` fixture 的十步输出逐字匹配 upstream `mkTest_step.out.expected`；
+- 当前 fixture 是从该 dump 作出的人工、可审计 projection。Haskell exporter 与 canonical Test Plan engine selector 尚未实现，因此 M0/M1 仍是进行中，不能宣称已完成 end-to-end dual-run。
+
+退出条件：
+
+- 连续生成无 diff；
+- malformed/unknown-version fail-closed；
+- schema 不包含 Haskell/C++ layout；
+- fixture provenance 可追踪。
+
+## M1：Rust 最小 simulator binary
+
+实现：
+
+- `.bsim` loader；
+- lifecycle；
+- 单 clock event queue；
+- register read/update；
+- 最小 expression execution；
+- `$display` 和 `$finish`；
+- `bluesim run` CLI。
+
+退出条件：
+
+- 与 legacy full stack 对同一 fixture 输出、time 和 exit 一致；
+- 不生成/编译 C++；
+- 不启动 Tcl；
+- 不调用 `rustc` 编译 per-design source。
+
+## M2：执行语义核心
+
+按顺序增加：
+
+1. stable event ordering；
+2. multiple clocks；
+3. reset；
+4. combinational evaluation；
+5. rule/method schedule；
+6. ordered state commit；
+7. stop/finish/fatal；
+8. plusargs。
+
+退出条件：
+
+- schedule、clock/reset 和基本 Bluesim plans differential 一致；
+- order 不依赖 hash/random iteration；
+- property tests 覆盖明确不变量；
+- 有性能基线。
+
+## M3：Values、primitives 与 BDPI
+
+按族扩展：
+
+1. narrow/wide/signed values；
+2. reg/wire/probe；
+3. FIFO/counter；
+4. clock/reset/synchronizer；
+5. RegFile/BRAM；
+6. primitive ops/system tasks；
+7. BDPI。
+
+每族独立加 SimIR opcode/schema、runtime 实现和 differential fixtures。
+
+退出条件：
+
+- 不再依赖 legacy C++ primitive；
+- BDPI ABI fixtures 通过；
+- wide/signed semantics 与 legacy 一致。
+
+## M4：VCD、symbols 与 interactive CLI
+
+实现：
+
+- symbol hierarchy/lookup/value；
+- state/rule dump；
+- VCD definitions/updates/checkpoint；
+- run/step/sync/inspect；
+- structured JSON output；
+- optional migration-period Bluetcl adapter。
+
+退出条件：
+
+- interactive/debugging/VCD plans 一致；
+- Rust CLI/API 是默认入口；
+- Windows 不依赖 Tcl 或 shell quoting；
+- adapter unload/session 没有悬挂资源。
+
+## M5：全量 parity 与默认切换
+
+行动：
+
+- 所有相关 complete plans 运行 legacy/Rust differential；
+- Windows 与 Unix CI；
+- 记录启动时间、吞吐、内存和 `.bsim` 体积；
+- Rust engine 成为默认；
+- legacy C++/Tcl 继续有限期 CI oracle。
+
+退出条件：
+
+- 无未解释行为/artifact 差异；
+- 性能回归已测量并明确接受；
+- rollback selector 清楚但不静默；
+- 默认安装运行 Bluesim 不需要 C++ compiler 或 Tcl。
+
+## M6：Rust BSC 接管 SimIR producer
+
+当 Rust BSC 对应 pipeline 可用后：
+
+```text
+legacy Haskell exporter → Rust BSC SimIR producer
+```
+
+对同一 source 比较两边 `.bsim` 的结构和运行结果。Rust producer 稳定后删除 legacy exporter、generated C++ generator 和 C++ runtime build/install 路径。
+
+## M7：可选性能编译后端
+
+仅当 profiling 证明解释执行是实际 blocker：
+
+- 保持同一 versioned SimIR；
+- 优先评估 Cranelift 编译 hot blocks 或完整 model；
+- interpreter 继续作为 reference engine；
+- 不改变 `.bsim`、CLI、BDPI 或测试契约。
+
+没有数据则停在 Rust interpreter/table engine，不增加 JIT/AOT 复杂度。
+
+## 10. Rust 生态复用
+
+| 能力 | 首选 | 约束 |
+|---|---|---|
+| CLI | 已有 `clap` | 不自造 argv parser |
+| SimIR | 已有 `serde` / `serde_json` | schema versioned、deny unknown where appropriate |
+| errors | `thiserror` / 已有 `anyhow` | library 与 CLI 分层即可 |
+| ordered IDs/maps | `indexmap` | 不依赖随机 iteration |
+| event queue | 先 `std::collections::BinaryHeap` | stable tie 用显式 sequence ID |
+| bit values | `bitvec` + `num-bigint` | 不暴露内部 layout |
+| dynamic BDPI loading | `libloading` | 不手写 Win32/Unix loader |
+| C ABI | `core::ffi` / `libc` | 只用于 BDPI/SystemC compatibility |
+| VCD | 先验证已有 `vcd` crate | 不改变 legacy observable semantics |
+| property tests | `proptest` | SimIR/value/event invariants |
+| fuzzing | `cargo-fuzz`，需要时 | 只针对 loader/decoder trust boundary |
+| benchmarks | `criterion`，需要时 | 首先使用端到端基线 |
+| optional codegen | Cranelift，M7 才评估 | 不提前进入依赖图 |
+
+不引入：Tokio、Tcl interpreter、自研通用 VM、自研动态加载器、自研 bigint、新测试 runner、per-design generated Rust + `rustc` 默认链路。
+
+## 11. 风险与控制
+
+| 风险 | 控制 |
+|---|---|
+| SimIR 复制 Haskell internals | 只表达仿真语义，schema review + versioning |
+| interpreter 性能不足 | 先测量；M7 可在同一 IR 上加 Cranelift |
+| event/order 语义偏差 | explicit stable IDs + full differential |
+| primitive 爆炸 | 按族迁移，每族独立 gate |
+| BDPI layout mismatch | C ABI probe + boundary width fixtures |
+| VCD 文本差异 | exact golden + semantic comparison |
+| global state 泄漏 | per-engine/session ownership + multi-model tests |
+| malformed model | strict validation，无 unchecked index/pointer |
+| 新旧 producer 漂移 | structural `.bsim` diff + runtime parity |
+| compatibility scope 膨胀 | Tcl/C++ 仅作外部 oracle，不进入新核心 |
+
+## 12. 完成定义
+
+Bluesim 重写完成需要：
+
+- canonical artifact 是 versioned `.bsim`；
+- Rust `bluesim` binary/library 直接加载 `.bsim`；
+- 默认路径不生成/编译 C++，不调用 Tcl；
+- state/primitives/VCD/symbol/BDPI 由 Rust engine 执行；
+- Rust BSC 成为 `.bsim` producer；
+- Windows/Unix 相关 Test Plans 通过；
+- legacy full stack 观察期结束；
+- C++ generator/kernel/primitives 和 Tcl launcher 从默认 build/install 删除。
+
+## 13. 当前下一步
+
+实现一个默认关闭的 legacy Haskell SimIR exporter：在 `simCOpt` 后投影出 schema v1 `.bsim`，先只接受 `tiny` 已覆盖的结构；遇到未实现的 `SimCC` 构造必须报明确错误并停止，不生成部分/猜测模型。然后将 exporter 输出与 `rust/bluesim/tests/fixtures/tiny.bsim.json` 做结构化比较，并在既有 Rust Test Plan runner 中加入隔离的 Rust-engine selector。此闭环通过前，不创建 C++ adapter、不铺完整 runtime crate graph、不设计 JIT。

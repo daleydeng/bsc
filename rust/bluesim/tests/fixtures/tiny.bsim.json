@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "name": "legacy-bsc-simcc-projection",
+    "version": "m0"
+  },
+  "top": "mkTest",
+  "clocks": [
+    {
+      "id": "CLK",
+      "period": 10,
+      "activeEdge": "posedge"
+    }
+  ],
+  "state": [
+    {
+      "id": "count",
+      "width": 16,
+      "initialValue": 0
+    }
+  ],
+  "schedules": [
+    {
+      "clock": "CLK",
+      "actions": [
+        {
+          "kind": "if",
+          "condition": {
+            "kind": "binary",
+            "width": 1,
+            "op": "equal",
+            "args": [
+              { "kind": "state", "id": "count" },
+              { "kind": "const", "width": 16, "value": 100 }
+            ]
+          },
+          "then": [
+            { "kind": "finish", "status": 0 }
+          ],
+          "else": [
+            {
+              "kind": "if",
+              "condition": {
+                "kind": "binary",
+                "width": 1,
+                "op": "unsigned_less_than",
+                "args": [
+                  { "kind": "state", "id": "count" },
+                  { "kind": "const", "width": 16, "value": 100 }
+                ]
+              },
+              "then": [
+                {
+                  "kind": "write",
+                  "state": "count",
+                  "value": {
+                    "kind": "binary",
+                    "width": 16,
+                    "op": "add",
+                    "args": [
+                      { "kind": "state", "id": "count" },
+                      { "kind": "const", "width": 16, "value": 1 }
+                    ]
+                  }
+                },
+                {
+                  "kind": "display",
+                  "items": [
+                    { "kind": "time", "width": 20 },
+                    { "kind": "text", "text": ":" },
+                    { "kind": "decimal", "width": 6, "value": { "kind": "state", "id": "count" } }
+                  ]
+                }
+              ],
+              "else": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
