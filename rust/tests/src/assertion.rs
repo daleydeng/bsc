@@ -309,6 +309,7 @@ fn plan_action_name(action: &PlanAction) -> &'static str {
         PlanAction::BscSimirExport { .. } => "bsc.simir_export",
         PlanAction::SimirM0Step { .. } => "simir.m0_step",
         PlanAction::SimirM2Run { .. } => "simir.m2_run",
+        PlanAction::SimirM3Run { .. } => "simir.m3_run",
         PlanAction::CObjectBuild { .. } => "c.compile_object",
         PlanAction::BscLink { .. } => "bsc.link",
         PlanAction::BscSystemcLink { .. } => "bsc.systemc_link",

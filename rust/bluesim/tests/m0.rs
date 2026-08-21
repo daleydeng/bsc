@@ -106,6 +106,57 @@ const MCD_M2: &str = r#"
   ]
 }
 "#;
+const HIERARCHY_M3: &str = r#"
+{
+  "schemaVersion": 3,
+  "producer": { "name": "bluesim-test", "version": "m3" },
+  "top": "mkHierarchy",
+  "clocks": [{ "id": "CLK", "period": 10, "activeEdge": "posedge" }],
+  "state": [
+    { "id": "worker.x", "width": 8, "initialValue": 1 },
+    { "id": "worker.y", "width": 8, "initialValue": 3 }
+  ],
+  "schedules": [{
+    "clock": "CLK",
+    "actions": [{
+      "kind": "if",
+      "condition": {
+        "kind": "binary", "width": 1, "op": "and",
+        "args": [
+          {
+            "kind": "unary", "width": 1, "op": "not",
+            "arg": {
+              "kind": "binary", "width": 1, "op": "equal",
+              "args": [
+                { "kind": "state", "id": "worker.y" },
+                { "kind": "const", "width": 8, "value": 0 }
+              ]
+            }
+          },
+          {
+            "kind": "binary", "width": 1, "op": "equal",
+            "args": [
+              { "kind": "state", "id": "worker.x" },
+              { "kind": "const", "width": 8, "value": 1 }
+            ]
+          }
+        ]
+      },
+      "then": [{
+        "kind": "write", "state": "worker.y",
+        "value": {
+          "kind": "binary", "width": 8, "op": "sub",
+          "args": [
+            { "kind": "state", "id": "worker.y" },
+            { "kind": "state", "id": "worker.x" }
+          ]
+        }
+      }],
+      "else": [{ "kind": "finish", "status": 0 }]
+    }]
+  }]
+}
+"#;
 
 #[test]
 fn tiny_step_matches_the_legacy_interactive_golden() {
@@ -167,6 +218,18 @@ fn m2_clockgen_and_initial_reset_finish_at_the_legacy_time() {
     assert_eq!(result.exit_status, Some(0));
     assert_eq!(result.time, 163);
     assert_eq!(result.cycles, 41);
+    assert!(result.output.is_empty());
+}
+
+#[test]
+fn m3_flattened_hierarchy_runs_with_bitwise_and_subtraction() {
+    let model = Model::from_json(HIERARCHY_M3).expect("valid M3 SimIR fixture");
+    let mut engine = Engine::new(model).unwrap();
+    let result = engine.run(10).expect("M3 hierarchy fixture should finish");
+
+    assert_eq!(result.exit_status, Some(0));
+    assert_eq!(result.time, 40);
+    assert_eq!(result.cycles, 4);
     assert!(result.output.is_empty());
 }
 

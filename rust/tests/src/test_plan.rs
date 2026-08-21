@@ -232,6 +232,7 @@ fn scenario_engine(scenario: &Scenario) -> ScenarioEngine {
                 Action::BscSimirExport { .. }
                     | Action::SimirM0Step { .. }
                     | Action::SimirM2Run { .. }
+                    | Action::SimirM3Run { .. }
             )
         })
     {
@@ -1404,6 +1405,49 @@ fn execute_operation(
             )
             .map_err(|error| format!("write SimIR M2 run log: {error}"))
         }
+        Action::SimirM3Run {
+            model,
+            max_events,
+            expected_finish,
+            expected_time,
+            stdout,
+        } => {
+            ensure_regular_artifact(work_dir, model, "SimIR M3 model")?;
+            let model_path = work_dir.join(model);
+            let model = SimirModel::read_json(&model_path)
+                .map_err(|error| format!("load SimIR {}: {error}", model_path.display()))?;
+            let mut engine = SimirEngine::new(model)
+                .map_err(|error| format!("initialize SimIR engine: {error}"))?;
+            let result = engine
+                .run(*max_events)
+                .map_err(|error| format!("execute SimIR M3 run: {error}"))?;
+            if result.exit_status != Some(*expected_finish) {
+                return Err(format!(
+                    "SimIR M3 run finish status {:?}, expected {}",
+                    result.exit_status, expected_finish
+                ));
+            }
+            if result.time != *expected_time {
+                return Err(format!(
+                    "SimIR M3 run time {}, expected {}",
+                    result.time, expected_time
+                ));
+            }
+            let mut output_text = result.output.join("\n");
+            if !output_text.is_empty() {
+                output_text.push('\n');
+            }
+            fs::write(work_dir.join(stdout), output_text)
+                .map_err(|error| format!("write SimIR M3 output {stdout}: {error}"))?;
+            fs::write(
+                artifact_dir.join(format!("operation-{operation_index}-simir-m3-run.log")),
+                format!(
+                    "events={} time={} finish={:?}\n",
+                    result.cycles, result.time, result.exit_status
+                ),
+            )
+            .map_err(|error| format!("write SimIR M3 run log: {error}"))
+        }
         Action::BscGenerate {
             source,
             mode,
@@ -2365,6 +2409,7 @@ fn action_name(action: &Action) -> &'static str {
         Action::BscSimirExport { .. } => "bsc.simir_export",
         Action::SimirM0Step { .. } => "simir.m0_step",
         Action::SimirM2Run { .. } => "simir.m2_run",
+        Action::SimirM3Run { .. } => "simir.m3_run",
         Action::CObjectBuild { .. } => "c.compile_object",
         Action::BscLink { .. } => "bsc.link",
         Action::BscSystemcLink { .. } => "bsc.systemc_link",
@@ -3899,7 +3944,19 @@ mod tests {
         assert_eq!(scenario_engine(&legacy), ScenarioEngine::Legacy);
         assert_eq!(scenario_engine(&simir_export), ScenarioEngine::Rust);
         assert_eq!(scenario_engine(&simir_step), ScenarioEngine::Rust);
+        let simir_m3_run = engine_test_scenario(
+            "simir-m3-run",
+            Some(Action::SimirM3Run {
+                model: "mkTop.m3.bsim.json".to_owned(),
+                max_events: 1,
+                expected_finish: 0,
+                expected_time: 0,
+                stdout: "run.out".to_owned(),
+            }),
+        );
+
         assert_eq!(scenario_engine(&simir_m2_run), ScenarioEngine::Rust);
+        assert_eq!(scenario_engine(&simir_m3_run), ScenarioEngine::Rust);
     }
 
     #[test]

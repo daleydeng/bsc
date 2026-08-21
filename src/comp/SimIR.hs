@@ -7,7 +7,7 @@ import Prim
 import SimCCBlock
 
 import qualified Data.Map as M
-import Data.List(isInfixOf, isSuffixOf)
+import Data.List(isInfixOf, isPrefixOf, isSuffixOf)
 
 -- This is deliberately a narrow, fail-closed projection used to bootstrap the
 -- Rust Bluesim M0 fixture.  It must be extended structurally alongside the
@@ -18,7 +18,9 @@ simIRFromSimCC top blocks scheds = do
                [ b | b <- blocks, sb_name b == top ]
   if any (`elem` ["ClockGen", "InitialReset"]) (primitiveNames top_block)
     then simIRM2FromSimCC top top_block scheds
-    else simIRM0FromSimCC top top_block scheds
+    else if any (maybe True (const False) . primitiveName . fst3) (sb_state top_block)
+      then simIRM3FromSimCC top blocks top_block scheds
+      else simIRM0FromSimCC top top_block scheds
 
 -- Keep the established M0 projection byte-for-byte unchanged for its tiny
 -- single-clock shape.  M2 is selected only when the top instantiates one of
@@ -60,6 +62,375 @@ simIRM0FromSimCC top top_block scheds = do
           ]
         ]
     ]
+
+fst3 :: (a, b, c) -> a
+fst3 (value, _, _) = value
+
+-- M3 is a deliberately closed single-clock projection for one hierarchical
+-- module tree.  It flattens only RegN state, then inlines the already-ordered
+-- SimCC schedule, its rule calls, and side-effect-free return methods.  This
+-- is semantic SimIR, not a C++ class layout or a method-dispatch ABI.
+data M3Context = M3Context
+  { m3_blocks :: M.Map String SimCCBlock
+  , m3_children :: M.Map String (M.Map String String)
+  , m3_state_widths :: M.Map String Integer
+  }
+
+simIRM3FromSimCC :: String -> [SimCCBlock] -> SimCCBlock -> [SimCCSched]
+                 -> Either String String
+simIRM3FromSimCC top blocks top_block scheds = do
+  sched <- exactlyOne "M3 clock schedule" scheds
+  ensure (sched_posedge sched) "M3 supports only posedge schedules"
+  ensure (sched_after_fn sched == Nothing) "M3 does not support after-edge schedules"
+  clock <- clockName (sched_clock sched)
+  ensure (clock == "CLK") "M3 supports only the default CLK clock"
+  let by_id = M.fromList [ (sb_id block, block) | block <- blocks ]
+      scoped_blocks = m3ScopedBlocks by_id "" top_block
+      child_scopes = m3ChildScopes by_id "" top_block
+  states <- m3FlattenStates by_id "" top_block
+  ensure (not (null states)) "M3 requires at least one RegN state"
+  let context = M3Context scoped_blocks child_scopes
+                (M.fromList [ (name, width) | (name, width, _) <- states ])
+  actions <- m3StmtsToJson context "" M.empty (sf_body (sched_fn sched))
+  return $ object
+    [ field "schemaVersion" "3"
+    , field "producer" $ object
+        [ field "name" (jsonString "legacy-bsc-simcc-projection")
+        , field "version" (jsonString "m3")
+        ]
+    , field "top" (jsonString top)
+    , field "clocks" $ array
+        [ object
+          [ field "id" (jsonString clock)
+          , field "period" "10"
+          , field "activeEdge" (jsonString "posedge")
+          ]
+        ]
+    , field "state" $ array (map stateToJson states)
+    , field "schedules" $ array
+        [ object
+          [ field "clock" (jsonString clock)
+          , field "actions" (array actions)
+          ]
+        ]
+    ]
+
+m3ScopedBlocks :: M.Map SBId SimCCBlock -> String -> SimCCBlock -> M.Map String SimCCBlock
+m3ScopedBlocks by_id scope block =
+  M.insert scope block $ M.unions
+    [ m3ScopedBlocks by_id (m3Scope scope (getIdBaseString instance_id)) child
+    | (block_id, instance_id, _) <- sb_state block
+    , Nothing <- [primitiveName block_id]
+    , Just child <- [M.lookup block_id by_id]
+    ]
+
+m3ChildScopes :: M.Map SBId SimCCBlock -> String -> SimCCBlock -> M.Map String (M.Map String String)
+m3ChildScopes by_id scope block =
+  M.insert scope direct $ M.unions
+    [ m3ChildScopes by_id child_scope child
+    | (block_id, instance_id, _) <- sb_state block
+    , Nothing <- [primitiveName block_id]
+    , Just child <- [M.lookup block_id by_id]
+    , let child_scope = m3Scope scope (getIdBaseString instance_id)
+    ]
+  where
+    direct = M.fromList
+      [ (getIdBaseString instance_id, m3Scope scope (getIdBaseString instance_id))
+      | (block_id, instance_id, _) <- sb_state block
+      , Nothing <- [primitiveName block_id]
+      ]
+
+m3FlattenStates :: M.Map SBId SimCCBlock -> String -> SimCCBlock
+                -> Either String [(String, Integer, Integer)]
+m3FlattenStates by_id scope block = do
+  child_states <- fmap concat $ mapM flatten (sb_state block)
+  let reset_states =
+        [ (m3Scope scope (getIdBaseString reset_id), 1, 1)
+        | reset_id <- sb_inputResets block
+        ]
+  return (child_states ++ reset_states)
+  where
+    flatten (block_id, instance_id, args) =
+      case primitiveName block_id of
+        Just "RegN" -> do
+          (_, width, initial) <- m2RegState (instance_id, args)
+          return [(m3Scope scope (getIdBaseString instance_id), width, initial)]
+        Just name -> Left $ "M3 supports only RegN primitives, found " ++ name
+        Nothing ->
+          case M.lookup block_id by_id of
+            Nothing -> Left $ "M3 contains an unknown submodule block " ++ show block_id
+            Just child -> m3FlattenStates by_id (m3Scope scope (getIdBaseString instance_id)) child
+
+m3Scope :: String -> String -> String
+m3Scope "" name = name
+m3Scope scope name = scope ++ "." ++ name
+
+m3StmtsToJson :: M3Context -> String -> M.Map String String -> [SimCCFnStmt]
+              -> Either String [String]
+m3StmtsToJson context scope bindings = fmap concat . mapM (m3StmtToJson context scope bindings)
+
+m3StmtToJson :: M3Context -> String -> M.Map String String -> SimCCFnStmt
+             -> Either String [String]
+m3StmtToJson context scope bindings stmt =
+  case stmt of
+    SFSDef False _ Nothing -> return []
+    SFSDef False (_, aid) (Just expr) -> m3LetToJson context scope bindings aid expr
+    SFSAssign False aid expr -> m3LetToJson context scope bindings aid expr
+    SFSAssignAction False aid (ACall obj meth args) _
+      | getIdBaseString meth == "read" -> do
+          (condition, rest) <- conditionAndArgs "M3 register read" args
+          ensureTrue condition
+          ensure (null rest) "M3 register read has unexpected arguments"
+          state_name <- m3StateFor context scope obj
+          return [m3LetAction (m3LocalId scope aid) (stateExpr state_name)]
+    SFSAction (ACall obj meth args)
+      | getIdBaseString meth == "write" -> do
+          (condition, rest) <- conditionAndArgs "M3 register write" args
+          value <- exactlyOne "M3 register write value" rest >>= m3ExprToJson context scope bindings
+          state_name <- m3StateFor context scope obj
+          m3Conditional context scope bindings condition [writeAction state_name value]
+      | otherwise -> do
+          (condition, method_args) <- conditionAndArgs "M3 action method" args
+          target_scope <- m3CallScope context scope obj
+          actions <- m3InlineFunction context scope target_scope bindings (getIdBaseString meth) method_args
+          m3Conditional context scope bindings condition actions
+    SFSAction (AFCall _ fun _ args _)
+      | fun == "$finish" || "finish_" `isSuffixOf` fun -> m3FinishToJson context scope bindings args
+    SFSRuleExec rule_id -> m3InlineFunction context scope scope bindings (getIdBaseString rule_id) []
+    SFSFunctionCall _ name [arg]
+      | "rst_tick__clk__" `isInfixOf` name && isOneBit arg -> return []
+    SFSFunctionCall object "reset_RST" [arg]
+      | isOneBit arg -> do
+          _ <- m3StateFor context scope object
+          return []
+    SFSFunctionCall object name args -> do
+      target_scope <-
+        case m3CallScope context scope object of
+          Left err -> Left $ err ++ " for function " ++ show name ++ " with arguments " ++ show args
+          Right value -> Right value
+      m3InlineFunction context scope target_scope bindings name args
+    SFSCond condition then_stmts else_stmts -> do
+      condition_json <- m3ExprToJson context scope bindings condition
+      then_json <- m3StmtsToJson context scope bindings then_stmts
+      else_json <- m3StmtsToJson context scope bindings else_stmts
+      return [object
+        [ field "kind" (jsonString "if")
+        , field "condition" condition_json
+        , field "then" (array then_json)
+        , field "else" (array else_json)
+        ]]
+    SFSReturn Nothing -> return []
+    SFSResets reset_stmts
+      | all m3ResetTick reset_stmts -> return []
+    unsupported -> Left $ "unsupported M3 SimCC statement: " ++ show unsupported
+
+m3ResetTick :: SimCCFnStmt -> Bool
+m3ResetTick (SFSFunctionCall _ name [arg]) = "rst_tick__clk__" `isInfixOf` name && isOneBit arg
+m3ResetTick _ = False
+
+m3InlineFunction :: M3Context -> String -> String -> M.Map String String -> String -> [AExpr]
+                 -> Either String [String]
+m3InlineFunction context caller_scope target_scope caller_bindings name args = do
+  block <- m3Block context target_scope
+  let local_matches =
+        [ (target_scope, candidate)
+        | candidate <- get_rule_fns block ++ get_method_fns block
+        , sf_name candidate == name
+        ]
+      global_matches =
+        [ (candidate_scope, candidate)
+        | (candidate_scope, candidate_block) <- M.toList (m3_blocks context)
+        , candidate <- get_rule_fns candidate_block ++ get_method_fns candidate_block
+        , sf_name candidate == name
+        ]
+  (effective_scope, fn) <- exactlyOne ("M3 function " ++ name)
+                           (if null local_matches then global_matches else local_matches)
+  ensure (sf_retType fn == Nothing) ("M3 statement call returns a value: " ++ name)
+  bindings <- m3FunctionBindings context caller_scope caller_bindings fn args
+  m3StmtsToJson context effective_scope bindings (sf_body fn)
+
+m3FunctionBindings :: M3Context -> String -> M.Map String String -> SimCCFn -> [AExpr]
+                   -> Either String (M.Map String String)
+m3FunctionBindings context scope caller_bindings fn args = do
+  ensure (length (sf_args fn) == length args) ("M3 function has wrong argument count: " ++ sf_name fn)
+  values <- mapM (m3ExprToJson context scope caller_bindings) args
+  return $ M.fromList
+    [ (getIdString argument, value)
+    | ((_, argument), value) <- zip (sf_args fn) values
+    ]
+
+m3LetToJson :: M3Context -> String -> M.Map String String -> AId -> AExpr
+            -> Either String [String]
+m3LetToJson context scope bindings aid expr = do
+  value <- m3ExprToJson context scope bindings expr
+  return [m3LetAction (m3LocalId scope aid) value]
+
+m3LetAction :: String -> String -> String
+m3LetAction name value = object
+  [ field "kind" (jsonString "let")
+  , field "local" (jsonString name)
+  , field "value" value
+  ]
+
+m3ExprToJson :: M3Context -> String -> M.Map String String -> AExpr -> Either String String
+m3ExprToJson context scope bindings expr =
+  case expr of
+    ASDef _ aid -> m3IdentifierToJson context scope bindings aid
+    ASPort _ aid -> m3IdentifierToJson context scope bindings aid
+    AMethCall { ae_objid = obj, ameth_id = meth, ae_args = [] }
+      | getIdBaseString meth == "read" -> stateExpr <$> m3StateFor context scope obj
+      | otherwise -> m3MethodExpr context scope bindings obj (getIdBaseString meth)
+    ASInt _ (ATBit width) lit
+      | width > 0 && width <= 64
+      , ilValue lit >= 0
+      , ilValue lit < 2 ^ width -> return $ object
+          [ field "kind" (jsonString "const")
+          , field "width" (show width)
+          , field "value" (show (ilValue lit))
+          ]
+    APrim { ae_type = ATBit width, aprim_prim = PrimBNot, ae_args = [arg] } -> do
+      arg_json <- m3ExprToJson context scope bindings arg
+      return $ object
+        [ field "kind" (jsonString "unary")
+        , field "width" (show width)
+        , field "op" (jsonString "not")
+        , field "arg" arg_json
+        ]
+    APrim { ae_type = ATBit width, aprim_prim = PrimULE, ae_args = [left, right] }
+      | width == 1 -> do
+          left_json <- m3ExprToJson context scope bindings left
+          right_json <- m3ExprToJson context scope bindings right
+          return $ object
+            [ field "kind" (jsonString "unary")
+            , field "width" "1"
+            , field "op" (jsonString "not")
+            , field "arg" $ object
+                [ field "kind" (jsonString "binary")
+                , field "width" "1"
+                , field "op" (jsonString "unsigned_less_than")
+                , field "args" (array [right_json, left_json])
+                ]
+            ]
+    APrim { ae_type = ATBit width, aprim_prim = op, ae_args = args } -> do
+      op_name <- case op of
+        PrimAdd -> return "add"
+        PrimBAnd -> return "and"
+        PrimSub -> return "sub"
+        PrimEQ -> return "equal"
+        PrimULT -> return "unsigned_less_than"
+        _ -> Left $ "unsupported M3 primitive: " ++ show op
+      args_json <- mapM (m3ExprToJson context scope bindings) args
+      return $ object
+        [ field "kind" (jsonString "binary")
+        , field "width" (show width)
+        , field "op" (jsonString op_name)
+        , field "args" (array args_json)
+        ]
+    unsupported -> Left $ "unsupported M3 expression: " ++ show unsupported
+
+m3MethodExpr :: M3Context -> String -> M.Map String String -> AId -> String -> Either String String
+m3MethodExpr context scope caller_bindings object name = do
+  target_scope <- m3CallScope context scope object
+  block <- m3Block context target_scope
+  fn <- exactlyOne ("M3 return method " ++ name)
+        [ candidate | candidate <- get_method_fns block, sf_name candidate == name ]
+  ensure (null (sf_args fn)) ("M3 return method has arguments: " ++ name)
+  ensure (sf_retType fn /= Nothing) ("M3 return method has no return value: " ++ name)
+  m3PureMethodExpr context target_scope caller_bindings (sf_body fn)
+
+m3PureMethodExpr :: M3Context -> String -> M.Map String String -> [SimCCFnStmt]
+                 -> Either String String
+m3PureMethodExpr context scope bindings stmts = go bindings stmts
+  where
+    go _ [] = Left "M3 return method has no return"
+    go local_bindings (SFSDef _ _ Nothing:rest) = go local_bindings rest
+    go local_bindings (SFSDef _ (_, aid) (Just expr):rest) = do
+      value <- m3ExprToJson context scope local_bindings expr
+      go (M.insert (getIdString aid) value local_bindings) rest
+    go local_bindings (SFSAssign _ aid expr:rest) = do
+      value <- m3ExprToJson context scope local_bindings expr
+      go (M.insert (getIdString aid) value local_bindings) rest
+    go local_bindings (SFSReturn (Just expr):[]) =
+      m3ExprToJson context scope local_bindings expr
+    go _ unsupported = Left $ "unsupported M3 return method body: " ++ show unsupported
+
+m3IdentifierToJson :: M3Context -> String -> M.Map String String -> AId -> Either String String
+m3IdentifierToJson context scope bindings aid =
+  case M.lookup (getIdString aid) bindings of
+    Just value -> return value
+    Nothing ->
+      case m3MaybeStateFor context scope aid of
+        Just state_name -> return (stateExpr state_name)
+        Nothing -> return $ object
+          [ field "kind" (jsonString "local")
+          , field "id" (jsonString (m3LocalId scope aid))
+          ]
+
+m3StateFor :: M3Context -> String -> AId -> Either String String
+m3StateFor context scope aid =
+  case m3MaybeStateFor context scope aid of
+    Just name -> return name
+    Nothing -> Left $ "M3 primitive method references unknown state " ++ show (getIdString aid)
+
+m3MaybeStateFor :: M3Context -> String -> AId -> Maybe String
+m3MaybeStateFor context scope aid =
+  let raw = m3StripTop (getIdString aid)
+      relative = m3Scope scope (getIdBaseString aid)
+      candidates = [raw, relative]
+  in case filter (`M.member` m3_state_widths context) candidates of
+       name:_ -> Just name
+       [] -> Nothing
+
+m3CallScope :: M3Context -> String -> AId -> Either String String
+m3CallScope context scope object =
+  let raw = m3StripTop (getIdString object)
+      self = raw == "" || raw == "top" || raw == scope
+      child = M.lookup scope (m3_children context) >>= M.lookup (getIdBaseString object)
+  in if self then return scope
+     else case child of
+       Just target -> return target
+       Nothing -> Left $ "M3 call references unknown module " ++ show (getIdString object)
+
+m3Block :: M3Context -> String -> Either String SimCCBlock
+m3Block context scope =
+  case M.lookup scope (m3_blocks context) of
+    Just block -> return block
+    Nothing -> Left $ "M3 references unknown module scope " ++ show scope
+
+m3LocalId :: String -> AId -> String
+m3LocalId scope aid = m3Scope scope (getIdString aid)
+
+m3StripTop :: String -> String
+m3StripTop name
+  | "top." `isPrefixOf` name = drop 4 name
+  | name == "top" = ""
+  | otherwise = name
+
+m3Conditional :: M3Context -> String -> M.Map String String -> AExpr -> [String]
+              -> Either String [String]
+m3Conditional _ _ _ (ASInt _ (ATBit 1) lit) actions
+  | ilValue lit == 1 = return actions
+  | ilValue lit == 0 = return []
+m3Conditional context scope bindings condition actions = do
+  condition_json <- m3ExprToJson context scope bindings condition
+  return [object
+    [ field "kind" (jsonString "if")
+    , field "condition" condition_json
+    , field "then" (array actions)
+    , field "else" "[]"
+    ]]
+
+m3FinishToJson :: M3Context -> String -> M.Map String String -> [AExpr]
+               -> Either String [String]
+m3FinishToJson context scope bindings args = do
+  (condition, values) <- conditionAndArgs "M3 $finish" args
+  status_expr <- exactlyOne "M3 $finish status" values
+  status <- case status_expr of
+    ASInt _ (ATBit _) lit -> return (ilValue lit)
+    _ -> Left "M3 $finish status must be an integer literal"
+  ensure (status >= 0 && status <= toInteger (maxBound :: Int)) "M3 $finish status is out of range"
+  m3Conditional context scope bindings condition
+    [object [field "kind" (jsonString "finish"), field "status" (show status)]]
 
 primitiveNames :: SimCCBlock -> [String]
 primitiveNames block =

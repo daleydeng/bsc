@@ -157,6 +157,7 @@ const TINY_M0_SIMIR_SHA256: &str =
     "9d3ec0fbb8fd0de5fc024703c64ef8d282570cf9b3875191352a32aed4d59fda";
 const MCD_M2_SIMIR_SHA256: &str =
     "9d3ec0fbb8fd0de5fc024703c64ef8d282570cf9b3875191352a32aed4d59fda";
+const TBGCD_M3_SIMIR_SHA256: &str = MCD_M2_SIMIR_SHA256;
 
 const OPTIONS_PLAN_ORIGIN: &str = "testsuite/bsc.options/options.exp";
 const OPTIONS_PLAN_SHA256: &str =
@@ -543,6 +544,11 @@ fn plan_from_script(project_root: &Path, script: &ScriptManifest) -> GeneratedTe
         Err(diagnostic) => diagnostics.push(diagnostic),
     }
     match mcd_m2_simir_scenario(&script, &fixture_root) {
+        Ok(Some(scenario)) => assembly.scenarios.push(scenario),
+        Ok(None) => {}
+        Err(diagnostic) => diagnostics.push(diagnostic),
+    }
+    match tbgcd_m3_simir_scenario(&script, &fixture_root) {
         Ok(Some(scenario)) => assembly.scenarios.push(scenario),
         Ok(None) => {}
         Err(diagnostic) => diagnostics.push(diagnostic),
@@ -1129,6 +1135,100 @@ fn mcd_m2_simir_scenario(
                         expected_finish: 0,
                         expected_time: 163,
                         stdout: "mkMCDTest_m2_run.out".to_owned(),
+                    },
+                    OperationExpectation::Required,
+                    run_provenance,
+                )],
+            },
+        ],
+    }))
+}
+
+fn tbgcd_m3_simir_scenario(
+    script: &ScriptManifest,
+    fixture_root: &Path,
+) -> Result<Option<Scenario>, ImportDiagnostic> {
+    if script.origin != TINY_M0_SIMIR_ORIGIN {
+        return Ok(None);
+    }
+    if script.source_sha256 != TBGCD_M3_SIMIR_SHA256 {
+        return Err(global_error(
+            "import.tbgcd_m3_simir_pin",
+            "the interactive Bluesim origin changed; review the M3 SimIR workflow shape".to_owned(),
+        ));
+    }
+    let workflows = script
+        .bluesim_workflows
+        .iter()
+        .filter(|workflow| {
+            workflow.top == "mkTbGCD"
+                && workflow.link.top == "mkTbGCD"
+                && workflow.generations.len() == 1
+                && workflow.generations[0].source == "TbGCD.bsv"
+                && workflow.generations[0].module.as_deref() == Some("mkTbGCD")
+        })
+        .collect::<Vec<_>>();
+    let [workflow] = workflows.as_slice() else {
+        return Err(global_error(
+            "import.tbgcd_m3_simir_shape",
+            "expected exactly one mkTbGCD Bluesim workflow generated from TbGCD.bsv".to_owned(),
+        ));
+    };
+    if !fixture_root.join("TbGCD.bsv").is_file() || !fixture_root.join("GCD.bsv").is_file() {
+        return Err(global_error(
+            "import.tbgcd_m3_simir_fixture",
+            "TbGCD M3 SimIR fixtures are missing".to_owned(),
+        ));
+    }
+
+    let generation = &workflow.generations[0];
+    let generation_provenance = provenance(generation.span, &generation.expansion);
+    let link_provenance = provenance(workflow.link.span, &workflow.link.expansion);
+    let run_provenance = workflow
+        .runs
+        .first()
+        .map(|run| provenance(run.action.span, &run.action.expansion))
+        .unwrap_or_else(|| link_provenance.clone());
+    Ok(Some(Scenario {
+        id: "simir-m3-mkTbGCD".to_owned(),
+        resource: ResourceClass::Normal,
+        fixtures: vec!["GCD.bsv".to_owned()],
+        requires: vec![Requirement::Bluesim],
+        bsc_options_append: None,
+        timeouts: Timeouts::default(),
+        stages: vec![
+            Stage {
+                id: "export-m3".to_owned(),
+                operations: vec![
+                    OperationRecord::new(
+                        Action::BscGenerate {
+                            source: "TbGCD.bsv".to_owned(),
+                            mode: SimulationGenerationMode::Bluesim,
+                            module: Some("mkTbGCD".to_owned()),
+                            args: Vec::new(),
+                        },
+                        OperationExpectation::Required,
+                        generation_provenance,
+                    ),
+                    OperationRecord::new(
+                        Action::BscSimirExport {
+                            top: "mkTbGCD".to_owned(),
+                            output: "mkTbGCD.m3.bsim.json".to_owned(),
+                        },
+                        OperationExpectation::Required,
+                        link_provenance,
+                    ),
+                ],
+            },
+            Stage {
+                id: "run-m3".to_owned(),
+                operations: vec![OperationRecord::new(
+                    Action::SimirM3Run {
+                        model: "mkTbGCD.m3.bsim.json".to_owned(),
+                        max_events: 1_000,
+                        expected_finish: 0,
+                        expected_time: 4_760,
+                        stdout: "mkTbGCD_m3_run.out".to_owned(),
                     },
                     OperationExpectation::Required,
                     run_provenance,

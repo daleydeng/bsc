@@ -2,6 +2,7 @@
 //!
 //! Schema version 1 is intentionally limited to the `tiny.bsv` vertical slice.
 //! Schema version 2 adds a closed, event-ordered two-clock/initial-reset slice.
+//! Schema version 3 adds a closed, flattened hierarchy/method slice on one clock.
 //! Unsupported semantics must require a schema/runtime extension; they must never
 //! be guessed or silently delegated to legacy Bluesim.
 
@@ -14,6 +15,7 @@ use thiserror::Error;
 
 pub const SIMIR_SCHEMA_VERSION: u32 = 1;
 pub const SIMIR_M2_SCHEMA_VERSION: u32 = 2;
+pub const SIMIR_M3_SCHEMA_VERSION: u32 = 3;
 pub const SIMIR_M0_SCHEMA_VERSION: u32 = SIMIR_SCHEMA_VERSION;
 
 #[derive(Debug, Error)]
@@ -188,8 +190,10 @@ pub enum UnaryOp {
 #[serde(rename_all = "snake_case")]
 pub enum BinaryOp {
     Add,
+    And,
     Equal,
     UnsignedLessThan,
+    Sub,
 }
 
 impl Model {
@@ -210,10 +214,10 @@ impl Model {
     pub fn validate(&self) -> Result<(), Error> {
         if !matches!(
             self.schema_version,
-            SIMIR_M0_SCHEMA_VERSION | SIMIR_M2_SCHEMA_VERSION
+            SIMIR_M0_SCHEMA_VERSION | SIMIR_M2_SCHEMA_VERSION | SIMIR_M3_SCHEMA_VERSION
         ) {
             return invalid(format!(
-                "unsupported schema version {}; expected {SIMIR_M0_SCHEMA_VERSION} or {SIMIR_M2_SCHEMA_VERSION}",
+                "unsupported schema version {}; expected {SIMIR_M0_SCHEMA_VERSION}, {SIMIR_M2_SCHEMA_VERSION}, or {SIMIR_M3_SCHEMA_VERSION}",
                 self.schema_version
             ));
         }
@@ -290,9 +294,9 @@ fn validate_clock_version(version: u32, clock: &Clock) -> Result<(), Error> {
         clock.high_duration,
         clock.low_duration,
     );
-    if version == SIMIR_M0_SCHEMA_VERSION {
+    if version != SIMIR_M2_SCHEMA_VERSION {
         if waveform != (None, None, None, None, None) {
-            return invalid("M0 clock contains M2 waveform fields");
+            return invalid("single-clock SimIR contains M2 waveform fields");
         }
         return Ok(());
     }
@@ -317,8 +321,8 @@ fn validate_resets<'a>(
     clocks: &BTreeSet<&str>,
     state: &BTreeMap<String, u8>,
 ) -> Result<BTreeMap<String, &'a InitialReset>, Error> {
-    if version == SIMIR_M0_SCHEMA_VERSION && !resets.is_empty() {
-        return invalid("M0 model contains M2 resets");
+    if version != SIMIR_M2_SCHEMA_VERSION && !resets.is_empty() {
+        return invalid("single-clock SimIR model contains M2 resets");
     }
     let mut ids = BTreeMap::new();
     for reset in resets {
@@ -378,8 +382,8 @@ fn validate_reset_ticks(
             _ => None,
         })
         .collect::<Vec<_>>();
-    if version == SIMIR_M0_SCHEMA_VERSION && !ticks.is_empty() {
-        return invalid("M0 schedule contains M2 reset tick");
+    if version != SIMIR_M2_SCHEMA_VERSION && !ticks.is_empty() {
+        return invalid("single-clock SimIR schedule contains M2 reset tick");
     }
     for reset in ticks {
         let Some(definition) = resets.get(reset.as_str()) else {
@@ -463,7 +467,7 @@ impl Engine {
             if self.exit_status.is_some() {
                 break;
             }
-            if self.model.schema_version == SIMIR_M0_SCHEMA_VERSION {
+            if self.model.schema_version != SIMIR_M2_SCHEMA_VERSION {
                 self.step_once_m0(&mut output)?;
             } else {
                 self.step_once_m2(&mut output)?;
@@ -780,8 +784,10 @@ fn eval(
             let right = eval(&args[1], state, locals, time);
             let value = match op {
                 BinaryOp::Add => left.wrapping_add(right),
+                BinaryOp::And => left & right,
                 BinaryOp::Equal => u64::from(left == right),
                 BinaryOp::UnsignedLessThan => u64::from(left < right),
+                BinaryOp::Sub => left.wrapping_sub(right),
             };
             value & value_mask(*width)
         }
@@ -874,11 +880,17 @@ fn validate_expr(
             let left = validate_expr(&args[0], state, locals)?;
             let right = validate_expr(&args[1], state, locals)?;
             match op {
-                BinaryOp::Add if left == right && *width == left => Ok(*width),
+                BinaryOp::Add | BinaryOp::And | BinaryOp::Sub
+                    if left == right && *width == left =>
+                {
+                    Ok(*width)
+                }
                 BinaryOp::Equal | BinaryOp::UnsignedLessThan if left == right && *width == 1 => {
                     Ok(1)
                 }
-                BinaryOp::Add => invalid("add operands and result must have the same width"),
+                BinaryOp::Add | BinaryOp::And | BinaryOp::Sub => {
+                    invalid("bitwise/arithmetic operands and result must have the same width")
+                }
                 BinaryOp::Equal | BinaryOp::UnsignedLessThan => {
                     invalid("comparison operands must have equal widths and a 1-bit result")
                 }

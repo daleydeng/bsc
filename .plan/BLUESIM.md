@@ -1,6 +1,6 @@
 # Bluesim Rust 重写计划
 
-状态：M0/M1 最小 vertical slice 与 engine selector 已验证；M2a 双时钟/reset 合同已钉定，待实现；通用 cross-engine artifact diff 待实现
+状态：M0/M1、M2a 双时钟/reset 与 M2b hierarchy/method schedule 真实闭环已验证；通用 cross-engine artifact diff 待实现
 所属总体计划：[`OVERALL.md`](OVERALL.md) Phase 1
 更新时间：2026-08-21
 
@@ -410,12 +410,27 @@ Rust M2 runtime 将处理一个真实的、稳定排序的 edge event queue：�
 
 现有 `clock.cmd` / `mkMCDTest_clock.out.expected` 继续作为 legacy interactive API oracle；M2 Rust companion 只做 SimIR run-to-finish/time differential，不宣称实现 `sim clock` Tcl compatibility。
 
+### M2b：hierarchy、method 与多规则 schedule 的已钉定切片
+
+2026-08-21 选择 `testsuite/bsc.bluesim/interactive/TbGCD.bsv` + `GCD.bsv` 作为下一条真实 fixture。`-dsimCOpt` 表明 legacy scheduler 已把 top rules、submodule rules、ready methods 和 action/value methods排成单一确定优先级链；Rust 路径不需要 C++ class/interface、vtable adapter 或通用 VM。
+
+该切片使用 **SimIR schema v3**（这是 schema 版本，不改变后文迁移 milestone 的编号），仅接受：
+
+- 单个 default `CLK` posedge schedule，无 after-edge；
+- 由结构化 `SBId → SimCCBlock` 关系建立的实例树；`SBId` 只用于查块，不进入 artifact identity；
+- canonical flat state ID（如 `gcd.the_x`），来自 hierarchy path + RegN instance name，不来自 generated C++ layout；
+- RegN 和默认 `RST_N` 初始状态；默认 reset tick 在无外部 reset driver 的 run-to-finish contract 中按已钉定形态忽略；
+- schedule-ordered rule/action method 内联、无副作用 value/ready method expression 内联；同名函数若无法由实例对象结构解析，只有全实例树唯一匹配时才接受，否则 fail closed；
+- M0/M2 已有 expressions/actions，加 `and` 与 `sub`。
+
+真实闭环已经得到 `finish = 0`、`time = 4760`、`events = 476`。canonical `simir-m3-mkTbGCD` scenario 使用 typed `simir.m3_run` 固定 finish/time；它与 legacy `bluesim-workflow-7-mkTbGCD` 在 `--bluesim-engine both` 下共同通过（9 stages、0 skipped），两边仍使用隔离 workspace/artifacts/cache。legacy 继续验证六组 Tcl interactive golden；Rust companion 验证 hierarchy/method/schedule 的 run-to-finish 语义，不宣称 Tcl debug API 已迁移。
+
 实施时必须同步：
 
-1. `src/comp/SimIR.hs` 的 v2 fail-closed projection；
-2. `rust/bluesim` 的 v1/v2 loader、validator、event queue 和 unit tests；
+1. `src/comp/SimIR.hs` 的 v2/v3 fail-closed projection；
+2. `rust/bluesim` 的 v1/v2/v3 loader、validator、event queue 和 unit tests；
 3. typed Test Plan action 及 `scenario_engine` 识别；
-4. `rust/util/testsuite-manifest/src/plan.rs` 的 hash-pinned `simir-m2-mkMCDTest` companion scenario；
+4. `rust/util/testsuite-manifest/src/plan.rs` 的 hash-pinned `simir-m2-mkMCDTest` / `simir-m3-mkTbGCD` companion scenario；
 5. generated plans/schema/index（通过既有更新命令生成，不手改）。
 
 退出条件：
@@ -551,6 +566,6 @@ Bluesim 重写完成需要：
 
 ## 13. 当前下一步
 
-`tiny` 的隔离 `simir-m0-mkTest` scenario 已注入既有 canonical Test Plan：它生成 `.ba`、执行 `bsc.simir_export`、由 in-process Rust `bluesim::Engine` step 10 次，并复用 upstream golden。两个 typed action 均为 closed contract，不启动 Tcl、不生成/编译 C++、不调用 per-design `rustc`；in-process runtime 的失败不会回退 legacy。生成物检查、schema/importer 和 Rust workspace 测试已通过。
+M0 `tiny`、M2a `MCDTest` 与 M2b `TbGCD/GCD` 均已通过 canonical Rust Test Plan 的真实 `bsc.generate → bsc.simir_export → in-process Rust bluesim` 闭环；对应 legacy/Rust scenarios 已在 `--bluesim-engine both` 下共同通过，并保持隔离 workspace/artifacts/cache。默认候选路径不启动 Tcl、不生成/编译 per-design C++、不调用 per-design `rustc`，失败也不回退 legacy。
 
-已使用 canonical Rust Test Plan runner 实际执行该单场景：`tiny.bsv → .ba → .bsim.json → in-process Rust engine → mkTest_step.out.expected`，两个 stage 通过、零跳过，且没有 legacy simulation fallback。下一步引入显式 `legacy/rust/both` selector。`both` 必须为两端创建独立 workspace 和 artifact/cache identity，且 Rust candidate 失败不得回退 legacy。每个新增 fixture 都要先从真实 SimCC shape 扩展 schema、exporter、runtime 与 differential assertion。此 gate 建立前，不创建 C++ adapter、不铺完整 runtime crate graph、不设计 JIT。
+下一步应选择覆盖 wire/Reg primitive interaction 或更丰富 system task/output 的最小 run-to-finish fixture，继续按“真实 SimCC probe → versioned schema → fail-closed exporter → Rust unit contract → typed companion scenario → both gate”推进。不要让只比较 generated C++ 文本的 tests 驱动 runtime 设计；不创建 C++ adapter、Tcl interpreter、通用 VM、JIT 或第二套 runner。
